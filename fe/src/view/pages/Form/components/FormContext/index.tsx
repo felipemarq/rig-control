@@ -4,7 +4,7 @@ import {useNavigate} from "react-router-dom";
 import {v4 as uuidv4} from "uuid";
 import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
 import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation} from "@tanstack/react-query";
+import {useMutation, useQueryClient} from "@tanstack/react-query";
 import {efficienciesService} from "../../../../../app/services/efficienciesService";
 import {AxiosError} from "axios";
 import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
@@ -13,6 +13,7 @@ import {parse, differenceInMinutes} from "date-fns";
 
 interface FormContextValue {
   date: Date | undefined;
+  well: string;
   remainingMinutes: number | undefined;
   periods: Periods;
   isLoading: boolean;
@@ -35,6 +36,8 @@ interface FormContextValue {
   cleanFields(id: string): void;
   isFormValid: boolean;
   isPending: boolean;
+  selectedRig: string;
+  handleChangeRig(rigId: string): void;
   handleMixTankCheckBox(): void;
   handleMixTankOperatorsCheckBox(): void;
   handleFuelGeneratorCheckBox(): void;
@@ -53,7 +56,9 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
+  handleWellChange(value: string): void;
   isSuckingTruckSelected: boolean;
+  usersRigs: {id: string; name: string}[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -94,9 +99,13 @@ export const FormContext = createContext({} as FormContextValue);
 
 export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const {user} = useAuth();
-  console.log("User", user);
+  const isUserAdm = user?.accessLevel === "ADM";
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>();
+  const [well, setWell] = useState<string>("");
+  const [selectedRig, setSelectedRig] = useState<string>(() => {
+    return isUserAdm ? "" : user?.rigs[0].rig.id!;
+  });
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState([
     {
@@ -112,11 +121,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   ]);
 
   const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const queryClient = useQueryClient();
 
   const handleSubmit = async (periods: Periods) => {
     const {toPersistenceObj} = efficiencyMappers.toPersistance({
-      rigId: user?.rigs[0].rig.id,
+      rigId: selectedRig,
       date: date ?? new Date(),
+      well,
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -157,6 +168,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           description: "",
         },
       ]);
+      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
 
       navigate("/dashboard", {replace: true});
     } catch (error: any | typeof AxiosError) {
@@ -278,6 +290,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
+  const handleChangeRig = (rigId: string) => {
+    setSelectedRig(rigId);
+  };
+
   const calculateTotalMinutes = useCallback(() => {
     let totalMinutes = 0;
 
@@ -299,7 +315,15 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const isFormValid = Boolean(remainingMinutes === 0 && date);
   const isPending = remainingMinutes !== 0;
 
-  const userRig = user?.rigs[0].rig;
+  const userRig = user?.rigs[0].rig!;
+
+  const usersRigs =
+    user?.rigs.map(({rig: {id, name}}) => {
+      return {
+        id,
+        name,
+      };
+    }) || [];
 
   //Configurações de formulário adicionais
 
@@ -445,10 +469,15 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsSuckingTruckSelected((prevState) => !prevState);
   }, []);
 
+  const handleWellChange = useCallback((value: any) => {
+    setWell(value);
+  }, []);
+
   return (
     <FormContext.Provider
       value={{
         date,
+        handleChangeRig,
         handleDateChange,
         handleStartHourChange,
         handleDeletePeriod,
@@ -466,6 +495,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         cleanFields,
         isLoading,
         userRig,
+        usersRigs,
         isPending,
         handleMixTankCheckBox,
         isMixTankSelected,
@@ -506,6 +536,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
+        well,
+        handleWellChange,
+        selectedRig,
       }}
     >
       {children}

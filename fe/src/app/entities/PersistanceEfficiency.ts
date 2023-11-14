@@ -4,6 +4,7 @@ export type PersistanceEfficiency = {
   availableHours: number;
   date: string | Date;
   id: string;
+  well: string;
   rigId: string;
   userId: string;
   user: {name: string};
@@ -23,12 +24,30 @@ export type PersistanceEfficiency = {
   fluidRatio: {
     ratio: string;
   }[];
+  Billing: {
+    availableHourAmount: number;
+    mobilizationAmount: number;
+    demobilizationAmount: number;
+    extraTrailerAmount: number;
+    powerSwivelAmount: number;
+    truckCartRentAmount: number;
+    transportationAmount: number;
+    bobRentAmount: number;
+    mixTankMonthRentAmount: number;
+    mixTankHourRentAmount: number;
+    mixTankOperatorAmount: number;
+    mixTankDemobilizationAmount: number;
+    mixTankDtmAmount: number;
+    mixTankMobilizationAmount: number;
+    christmasTreeDisassemblyAmount: number;
+  };
 };
 
 export type ToPersistanceEfficiency = {
   availableHours: number;
   date: string | Date;
   rigId: string;
+  well: string;
   periods: {
     startHour: string;
     endHour: string;
