@@ -16,6 +16,7 @@ import { PeriodsModule } from './modules/periods/periods.module';
 import { TemporaryEfficienciesModule } from './modules/temporary-efficiencies/temporary-efficiencies.module';
 import { UserLogModule } from './modules/user-log/user-log.module';
 import { SystemVersionModule } from './modules/system-version/system-version.module';
+import { OccurrencesModule } from './modules/ocurrences/occurrences.module';
 
 @Module({
   imports: [
@@ -34,6 +35,7 @@ import { SystemVersionModule } from './modules/system-version/system-version.mod
     PeriodsModule,
     UserLogModule,
     SystemVersionModule,
+    OccurrencesModule,
   ],
   controllers: [],
   providers: [

@@ -1,6 +1,6 @@
-import {Header} from "../../components/Header";
-import {Spinner} from "../../components/Spinner";
-import {useListUsers} from "./useListUsers";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
+import { useListUsers } from "./useListUsers";
 import avatarIcon from "@/assets/icons/avatar.svg";
 
 import {
@@ -10,10 +10,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
-import {Info, ListFilter} from "lucide-react";
-import {formatLastlogin} from "@/app/utils/formatLastLogin";
-import {Input} from "@/view/components/Input";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Info, ListFilter } from "lucide-react";
+import { formatLastlogin } from "@/app/utils/formatLastLogin";
+import { Input } from "@/view/components/Input";
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
@@ -22,13 +22,14 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {Button} from "@/components/ui/button";
-import {NotFound} from "@/view/components/NotFound";
+import { Button } from "@/components/ui/button";
+import { NotFound } from "@/view/components/NotFound";
 import {
   HoverCard,
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
+//import { useNavigate } from "react-router-dom";
 
 export const ListUsers = () => {
   const {
@@ -41,6 +42,7 @@ export const ListUsers = () => {
     handleChangeSearchTerm,
   } = useListUsers();
 
+  // const navigate = useNavigate();
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header title="Usuários" displayRig={false} displayPeriodRange={false} />
@@ -109,12 +111,15 @@ export const ListUsers = () => {
                 </DropdownMenu>
               </div>
 
+              {/*    20cce710-4438-4353-a1b7-330830b29ac8 */}
+
               {hasUsers && (
                 <div className=" grid grid-cols-12 auto-rows-[200px]  p-4 justify-center  gap-4 ">
-                  {filteredUsers.map(({name, id, email, userLog}) => (
+                  {filteredUsers.map(({ name, id, email, userLog }) => (
                     <Card
                       className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
                       key={id}
+                      // onClick={() => navigate(`/users/update-rigs/${id}`)}
                     >
                       <CardHeader className="flex">
                         <CardTitle className="flex justify-between flex-col gap-2 items-center ">
