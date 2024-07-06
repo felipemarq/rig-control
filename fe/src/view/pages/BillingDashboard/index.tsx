@@ -3,19 +3,19 @@ import {
   BillingDashboardProvider,
 } from "./BillingDashboardContext";
 import "swiper/css";
-import {FilterSheet} from "@/view/components/FilterSheet";
-import {StatboxContainer} from "./components/StatboxContainer";
-import {BarChartCard} from "./components/BarChartCard";
-import {RigBillingConfigListCard} from "./components/RigBillingConfigListCard";
-import {EditConfigModal} from "./modals/EditConfigModal";
-import {BagdeStatus} from "@/view/components/BagdeStatus";
+import { FilterSheet } from "@/view/components/FilterSheet";
+import { StatboxContainer } from "./components/StatboxContainer";
+import { BarChartCard } from "./components/BarChartCard";
+import { RigBillingConfigListCard } from "./components/RigBillingConfigListCard";
+import { EditConfigModal } from "./modals/EditConfigModal";
+import { BagdeStatus } from "@/view/components/BagdeStatus";
 
 export const BillingDashboard = () => {
   return (
     <BillingDashboardProvider>
       <BillingDashboardContext.Consumer>
-        {({handleApplyFilters, isFetchingBillings, configBeingEdited}) => (
-          <>
+        {({ handleApplyFilters, isFetchingBillings, configBeingEdited }) => (
+          <div className="overflow-y-auto">
             <div className="flex justify-between p-4">
               <BagdeStatus displayRig={false} />
               <FilterSheet
@@ -34,7 +34,7 @@ export const BillingDashboard = () => {
               </main>
             </div>
             {configBeingEdited && <EditConfigModal />}
-          </>
+          </div>
         )}
       </BillingDashboardContext.Consumer>
     </BillingDashboardProvider>
