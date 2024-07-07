@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Put,
 } from '@nestjs/common';
 import { OccurrencesService } from './occurrences.service';
 import { CreateOcurrenceDto } from './dto/create-ocurrence.dto';
@@ -29,21 +30,16 @@ export class OccurrencesController {
     return this.occurrencesService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.occurrencesService.findOne(+id);
-  }
-
-  @Patch(':id')
+  @Put(':occurrenceId')
   update(
-    @Param('id') id: string,
+    @Param('occurrenceId') occurrenceId: string,
     @Body() updateOcurrenceDto: UpdateOcurrenceDto,
   ) {
-    return this.occurrencesService.update(+id, updateOcurrenceDto);
+    return this.occurrencesService.update(occurrenceId, updateOcurrenceDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.occurrencesService.remove(+id);
+  @Delete(':occurrenceId')
+  remove(@Param('occurrenceId') occurrenceId: string) {
+    return this.occurrencesService.remove(occurrenceId);
   }
 }

@@ -1,13 +1,9 @@
-import {create} from "./create";
-import {getAll} from "./getAll";
-import {me} from "./me";
-import {update} from "./update";
-import {updateRigs} from "./updateRigs";
+import { create } from "./create";
+import { getAll } from "./getAll";
+import { update } from "./update";
 
-export const usersService = {
-  me,
+export const occurrencesService = {
   getAll,
   create,
   update,
-  updateRigs,
 };

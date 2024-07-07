@@ -134,6 +134,12 @@ export const Sidebar = ({ className }: SidebarProps) => {
                 </MenuItem>
               </Link>
 
+              <Link to="/occurrences">
+                <MenuItem icon={<ArchiveIcon />} className="bg-primary">
+                  Segurança
+                </MenuItem>
+              </Link>
+
               {isUserAdm && (
                 <>
                   <Link

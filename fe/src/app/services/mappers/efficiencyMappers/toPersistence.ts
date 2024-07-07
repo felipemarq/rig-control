@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
-import {DomainEfficiency} from "../../../entities/DomainEfficiency";
-import {parse} from "date-fns";
-import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
-import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
-import {getDiffInMinutes} from "../../../utils/getDiffInMinutes";
-import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
+import { DomainEfficiency } from "../../../entities/DomainEfficiency";
+import { parse } from "date-fns";
+import { ToPersistanceEfficiency } from "../../../entities/PersistanceEfficiency";
+import { getTotalHoursFromTimeString } from "../../../utils/getTotalHoursFromTimeString";
+import { getDiffInMinutes } from "../../../utils/getDiffInMinutes";
+import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
@@ -28,11 +28,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
       repairClassification,
       well,
     }) => {
-      const [startHourString, startMinuteString] = startHour.split(":");
-      const [endHourString, endMinuteString] = endHour.split(":");
-
       //Soomando as horas totais caso seja operando
-
       const parsedStartHour = parse(startHour, "HH:mm", new Date());
       const parsedEndHour = parse(endHour, "HH:mm", new Date());
 
@@ -49,19 +45,20 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         totalScheduledStopHours += diffInMinutes / 60;
       }
 
-      const startDateWithTime = dayjs()
-        .hour(Number(startHourString))
-        .minute(Number(startMinuteString))
-        .format();
+      const formatTimeStringToIsoString = (timeString: string) => {
+        const [hourString, minuteString] = timeString.split(":");
 
-      const endDateWithTime = dayjs()
-        .hour(Number(endHourString))
-        .minute(Number(endMinuteString))
-        .format();
+        const dateWithTime = dayjs()
+          .hour(Number(hourString))
+          .minute(Number(minuteString))
+          .format();
+
+        return dateWithTime.replace(/-03:00$/, "-00:00");
+      };
 
       return {
-        startHour: startDateWithTime.replace(/-03:00$/, "-00:00"),
-        endHour: endDateWithTime.replace(/-03:00$/, "-00:00"),
+        startHour: formatTimeStringToIsoString(startHour),
+        endHour: formatTimeStringToIsoString(endHour),
         classification: classification,
         description: description,
         type: type,
@@ -105,7 +102,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
   };
 
-  domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
+  domainEfficiency.periods.forEach(({ equipmentRatio, fluidRatio }) => {
     if (equipmentRatio) {
       toPersistenceObj.equipmentRatio.push({
         ratio: equipmentRatio,
@@ -119,7 +116,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     }
   });
 
-  return {toPersistenceObj};
+  return { toPersistenceObj };
 };
 
 /* export class PeriodDto {

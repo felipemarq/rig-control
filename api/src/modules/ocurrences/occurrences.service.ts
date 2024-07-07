@@ -18,8 +18,6 @@ export class OccurrencesService {
       where: { id: baseId },
     });
 
-    console.log('Base Exists', baseExists);
-
     if (!baseExists) {
       throw new NotFoundException('Base não encontrada');
     }
@@ -37,11 +35,28 @@ export class OccurrencesService {
     return `This action returns a #${id} ocurrence`;
   }
 
-  update(id: number, updateOcurrenceDto: UpdateOcurrenceDto) {
-    return `This action updates a #${id} ocurrence`;
+  async update(occurrenceId: string, updateOcurrenceDto: UpdateOcurrenceDto) {
+    const { baseId } = updateOcurrenceDto;
+
+    const baseExists = await this.basesRepo.findUnique({
+      where: { id: baseId },
+    });
+
+    if (!baseExists) {
+      throw new NotFoundException('Base não encontrada');
+    }
+
+    return await this.occurrencesRepo.update({
+      where: { id: occurrenceId },
+      data: updateOcurrenceDto,
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ocurrence`;
+  async remove(occurrenceId: string) {
+    await this.occurrencesRepo.delete({
+      where: { id: occurrenceId },
+    });
+
+    return null;
   }
 }

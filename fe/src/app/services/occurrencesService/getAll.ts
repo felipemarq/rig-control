@@ -1,20 +1,19 @@
-import {User} from "../../entities/User";
-import {httpClient} from "../httpClient";
+import { Occurrence } from "@/app/entities/Occurrence";
 
-export interface usersFilters {
+import { httpClient } from "../httpClient";
+
+/* export interface usersFilters {
   contractId?: string;
-}
+} */
 
-export const getAll = async (filters: usersFilters) => {
-  const {data} = await httpClient.get<Array<User>>(`/users/`, {
+export type OccurrencesResponse = Array<Occurrence>;
+
+export const getAll = async (/* filters: usersFilters */) => {
+  const { data } = await httpClient.get<OccurrencesResponse>(
+    `/occurrences/` /* {
     params: filters,
-  });
+  } */
+  );
 
   return data;
 };
-
-/* const filters = {
-  rigId: "e3de80b0-619c-4743-9a5d-f59daeb592ec",
-  startDate: "2023-08-03T03:00:00.000Z",
-  endDate: "2023-08-08T12:21:11.942Z",
-}; */

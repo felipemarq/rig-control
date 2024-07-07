@@ -17,6 +17,7 @@ import { TemporaryEfficienciesModule } from './modules/temporary-efficiencies/te
 import { UserLogModule } from './modules/user-log/user-log.module';
 import { SystemVersionModule } from './modules/system-version/system-version.module';
 import { OccurrencesModule } from './modules/ocurrences/occurrences.module';
+import { BasesModule } from './modules/bases/bases.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { OccurrencesModule } from './modules/ocurrences/occurrences.module';
     UserLogModule,
     SystemVersionModule,
     OccurrencesModule,
+    BasesModule,
   ],
   controllers: [],
   providers: [

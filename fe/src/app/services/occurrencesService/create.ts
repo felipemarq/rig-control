@@ -1,20 +1,24 @@
-import {AccessLevel} from "../../entities/AccessLevel";
-import {httpClient} from "../httpClient";
+import { Nature, OccurrenceType } from "@/app/entities/Occurrence";
+import { httpClient } from "../httpClient";
+import { Occurrence } from "@/app/entities/Occurrence";
 
-export interface CreateParams {
-  email: string;
-  password: string;
-  accessLevel: AccessLevel;
-  name: string;
-  rigId?: string;
-  contractId?: string;
+export interface CreateOccurrenceParams {
+  date: string;
+  isAbsent: boolean;
+  type: OccurrenceType;
+  nature: Nature;
+  baseId: string;
+  description?: string | undefined;
+  createdAt: string;
+  hour: string;
 }
 
-interface CreateResponse {
-  accessToken: string;
-}
+export type CreateResponse = Occurrence;
 
-export const create = async (params: CreateParams) => {
-  const {data} = await httpClient.post<CreateResponse>("/auth/signup", params);
+export const create = async (params: CreateOccurrenceParams) => {
+  const { data } = await httpClient.post<CreateResponse>(
+    "/occurrences",
+    params
+  );
   return data;
 };

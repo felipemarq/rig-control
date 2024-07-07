@@ -1,7 +1,9 @@
 export enum QueryKeys {
   ME = "me",
   USERS = "users",
+  BASES = "bases",
   WELLS = "wells",
+  OCCURRENCES = "occurrences",
   PERIODS = "periods",
   EFFICIENCY = "efficiency",
   EFFICIENCIES = "efficiencies",

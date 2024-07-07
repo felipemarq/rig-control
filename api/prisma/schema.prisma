@@ -568,6 +568,7 @@ enum Nature {
 model Base {
   id    String  @id @default(uuid()) @db.Uuid
   name  String  @unique
+  state UF
   rigId String? @db.Uuid
 
   rig         Rig?         @relation(fields: [rigId], references: [id], onDelete: Cascade)

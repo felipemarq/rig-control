@@ -1,5 +1,5 @@
-import {AccessLevel} from "../../entities/AccessLevel";
-import {httpClient} from "../httpClient";
+import { AccessLevel } from "../../entities/AccessLevel";
+import { httpClient } from "../httpClient";
 
 export interface UpdateParams {
   id: string;
@@ -11,9 +11,9 @@ export interface UpdateParams {
   contractId?: string;
 }
 
-export const update = async ({id, ...params}: UpdateParams) => {
+export const update = async ({ id, ...params }: UpdateParams) => {
   //await timeout(1500);
-  const {data} = await httpClient.put(`/users/${id}`, params);
+  const { data } = await httpClient.put(`/occurrences/${id}`, params);
 
   return data;
 };

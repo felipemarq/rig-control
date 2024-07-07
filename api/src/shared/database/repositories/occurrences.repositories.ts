@@ -13,4 +13,12 @@ export class OccurrenceRepository {
   async findMany(findManyDto: Prisma.OccurrenceFindManyArgs) {
     return await this.prismaService.occurrence.findMany(findManyDto);
   }
+
+  async update(updateDto: Prisma.OccurrenceUpdateArgs) {
+    return await this.prismaService.occurrence.update(updateDto);
+  }
+
+  async delete(deleteDto: Prisma.OccurrenceDeleteArgs) {
+    return await this.prismaService.occurrence.delete(deleteDto);
+  }
 }
