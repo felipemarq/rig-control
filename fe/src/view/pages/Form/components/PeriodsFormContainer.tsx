@@ -1,20 +1,20 @@
 import React from "react";
-import {cn} from "../../../../app/utils/cn";
-import {TimePicker} from "antd";
+import { cn } from "../../../../app/utils/cn";
+import { TimePicker } from "antd";
 import dayjs from "dayjs";
-import {Select} from "../../../components/Select";
-import {periodTypes} from "../../../../app/utils/periodTypes";
+import { Select } from "../../../components/Select";
+import { periodTypes } from "../../../../app/utils/periodTypes";
 import {
   getPeriodClassification,
   getRepairClassification,
 } from "../../../../app/utils/periodClassifications";
-import {Button} from "../../../components/Button";
+import { Button } from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
-import {useForm} from "./FormContext/useForm";
-import {Input} from "../../../components/Input";
-import {AlertTriangle, ChevronUp, TrashIcon} from "lucide-react";
-import {translateType} from "../../../../app/utils/translateType";
-import {PeriodType} from "../../../../app/entities/PeriodType";
+import { useForm } from "./FormContext/useForm";
+import { Input } from "../../../components/Input";
+import { AlertTriangle, ChevronUp, TrashIcon } from "lucide-react";
+import { translateType } from "../../../../app/utils/translateType";
+import { PeriodType } from "../../../../app/entities/PeriodType";
 
 export const PeriodsFormContainer = () => {
   const {
@@ -184,7 +184,7 @@ export const PeriodsFormContainer = () => {
                           return {
                             disabledHours: () => {
                               const disabledHours = Array.from(
-                                {length: 24},
+                                { length: 24 },
                                 (_, hour) => (hour < minHour ? hour : -1)
                               );
                               return disabledHours;
@@ -192,7 +192,7 @@ export const PeriodsFormContainer = () => {
                             disabledMinutes: (selectedHour) => {
                               if (selectedHour === minHour) {
                                 // Desativar minutos antes do horário mínimo
-                                return Array.from({length: 60}, (_, minute) =>
+                                return Array.from({ length: 60 }, (_, minute) =>
                                   minute < minMinute ? minute : -1
                                 );
                               }
@@ -223,7 +223,7 @@ export const PeriodsFormContainer = () => {
                           return {
                             disabledHours: () => {
                               const disabledHours = Array.from(
-                                {length: 24},
+                                { length: 24 },
                                 (_, hour) => (hour < minHour ? hour : -1)
                               );
                               return disabledHours;
@@ -231,7 +231,7 @@ export const PeriodsFormContainer = () => {
                             disabledMinutes: (selectedHour) => {
                               if (selectedHour === minHour) {
                                 // Desativar minutos antes do horário mínimo
-                                return Array.from({length: 60}, (_, minute) =>
+                                return Array.from({ length: 60 }, (_, minute) =>
                                   minute < minMinute ? minute : -1
                                 );
                               }
@@ -267,7 +267,7 @@ export const PeriodsFormContainer = () => {
                       placeholder="Tipo"
                       value={type}
                       onChange={(value) => handlePeriodType(id, value)}
-                      options={periodTypes.map(({id, type}) => {
+                      options={periodTypes.map(({ id, type }) => {
                         return {
                           value: id,
                           label: type,

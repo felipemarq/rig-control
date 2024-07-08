@@ -1,3 +1,5 @@
+import { UF } from "./Rig";
+
 export enum OccurrenceType {
   HEALTH = "HEALTH",
   ENVIRONMENT = "ENVIRONMENT",
@@ -20,4 +22,8 @@ export type Occurrence = {
   createdAt: string;
   type: OccurrenceType;
   nature: Nature;
+  base: {
+    name: string;
+    state: UF;
+  };
 };

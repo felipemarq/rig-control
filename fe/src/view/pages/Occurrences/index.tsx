@@ -4,19 +4,31 @@ import {
   OccurrencesProvider,
 } from "./components/OccurrencesContext";
 import { NewOccurrenceModal } from "./components/modals/NewOccurrenceModal";
+import { Header } from "@/view/components/Header";
+import { OccurrencesContainer } from "./components/OccurrencesContainer";
 
 export const Occurrences = () => {
   return (
     <OccurrencesProvider>
       <OccurrencesContext.Consumer>
-        {({ occurrences, openNewOccurrenceModal }) => (
-          <div>
-            <Button onClick={openNewOccurrenceModal}>Open Modal</Button>
-            <div>
-              {occurrences.map(({ id }) => (
-                <div>{id}</div>
-              ))}
-            </div>
+        {({ openNewOccurrenceModal }) => (
+          <div className="w-full h-full overflow-y-auto">
+            <Header
+              className="mt-4"
+              title="Segurança"
+              displayRig={false}
+              displayPeriodRange={false}
+            >
+              <Button
+                onClick={openNewOccurrenceModal}
+                className="rounded-md h-10 w-56"
+              >
+                Novo registro
+              </Button>
+            </Header>
+
+            <OccurrencesContainer />
+
             <NewOccurrenceModal />
           </div>
         )}

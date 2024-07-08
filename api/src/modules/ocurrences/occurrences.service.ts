@@ -28,7 +28,25 @@ export class OccurrencesService {
   }
 
   findAll() {
-    return this.occurrencesRepo.findMany({});
+    return this.occurrencesRepo.findMany({
+      select: {
+        id: true,
+        date: true,
+        hour: true,
+        description: true,
+        baseId: true,
+        userId: true,
+        createdAt: true,
+        type: true,
+        nature: true,
+        base: {
+          select: {
+            name: true,
+            state: true,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number) {

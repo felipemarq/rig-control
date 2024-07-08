@@ -14,6 +14,8 @@ import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
 import { formatTimeStringToIsoString } from "@/app/utils/formatTimeStringToIsoString";
 import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
+import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelectOptions";
+import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 
 const schema = z.object({
   date: z.date(),
@@ -48,36 +50,6 @@ export const useNewOccurrenceModal = () => {
   const queryClient = useQueryClient();
 
   const { bases, isFetchingBases } = useBases();
-
-  const occurrenceTypeSelectOptions: SelectOptions = [
-    {
-      value: OccurrenceType.SAFETY,
-      label: "Segurança",
-    },
-    {
-      value: OccurrenceType.HEALTH,
-      label: "Saúde",
-    },
-    {
-      value: OccurrenceType.ENVIRONMENT,
-      label: "Meio Ambiente",
-    },
-    {
-      value: OccurrenceType.PROCESS,
-      label: "Processo",
-    },
-  ];
-
-  const natureSelectOptions: SelectOptions = [
-    {
-      value: Nature.ACCIDENT,
-      label: "Acidente",
-    },
-    {
-      value: Nature.INCIDENT,
-      label: "Incidente",
-    },
-  ];
 
   const { isPending: isLoadingNewOccurrence, mutateAsync } = useMutation({
     mutationFn: occurrencesService.create,

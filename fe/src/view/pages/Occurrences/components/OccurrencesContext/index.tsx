@@ -1,11 +1,9 @@
-import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
-import { OccurrencesResponse } from "@/app/services/occurrencesService/getAll";
 import React, { createContext, useCallback, useState } from "react";
 
 // Definição do tipo do contexto
 interface OccurrencesContextValue {
-  isFetchingOccurrences: boolean;
-  occurrences: OccurrencesResponse;
+  //isFetchingOccurrences: boolean;
+  //occurrences: OccurrencesResponse;
   isNewOccurrenceModalOpen: boolean;
   closeNewOccurrenceModal(): void;
   openNewOccurrenceModal(): void;
@@ -19,7 +17,7 @@ export const OccurrencesProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const { isFetchingOccurrences, occurrences } = useOccurrences();
+  //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
   const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] =
     useState(false);
@@ -34,8 +32,8 @@ export const OccurrencesProvider = ({
   return (
     <OccurrencesContext.Provider
       value={{
-        isFetchingOccurrences,
-        occurrences,
+        // isFetchingOccurrences,
+        // occurrences,
         isNewOccurrenceModalOpen,
         closeNewOccurrenceModal,
         openNewOccurrenceModal,

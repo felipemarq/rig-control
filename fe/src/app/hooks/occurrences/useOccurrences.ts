@@ -3,7 +3,7 @@ import { occurrencesService } from "@/app/services/occurrencesService";
 import { QueryKeys } from "@/app/config/QueryKeys";
 
 export const useOccurrences = () => {
-  const { data, isFetching, refetch } = useQuery({
+  const { data, isFetching, refetch, isLoading } = useQuery({
     queryKey: [QueryKeys.OCCURRENCES],
     queryFn: () => occurrencesService.getAll(),
     enabled: true,
@@ -15,6 +15,7 @@ export const useOccurrences = () => {
   return {
     occurrences: data ?? [],
     isFetchingOccurrences: isFetching,
+    isInitialLoading: isLoading,
     refetchOccurrences: refetch,
   };
 };
