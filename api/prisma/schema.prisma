@@ -558,6 +558,7 @@ enum OccurrenceType {
   HEALTH
   ENVIRONMENT
   SAFETY
+  PROCESS
 }
 
 enum Nature {

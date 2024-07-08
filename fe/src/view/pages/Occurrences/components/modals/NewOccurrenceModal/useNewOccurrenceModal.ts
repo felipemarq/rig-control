@@ -62,6 +62,10 @@ export const useNewOccurrenceModal = () => {
       value: OccurrenceType.ENVIRONMENT,
       label: "Meio Ambiente",
     },
+    {
+      value: OccurrenceType.PROCESS,
+      label: "Processo",
+    },
   ];
 
   const natureSelectOptions: SelectOptions = [
