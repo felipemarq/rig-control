@@ -5,6 +5,7 @@ import { Button } from "@/view/components/Button";
 import { HardHat, TrashIcon } from "lucide-react";
 import { formatDate } from "@/app/utils/formatDate";
 import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
+import { NotFound } from "@/view/components/NotFound";
 
 export const OccurrencesContainer = () => {
   const { occurrences, isFetchingOccurrences, isInitialLoading } =
@@ -13,21 +14,21 @@ export const OccurrencesContainer = () => {
   const hasOccurrences = occurrences.length > 0;
 
   return (
-    <div className=" h-full overflow-y-auto">
+    <div className=" h-full">
       {isInitialLoading && (
         <div>
           <Spinner />
         </div>
       )}
       {!isInitialLoading && (
-        <div>
+        <div className=" h-full">
           {isFetchingOccurrences && (
             <div>
               <Spinner />
             </div>
           )}
 
-          {!isFetchingOccurrences && !hasOccurrences && <p>Empty</p>}
+          {!isFetchingOccurrences && !hasOccurrences && <div className="h-full"><NotFound>Não foram encontrados registros</NotFound></div>}
 
           {!isFetchingOccurrences && hasOccurrences && (
             <div className="w-full h-full p-4">
@@ -41,7 +42,7 @@ export const OccurrencesContainer = () => {
                   />
                 </div>
 
-                <Button variant="ghost" className="rounded-md w-56 h-[52px]">
+                <Button variant="ghost" className=" w-56 h-[52px]">
                   Filtrar dados
                 </Button>
               </header>
@@ -72,7 +73,7 @@ export const OccurrencesContainer = () => {
                       </div>
                       <div className="flex gap-3 w-52 justify-end">
                         <Button
-                          className="border-primary text-primary border-2 rounded-md px-4 flex-1"
+                          className=" px-4 flex-1"
                           variant="ghost"
                         >
                           Ver Detalhes

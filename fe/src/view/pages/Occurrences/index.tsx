@@ -21,7 +21,7 @@ export const Occurrences = () => {
             >
               <Button
                 onClick={openNewOccurrenceModal}
-                className="rounded-md h-10 w-56"
+                className="rounded-md  w-56"
               >
                 Novo registro
               </Button>

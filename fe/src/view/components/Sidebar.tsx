@@ -20,7 +20,7 @@ import {
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
 import { Link } from "react-router-dom";
-import logo from "@/assets/images/white-logo.png";
+import logo from "@/assets/images/conterp-logo.png";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useSidebarContext } from "@/app/contexts/SidebarContext";
 
@@ -58,27 +58,20 @@ export const Sidebar = ({ className }: SidebarProps) => {
     <div className={cn("hidden lg:flex h-full", className)}>
       <ReactProSidebar collapsed={isCollapsed}>
         <div className="flex flex-col h-full bg-primary">
-          <div className="p-5 mb-8 mt-6 flex  items-center justify-between">
+          <div className="p-5  flex  items-center justify-between">
             {!isCollapsed && (
-              <img
+              <div className=" w-full flex justify-center">
+                <img
                 //onClick={() => navigate("/")}
                 src={logo}
-                width={70}
-                height={50}
+               // width={}
+                height={40}
                 alt="logo"
                 className="rounded-full cursor-pointer"
               />
+              </div>
             )}
-            {/* {isCollapsed && (
-              <img
-                //onClick={() => navigate("/")}
-                src={logo}
-                width={50}
-                height={20}
-                alt="logo"
-                className="rounded-full cursor-pointer"
-              />
-            )} */}
+            
 
             <ChevronRight
               size={32}
