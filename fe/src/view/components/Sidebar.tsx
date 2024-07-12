@@ -15,6 +15,7 @@ import {
   CircleUserRound,
   Construction,
   FileInput,
+  ReceiptPoundSterling,
   Text,
 } from "lucide-react";
 import { Button } from "./Button";
@@ -62,16 +63,15 @@ export const Sidebar = ({ className }: SidebarProps) => {
             {!isCollapsed && (
               <div className=" w-full flex justify-center">
                 <img
-                //onClick={() => navigate("/")}
-                src={logo}
-               // width={}
-                height={40}
-                alt="logo"
-                className="rounded-full cursor-pointer"
-              />
+                  //onClick={() => navigate("/")}
+                  src={logo}
+                  // width={}
+                  height={40}
+                  alt="logo"
+                  className="rounded-full cursor-pointer"
+                />
               </div>
             )}
-            
 
             <ChevronRight
               size={32}
@@ -177,6 +177,15 @@ export const Sidebar = ({ className }: SidebarProps) => {
                   </Link>
                 </>
               )}
+
+              <Link to="/reports">
+                <MenuItem
+                  icon={<ReceiptPoundSterling />}
+                  className="bg-primary"
+                >
+                  Relatórios
+                </MenuItem>
+              </Link>
             </Menu>
           </div>
           <div className="  p-4">
