@@ -3,6 +3,7 @@ import {
   IsDateString,
   IsEnum,
   IsNotEmpty,
+  IsOptional,
   IsString,
   IsUUID,
 } from 'class-validator';
@@ -44,4 +45,9 @@ export class CreateOcurrenceDto {
   @IsEnum(Nature)
   @IsNotEmpty()
   nature: Nature;
+
+  @IsString()
+  @IsOptional()
+  @IsDateString()
+  updatedAt: string;
 }

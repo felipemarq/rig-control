@@ -10,8 +10,6 @@ export const useOccurrences = () => {
     staleTime: 1000,
   });
 
-  console.log("dataee", data);
-
   return {
     occurrences: data ?? [],
     isFetchingOccurrences: isFetching,

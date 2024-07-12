@@ -20,7 +20,9 @@ export type Occurrence = {
   baseId: string;
   userId: string;
   createdAt: string;
+  updatedAt?: string;
   type: OccurrenceType;
+  isAbsent: boolean;
   nature: Nature;
   base: {
     name: string;

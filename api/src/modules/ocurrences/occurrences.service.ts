@@ -37,6 +37,8 @@ export class OccurrencesService {
         baseId: true,
         userId: true,
         createdAt: true,
+        isAbsent: true,
+        updatedAt: true,
         type: true,
         nature: true,
         base: {
@@ -45,6 +47,9 @@ export class OccurrencesService {
             state: true,
           },
         },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
   }

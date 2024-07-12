@@ -577,16 +577,18 @@ model Base {
 }
 
 model Occurrence {
-  id          String         @id @default(uuid()) @db.Uuid
+  id          String    @id @default(uuid()) @db.Uuid
   date        DateTime
   hour        DateTime
   description String
-  baseId      String         @db.Uuid
-  userId      String         @db.Uuid
-  createdAt   DateTime       @default(now()) @map("created_at")
-  type        OccurrenceType
-  isAbsent    Boolean        @map("is_absent")
-  nature      Nature
+  baseId      String    @db.Uuid
+  userId      String    @db.Uuid
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+
+  type     OccurrenceType
+  isAbsent Boolean        @map("is_absent")
+  nature   Nature
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   base Base @relation(fields: [baseId], references: [id], onDelete: Cascade)

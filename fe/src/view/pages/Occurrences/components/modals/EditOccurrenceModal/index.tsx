@@ -1,16 +1,17 @@
 import { Modal } from "@/view/components/Modal";
-import { useNewOccurrenceModal } from "./useNewOccurrenceModal";
+import { useEditOccurrenceModal } from "./useEditOccurrenceModal";
 import { Button } from "@/view/components/Button";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
 import { TimePicker } from "antd";
 import { Select } from "@/view/components/Select";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
+import dayjs from "dayjs";
 
-export const NewOccurrenceModal = () => {
+export const EditOccurrenceModal = () => {
   const {
-    closeNewOccurrenceModal,
-    isNewOccurrenceModalOpen,
+    closeEditOccurrenceModal,
+    isEditOccurrenceModalOpen,
     isFetchingBases,
     bases,
     handleSubmit,
@@ -20,13 +21,14 @@ export const NewOccurrenceModal = () => {
     handleHourChange,
     errors,
     isLoadingNewOccurrence,
-  } = useNewOccurrenceModal();
+    selectedHour,
+  } = useEditOccurrenceModal();
 
   return (
     <Modal
-      title="Nova Ocorrência"
-      open={isNewOccurrenceModalOpen}
-      onClose={closeNewOccurrenceModal}
+      title="Ocorrência"
+      open={isEditOccurrenceModalOpen}
+      onClose={closeEditOccurrenceModal}
     >
       <form onSubmit={handleSubmit}>
         <div className="mt-10 flex flex-col gap-4">
@@ -35,9 +37,9 @@ export const NewOccurrenceModal = () => {
               <Controller
                 control={control}
                 name="date"
-                render={({ field: { onChange } }) => (
+                render={({ field: { onChange, value } }) => (
                   <DatePickerInput
-                    //value={value}
+                    value={value}
                     onChange={(value) => onChange(value)}
                     error={errors.date?.message}
                   />
@@ -49,7 +51,7 @@ export const NewOccurrenceModal = () => {
               <TimePicker
                 placeholder="Hora do ocorrido"
                 className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
-                //defaultValue={dayjs("00:00", "HH:mm")}
+                defaultValue={dayjs(selectedHour, "HH:mm")}
                 onChange={(_time, timeString) =>
                   handleHourChange(timeString as string)
                 }
