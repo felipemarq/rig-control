@@ -24,7 +24,7 @@ export const NewOccurrenceModal = () => {
 
   return (
     <Modal
-      title="Nova Ocorrência"
+      title="Nova registro"
       open={isNewOccurrenceModalOpen}
       onClose={closeNewOccurrenceModal}
     >

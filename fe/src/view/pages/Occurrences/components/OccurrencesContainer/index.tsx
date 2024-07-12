@@ -5,7 +5,11 @@ import { Button } from "@/view/components/Button";
 import { HardHat, TrashIcon } from "lucide-react";
 import { formatDate } from "@/app/utils/formatDate";
 import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
+<<<<<<< HEAD
 import { OccurrenceItem } from "./OccurrenceItem";
+=======
+import { NotFound } from "@/view/components/NotFound";
+>>>>>>> fc37c7b020aa2df11ecf8c1e21062a8387376415
 
 export const OccurrencesContainer = () => {
   const { occurrences, isFetchingOccurrences, isInitialLoading } =
@@ -14,21 +18,21 @@ export const OccurrencesContainer = () => {
   const hasOccurrences = occurrences.length > 0;
 
   return (
-    <div className=" h-full overflow-y-auto">
+    <div className=" h-full">
       {isInitialLoading && (
         <div>
           <Spinner />
         </div>
       )}
       {!isInitialLoading && (
-        <div>
+        <div className=" h-full">
           {isFetchingOccurrences && (
             <div>
               <Spinner />
             </div>
           )}
 
-          {!isFetchingOccurrences && !hasOccurrences && <p>Empty</p>}
+          {!isFetchingOccurrences && !hasOccurrences && <div className="h-full"><NotFound>Não foram encontrados registros</NotFound></div>}
 
           {!isFetchingOccurrences && hasOccurrences && (
             <div className="w-full h-full p-4">
@@ -42,14 +46,59 @@ export const OccurrencesContainer = () => {
                   />
                 </div>
 
+<<<<<<< HEAD
                 <Button variant="ghost" className="rounded-md w-56 ">
+=======
+                <Button variant="ghost" className=" w-56 h-[52px]">
+>>>>>>> fc37c7b020aa2df11ecf8c1e21062a8387376415
                   Filtrar dados
                 </Button>
               </header>
               <div className="flex flex-col gap-3 mt-6">
+<<<<<<< HEAD
                 {occurrences.map((occurrence) => (
                   <OccurrenceItem occurrence={occurrence} key={occurrence.id} />
                 ))}
+=======
+                {occurrences.map(
+                  ({ id, date, type, baseId, base: { name, state } }) => (
+                    <div
+                      className="bg-gray-400 h-36 flex items-center py-6 px-4 justify-between"
+                      key={id}
+                    >
+                      <div className="flex gap-6 items-center ">
+                        <div className="bg-white p-4 rounded-full h-1/2">
+                          <HardHat />
+                        </div>
+                        <div className=" flex flex-col gap-2 ">
+                          <span className="text-lg text-primary font-bold">
+                            {
+                              occurrenceTypeSelectOptions.find(
+                                ({ value }) => value === type
+                              )?.label
+                            }
+                          </span>
+                          <span className="text-primary">
+                            {formatDate(new Date(date))}
+                          </span>
+                          <span className="text-primary">{name}</span>
+                        </div>
+                      </div>
+                      <div className="flex gap-3 w-52 justify-end">
+                        <Button
+                          className=" px-4 flex-1"
+                          variant="ghost"
+                        >
+                          Ver Detalhes
+                        </Button>
+                        <button className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-md hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all ">
+                          <TrashIcon className="text-white" />
+                        </button>
+                      </div>
+                    </div>
+                  )
+                )}
+>>>>>>> fc37c7b020aa2df11ecf8c1e21062a8387376415
               </div>
             </div>
           )}

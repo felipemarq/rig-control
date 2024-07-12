@@ -9,4 +9,8 @@ export class BasesService {
   findAll() {
     return this.basesRepo.findMany({});
   }
+
+  create(createBaseDto: CreateBaseDto) {
+    return this.basesRepo.create({data:createBaseDto})
+  }
 }
