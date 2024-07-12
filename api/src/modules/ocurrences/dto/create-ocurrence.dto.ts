@@ -9,6 +9,7 @@ import {
 } from 'class-validator';
 import { OccurrenceType } from '../entities/OccurrenceType';
 import { Nature } from '../entities/Nature';
+import { OccurrenceCategory } from '../entities/OccurrenceCategory';
 
 export class CreateOcurrenceDto {
   @IsString()
@@ -41,6 +42,10 @@ export class CreateOcurrenceDto {
   @IsEnum(OccurrenceType)
   @IsNotEmpty()
   type: OccurrenceType;
+
+  @IsEnum(OccurrenceCategory)
+  @IsOptional()
+  category: OccurrenceCategory;
 
   @IsEnum(Nature)
   @IsNotEmpty()

@@ -566,6 +566,11 @@ enum Nature {
   INCIDENT
 }
 
+enum OccurrenceCategory {
+  TAR
+  TOR
+}
+
 model Base {
   id    String  @id @default(uuid()) @db.Uuid
   name  String  @unique
@@ -577,14 +582,15 @@ model Base {
 }
 
 model Occurrence {
-  id          String    @id @default(uuid()) @db.Uuid
+  id          String              @id @default(uuid()) @db.Uuid
   date        DateTime
   hour        DateTime
   description String
-  baseId      String    @db.Uuid
-  userId      String    @db.Uuid
-  createdAt   DateTime  @default(now()) @map("created_at")
-  updatedAt   DateTime? @map("updated_at")
+  category    OccurrenceCategory?
+  baseId      String              @db.Uuid
+  userId      String              @db.Uuid
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime?           @map("updated_at")
 
   type     OccurrenceType
   isAbsent Boolean        @map("is_absent")

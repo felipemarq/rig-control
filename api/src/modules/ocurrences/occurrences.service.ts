@@ -41,6 +41,7 @@ export class OccurrencesService {
         updatedAt: true,
         type: true,
         nature: true,
+        category: true,
         base: {
           select: {
             name: true,
