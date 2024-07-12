@@ -7,9 +7,16 @@ export enum OccurrenceType {
   PROCESS = "PROCESS",
 }
 
+export enum OccurrenceCategory {
+  TAR = "TAR",
+  TOR = "TOR",
+}
+
 export enum Nature {
   ACCIDENT = "ACCIDENT",
   INCIDENT = "INCIDENT",
+  DEATH = "DEATH",
+  COMMUTING_ACCIDENT = "COMMUTING_ACCIDENT",
 }
 
 export type Occurrence = {
@@ -23,6 +30,7 @@ export type Occurrence = {
   updatedAt?: string;
   type: OccurrenceType;
   isAbsent: boolean;
+  category?: OccurrenceCategory;
   nature: Nature;
   base: {
     name: string;

@@ -115,30 +115,62 @@ export const EditOccurrenceModal = () => {
                 )}
               />
             </div>
-            <div className="w-full">
-              <Controller
-                control={control}
-                name="isAbsent"
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    error={errors.isAbsent?.message}
-                    placeholder="Com afastamento"
-                    value={value}
-                    isLoading={isFetchingBases}
-                    onChange={onChange}
-                    options={[
-                      {
-                        value: "true",
-                        label: "Sim",
-                      },
-                      {
-                        value: "false",
-                        label: "Não",
-                      },
-                    ]}
-                  />
-                )}
-              />
+            <div className="w-full flex gap-2">
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  name="isAbsent"
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      error={errors.isAbsent?.message}
+                      placeholder="Com afastamento"
+                      value={value}
+                      isLoading={isFetchingBases}
+                      onChange={onChange}
+                      options={[
+                        {
+                          value: "true",
+                          label: "Sim",
+                        },
+                        {
+                          value: "false",
+                          label: "Não",
+                        },
+                      ]}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  name="category"
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      error={errors.category?.message}
+                      placeholder="Classificação"
+                      value={value}
+                      isLoading={isFetchingBases}
+                      onChange={onChange}
+                      options={[
+                        {
+                          value: "TOR",
+                          label: "TOR",
+                        },
+                        {
+                          value: "TAR",
+                          label: "TAR",
+                        },
+                        {
+                          value: " ",
+                          label: "Sem classificação",
+                        },
+                      ]}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -168,7 +200,7 @@ export const EditOccurrenceModal = () => {
           className="w-full mt-6"
           isLoading={isLoadingNewOccurrence}
         >
-          Criar
+          Editar registro
         </Button>
       </form>
     </Modal>

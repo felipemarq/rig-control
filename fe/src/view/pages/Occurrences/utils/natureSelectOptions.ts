@@ -10,4 +10,12 @@ export const natureSelectOptions: SelectOptions = [
     value: Nature.INCIDENT,
     label: "Incidente",
   },
+  {
+    value: Nature.COMMUTING_ACCIDENT,
+    label: "Acidente de Trajeto",
+  },
+  {
+    value: Nature.DEATH,
+    label: "Morte",
+  },
 ];

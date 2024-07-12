@@ -1,4 +1,8 @@
-import { Nature, OccurrenceType } from "@/app/entities/Occurrence";
+import {
+  Nature,
+  OccurrenceCategory,
+  OccurrenceType,
+} from "@/app/entities/Occurrence";
 import { httpClient } from "../httpClient";
 import { Occurrence } from "@/app/entities/Occurrence";
 
@@ -11,6 +15,7 @@ export interface CreateOccurrenceParams {
   description?: string | undefined;
   createdAt: string;
   hour: string;
+  category?: OccurrenceCategory;
 }
 
 export type CreateResponse = Occurrence;

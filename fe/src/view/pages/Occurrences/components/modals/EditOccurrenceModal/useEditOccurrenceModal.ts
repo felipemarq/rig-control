@@ -1,6 +1,10 @@
 import { useBases } from "@/app/hooks/useBases";
 import { useOccurrencesContext } from "../../OccurrencesContext/useOccurencesContext";
-import { Nature, OccurrenceType } from "@/app/entities/Occurrence";
+import {
+  Nature,
+  OccurrenceCategory,
+  OccurrenceType,
+} from "@/app/entities/Occurrence";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -21,6 +25,7 @@ const schema = z.object({
   date: z.date(),
   isAbsent: z.string().min(1, "Obrigatório."),
   type: z.nativeEnum(OccurrenceType),
+  category: z.string(),
   nature: z.nativeEnum(Nature),
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
@@ -57,6 +62,11 @@ export const useEditOccurrenceModal = () => {
       isAbsent: occurrenceBeingSeen?.isAbsent ? "true" : "false",
       nature: occurrenceBeingSeen?.nature,
       type: occurrenceBeingSeen?.type,
+      category: Object.values(OccurrenceCategory).includes(
+        occurrenceBeingSeen?.category as OccurrenceCategory
+      )
+        ? (occurrenceBeingSeen?.category as OccurrenceCategory)
+        : " ",
     },
   });
 
@@ -103,6 +113,11 @@ export const useEditOccurrenceModal = () => {
         description: data.description,
         createdAt: occurrenceBeingSeen?.createdAt!,
         hour: formatTimeStringToIsoString(selectedHour),
+        category: Object.values(OccurrenceCategory).includes(
+          data.category as OccurrenceCategory
+        )
+          ? (data.category as OccurrenceCategory)
+          : undefined,
       });
       reset();
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
