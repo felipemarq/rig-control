@@ -28,6 +28,7 @@ import { FormMenu } from "../view/pages/FormMenu";
 import { PendingForm } from "../view/pages/PendingForm";
 import { AppLayout } from "@/view/Layouts/AppLayout";
 import { Occurrences } from "@/view/pages/Occurrences";
+import { ManHours } from "@/view/pages/ManHours";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
@@ -81,6 +82,8 @@ export const Router = () => {
             <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
             <Route path="/reports" element={<Report />} />
             <Route path="/occurrences" element={<Occurrences />} />
+            <Route path="/man-hours" element={<ManHours />} />
+            <Route path="/occurrences/man-hours" element={<ManHours />} />
           </Route>
         </Route>
       </Routes>

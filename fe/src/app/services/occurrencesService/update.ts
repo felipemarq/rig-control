@@ -1,4 +1,3 @@
-import { AccessLevel } from "../../entities/AccessLevel";
 import { httpClient } from "../httpClient";
 import { CreateOccurrenceParams } from "./create";
 

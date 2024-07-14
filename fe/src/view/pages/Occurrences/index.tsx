@@ -7,6 +7,7 @@ import { NewOccurrenceModal } from "./components/modals/NewOccurrenceModal";
 import { Header } from "@/view/components/Header";
 import { OccurrencesContainer } from "./components/OccurrencesContainer";
 import { EditOccurrenceModal } from "./components/modals/EditOccurrenceModal";
+import { Link } from "react-router-dom";
 
 export const Occurrences = () => {
   return (
@@ -20,6 +21,12 @@ export const Occurrences = () => {
               displayRig={false}
               displayPeriodRange={false}
             >
+              <Button
+                onClick={openNewOccurrenceModal}
+                className="rounded-md  w-56"
+              >
+                <Link to="man-hours">Homem Hora</Link>
+              </Button>
               <Button
                 onClick={openNewOccurrenceModal}
                 className="rounded-md  w-56"
