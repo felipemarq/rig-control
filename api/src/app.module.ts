@@ -18,6 +18,7 @@ import { UserLogModule } from './modules/user-log/user-log.module';
 import { SystemVersionModule } from './modules/system-version/system-version.module';
 import { OccurrencesModule } from './modules/ocurrences/occurrences.module';
 import { BasesModule } from './modules/bases/bases.module';
+import { ManHoursModule } from './modules/man-hours/man-hours.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { BasesModule } from './modules/bases/bases.module';
     SystemVersionModule,
     OccurrencesModule,
     BasesModule,
+    ManHoursModule,
   ],
   controllers: [],
   providers: [

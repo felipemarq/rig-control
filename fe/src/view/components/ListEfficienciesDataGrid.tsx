@@ -5,18 +5,18 @@ import {
   GridToolbar,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-import {Link} from "react-router-dom";
-import {formatDate} from "../../app/utils/formatDate";
-import {Efficiency} from "../pages/Dashboard/entities/Efficiency";
-import {NotFound} from "./NotFound";
-import {Button} from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { formatDate } from "../../app/utils/formatDate";
+import { Efficiency } from "../pages/Dashboard/entities/Efficiency";
+import { NotFound } from "./NotFound";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {MoreHorizontal} from "lucide-react";
+import { MoreHorizontal } from "lucide-react";
 
 interface ListDataGridProps {
   data: Efficiency[];
@@ -289,7 +289,7 @@ export const ListEfficienciesDataGrid = ({
         limitPagination
           ? {
               pagination: {
-                paginationModel: {pageSize: 5, page: 0},
+                paginationModel: { pageSize: 5, page: 0 },
               },
             }
           : undefined

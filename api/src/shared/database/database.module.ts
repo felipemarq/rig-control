@@ -17,6 +17,7 @@ import { UserLogsRepository } from './repositories/userLog.repositories';
 import { SystemVersionRepository } from './repositories/systemVersion.repositories';
 import { OccurrenceRepository } from './repositories/occurrences.repositories';
 import { BaseRepository } from './repositories/base.repositories';
+import { ManHourRepository } from './repositories/manHour.repositories';
 
 @Global()
 @Module({
@@ -39,6 +40,7 @@ import { BaseRepository } from './repositories/base.repositories';
     SystemVersionRepository,
     OccurrenceRepository,
     BaseRepository,
+    ManHourRepository,
   ],
   exports: [
     PrismaService,
@@ -58,6 +60,7 @@ import { BaseRepository } from './repositories/base.repositories';
     SystemVersionRepository,
     OccurrenceRepository,
     BaseRepository,
+    ManHourRepository,
   ],
 })
 export class DatabaseModule {}

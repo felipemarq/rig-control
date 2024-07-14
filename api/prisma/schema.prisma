@@ -92,6 +92,7 @@ model User {
   TemporaryEfficiency TemporaryEfficiency[]
   userLog             UserLog[]
   occurrences         Occurrence[]
+  manHours            ManHour[]
 
   @@map("users")
 }
@@ -580,6 +581,26 @@ model Base {
   rigId       String?      @db.Uuid
   rig         Rig?         @relation(fields: [rigId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
+  manHours    ManHour[]
+
+  @@map("bases")
+}
+
+model ManHour {
+  id        String    @id @default(uuid()) @db.Uuid
+  baseId    String    @db.Uuid
+  year      Int
+  month     Int
+  hours     Float
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+  userId    String    @db.Uuid
+
+  base Base @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([baseId, year, month]) // Garante que não haja duplicatas para a mesma base e mês
+  @@map("man_hours")
 }
 
 model Occurrence {
@@ -599,6 +620,8 @@ model Occurrence {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   base Base @relation(fields: [baseId], references: [id], onDelete: Cascade)
+
+  @@map("occurrences")
 }
 
 model OccurrenceAction {

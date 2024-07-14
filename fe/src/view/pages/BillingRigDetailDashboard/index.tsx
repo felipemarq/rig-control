@@ -3,18 +3,18 @@ import {
   BillingRigDetailDashboardProvider,
 } from "./BillingRigDetailDashboardContext";
 import "swiper/css";
-import {CustomFilterSheet} from "@/view/components/CustomFilterSheet";
-import {StatboxContainer} from "./components/StatboxContainer";
-import {DataGridCard} from "./components/DataGridCard";
-import {LineChartCard} from "./components/LineChartCard";
-import {BagdeStatus} from "@/view/components/BagdeStatus";
+import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
+import { StatboxContainer } from "./components/StatboxContainer";
+import { DataGridCard } from "./components/DataGridCard";
+import { LineChartCard } from "./components/LineChartCard";
+import { BagdeStatus } from "@/view/components/BagdeStatus";
 
 export const BillingRigDetailDashboard = () => {
   return (
     <BillingRigDetailDashboardProvider>
       <BillingRigDetailDashboardContext.Consumer>
-        {({handleApplyFilters, isFetchingBilling}) => (
-          <>
+        {({ handleApplyFilters, isFetchingBilling }) => (
+          <div className="overflow-y-auto">
             <div className="flex justify-between items-center p-4">
               <BagdeStatus displayRig />
               <CustomFilterSheet
@@ -32,7 +32,7 @@ export const BillingRigDetailDashboard = () => {
                 </div>
               </main>
             </div>
-          </>
+          </div>
         )}
       </BillingRigDetailDashboardContext.Consumer>
     </BillingRigDetailDashboardProvider>
