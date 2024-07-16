@@ -1,11 +1,14 @@
-import {httpClient} from "../httpClient";
+import { httpClient } from "../httpClient";
 
-interface ToPersistenceContract {
-  name: string;
+export interface CreateManHourParams {
+  baseId: string;
+  hours: number;
+  month: number;
+  year: number;
 }
 
-export const create = async (params: ToPersistenceContract) => {
-  const {data} = await httpClient.post("/contracts", params);
+export const create = async (params: CreateManHourParams) => {
+  const { data } = await httpClient.post("/man-hours", params);
 
   return data;
 };

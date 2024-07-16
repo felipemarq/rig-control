@@ -94,12 +94,12 @@ export class ManHoursService {
       year: number;
     }[] = */
 
-    const grouppedManHours = await this.manHoursRepo.groupByBase({
+    /* const grouppedManHours = await this.manHoursRepo.groupByBase({
       by: ['baseId', 'month', 'year'],
       _max: { hours: true },
-    });
+    }); */
 
-    const bases = await this.basesRepo.findMany({});
+    /*    const bases = await this.basesRepo.findMany({});
 
     const result = grouppedManHours.map((grouppedManHour) => {
       return {
@@ -109,9 +109,21 @@ export class ManHoursService {
         year: grouppedManHour.year,
         month: grouppedManHour.month,
       };
-    });
+    }); */
 
-    return result;
+    return await this.manHoursRepo.findMany({
+      select: {
+        id: true,
+        baseId: true,
+        createdAt: true,
+        updatedAt: true,
+        hours: true,
+        month: true,
+        userId: true,
+        year: true,
+        base: { select: { name: true } },
+      },
+    });
   }
 
   findOne(id: number) {

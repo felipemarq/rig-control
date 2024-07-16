@@ -1,14 +1,13 @@
-import { ManHoursDataGrid } from "./ManHoursDataGrid";
+import { ManHoursDataGridCard } from "./components/ManHoursDataGridCard";
 import { useManHoursController } from "./useManHoursController";
 
 export const ManHours = () => {
-  const { dataGridData, isFetchingManHours } = useManHoursController();
+  const {} = useManHoursController();
   return (
-    <div>
-      Man Hours
-      {dataGridData.length > 0 && !isFetchingManHours && (
-        <ManHoursDataGrid data={dataGridData} isDashboard={false} />
-      )}
+    <div className="w-full h-full overflow-y-auto flex justify-center items-center">
+      <div className="w-full h-full  p-2 rounded-md flex justify-center items-center lg:w-[85vw] lg:h-[85vh]">
+        <ManHoursDataGridCard />
+      </div>
     </div>
   );
 };

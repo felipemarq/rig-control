@@ -1,11 +1,15 @@
 import { httpClient } from "../httpClient";
 
 export type ManHoursResponse = Array<{
-  hours: number;
+  id: string;
   baseId: string;
-  baseName: string;
   year: number;
   month: number;
+  hours: number;
+  createdAt: string;
+  updatedAt?: string;
+  userId: string;
+  base: { name: string };
 }>;
 
 export const getAll = async () => {

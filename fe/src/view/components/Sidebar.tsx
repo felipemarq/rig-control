@@ -13,10 +13,13 @@ import {
   ChevronRight,
   CircleDollarSign,
   CircleUserRound,
+  Clock,
   Construction,
   FileInput,
   ReceiptPoundSterling,
+  ShieldCheck,
   Text,
+  TrafficCone,
 } from "lucide-react";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
@@ -127,12 +130,6 @@ export const Sidebar = ({ className }: SidebarProps) => {
                 </MenuItem>
               </Link>
 
-              <Link to="/occurrences">
-                <MenuItem icon={<ArchiveIcon />} className="bg-primary">
-                  Segurança
-                </MenuItem>
-              </Link>
-
               {isUserAdm && (
                 <>
                   <Link
@@ -175,6 +172,24 @@ export const Sidebar = ({ className }: SidebarProps) => {
                       Usuários
                     </MenuItem>
                   </Link>
+
+                  <SubMenu
+                    label="SMS"
+                    icon={<ShieldCheck />}
+                    className="hover:bg-primary text-white"
+                  >
+                    <Link to="/occurrences">
+                      <MenuItem icon={<TrafficCone />} className="bg-primary">
+                        Registros
+                      </MenuItem>
+                    </Link>
+                    <Link to="/man-hours">
+                      <MenuItem className="bg-primary" icon={<Clock />}>
+                        {" "}
+                        Homem Hora
+                      </MenuItem>
+                    </Link>
+                  </SubMenu>
                 </>
               )}
 

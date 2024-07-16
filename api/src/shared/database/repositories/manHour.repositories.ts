@@ -30,6 +30,10 @@ export class ManHourRepository {
     return await this.prismaService.manHour.update(updateDto);
   }
 
+  async updateMany(updateManyDto: Prisma.ManHourUpdateManyArgs) {
+    return await this.prismaService.manHour.updateMany(updateManyDto);
+  }
+
   async groupByBase(groupByDto: Prisma.ManHourGroupByArgs): Promise<
     {
       _max: {

@@ -6,21 +6,22 @@ import {
 } from "@mui/x-data-grid";
 
 import { NotFound } from "@/view/components/NotFound";
-
-import { BaseHours } from "./useManHoursController";
+import { TransformedDataTwo } from "../../../useManHoursController";
 
 interface ListDataGridProps {
-  data: BaseHours[];
+  data: TransformedDataTwo[];
   isDashboard: boolean;
   windowWidth?: number;
   limitPagination?: boolean;
+  onUpdateCell(id: string, month: string, value: string): void;
+  isLoading?: boolean;
 }
 
 export const ManHoursDataGrid = ({
   data,
   isDashboard,
-  windowWidth = 1920,
-  limitPagination = true,
+  onUpdateCell,
+  isLoading,
 }: ListDataGridProps) => {
   const columns: GridColDef[] = [
     {
@@ -42,6 +43,8 @@ export const ManHoursDataGrid = ({
       field: "Janeiro",
       headerName: "Janeiro",
       headerAlign: "center",
+      editable: true,
+
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -57,6 +60,7 @@ export const ManHoursDataGrid = ({
       field: "Fevereiro",
       headerName: "Fevereiro",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -72,6 +76,7 @@ export const ManHoursDataGrid = ({
       field: "Março",
       headerName: "Março",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -87,6 +92,7 @@ export const ManHoursDataGrid = ({
       field: "Abril",
       headerName: "Abril",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -102,6 +108,7 @@ export const ManHoursDataGrid = ({
       field: "Maio",
       headerName: "Maio",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -117,6 +124,7 @@ export const ManHoursDataGrid = ({
       field: "Junho",
       headerName: "Junho",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -132,6 +140,7 @@ export const ManHoursDataGrid = ({
       field: "Julho",
       headerName: "Julho",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -147,6 +156,7 @@ export const ManHoursDataGrid = ({
       field: "Agosto",
       headerName: "Agosto",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -162,6 +172,7 @@ export const ManHoursDataGrid = ({
       field: "Setembro",
       headerName: "Setembro",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -177,6 +188,7 @@ export const ManHoursDataGrid = ({
       field: "Outubro",
       headerName: "Outubro",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -192,6 +204,7 @@ export const ManHoursDataGrid = ({
       field: "Novembro",
       headerName: "Novembro",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -207,6 +220,7 @@ export const ManHoursDataGrid = ({
       field: "Dezembro",
       headerName: "Dezembro",
       headerAlign: "center",
+      editable: true,
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {
         return (
@@ -296,18 +310,14 @@ export const ManHoursDataGrid = ({
         toolbar: isDashboard ? undefined : GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
+      onCellEditStop={(params, event) =>
+        //@ts-ignore
+        onUpdateCell(params.id, params.field, event.target.value)
+      }
+      loading={isLoading}
       pagination
       pageSizeOptions={isDashboard ? [5] : [5, 10, 25, 100]}
       paginationMode="client"
-      initialState={
-        limitPagination
-          ? {
-              pagination: {
-                paginationModel: { pageSize: 5, page: 0 },
-              },
-            }
-          : undefined
-      }
       sx={{
         "& .MuiDataGrid-root": {
           border: "none !important",
