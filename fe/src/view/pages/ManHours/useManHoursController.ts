@@ -3,26 +3,13 @@ import { useManHours } from "@/app/hooks/manHours/useManHours";
 import { manHoursService } from "@/app/services/manHoursService";
 import { ManHoursResponse } from "@/app/services/manHoursService/getAll";
 import { customColorToast } from "@/app/utils/customColorToast";
+import {
+  TransformedManHoursData,
+  transformManHoursData,
+} from "@/app/utils/transformManHoursData";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-
-export type TransformedDataTwo = {
-  id: string;
-  baseName: string;
-  Janeiro?: number;
-  Fevereiro?: number;
-  Março?: number;
-  Abril?: number;
-  Maio?: number;
-  Junho?: number;
-  Julho?: number;
-  Agosto?: number;
-  Setembro?: number;
-  Outubro?: number;
-  Novembro?: number;
-  Dezembro?: number;
-};
 
 export const useManHoursController = () => {
   const { manHours, isFetchingManHours, refetchManHours } = useManHours();
@@ -79,39 +66,12 @@ export const useManHoursController = () => {
     }
   };
 
-  function transformDataTwo(data: ManHoursResponse): TransformedDataTwo[] {
-    const months = [
-      "Janeiro",
-      "Fevereiro",
-      "Março",
-      "Abril",
-      "Maio",
-      "Junho",
-      "Julho",
-      "Agosto",
-      "Setembro",
-      "Outubro",
-      "Novembro",
-      "Dezembro",
-    ];
+  console.log(manHours);
 
-    const baseMap: { [baseName: string]: TransformedDataTwo } = {};
+  const dataGridData: TransformedManHoursData[] =
+    transformManHoursData(manHours);
 
-    data.forEach((record) => {
-      const baseName = record.base.name;
-      const monthName = months[record.month - 1];
-
-      if (!baseMap[baseName]) {
-        baseMap[baseName] = { baseName, id: record.baseId };
-      }
-      //@ts-ignore
-      baseMap[baseName][monthName as keyof TransformedDataTwo] = record.hours;
-    });
-
-    return Object.values(baseMap);
-  }
-
-  const dataGridData: TransformedDataTwo[] = transformDataTwo(manHours);
+  console.log(dataGridData);
 
   return {
     dataGridData,

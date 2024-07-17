@@ -6,10 +6,10 @@ import {
 } from "@mui/x-data-grid";
 
 import { NotFound } from "@/view/components/NotFound";
-import { TransformedDataTwo } from "../../../useManHoursController";
+import { TransformedManHoursData } from "@/app/utils/transformManHoursData";
 
 interface ListDataGridProps {
-  data: TransformedDataTwo[];
+  data: TransformedManHoursData[];
   isDashboard: boolean;
   windowWidth?: number;
   limitPagination?: boolean;

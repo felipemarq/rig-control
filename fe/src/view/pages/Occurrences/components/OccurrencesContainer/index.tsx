@@ -2,9 +2,6 @@ import { Spinner } from "@/view/components/Spinner";
 import { useOccurrencesContainer } from "./useOccurrencesContainer";
 import { Input } from "@/view/components/Input";
 import { Button } from "@/view/components/Button";
-import { HardHat, TrashIcon } from "lucide-react";
-import { formatDate } from "@/app/utils/formatDate";
-import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
 import { OccurrenceItem } from "./OccurrenceItem";
 import { NotFound } from "@/view/components/NotFound";
 

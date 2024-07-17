@@ -25,6 +25,11 @@ export class OccurrencesController {
     return this.occurrencesService.create(userId, createOcurrenceDto);
   }
 
+  @Get(':baseId')
+  test(@Param('baseId') baseId: string) {
+    return this.occurrencesService.getTaxes(baseId);
+  }
+
   @Get()
   findAll() {
     return this.occurrencesService.findAll();

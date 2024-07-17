@@ -178,6 +178,13 @@ export const Sidebar = ({ className }: SidebarProps) => {
                     icon={<ShieldCheck />}
                     className="hover:bg-primary text-white"
                   >
+                    <Link to="/dashboard/man-hours">
+                      <MenuItem className="bg-primary" icon={<BarChart />}>
+                        {" "}
+                        Dashboard
+                      </MenuItem>
+                    </Link>
+
                     <Link to="/occurrences">
                       <MenuItem icon={<TrafficCone />} className="bg-primary">
                         Registros
@@ -203,7 +210,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
               </Link>
             </Menu>
           </div>
-          <div className="  p-4">
+          <div className=" bg-primary p-4">
             <Button
               className="w-full bg-transparent border border-white text-white hover:bg-white/5"
               variant="ghost"

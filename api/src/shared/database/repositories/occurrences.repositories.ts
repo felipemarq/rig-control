@@ -2,6 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { type Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma.service';
 
+interface OccurrenceCountByMonth {
+  date: Date;
+  _count: {
+    id: number;
+  };
+}
+
 @Injectable()
 export class OccurrenceRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -20,5 +27,16 @@ export class OccurrenceRepository {
 
   async delete(deleteDto: Prisma.OccurrenceDeleteArgs) {
     return await this.prismaService.occurrence.delete(deleteDto);
+  }
+
+  async count(countDto: Prisma.OccurrenceCountArgs) {
+    return await this.prismaService.occurrence.count(countDto);
+  }
+
+  async groupBy(
+    groupByDto: Prisma.OccurrenceGroupByArgs,
+  ): Promise<OccurrenceCountByMonth[]> {
+    //@ts-ignore
+    return await this.prismaService.occurrence.groupBy(groupByDto);
   }
 }
