@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateBaseDto } from './dto/create-base.dto';
 import { UpdateBaseDto } from './dto/update-base.dto';
 import { BaseRepository } from 'src/shared/database/repositories/base.repositories';
@@ -18,6 +18,10 @@ export class BasesService {
     const year = new Date().getFullYear();
 
     const user = await this.usersRepo.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new UnauthorizedException("Usuário não autorizado!")
+    }
 
     return await this.basesRepo.create({
       data: {

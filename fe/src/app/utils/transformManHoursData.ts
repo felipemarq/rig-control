@@ -49,5 +49,7 @@ export function transformManHoursData(
       record.hours;
   });
 
+
+
   return Object.values(baseMap);
 }
