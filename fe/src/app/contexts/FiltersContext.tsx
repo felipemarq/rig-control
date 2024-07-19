@@ -2,6 +2,7 @@ import {format, startOfMonth, sub} from "date-fns";
 import {createContext, useState} from "react";
 import {FilterType} from "../entities/FilterType";
 import {getPeriodRange} from "../utils/getPeriodRange";
+import { customColorToast } from "../utils/customColorToast";
 
 interface FiltersContextValue {
   selectedRig: string;
@@ -75,6 +76,14 @@ export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedPeriod(period);
     const periodFound = getPeriodRange(selectedRig, selectedYear);
 
+   
+
+    console.log('periodFound',periodFound)
+    console.log('selectedRig',selectedRig)
+
+    console.log('selectedYear',selectedYear)
+
+
     if (periodFound) {
       const monthPeriodSelected = periodFound.months.find(
         (month) => month.month === period
@@ -82,6 +91,10 @@ export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
 
       handleStartDateChange(monthPeriodSelected?.startDate!);
       handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+
+    if (!periodFound) {
+      customColorToast("Ocorreu um erro ao tentar buscar o período da sonda!", "#fc5050", "error");
     }
   };
 
