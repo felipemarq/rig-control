@@ -1,4 +1,4 @@
-import { useDataGridCard } from "./useDataGridCard";
+import { useWellDataGridCard } from "./useWellDataGridCard";
 import {
   Card,
   CardHeader,
@@ -7,22 +7,22 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Spinner } from "@/view/components/Spinner";
-import { ListEfficienciesDataGrid } from "@/view/components/ListEfficienciesDataGrid";
 import { NotFound } from "@/view/components/NotFound";
+import { WellDataGrid } from "./components/WellDataGrid";
 
-export const DataGridCard = () => {
-  const { isEmpty, isFetchingEfficiencies, efficiencies, windowWidth } =
-    useDataGridCard();
+export const WellDataGridCard = () => {
+  const { isEmpty, isFetchingEfficiencies, windowWidth } =
+    useWellDataGridCard();
   return (
-    <Card className="col-span-12 row-span-3 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+    <Card className="col-span-12 row-span-3 lg:col-span-7 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <CardHeader className="flex flex-row items-center">
         <div className="grid gap-2">
-          <CardTitle>Ocorrências</CardTitle>
+          <CardTitle>Poços</CardTitle>
           <CardDescription>
-            Lista de Ocorrências do período selecionado
+            Lista de poços do período selecionado
           </CardDescription>
         </div>
-        {/*   <Button asChild size="sm" className="ml-auto gap-1">
+        {/* <Button asChild size="sm" className="ml-auto gap-1">
           <Link to="/">
             View All
             <ArrowUpRight className="h-4 w-4" />
@@ -37,11 +37,7 @@ export const DataGridCard = () => {
         )}
         {!isEmpty && !isFetchingEfficiencies && (
           <div className="max-w-full">
-            <ListEfficienciesDataGrid
-              data={efficiencies}
-              isDashboard
-              windowWidth={windowWidth}
-            />
+            <WellDataGrid isDashboard windowWidth={windowWidth} />
           </div>
         )}
 

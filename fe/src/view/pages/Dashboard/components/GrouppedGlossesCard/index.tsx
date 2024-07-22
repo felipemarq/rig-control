@@ -1,5 +1,5 @@
-import {useGrouppedGlosses} from "./useGrouppedGlosses";
-import {cn} from "../../../../../app/utils/cn";
+import { useGrouppedGlosses } from "./useGrouppedGlosses";
+import { cn } from "../../../../../app/utils/cn";
 import {
   Card,
   CardContent,
@@ -15,12 +15,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import {ExternalLink, PieChart} from "lucide-react";
-import {translateGlossClassification} from "@/app/utils/translateGlossClassification";
-import {NotFound} from "@/view/components/NotFound";
+import { ExternalLink, PieChart } from "lucide-react";
+import { translateGlossClassification } from "@/app/utils/translateGlossClassification";
+import { NotFound } from "@/view/components/NotFound";
+import { formatNumberWithFixedDecimals } from "@/app/utils/formatNumberWithFixedDecimals";
 
 export const GrouppedGlossesCard = () => {
-  const {glossGroupedData, handleSelectGloss, hasGlossData} =
+  const { glossGroupedData, handleSelectGloss, hasGlossData } =
     useGrouppedGlosses();
 
   return (
@@ -52,7 +53,7 @@ export const GrouppedGlossesCard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {glossGroupedData.groupedData.map(({id, gloss, totalHours}) => (
+              {glossGroupedData.groupedData.map(({ id, gloss, totalHours }) => (
                 <TableRow key={id}>
                   <TableCell>
                     <div className="font-medium">
@@ -60,7 +61,7 @@ export const GrouppedGlossesCard = () => {
                     </div>
                   </TableCell>
                   <TableCell className="hidden sm:table-cell">
-                    {totalHours} Hrs
+                    {formatNumberWithFixedDecimals(totalHours, 2)} Hrs
                   </TableCell>
                   <TableCell
                     className="flex justify-center items-center cursor-pointer "

@@ -1,21 +1,21 @@
-import React, {createContext, useEffect, useState} from "react";
-import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
-import {useAuth} from "../../../../app/hooks/useAuth";
-import {User} from "../../../../app/entities/User";
-import {Efficiency} from "../entities/Efficiency";
-import {EfficienciesResponse} from "../../../../app/services/efficienciesService/getAll";
-import {getRepairPeriods} from "../../../../app/utils/getRepairPeriods";
-import {Period} from "../../../../app/entities/Period";
-import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
-import {getGlossPeriods} from "../../../../app/utils/getGlossPeriods";
-import {useWindowWidth} from "@/app/hooks/useWindowWidth";
-import {useMutation} from "@tanstack/react-query";
-import {MutationKeys} from "@/app/config/MutationKeys";
-import {userLogCreateParams} from "@/app/services/userLogsService/create";
-import {userLogsService} from "@/app/services/userLogsService";
-import {getCurrentISOString} from "@/app/utils/getCurrentISOString";
-import {AverageResponse} from "@/app/services/efficienciesService/getAverage";
-import {useEfficiencyAverage} from "@/app/hooks/efficiencies/useEfficiencyAverage";
+import React, { createContext, useEffect, useState } from "react";
+import { useEfficiencies } from "../../../../app/hooks/efficiencies/useEfficiencies";
+import { useAuth } from "../../../../app/hooks/useAuth";
+import { User } from "../../../../app/entities/User";
+import { Efficiency } from "../entities/Efficiency";
+import { EfficienciesResponse } from "../../../../app/services/efficienciesService/getAll";
+import { getRepairPeriods } from "../../../../app/utils/getRepairPeriods";
+import { Period } from "../../../../app/entities/Period";
+import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
+import { getGlossPeriods } from "../../../../app/utils/getGlossPeriods";
+import { useWindowWidth } from "@/app/hooks/useWindowWidth";
+import { useMutation } from "@tanstack/react-query";
+import { MutationKeys } from "@/app/config/MutationKeys";
+import { userLogCreateParams } from "@/app/services/userLogsService/create";
+import { userLogsService } from "@/app/services/userLogsService";
+import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
+import { AverageResponse } from "@/app/services/efficienciesService/getAverage";
+import { useEfficiencyAverage } from "@/app/hooks/efficiencies/useEfficiencyAverage";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -48,19 +48,23 @@ interface DashboardContextValue {
 // Criação do contexto
 export const DashboardContext = createContext({} as DashboardContextValue);
 
-export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
+export const DashboardProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout, isWrongVersion} = useAuth();
+  const { user, signout, isWrongVersion } = useAuth();
 
   const windowWidth = useWindowWidth();
 
-  const {filters, selectedRig} = useFiltersContext();
+  const { filters, selectedRig } = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência
-  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
+  const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
-  const {average, refetchAverage} = useEfficiencyAverage(filters.rigId);
+  const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
 
   const isEmpty: boolean = efficiencies.length === 0;
   const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
@@ -94,7 +98,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     setSelectedEquipment(null);
   };
 
-  const {mutateAsync: mutateAsyncUserLog} = useMutation({
+  const { mutateAsync: mutateAsyncUserLog } = useMutation({
     mutationKey: [MutationKeys.USER_LOG],
     mutationFn: async (data: userLogCreateParams) => {
       return await userLogsService.create(data);
@@ -102,7 +106,7 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   });
 
   useEffect(() => {
-    mutateAsyncUserLog({loginTime: getCurrentISOString()});
+    mutateAsyncUserLog({ loginTime: getCurrentISOString() });
   }, []);
 
   // Cálculos para estatísticas das eficiências
@@ -111,6 +115,8 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
   let totalDtms: number = 0;
   let totalMovimentations: number = 0;
 
+  console.log("===============START===================");
+
   efficiencies.forEach((efficiency: Efficiency) => {
     totalAvailableHours += efficiency.availableHours;
     totalUnavailableHours += 24 - efficiency.availableHours;
@@ -118,7 +124,9 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
 
-    const dtmFound = efficiency.periods.find(({type}) => type === "DTM");
+    const dtmFound = efficiency.periods.find(({ type }) => type === "DTM");
+    console.log(dtmFound);
+
     if (dtmFound) {
       totalDtms++;
     }

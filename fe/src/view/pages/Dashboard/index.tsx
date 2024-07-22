@@ -12,6 +12,7 @@ import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
 import { Header } from "@/view/components/Header";
 import { CalendarChartCard } from "./components/CalendarChartCard";
 import { WrongVersionAlertModal } from "./components/WrongVersionAlertModal";
+import { WellDataGridCard } from "./components/WellDataGridCard";
 
 export const Dashboard = () => {
   return (
@@ -40,7 +41,7 @@ export const Dashboard = () => {
 
                   <CalendarChartCard />
 
-                  <AverageBarChartCard />
+                  <WellDataGridCard />
 
                   <DataGridCard />
 
@@ -51,6 +52,8 @@ export const Dashboard = () => {
                   <GrouppedGlossesCard />
 
                   <GlossDetailsPieChartCard />
+
+                  <AverageBarChartCard />
 
                   {isWrongVersion && <WrongVersionAlertModal />}
                 </div>

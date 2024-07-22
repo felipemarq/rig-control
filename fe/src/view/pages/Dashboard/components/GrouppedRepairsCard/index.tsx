@@ -6,8 +6,8 @@ import {
   TableHead,
   TableHeader,
 } from "@/components/ui/table";
-import {useGrouppedRepairs} from "./useGrouppedRepairs";
-import {ExternalLink, PieChart} from "lucide-react";
+import { useGrouppedRepairs } from "./useGrouppedRepairs";
+import { ExternalLink, PieChart } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -15,11 +15,12 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {cn} from "@/lib/utils";
-import {NotFound} from "@/view/components/NotFound";
+import { cn } from "@/lib/utils";
+import { NotFound } from "@/view/components/NotFound";
+import { formatNumberWithFixedDecimals } from "@/app/utils/formatNumberWithFixedDecimals";
 
 export const GrouppedRepairsCard = () => {
-  const {repairGroupedData, handleSelectEquipment, hasRepairData} =
+  const { repairGroupedData, handleSelectEquipment, hasRepairData } =
     useGrouppedRepairs();
 
   return (
@@ -52,13 +53,13 @@ export const GrouppedRepairsCard = () => {
             </TableHeader>
             <TableBody>
               {repairGroupedData.groupedData.map(
-                ({id, equipment, totalHours}) => (
+                ({ id, equipment, totalHours }) => (
                   <TableRow key={id}>
                     <TableCell>
                       <div className="font-medium">{equipment}</div>
                     </TableCell>
                     <TableCell className="hidden sm:table-cell">
-                      {totalHours} Hrs
+                      {formatNumberWithFixedDecimals(totalHours, 2)} Hrs
                     </TableCell>
                     <TableCell
                       className="flex justify-center items-center cursor-pointer "

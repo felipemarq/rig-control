@@ -6,13 +6,13 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 
-import {CalendarChart} from "./components/CalendarChart";
-import {useCalendarChartCard} from "./useCalendarChartCard";
-import {NotFound} from "@/view/components/NotFound";
-import {Spinner} from "@/view/components/Spinner";
+import { CalendarChart } from "./components/CalendarChart";
+import { useCalendarChartCard } from "./useCalendarChartCard";
+import { NotFound } from "@/view/components/NotFound";
+import { Spinner } from "@/view/components/Spinner";
 
 export const CalendarChartCard = () => {
-  const {isEmpty, isFetchingEfficiencies} = useCalendarChartCard();
+  const { isEmpty, isFetchingEfficiencies } = useCalendarChartCard();
   return (
     <Card className="col-span-12 row-span-3 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
       <CardHeader className="px-7">
@@ -27,8 +27,12 @@ export const CalendarChartCard = () => {
           comportamento.
         </CardDescription>
       </CardHeader>
-      <CardContent className="w-full h-full p-0">
-        {isFetchingEfficiencies && <Spinner />}
+      <CardContent className="w-full h-full p-0 ">
+        {isFetchingEfficiencies && (
+          <div className="flex justify-center items-center h-full">
+            <Spinner />
+          </div>
+        )}
         {!isFetchingEfficiencies && !isEmpty && (
           <div className="max-w-full h-full">
             <CalendarChart />
