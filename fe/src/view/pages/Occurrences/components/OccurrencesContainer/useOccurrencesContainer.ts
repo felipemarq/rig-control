@@ -1,12 +1,8 @@
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 
 export const useOccurrencesContainer = () => {
-  const {
-    isFetchingOccurrences,
-    occurrences,
-    refetchOccurrences,
-    isInitialLoading,
-  } = useOccurrences();
+  const { isFetchingOccurrences, occurrences, isInitialLoading } =
+    useOccurrences();
 
   return {
     isFetchingOccurrences,

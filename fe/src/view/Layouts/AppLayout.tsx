@@ -1,5 +1,4 @@
 import { Outlet } from "react-router-dom";
-import { Navbar } from "@/view/components/Navbar";
 import { cn } from "@/lib/utils";
 import { currentVersion } from "@/app/config/CurrentVersion";
 import { Sidebar } from "../components/Sidebar";

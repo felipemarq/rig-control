@@ -23,7 +23,7 @@ export const ManHoursDashboard = () => {
           selectedBaseId,
           applyFilters,
         }) => (
-          <div className="overflow-y-auto">
+          <div className="overflow-y-auto w-full">
             <Header displayRig title="Dashboard por Sonda">
               <div className="flex justify-center items-start gap-3">
                 <div className="w-52">

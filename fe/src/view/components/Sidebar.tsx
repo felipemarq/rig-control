@@ -17,9 +17,11 @@ import {
   Construction,
   FileInput,
   ReceiptPoundSterling,
+  Shield,
   ShieldCheck,
   Text,
   TrafficCone,
+  Workflow,
 } from "lucide-react";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
@@ -56,7 +58,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { activeTab, handleToggleNavItem } = useSidebarContext();
 
-  const { isUserAdm } = useAuth();
+  const { isUserAdm, signout } = useAuth();
 
   return (
     <div className={cn("hidden lg:flex h-full", className)}>
@@ -88,94 +90,130 @@ export const Sidebar = ({ className }: SidebarProps) => {
           <div className="flex-1  h-full">
             <Menu className="hover:bg-primary" menuItemStyles={menuItemStyles}>
               <SubMenu
-                label="Dashboard"
-                icon={<BarChart />}
+                label="Operação"
+                icon={<Workflow />}
                 className="hover:bg-primary text-white"
               >
-                <Link to="/global-dashboard">
-                  <MenuItem className="bg-primary"> Dashboard Geral</MenuItem>
+                <SubMenu
+                  label="Dashboard"
+                  icon={<BarChart />}
+                  className="hover:bg-primary bg-primary text-white"
+                >
+                  {isUserAdm && (
+                    <Link to="/global-dashboard">
+                      <MenuItem className="bg-primary">
+                        {" "}
+                        Dashboard Geral
+                      </MenuItem>
+                    </Link>
+                  )}
+                  <Link to="/dashboard">
+                    <MenuItem className="bg-primary">
+                      {" "}
+                      Dashboard por Sonda
+                    </MenuItem>
+                  </Link>
+                </SubMenu>
+
+                <Link to="/list">
+                  <MenuItem icon={<ArchiveIcon />} className="bg-primary">
+                    Ocorrências
+                  </MenuItem>
                 </Link>
-                <Link to="/dashboard">
-                  <MenuItem className="bg-primary">
-                    {" "}
-                    Dashboard por Sonda
+
+                <Link to="/form/menu">
+                  <MenuItem icon={<FileInput />} className="bg-primary">
+                    Formulário
+                  </MenuItem>
+                </Link>
+
+                <Link to="/reports">
+                  <MenuItem
+                    icon={<ReceiptPoundSterling />}
+                    className="bg-primary"
+                  >
+                    Relatórios
                   </MenuItem>
                 </Link>
               </SubMenu>
 
               <SubMenu
-                label="Faturamento"
-                icon={<CircleDollarSign />}
+                label="Administração"
+                icon={<ShieldCheck />}
                 className="hover:bg-primary text-white"
               >
-                <Link to="/invoicing-dashboard">
-                  <MenuItem className="bg-primary"> Faturamento Geral</MenuItem>
-                </Link>
-                <Link to="/invoicing-rig-dashboard">
-                  <MenuItem className="bg-primary">
-                    Faturamento por Sonda
-                  </MenuItem>
-                </Link>
-              </SubMenu>
+                {isUserAdm && (
+                  <>
+                    <SubMenu
+                      label="Faturamento"
+                      icon={<CircleDollarSign />}
+                      className="hover:bg-primary  bg-primary text-white"
+                    >
+                      <Link to="/invoicing-dashboard">
+                        <MenuItem className="bg-primary">
+                          {" "}
+                          Faturamento Geral
+                        </MenuItem>
+                      </Link>
+                      <Link to="/invoicing-rig-dashboard">
+                        <MenuItem className="bg-primary">
+                          Faturamento por Sonda
+                        </MenuItem>
+                      </Link>
+                    </SubMenu>
 
-              <Link to="/form/menu">
-                <MenuItem icon={<FileInput />} className="bg-primary">
-                  Formulário
-                </MenuItem>
-              </Link>
-
-              <Link to="/list">
-                <MenuItem icon={<ArchiveIcon />} className="bg-primary">
-                  Ocorrências
-                </MenuItem>
-              </Link>
-
-              {isUserAdm && (
-                <>
-                  <Link
-                    to="/list-rigs"
-                    onClick={() => handleToggleNavItem("list-rigs")}
-                    className={cn(
-                      "text-gray-500 transition-colors hover:text-white",
-                      activeTab === "list-rigs" ? "text-white " : ""
-                    )}
-                  >
-                    <MenuItem icon={<Construction />} className="bg-primary">
-                      Sondas
-                    </MenuItem>
-                  </Link>
-
-                  <Link
-                    to="/contracts"
-                    onClick={() => handleToggleNavItem("contracts")}
-                    className={cn(
-                      "text-gray-500 transition-colors hover:text-white",
-                      activeTab === "contracts" ? "text-white " : ""
-                    )}
-                  >
-                    <MenuItem
-                      icon={<Text />}
+                    <Link
+                      to="/list-rigs"
+                      onClick={() => handleToggleNavItem("list-rigs")}
                       className={cn(
-                        "",
+                        "text-gray-500 transition-colors hover:text-white",
+                        activeTab === "list-rigs" ? "text-white " : ""
+                      )}
+                    >
+                      <MenuItem icon={<Construction />} className="bg-primary">
+                        Sondas
+                      </MenuItem>
+                    </Link>
+
+                    <Link
+                      to="/contracts"
+                      onClick={() => handleToggleNavItem("contracts")}
+                      className={cn(
+                        "text-gray-500 transition-colors hover:text-white",
                         activeTab === "contracts" ? "text-white " : ""
                       )}
                     >
-                      Contratos
-                    </MenuItem>
-                  </Link>
+                      <MenuItem
+                        icon={<Text />}
+                        className={cn(
+                          "bg-primary",
+                          activeTab === "contracts" ? "text-white " : ""
+                        )}
+                      >
+                        Contratos
+                      </MenuItem>
+                    </Link>
 
-                  <Link
-                    to="/users"
-                    onClick={() => handleToggleNavItem("users")}
-                  >
-                    <MenuItem icon={<CircleUserRound />} className="bg-primary">
-                      Usuários
-                    </MenuItem>
-                  </Link>
+                    <Link
+                      to="/users"
+                      onClick={() => handleToggleNavItem("users")}
+                    >
+                      <MenuItem
+                        icon={<CircleUserRound />}
+                        className="bg-primary"
+                      >
+                        Usuários
+                      </MenuItem>
+                    </Link>
+                  </>
+                )}
+              </SubMenu>
 
+              {isUserAdm && (
+                <>
                   <SubMenu
                     label="SMS"
-                    icon={<ShieldCheck />}
+                    icon={<Shield />}
                     className="hover:bg-primary text-white"
                   >
                     <Link to="/dashboard/man-hours">
@@ -199,21 +237,13 @@ export const Sidebar = ({ className }: SidebarProps) => {
                   </SubMenu>
                 </>
               )}
-
-              <Link to="/reports">
-                <MenuItem
-                  icon={<ReceiptPoundSterling />}
-                  className="bg-primary"
-                >
-                  Relatórios
-                </MenuItem>
-              </Link>
             </Menu>
           </div>
           <div className=" bg-primary p-4">
             <Button
               className="w-full bg-transparent border border-white text-white hover:bg-white/5"
               variant="ghost"
+              onClick={() => signout()}
             >
               Sair
             </Button>

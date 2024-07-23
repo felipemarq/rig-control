@@ -1,7 +1,6 @@
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { useManHours } from "@/app/hooks/manHours/useManHours";
 import { manHoursService } from "@/app/services/manHoursService";
-import { ManHoursResponse } from "@/app/services/manHoursService/getAll";
 import { customColorToast } from "@/app/utils/customColorToast";
 import {
   TransformedManHoursData,

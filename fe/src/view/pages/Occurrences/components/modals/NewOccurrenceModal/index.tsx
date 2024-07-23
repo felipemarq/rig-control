@@ -6,8 +6,6 @@ import { TimePicker } from "antd";
 import { Select } from "@/view/components/Select";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
 
 export const NewOccurrenceModal = () => {
   const {

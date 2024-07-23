@@ -24,7 +24,7 @@ export const GlobalDashboard = () => {
           handleChangeDashboardView,
           selectedDashboardView,
         }) => (
-          <div className="overflow-y-auto">
+          <div className="overflow-y-auto w-full">
             <Header title="Dashboard Geral" displayRig={false}>
               <div className="flex flex-row-reverse gap-2  items-center">
                 <FilterSheet
