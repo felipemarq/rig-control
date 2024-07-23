@@ -1,18 +1,21 @@
-import {differenceInMinutes, parse} from "date-fns";
+import { differenceInMinutes, parse } from "date-fns";
 
-import {useDashboard} from "../../../../DashboardContext/useDashboard";
-import {translateRepairClassification} from "../../../../../../../app/utils/translateRepairClassification";
-import {RepairClassification} from "../../../../../../../app/entities/RepairClassification";
+import { useDashboard } from "../../../../DashboardContext/useDashboard";
+import { translateRepairClassification } from "../../../../../../../app/utils/translateRepairClassification";
+import { RepairClassification } from "../../../../../../../app/entities/RepairClassification";
 
 export type PieChartData = {
   id: string;
   label: string;
   value: number;
   color: string;
+  classification: string;
+  selectedEquipment: string;
 }[];
 
 export const useRepairDetailsPieChart = () => {
-  const {repairPeriods, selectedEquipment} = useDashboard();
+  const { repairPeriods, selectedEquipment, handleFilterPeriods } =
+    useDashboard();
 
   const pieChartColors = [
     "#1c7b7b", // primary 500
@@ -49,6 +52,8 @@ export const useRepairDetailsPieChart = () => {
         acc.push({
           id: classification,
           label: classification,
+          classification: current.repairClassification!,
+          selectedEquipment: selectedEquipment!,
           value: Number(diffInHours.toFixed(2)),
           color: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
         });
@@ -66,8 +71,12 @@ export const useRepairDetailsPieChart = () => {
       return acc;
     }, []);
 
+  console.log("repairPeriods", repairPeriods);
+  console.log("chartData", chartData);
+
   return {
     chartData,
     selectedEquipment,
+    handleFilterPeriods,
   };
 };

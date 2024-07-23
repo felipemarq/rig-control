@@ -136,13 +136,12 @@ export const Sidebar = ({ className }: SidebarProps) => {
                   </MenuItem>
                 </Link>
               </SubMenu>
-
-              <SubMenu
-                label="Administração"
-                icon={<ShieldCheck />}
-                className="hover:bg-primary text-white"
-              >
-                {isUserAdm && (
+              {isUserAdm && (
+                <SubMenu
+                  label="Administração"
+                  icon={<ShieldCheck />}
+                  className="hover:bg-primary text-white"
+                >
                   <>
                     <SubMenu
                       label="Faturamento"
@@ -206,9 +205,8 @@ export const Sidebar = ({ className }: SidebarProps) => {
                       </MenuItem>
                     </Link>
                   </>
-                )}
-              </SubMenu>
-
+                </SubMenu>
+              )}
               {isUserAdm && (
                 <>
                   <SubMenu

@@ -78,8 +78,6 @@ export const useEditOccurrenceModal = () => {
     mutationFn: occurrencesService.update,
   });
 
-  console.log("occurrenceBeignSeen", occurrenceBeingSeen);
-
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
       date: data.date.toISOString(),
@@ -133,8 +131,6 @@ export const useEditOccurrenceModal = () => {
       //navigate("/dashboard");
     }
   });
-
-  console.log("Selected Hour", selectedHour);
 
   return {
     closeEditOccurrenceModal,

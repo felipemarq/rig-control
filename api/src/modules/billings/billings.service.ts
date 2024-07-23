@@ -47,9 +47,6 @@ export class BillingsService {
       });
     }
 
-    console.log('total', total);
-    console.log('subtractedTotal', glossTotal);
-    //console.log('TOTAL', total - subtractedTotal);
 
     return response;
   } */

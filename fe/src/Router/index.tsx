@@ -30,6 +30,7 @@ import { AppLayout } from "@/view/Layouts/AppLayout";
 import { Occurrences } from "@/view/pages/Occurrences";
 import { ManHours } from "@/view/pages/ManHours";
 import { ManHoursDashboard } from "@/view/pages/ManHoursDashboard";
+import { InDevelopmentPage } from "@/view/pages/InDevelopmentPage";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
@@ -49,6 +50,7 @@ export const Router = () => {
           {/* Define o layout baseado na largura da janela */}
           <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
+            <Route path="/in-development" element={<InDevelopmentPage />} />
 
             <Route path="/dashboard" element={<Dashboard />} />
             <Route

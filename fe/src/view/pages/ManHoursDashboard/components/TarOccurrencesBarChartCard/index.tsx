@@ -13,7 +13,6 @@ export const TarOccurrencesBarChartCard = () => {
   const { isFetchingOccurrencesTaxes, occurrencesTaxes, selectedBaseName } =
     useManHoursDashboard();
 
-  console.log("occurrencesTaxes? card.", occurrencesTaxes);
   return (
     <Card className="col-span-12 row-span-3 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
       <CardHeader className="px-7">

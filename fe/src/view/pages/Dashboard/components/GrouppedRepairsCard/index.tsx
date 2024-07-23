@@ -26,7 +26,7 @@ export const GrouppedRepairsCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-3 lg:col-start-1 row-span-2 col-start-1 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]",
+        "col-span-12 lg:col-span-7 lg:col-start-1 row-span-3 col-start-1 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]",
         repairGroupedData.groupedData.length >= 4 ? "overflow-y-scroll" : ""
       )}
     >

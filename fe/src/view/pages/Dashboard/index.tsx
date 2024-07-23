@@ -13,6 +13,7 @@ import { Header } from "@/view/components/Header";
 import { CalendarChartCard } from "./components/CalendarChartCard";
 import { WrongVersionAlertModal } from "./components/WrongVersionAlertModal";
 import { WellDataGridCard } from "./components/WellDataGridCard";
+import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
 
 export const Dashboard = () => {
   return (
@@ -23,6 +24,7 @@ export const Dashboard = () => {
           isFetchingEfficiencies,
           exceedsEfficiencyThreshold,
           isWrongVersion,
+          periodDataGridModalData,
         }) => (
           <div className="overflow-y-auto">
             <Header displayRig title="Dashboard por Sonda">
@@ -56,6 +58,8 @@ export const Dashboard = () => {
                   <AverageBarChartCard />
 
                   {isWrongVersion && <WrongVersionAlertModal />}
+
+                  {periodDataGridModalData && <PeriodDataGridModal />}
                 </div>
               </main>
             </div>

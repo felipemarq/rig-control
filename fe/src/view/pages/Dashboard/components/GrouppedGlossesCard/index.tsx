@@ -27,7 +27,7 @@ export const GrouppedGlossesCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12   row-span-2  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-3 ",
+        "col-span-12   row-span-2  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-7 ",
         glossGroupedData.groupedData.length >= 4 ? "overflow-y-scroll" : ""
       )}
     >

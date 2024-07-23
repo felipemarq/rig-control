@@ -1,8 +1,9 @@
-import {ResponsivePie} from "@nivo/pie";
-import {useRepairDetailsPieChart} from "./useRepairDetailsPieChart";
+import { ResponsivePie } from "@nivo/pie";
+import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
 
 export const RepairDetailsPieChart = () => {
-  const {chartData /* handleCloseDetailsGraph */} = useRepairDetailsPieChart();
+  const { chartData /* handleCloseDetailsGraph */, handleFilterPeriods } =
+    useRepairDetailsPieChart();
   return (
     <ResponsivePie
       data={chartData}
@@ -48,8 +49,8 @@ export const RepairDetailsPieChart = () => {
           },
         },
       }}
-      colors={{datum: "data.color"}}
-      margin={{top: 10, right: 80, bottom: 100, left: 80}}
+      colors={{ datum: "data.color" }}
+      margin={{ top: 10, right: 80, bottom: 100, left: 80 }}
       sortByValue={true}
       innerRadius={0}
       activeOuterRadiusOffset={8}
@@ -58,11 +59,13 @@ export const RepairDetailsPieChart = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      //onClick={(event) => handleChartClick(event.id as string)}
+      onClick={(event) =>
+        handleFilterPeriods("REPAIR", event.data.classification)
+      }
       enableArcLinkLabels={true}
       arcLinkLabelsTextColor={"#1c7b7b"}
       arcLinkLabelsThickness={1}
-      arcLinkLabelsColor={{from: "color"}}
+      arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
       valueFormat={(value) => `${value} Hrs`}

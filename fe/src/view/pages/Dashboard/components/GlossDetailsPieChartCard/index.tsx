@@ -1,8 +1,8 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {PieChart, X} from "lucide-react";
-import {useGlossDetailsPieChartCard} from "./useGlossDetailsPieChartCard";
-import {GlossDetailsPieChart} from "./components/GlossDetailsPieChart";
-import {cn} from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PieChart, X } from "lucide-react";
+import { useGlossDetailsPieChartCard } from "./useGlossDetailsPieChartCard";
+import { GlossDetailsPieChart } from "./components/GlossDetailsPieChart";
+import { cn } from "@/lib/utils";
 
 export const GlossDetailsPieChartCard = () => {
   const {
@@ -14,7 +14,7 @@ export const GlossDetailsPieChartCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-3 row-span-2",
+        "col-span-12 lg:col-span-5 row-span-2",
         !selectedGloss && "hidden"
       )}
     >

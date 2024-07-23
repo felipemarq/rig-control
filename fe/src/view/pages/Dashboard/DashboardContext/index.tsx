@@ -43,6 +43,14 @@ interface DashboardContextValue {
   exceedsEfficiencyThreshold: boolean;
   isWrongVersion: boolean;
   average: AverageResponse;
+  handleOpenPeriodDataGridModal: (periods: Period[]) => void;
+  handleClosePeriodDataGridModal: () => void;
+  isPeriodDataGridModalOpen: boolean;
+  periodDataGridModalData: Period[] | null;
+  handleFilterPeriods: (
+    type: "REPAIR" | "GLOSS",
+    classification: string
+  ) => void;
 }
 
 // Criação do contexto
@@ -85,6 +93,41 @@ export const DashboardProvider = ({
   );
 
   const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
+  const [isPeriodDataGridModalOpen, setIsPeriodDataGridModalOpen] =
+    useState(false);
+
+  const [periodDataGridModalData, setPeriodDataGridModalData] = useState<
+    null | Period[]
+  >(null);
+
+  const handleFilterPeriods = (
+    type: "REPAIR" | "GLOSS",
+    classification: string
+  ) => {
+    let periods: Period[] | null = null;
+
+    if (type === "REPAIR") {
+      periods = repairPeriods.filter(
+        (period) =>
+          period.classification === selectedEquipment &&
+          period.repairClassification === classification
+      );
+    }
+
+    if (periods) {
+      handleOpenPeriodDataGridModal(periods);
+    }
+  };
+
+  const handleOpenPeriodDataGridModal = (periods: Period[]) => {
+    setIsPeriodDataGridModalOpen(true);
+    setPeriodDataGridModalData(periods);
+  };
+
+  const handleClosePeriodDataGridModal = () => {
+    setIsPeriodDataGridModalOpen(false);
+    setPeriodDataGridModalData(null);
+  };
 
   const handleSelectGloss = (gloss: string) => {
     setSelectedGloss(gloss);
@@ -115,8 +158,6 @@ export const DashboardProvider = ({
   let totalDtms: number = 0;
   let totalMovimentations: number = 0;
 
-  console.log("===============START===================");
-
   efficiencies.forEach((efficiency: Efficiency) => {
     totalAvailableHours += efficiency.availableHours;
     totalUnavailableHours += 24 - efficiency.availableHours;
@@ -125,7 +166,6 @@ export const DashboardProvider = ({
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
 
     const dtmFound = efficiency.periods.find(({ type }) => type === "DTM");
-    console.log(dtmFound);
 
     if (dtmFound) {
       totalDtms++;
@@ -168,6 +208,11 @@ export const DashboardProvider = ({
         selectedGloss,
         exceedsEfficiencyThreshold,
         isWrongVersion,
+        handleClosePeriodDataGridModal,
+        handleOpenPeriodDataGridModal,
+        isPeriodDataGridModalOpen,
+        periodDataGridModalData,
+        handleFilterPeriods,
       }}
     >
       {children}
