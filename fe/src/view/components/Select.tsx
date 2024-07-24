@@ -1,9 +1,9 @@
 import * as RadixSelect from "@radix-ui/react-select";
-import {ChevronDownIcon, ChevronUpIcon} from "@radix-ui/react-icons";
-import {cn} from "../../app/utils/cn";
-import {useState} from "react";
-import {ErrorContainer} from "./ErrorContainer";
-import {Spinner} from "./Spinner";
+import { ChevronDownIcon, ChevronUpIcon } from "@radix-ui/react-icons";
+import { cn } from "../../app/utils/cn";
+import { useState } from "react";
+import { ErrorContainer } from "./ErrorContainer";
+import { Spinner } from "./Spinner";
 
 interface SelectProps {
   className?: string;

@@ -1,17 +1,19 @@
 // Importações de componentes e contextos necessários
-import {DashboardContext, DashboardProvider} from "./DashboardContext";
-import {GrouppedRepairsCard} from "./components/GrouppedRepairsCard";
-import {GrouppedGlossesCard} from "./components/GrouppedGlossesCard";
-import {StatboxContainer} from "./components/StatboxContainer";
-import {LineChartCard} from "./components/LineChartCard";
-import {AverageBarChartCard} from "./components/AverageBarChartCard";
-import {DataGridCard} from "./components/DataGridCard";
-import {RepairDetailsPieChartCard} from "./components/RepairDetailsPieChartCard";
-import {GlossDetailsPieChartCard} from "./components/GlossDetailsPieChartCard";
-import {CustomFilterSheet} from "@/view/components/CustomFilterSheet";
-import {Header} from "@/view/components/Header";
-import {CalendarChartCard} from "./components/CalendarChartCard";
-import {WrongVersionAlertModal} from "./components/WrongVersionAlertModal";
+import { DashboardContext, DashboardProvider } from "./DashboardContext";
+import { GrouppedRepairsCard } from "./components/GrouppedRepairsCard";
+import { GrouppedGlossesCard } from "./components/GrouppedGlossesCard";
+import { StatboxContainer } from "./components/StatboxContainer";
+import { LineChartCard } from "./components/LineChartCard";
+import { AverageBarChartCard } from "./components/AverageBarChartCard";
+import { DataGridCard } from "./components/DataGridCard";
+import { RepairDetailsPieChartCard } from "./components/RepairDetailsPieChartCard";
+import { GlossDetailsPieChartCard } from "./components/GlossDetailsPieChartCard";
+import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
+import { Header } from "@/view/components/Header";
+import { CalendarChartCard } from "./components/CalendarChartCard";
+import { WrongVersionAlertModal } from "./components/WrongVersionAlertModal";
+import { WellDataGridCard } from "./components/WellDataGridCard";
+import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
 
 export const Dashboard = () => {
   return (
@@ -22,8 +24,9 @@ export const Dashboard = () => {
           isFetchingEfficiencies,
           exceedsEfficiencyThreshold,
           isWrongVersion,
+          periodDataGridModalData,
         }) => (
-          <div>
+          <div className="overflow-y-auto">
             <Header displayRig title="Dashboard por Sonda">
               <CustomFilterSheet
                 isLoading={isFetchingEfficiencies}
@@ -40,7 +43,7 @@ export const Dashboard = () => {
 
                   <CalendarChartCard />
 
-                  <AverageBarChartCard />
+                  <WellDataGridCard />
 
                   <DataGridCard />
 
@@ -52,7 +55,11 @@ export const Dashboard = () => {
 
                   <GlossDetailsPieChartCard />
 
+                  <AverageBarChartCard />
+
                   {isWrongVersion && <WrongVersionAlertModal />}
+
+                  {periodDataGridModalData && <PeriodDataGridModal />}
                 </div>
               </main>
             </div>

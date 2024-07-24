@@ -1,7 +1,8 @@
-import {format, startOfMonth, sub} from "date-fns";
-import {createContext, useState} from "react";
-import {FilterType} from "../entities/FilterType";
-import {getPeriodRange} from "../utils/getPeriodRange";
+import { format, startOfMonth, sub } from "date-fns";
+import { createContext, useState } from "react";
+import { FilterType } from "../entities/FilterType";
+import { getPeriodRange } from "../utils/getPeriodRange";
+import { customColorToast } from "../utils/customColorToast";
 
 interface FiltersContextValue {
   selectedRig: string;
@@ -27,10 +28,14 @@ interface FiltersContextValue {
 
 export const FiltersContext = createContext({} as FiltersContextValue);
 
-export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
+export const FiltersProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const currentDate = new Date();
   const firstDayOfMonth = startOfMonth(currentDate);
-  const threeDaysBeforeToday = sub(currentDate, {days: 3});
+  const threeDaysBeforeToday = sub(currentDate, { days: 3 });
 
   const formattedFirstDay = format(
     firstDayOfMonth,
@@ -58,17 +63,20 @@ export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
   );
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
+    setFilters((prevState) => ({ ...prevState, rigId: rigId }));
   };
 
   const handleStartDateChange = (date: Date) => {
     setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, startDate: date.toISOString()}));
+    setFilters((prevState) => ({
+      ...prevState,
+      startDate: date.toISOString(),
+    }));
   };
 
   const handleEndDateChange = (date: Date) => {
     setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({...prevState, endDate: date.toISOString()}));
+    setFilters((prevState) => ({ ...prevState, endDate: date.toISOString() }));
   };
 
   const handleChangePeriod = (period: string) => {
@@ -82,6 +90,14 @@ export const FiltersProvider = ({children}: {children: React.ReactNode}) => {
 
       handleStartDateChange(monthPeriodSelected?.startDate!);
       handleEndDateChange(monthPeriodSelected?.endDate!);
+    }
+
+    if (!periodFound) {
+      customColorToast(
+        "Ocorreu um erro ao tentar buscar o período da sonda!",
+        "#fc5050",
+        "error"
+      );
     }
   };
 

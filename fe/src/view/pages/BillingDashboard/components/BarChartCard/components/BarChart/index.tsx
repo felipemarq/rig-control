@@ -1,26 +1,28 @@
-import {ResponsiveBar} from "@nivo/bar";
-import {formatCurrency} from "../../../../../../../app/utils/formatCurrency";
-import {useBarChart} from "./useBarChart";
+import { ResponsiveBar } from "@nivo/bar";
+import { formatCurrency } from "../../../../../../../app/utils/formatCurrency";
+import { useBarChart } from "./useBarChart";
 
 export const BarChart = () => {
-  const {data} = useBarChart();
+  const { data } = useBarChart();
 
   return (
     <ResponsiveBar
       data={data}
-      keys={["total"]}
+      keys={["total", "totalLost"]}
       indexBy="rig"
-      margin={{top: 10, right: 20, bottom: 120, left: 20}}
+      margin={{ top: 10, right: 20, bottom: 120, left: 20 }}
       padding={0.2}
-      valueScale={{type: "linear"}}
-      indexScale={{type: "band", round: true}}
-      colors="#1c7b7b"
-      defs={[
+      valueScale={{ type: "linear" }}
+      indexScale={{ type: "band", round: true }}
+      colors={({ id }) =>
+        id === "total" ? "#1c7b7b" : id === "totalLost" ? "#fc5050" : "grey"
+      }
+      /*  defs={[
         {
           id: "dots",
           type: "patternDots",
           background: "inherit",
-          color: "#38bcb2",
+          color: ["#38bcb2", "#f00"],
           size: 4,
           padding: 1,
           stagger: true,
@@ -34,18 +36,18 @@ export const BarChart = () => {
           lineWidth: 6,
           spacing: 10,
         },
-      ]}
-      borderRadius={5}
+      ]} */
+      borderRadius={0}
       fill={[
         {
           match: {
-            id: "fries",
+            id: "total",
           },
           id: "dots",
         },
         {
           match: {
-            id: "sandwich",
+            id: "totalLost",
           },
           id: "lines",
         },

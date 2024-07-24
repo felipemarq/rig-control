@@ -164,6 +164,8 @@ export class EfficienciesService {
      */
     this.validatePeriodsTime(periods);
 
+    console.log(periods);
+
     /**
      * Constructs the efficiency data object with the provided information.
      * @param createEfficiencyDto The DTO containing the information to construct the efficiency data object.
@@ -283,7 +285,9 @@ export class EfficienciesService {
     periods.forEach(
       ({ type, startHour, endHour, classification, wellId }, index) => {
         // Find the corresponding well ID in the wells array
-        const { id: wellIdFound } = wells.find(({ name }) => well === name);
+        const { id: wellIdFound } = wells.find(({ name }) => wellId === name);
+
+        console.log(wellId);
 
         // Update wellId for the current period
         periods[index].wellId = wellIdFound;

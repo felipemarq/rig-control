@@ -45,10 +45,6 @@ export class WellsService {
 
     const wells = await this.wellsRepo.findAll({ select: { name: true } });
 
-    //console.log(' Quantidade de Poços do sistema', wells.length);
-
-    //console.log('Quantidade de poços da tabela', sheetWells.length);
-
     const existingWells = [];
 
     wells.forEach((well) => {

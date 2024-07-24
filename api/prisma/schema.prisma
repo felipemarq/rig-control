@@ -53,19 +53,30 @@ model Rig {
   BillingConfiguration  BillingConfiguration[]
   Billing               Billing[]
   contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  base                  Base[]
 
   @@map("rigs")
 }
 
 model Contract {
-  id            String         @id @default(uuid()) @db.Uuid
-  name          String         @unique
-  logoImagePath String?        @map("logo_image_path")
-  rigs          Rig[]
-  users         UserContract[]
-  wells         Well[]
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @unique
+  logoImagePath String? @map("logo_image_path")
+  clientId      String? @map("client_id") @db.Uuid
+
+  client Client?        @relation(fields: [clientId], references: [id])
+  rigs   Rig[]
+  users  UserContract[]
+  wells  Well[]
 
   @@map("contracts")
+}
+
+model Client {
+  id            String     @id @default(uuid()) @db.Uuid
+  name          String     @unique
+  logoImagePath String?    @map("logo_image_path")
+  contracts     Contract[]
 }
 
 enum AccessLevel {
@@ -90,6 +101,8 @@ model User {
   DeletionRequest     DeletionRequest[]
   TemporaryEfficiency TemporaryEfficiency[]
   userLog             UserLog[]
+  occurrences         Occurrence[]
+  manHours            ManHour[]
 
   @@map("users")
 }
@@ -550,5 +563,84 @@ model SystemVersion {
   id        String   @id @default(uuid()) @db.Uuid
   version   String
   createdAt DateTime @default(now())
-  // Outros campos conforme necessário
+}
+
+enum OccurrenceType {
+  HEALTH
+  ENVIRONMENT
+  SAFETY
+  PROCESS
+}
+
+enum Nature {
+  ACCIDENT
+  INCIDENT
+  DEATH
+  COMMUTING_ACCIDENT
+}
+
+enum OccurrenceCategory {
+  TAR
+  TOR
+}
+
+model Base {
+  id          String       @id @default(uuid()) @db.Uuid
+  name        String       @unique
+  state       UF
+  rigId       String?      @db.Uuid
+  rig         Rig?         @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  occurrences Occurrence[]
+  manHours    ManHour[]
+
+  @@map("bases")
+}
+
+model ManHour {
+  id        String    @id @default(uuid()) @db.Uuid
+  baseId    String    @db.Uuid
+  year      Int
+  month     Int
+  hours     Float
+  createdAt DateTime  @default(now()) @map("created_at")
+  updatedAt DateTime? @map("updated_at")
+  userId    String    @db.Uuid
+
+  base Base @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([baseId, year, month]) // Garante que não haja duplicatas para a mesma base e mês
+  @@map("man_hours")
+}
+
+model Occurrence {
+  id          String              @id @default(uuid()) @db.Uuid
+  date        DateTime
+  hour        DateTime
+  description String
+  category    OccurrenceCategory?
+  baseId      String              @db.Uuid
+  userId      String              @db.Uuid
+  createdAt   DateTime            @default(now()) @map("created_at")
+  updatedAt   DateTime?           @map("updated_at")
+
+  type     OccurrenceType
+  isAbsent Boolean        @map("is_absent")
+  nature   Nature
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  base Base @relation(fields: [baseId], references: [id], onDelete: Cascade)
+
+  @@map("occurrences")
+}
+
+model OccurrenceAction {
+  id          String   @id @default(uuid()) @db.Uuid
+  title       String
+  dueDate     DateTime
+  responsible String
+  description String
+  isFinished  Boolean  @default(false)
+
+  @@map("occurrence_action")
 }

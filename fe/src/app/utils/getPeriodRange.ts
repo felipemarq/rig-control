@@ -4,6 +4,7 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
   const periods = [
     {
       rigId: "544e1dbe-c059-428d-b6c6-042add9dbcc0",
+      rigName: 'SPT 60',
       months: [
         {
           month: "Janeiro",
@@ -71,6 +72,7 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
     },
     {
       rigId: "ec620219-9d57-4a6a-84d5-61c94cdc797f",
+      rigName: 'SPT 151',
       months: [
         {
           month: "Janeiro",
@@ -138,6 +140,7 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
     },
     {
       rigId: "064278ad-a056-4f34-894a-0074ec586c89",
+      rigName: 'SPT 111',
       months: [
         {
           month: "Janeiro",
@@ -205,6 +208,7 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
     },
     {
       rigId: "aa5fb3c1-63f5-47ab-86bd-7f31b7302e67",
+      rigName: 'SPT 76',
       months: [
         {
           month: "Janeiro",
@@ -272,6 +276,7 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
     },
     {
       rigId: "2c3b1081-549d-45ce-a23a-7f72cece0f43",
+      rigName: 'SPT 61',
       months: [
         {
           month: "Janeiro",
@@ -339,6 +344,7 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
     },
     {
       rigId: "18884437-f1d1-40f2-946c-960909b8ce5e",
+      rigName: 'SPT 88',
       months: [
         {
           month: "Janeiro",
@@ -400,12 +406,81 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
         {
           month: "Dezembro",
           startDate: new Date(`${selectedYear}-12-01T03:00:00.000Z`),
-          endDate: new Date(`${selectedYear}-12-3024T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-12-30T03:00:00.000Z`),
         },
       ],
     },
     {
       rigId: "c9eabd8e-6fa6-4474-837f-4636cabc6fe1",
+      rigName: 'SPT 116',
+      months: [
+        {
+          month: "Janeiro",
+          startDate: new Date(
+            `${Number(selectedYear) - 1}-12-25T03:00:00.000Z`
+          ),
+          endDate: new Date(`${selectedYear}-01-24T03:00:00.000Z`),
+        },
+        {
+          month: "Fevereiro",
+          startDate: new Date(`${selectedYear}-01-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-02-24T03:00:00.000Z`),
+        },
+        {
+          month: "Março",
+          startDate: new Date(`${selectedYear}-02-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-03-24T03:00:00.000Z`),
+        },
+        {
+          month: "Abril",
+          startDate: new Date(`${selectedYear}-03-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-04-24T03:00:00.000Z`),
+        },
+        {
+          month: "Maio",
+          startDate: new Date(`${selectedYear}-04-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-05-24T03:00:00.000Z`),
+        },
+        {
+          month: "Junho",
+          startDate: new Date(`${selectedYear}-05-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-06-24T03:00:00.000Z`),
+        },
+        {
+          month: "Julho",
+          startDate: new Date(`${selectedYear}-06-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-07-24T03:00:00.000Z`),
+        },
+        {
+          month: "Agosto",
+          startDate: new Date(`${selectedYear}-07-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-08-24T03:00:00.000Z`),
+        },
+        {
+          month: "Setembro",
+          startDate: new Date(`${selectedYear}-08-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-09-24T03:00:00.000Z`),
+        },
+        {
+          month: "Outubro",
+          startDate: new Date(`${selectedYear}-09-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-10-24T03:00:00.000Z`),
+        },
+        {
+          month: "Novembro",
+          startDate: new Date(`${selectedYear}-10-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-11-24T03:00:00.000Z`),
+        },
+        {
+          month: "Dezembro",
+          startDate: new Date(`${selectedYear}-11-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-12-24T03:00:00.000Z`),
+        },
+      ],
+    },
+    {
+      rigId: "4647d981-55d1-45cd-bd49-3bb957d5242b",
+      rigName: 'SPT 115',
       months: [
         {
           month: "Janeiro",
@@ -473,6 +548,74 @@ export const getPeriodRange = (selectedRig: string, selectedYear: string) => {
     },
     {
       rigId: "c6b04e59-1a97-42c7-9370-3f0d48d222de",
+      months: [
+        {
+          month: "Janeiro",
+          startDate: new Date(
+            `${Number(selectedYear) - 1}-12-25T03:00:00.000Z`
+          ),
+          endDate: new Date(`${selectedYear}-01-24T03:00:00.000Z`),
+        },
+        {
+          month: "Fevereiro",
+          startDate: new Date(`${selectedYear}-01-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-02-24T03:00:00.000Z`),
+        },
+        {
+          month: "Março",
+          startDate: new Date(`${selectedYear}-02-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-03-24T03:00:00.000Z`),
+        },
+        {
+          month: "Abril",
+          startDate: new Date(`${selectedYear}-03-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-04-24T03:00:00.000Z`),
+        },
+        {
+          month: "Maio",
+          startDate: new Date(`${selectedYear}-04-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-05-24T03:00:00.000Z`),
+        },
+        {
+          month: "Junho",
+          startDate: new Date(`${selectedYear}-05-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-06-24T03:00:00.000Z`),
+        },
+        {
+          month: "Julho",
+          startDate: new Date(`${selectedYear}-06-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-07-24T03:00:00.000Z`),
+        },
+        {
+          month: "Agosto",
+          startDate: new Date(`${selectedYear}-07-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-08-24T03:00:00.000Z`),
+        },
+        {
+          month: "Setembro",
+          startDate: new Date(`${selectedYear}-08-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-09-24T03:00:00.000Z`),
+        },
+        {
+          month: "Outubro",
+          startDate: new Date(`${selectedYear}-09-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-10-24T03:00:00.000Z`),
+        },
+        {
+          month: "Novembro",
+          startDate: new Date(`${selectedYear}-10-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-11-24T03:00:00.000Z`),
+        },
+        {
+          month: "Dezembro",
+          startDate: new Date(`${selectedYear}-11-25T03:00:00.000Z`),
+          endDate: new Date(`${selectedYear}-12-24T03:00:00.000Z`),
+        },
+      ],
+    },
+    {
+      rigId: "e07b74a7-607f-4cde-a261-5c2e41d73827",
+      rigName: 'SPT 54',
       months: [
         {
           month: "Janeiro",

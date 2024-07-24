@@ -3,14 +3,14 @@ import {
   GlobalDashboardContext,
   GlobalDashboardProvider,
 } from "./GlobalDashboardContext";
-import {StatboxContainer} from "./components/StatboxContainer";
-import {DaysNotRegisteredCard} from "./components/DaysNotRegisteredCard";
-import {AverageBarChartCard} from "./components/AverageBarChartCard";
-import {Tabs, TabsList, TabsTrigger} from "@/components/ui/tabs";
-import {UnbilledPeriodsPieChartCard} from "./components/UnbilledPeriodsPieChartCard";
-import {PeriodsDetailsPieChartCard} from "./components/PeriodsDetailsPieChartCard";
-import {FilterSheet} from "@/view/components/FilterSheet";
-import {Header} from "@/view/components/Header";
+import { StatboxContainer } from "./components/StatboxContainer";
+import { DaysNotRegisteredCard } from "./components/DaysNotRegisteredCard";
+import { AverageBarChartCard } from "./components/AverageBarChartCard";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { UnbilledPeriodsPieChartCard } from "./components/UnbilledPeriodsPieChartCard";
+import { PeriodsDetailsPieChartCard } from "./components/PeriodsDetailsPieChartCard";
+import { FilterSheet } from "@/view/components/FilterSheet";
+import { Header } from "@/view/components/Header";
 
 export const GlobalDashboard = () => {
   return (
@@ -24,7 +24,7 @@ export const GlobalDashboard = () => {
           handleChangeDashboardView,
           selectedDashboardView,
         }) => (
-          <div>
+          <div className="overflow-y-auto w-full">
             <Header title="Dashboard Geral" displayRig={false}>
               <div className="flex flex-row-reverse gap-2  items-center">
                 <FilterSheet

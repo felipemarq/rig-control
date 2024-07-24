@@ -1,13 +1,12 @@
 import * as Dialog from "@radix-ui/react-dialog";
-import {cn} from "../../app/utils/cn";
+import { cn } from "../../app/utils/cn";
 import React from "react";
-import {Cross2Icon} from "@radix-ui/react-icons";
+import { Cross2Icon } from "@radix-ui/react-icons";
 
 interface ModalProps {
   open: boolean;
   children: React.ReactNode;
   title: string;
-  rightAction?: React.ReactNode;
   onClose?(): void;
   maxWidth?: string;
 }
@@ -16,7 +15,6 @@ export const Modal = ({
   open,
   children,
   title,
-  rightAction,
   onClose,
   maxWidth,
 }: ModalProps) => {
@@ -38,19 +36,17 @@ export const Modal = ({
             }] outline-none`
           )}
         >
-          <header className="h-12 flex items-center  justify-between text-gray-800">
+          <header className="relative h-12 flex items-center justify-center text-gray-800 ">
+            <span className="absolute left-1/2 transform -translate-x-1/2 text-lg tracking-[-1px] font-bold">
+              {title}
+            </span>
+
             <button
-              className="w-12 h-12 flex items-center justify-center outline-none"
+              className="absolute right-1 w-12 h-12 flex items-center justify-center outline-none"
               onClick={onClose}
             >
               <Cross2Icon className="w-6 h-6" />
             </button>
-
-            <span className="text-lg tracking-[-1px] font-bold">{title}</span>
-
-            <div className="w-12 h-12 flex items-center justify-center">
-              {rightAction}
-            </div>
           </header>
           <div>{children}</div>
         </Dialog.Content>

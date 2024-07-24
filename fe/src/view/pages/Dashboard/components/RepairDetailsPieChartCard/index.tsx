@@ -1,8 +1,8 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {useRepairDetailsPieChartCard} from "./useRepairDetailsPieChartCard";
-import {PieChart, X} from "lucide-react";
-import {RepairDetailsPieChart} from "./components/RepairDetailsPieChart";
-import {cn} from "@/lib/utils";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useRepairDetailsPieChartCard } from "./useRepairDetailsPieChartCard";
+import { PieChart, X } from "lucide-react";
+import { RepairDetailsPieChart } from "./components/RepairDetailsPieChart";
+import { cn } from "@/lib/utils";
 
 export const RepairDetailsPieChartCard = () => {
   const {
@@ -14,7 +14,7 @@ export const RepairDetailsPieChartCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-3 row-span-2",
+        "col-span-12 lg:col-span-5 row-span-3",
         !selectedEquipment && "hidden"
       )}
     >

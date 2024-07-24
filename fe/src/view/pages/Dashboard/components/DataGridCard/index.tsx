@@ -1,5 +1,4 @@
-import {Button} from "@/components/ui/button";
-import {useDataGridCard} from "./useDataGridCard";
+import { useDataGridCard } from "./useDataGridCard";
 import {
   Card,
   CardHeader,
@@ -7,14 +6,12 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import {ArrowUpRight} from "lucide-react";
-import {Link} from "react-router-dom";
-import {Spinner} from "@/view/components/Spinner";
-import {ListEfficienciesDataGrid} from "@/view/components/ListEfficienciesDataGrid";
-import {NotFound} from "@/view/components/NotFound";
+import { Spinner } from "@/view/components/Spinner";
+import { ListEfficienciesDataGrid } from "@/view/components/ListEfficienciesDataGrid";
+import { NotFound } from "@/view/components/NotFound";
 
 export const DataGridCard = () => {
-  const {isEmpty, isFetchingEfficiencies, efficiencies, windowWidth} =
+  const { isEmpty, isFetchingEfficiencies, efficiencies, windowWidth } =
     useDataGridCard();
   return (
     <Card className="col-span-12 row-span-3 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
@@ -25,12 +22,12 @@ export const DataGridCard = () => {
             Lista de Ocorrências do período selecionado
           </CardDescription>
         </div>
-        <Button asChild size="sm" className="ml-auto gap-1">
+        {/*   <Button asChild size="sm" className="ml-auto gap-1">
           <Link to="/">
             View All
             <ArrowUpRight className="h-4 w-4" />
           </Link>
-        </Button>
+        </Button> */}
       </CardHeader>
       <CardContent className="p-0 h-4/5 ">
         {isFetchingEfficiencies && (

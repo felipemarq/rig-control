@@ -1,8 +1,8 @@
-import {ResponsiveBar} from "@nivo/bar";
-import {useAverageBarChart} from "./useAverageBarChart";
+import { ResponsiveBar } from "@nivo/bar";
+import { useAverageBarChart } from "./useAverageBarChart";
 
 export const AverageBarChart = () => {
-  const {data, getBarColor, handleChangeRig, navigate, windowWidth} =
+  const { data, getBarColor, handleChangeRig, navigate, windowWidth } =
     useAverageBarChart();
   const isSmallMobileScreen = windowWidth <= 768;
 
@@ -29,8 +29,8 @@ export const AverageBarChart = () => {
           "annotations", // Adiciona uma camada de rótulos
         ]}
         borderRadius={5}
-        valueScale={{type: "linear"}}
-        indexScale={{type: "band", round: true}}
+        valueScale={{ type: "linear" }}
+        indexScale={{ type: "band", round: true }}
         colors={getBarColor}
         defs={[
           {
@@ -143,7 +143,7 @@ export const AverageBarChart = () => {
       />
 
       <small className="flex items-center justify-center gap-2 absolute bottom-2 right-10 italic text-gray-700">
-        <div className="bg-red-500 p-1 w-3 h-3"></div>{" "}
+        <div className="bg-secondaryAccent-500 p-1 w-3 h-3"></div>{" "}
         <span> Sondas com dias pendentes durante o periodo selecionado</span>
       </small>
 

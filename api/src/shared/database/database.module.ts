@@ -15,6 +15,9 @@ import { PeriodsRepository } from './repositories/period.repositories';
 import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficienciesRepositories';
 import { UserLogsRepository } from './repositories/userLog.repositories';
 import { SystemVersionRepository } from './repositories/systemVersion.repositories';
+import { OccurrenceRepository } from './repositories/occurrences.repositories';
+import { BaseRepository } from './repositories/base.repositories';
+import { ManHourRepository } from './repositories/manHour.repositories';
 
 @Global()
 @Module({
@@ -35,6 +38,9 @@ import { SystemVersionRepository } from './repositories/systemVersion.repositori
     TemporaryEfficienciesRepository,
     UserLogsRepository,
     SystemVersionRepository,
+    OccurrenceRepository,
+    BaseRepository,
+    ManHourRepository,
   ],
   exports: [
     PrismaService,
@@ -52,6 +58,9 @@ import { SystemVersionRepository } from './repositories/systemVersion.repositori
     TemporaryEfficienciesRepository,
     UserLogsRepository,
     SystemVersionRepository,
+    OccurrenceRepository,
+    BaseRepository,
+    ManHourRepository,
   ],
 })
 export class DatabaseModule {}
