@@ -7,7 +7,6 @@ interface ModalProps {
   open: boolean;
   children: React.ReactNode;
   title: string;
-  rightAction?: React.ReactNode;
   onClose?(): void;
   maxWidth?: string;
 }
@@ -16,7 +15,6 @@ export const Modal = ({
   open,
   children,
   title,
-  rightAction,
   onClose,
   maxWidth,
 }: ModalProps) => {

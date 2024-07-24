@@ -1,6 +1,6 @@
-import {Header} from "../../components/Header";
-import {Spinner} from "../../components/Spinner";
-import {useContract} from "./useContract";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
+import { useContract } from "./useContract";
 import {
   Table,
   TableBody,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/table";
 
 export const Contract = () => {
-  const {contracts, isFetchingContracts} = useContract();
+  const { contracts, isFetchingContracts } = useContract();
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header title="Contratos" displayRig={false} displayPeriodRange={false}>
@@ -43,23 +43,27 @@ export const Contract = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {contracts.map(({id, logoImagePath, rigs}) => (
+                  {contracts.map(({ id, logoImagePath, rigs, name }) => (
                     <TableRow key={id}>
                       <TableCell className="table-cell">
-                        <img
-                          alt="Product image"
-                          className="aspect-square rounded-md object-contain"
-                          height="64"
-                          src={logoImagePath}
-                          width="64"
-                        />
+                        {logoImagePath && (
+                          <img
+                            alt="Product image"
+                            className="aspect-square rounded-md object-contain"
+                            height="64"
+                            src={logoImagePath}
+                            width="64"
+                          />
+                        )}
+
+                        {!logoImagePath && name}
                       </TableCell>
 
                       <TableCell className="table-cell text-center">
                         {rigs.length}
                       </TableCell>
                       <TableCell className="hidden md:table-cell text-center gap-x-4">
-                        {rigs.map(({name}) => (
+                        {rigs.map(({ name }) => (
                           <span className="ml-2">{name}</span>
                         ))}
                       </TableCell>
