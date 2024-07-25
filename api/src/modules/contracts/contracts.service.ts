@@ -30,6 +30,7 @@ export class ContractsService {
         name: true,
         rigs: true,
         logoImagePath: true,
+        client: true,
       },
     });
   }

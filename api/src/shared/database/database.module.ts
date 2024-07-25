@@ -18,6 +18,7 @@ import { SystemVersionRepository } from './repositories/systemVersion.repositori
 import { OccurrenceRepository } from './repositories/occurrences.repositories';
 import { BaseRepository } from './repositories/base.repositories';
 import { ManHourRepository } from './repositories/manHour.repositories';
+import { FilesRepository } from './repositories/files.repositories';
 
 @Global()
 @Module({
@@ -41,6 +42,7 @@ import { ManHourRepository } from './repositories/manHour.repositories';
     OccurrenceRepository,
     BaseRepository,
     ManHourRepository,
+    FilesRepository,
   ],
   exports: [
     PrismaService,
@@ -60,6 +62,7 @@ import { ManHourRepository } from './repositories/manHour.repositories';
     SystemVersionRepository,
     OccurrenceRepository,
     BaseRepository,
+    FilesRepository,
     ManHourRepository,
   ],
 })

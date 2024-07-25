@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUploadFileDto } from './dto/create-upload-file.dto';
 import { UpdateUploadFileDto } from './dto/update-upload-file.dto';
 import { ConfigService } from '@nestjs/config';
 import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import { randomUUID } from 'crypto';
+import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
+import { FilesRepository } from 'src/shared/database/repositories/files.repositories';
 
 @Injectable()
 export class UploadFileService {
@@ -11,18 +13,42 @@ export class UploadFileService {
     region: this.configService.getOrThrow('AWS_S3_REGION'),
   });
 
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly occurrencesRepo: OccurrenceRepository,
+    private readonly filesRepo: FilesRepository,
+  ) {}
 
-  async upload(fileName: string, file: Buffer) {
+  async upload(
+    file: Express.Multer.File,
+    userId: string,
+    occurrenceId: string,
+  ) {
     const id = randomUUID();
-    const awsKey = `${id}-${fileName}`;
+    const awsKey = `${id}-${file.originalname}`;
+
+    const occurrence = await this.occurrencesRepo.findUnique({
+      where: { id: occurrenceId },
+    });
+
+    if (!occurrence) {
+      throw new NotFoundException('Ocorrência não encontrada!');
+    }
 
     await this.s3Client.send(
       new PutObjectCommand({
         Bucket: 'conterp-file-uploader',
         Key: awsKey,
-        Body: file,
+        Body: file.buffer,
       }),
     );
+
+    await this.filesRepo.create({
+      data: {
+        path: `https://conterp-file-uploader.s3.amazonaws.com/${awsKey}`,
+        userId,
+        occurrenceId: occurrence.id,
+      },
+    });
   }
 }

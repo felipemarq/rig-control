@@ -1,18 +1,23 @@
-import { IsEnum, IsNotEmpty, IsOptional, IsString, IsUUID } from "class-validator";
-import { UF } from "src/modules/rigs/entities/UF";
+import {
+  IsEnum,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+} from 'class-validator';
+import { UF } from 'src/modules/rigs/entities/UF';
 
 export class CreateBaseDto {
+  @IsNotEmpty()
+  @IsString()
+  name: string;
 
-    @IsNotEmpty()
-    @IsString()
-    name: string;
+  @IsString()
+  @IsNotEmpty()
+  @IsEnum(UF)
+  state: UF;
 
-    @IsString()
-    @IsNotEmpty()
-    @IsEnum(UF)
-    state: UF;
-
-    @IsOptional()
-    @IsUUID()
-    rigId:string;
+  @IsNotEmpty()
+  @IsUUID()
+  contractId: string;
 }

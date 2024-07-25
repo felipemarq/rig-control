@@ -53,7 +53,6 @@ model Rig {
   BillingConfiguration  BillingConfiguration[]
   Billing               Billing[]
   contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
-  base                  Base[]
 
   @@map("rigs")
 }
@@ -68,6 +67,7 @@ model Contract {
   rigs   Rig[]
   users  UserContract[]
   wells  Well[]
+  base   Base?
 
   @@map("contracts")
 }
@@ -103,6 +103,7 @@ model User {
   userLog             UserLog[]
   occurrences         Occurrence[]
   manHours            ManHour[]
+  files               File[]
 
   @@map("users")
 }
@@ -587,11 +588,11 @@ enum OccurrenceCategory {
 model Base {
   id          String       @id @default(uuid()) @db.Uuid
   name        String       @unique
+  contractId  String       @unique @db.Uuid
   state       UF
-  rigId       String?      @db.Uuid
-  rig         Rig?         @relation(fields: [rigId], references: [id], onDelete: Cascade)
   occurrences Occurrence[]
   manHours    ManHour[]
+  contract    Contract     @relation(fields: [contractId], references: [id])
 
   @@map("bases")
 }
@@ -628,8 +629,9 @@ model Occurrence {
   isAbsent Boolean        @map("is_absent")
   nature   Nature
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-  base Base @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  base  Base   @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  files File[]
 
   @@map("occurrences")
 }
@@ -643,4 +645,17 @@ model OccurrenceAction {
   isFinished  Boolean  @default(false)
 
   @@map("occurrence_action")
+}
+
+model File {
+  id           String   @id @default(uuid()) @db.Uuid
+  path         String
+  userId       String   @map("user_id") @db.Uuid
+  occurrenceId String?  @map("occurrence_id") @db.Uuid
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  occurrence Occurrence? @relation(fields: [occurrenceId], references: [id])
+
+  @@map("files")
 }
