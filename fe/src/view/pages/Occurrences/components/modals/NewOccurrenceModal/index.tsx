@@ -6,6 +6,9 @@ import { TimePicker } from "antd";
 import { Select } from "@/view/components/Select";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
+import { useMemo } from "react";
+import { FileIcon, FileUp } from "lucide-react";
+import { UploadFilesModal } from "../UploadFilesModal";
 
 export const NewOccurrenceModal = () => {
   const {
@@ -20,6 +23,12 @@ export const NewOccurrenceModal = () => {
     handleHourChange,
     errors,
     isLoadingNewOccurrence,
+    previewURL,
+    handleFileSelected,
+    handleDragOver,
+    handleDrop,
+
+    file,
   } = useNewOccurrenceModal();
 
   return (
@@ -191,6 +200,43 @@ export const NewOccurrenceModal = () => {
               />
             )}
           />
+
+          <div className="flex flex-col gap-4">
+            <div className="xs:w-full lg:col-span-4 h-32  ">
+              <label
+                htmlFor="file"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                className="border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200"
+              >
+                {file && (
+                  <div className="flex flex-col gap-4 items-center justify-center">
+                    <FileUp className="w-8 h-8 text-clack" />
+                    <div>{file.name}</div>
+                  </div>
+                )}
+                {!file && (
+                  <div className="flex flex-col gap-4 items-center">
+                    <FileUp className="w-8 h-8 text-clack" />
+                    <span className="text-black">Anexar arquivo</span>
+                    <span className="text-gray-600">
+                      {
+                        "Clique ou arraste para fazer o upload do arquivo (tamanho máximo 10MB)"
+                      }
+                    </span>
+                  </div>
+                )}
+              </label>
+
+              <input
+                type="file"
+                id="file"
+                className="sr-only"
+                onChange={handleFileSelected}
+                // onDrop={handleFileSelected}
+              ></input>
+            </div>
+          </div>
         </div>
 
         <Button

@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { ChangeEvent, DragEvent, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { occurrencesService } from "@/app/services/occurrencesService";
 import { AxiosError } from "axios";
@@ -37,6 +37,47 @@ export const useNewOccurrenceModal = () => {
     useOccurrencesContext();
 
   const [selectedHour, setSelectHour] = useState<string>("00:00");
+
+  const [file, setFile] = useState<File | null>(null);
+
+  const previewURL = useMemo(() => {
+    if (!file) {
+      return null;
+    }
+
+    return URL.createObjectURL(file);
+  }, [file]);
+
+  const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.currentTarget;
+
+    if (!files) {
+      return;
+    }
+
+    const selectedFile = files[0];
+
+    setFile(selectedFile);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { files } = event.dataTransfer;
+
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const selectedFile = files[0];
+    setFile(selectedFile);
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+  };
 
   const handleHourChange = (timeString: string) => {
     setSelectHour(timeString);
@@ -117,5 +158,10 @@ export const useNewOccurrenceModal = () => {
     handleHourChange,
     isLoadingNewOccurrence,
     errors,
+    previewURL,
+    handleFileSelected,
+    handleDrop,
+    handleDragOver,
+    file,
   };
 };
