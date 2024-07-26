@@ -1,20 +1,20 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate} from "react-router-dom";
-import {v4 as uuidv4} from "uuid";
-import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {Dayjs} from "dayjs";
-import {parse, differenceInMinutes} from "date-fns";
-import {ErrorArgs, useErrors} from "../../../../../app/hooks/useErrors";
-import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
-import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
-import {useTemporaryEfficiencyByUserId} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
-import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { efficiencyMappers } from "../../../../../app/services/mappers/efficiencyMappers";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { Dayjs } from "dayjs";
+import { parse, differenceInMinutes } from "date-fns";
+import { ErrorArgs, useErrors } from "../../../../../app/hooks/useErrors";
+import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
+import { temporaryEfficienciesServices } from "../../../../../app/services/temporaryEfficienciesServices";
+import { useTemporaryEfficiencyByUserId } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
+import { TemporaryEfficiencyResponse } from "../../../../../app/services/temporaryEfficienciesServices/getById";
 
 interface FormContextValue {
   date: Date | undefined;
@@ -83,7 +83,7 @@ interface FormContextValue {
   handleSuckingTruckCheckbox(): void;
 
   isSuckingTruckSelected: boolean;
-  usersRigs: {id: string; name: string}[];
+  usersRigs: { id: string; name: string }[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -152,20 +152,20 @@ type Periods = {
 
 export const FormContext = createContext({} as FormContextValue);
 
-export const FormProvider = ({children}: {children: React.ReactNode}) => {
+export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   //Custom Hooks
   const navigate = useNavigate();
-  const {user, isUserAdm} = useAuth();
-  const {setError, removeError, getErrorMessageByFildName, errors} =
+  const { user, isUserAdm } = useAuth();
+  const { setError, removeError, getErrorMessageByFildName, errors } =
     useErrors();
-  const {handleToggleNavItem} = useSidebarContext();
+  const { handleToggleNavItem } = useSidebarContext();
   const [date, setDate] = useState<Date>();
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-  const {temporaryEfficiency} = useTemporaryEfficiencyByUserId(user?.id!);
+  const { temporaryEfficiency } = useTemporaryEfficiencyByUserId(user?.id!);
 
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>([
@@ -191,9 +191,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   ]);
 
   useEffect(() => {
-    setError({fieldName: "date", message: "Data Inválida!"});
-    setError({fieldName: `${periods[0].id} well`, message: "Obrigatório"});
-    setError({fieldName: `${periods[0].id} type`, message: "Obrigatório"});
+    setError({ fieldName: "date", message: "Data Inválida!" });
+    setError({ fieldName: `${periods[0].id} well`, message: "Obrigatório" });
+    setError({ fieldName: `${periods[0].id} type`, message: "Obrigatório" });
     setError({
       fieldName: `${periods[0].id} classification`,
       message: "Obrigatório",
@@ -221,7 +221,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   // Utilização de useMutation para obter isLoading e mutateAsync
-  const {isPending: isLoading, mutateAsync} = useMutation({
+  const { isPending: isLoading, mutateAsync } = useMutation({
     mutationFn: efficienciesService.create,
   });
 
@@ -237,7 +237,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const handleSubmit = async (periods: Periods) => {
     // Criação do objeto de persistência utilizando o mapeamento dos dados
 
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date!,
       availableHours: 24,
@@ -284,9 +284,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
       handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
@@ -296,7 +296,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const handleSubmitTemporary = async (periods: Periods) => {
     // Criação do objeto de persistência utilizando o mapeamento dos dados
 
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date!,
       availableHours: 24,
@@ -341,9 +341,9 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
       handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
@@ -379,7 +379,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, startHour: timeString} : period;
+      return period.id === id ? { ...period, startHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -391,7 +391,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, endHour: timeString} : period;
+      return period.id === id ? { ...period, endHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -399,7 +399,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handlePeriodWell = (id: string, well: string) => {
     if (!well) {
-      setError({fieldName: `${id} well`, message: "Obrigatório"});
+      setError({ fieldName: `${id} well`, message: "Obrigatório" });
     } else {
       removeError(`${id} well`);
     }
@@ -418,13 +418,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handlePeriodType = (id: string, type: string) => {
     if (!type) {
-      setError({fieldName: `${id} type`, message: "Obrigatório"});
+      setError({ fieldName: `${id} type`, message: "Obrigatório" });
     } else {
       removeError(`${id} type`);
     }
     const newPeriods = periods.map((period) => {
       if (type === "DTM" && period.id === id) {
-        setError({fieldName: `${id} well`, message: "Obrigatório"});
+        setError({ fieldName: `${id} well`, message: "Obrigatório" });
         return {
           ...period,
           type: type,
@@ -435,7 +435,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       }
 
       if (period.id === id) {
-        setError({fieldName: `${id} classification`, message: "Obrigatório"});
+        setError({ fieldName: `${id} classification`, message: "Obrigatório" });
 
         return {
           ...period,
@@ -453,7 +453,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handlePeriodClassification = (id: string, classification: string) => {
     if (!classification) {
-      setError({fieldName: `${id} classification`, message: "Obrigatório"});
+      setError({ fieldName: `${id} classification`, message: "Obrigatório" });
     } else {
       removeError(`${id} classification`);
     }
@@ -476,7 +476,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, repairClassification: repairClassification}
+        ? { ...period, repairClassification: repairClassification }
         : period;
     });
 
@@ -485,7 +485,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, fluidRatio: ratio} : period;
+      return period.id === id ? { ...period, fluidRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -493,17 +493,17 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, equipmentRatio: ratio} : period;
+      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
   };
 
   const updatePeriodState = (id: string, state: boolean) => {
-    const newStates = periodsState.map(({periodId, isCollapsed}) => {
+    const newStates = periodsState.map(({ periodId, isCollapsed }) => {
       return periodId === id
-        ? {periodId, isCollapsed: state}
-        : {periodId, isCollapsed};
+        ? { periodId, isCollapsed: state }
+        : { periodId, isCollapsed };
     });
 
     setPeriodsState(newStates);
@@ -513,8 +513,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const addPeriod = () => {
     const newId = uuidv4();
-    setError({fieldName: `${newId} type`, message: "Obrigatório"});
-    setError({fieldName: `${newId} classification`, message: "Obrigatório"});
+    setError({ fieldName: `${newId} type`, message: "Obrigatório" });
+    setError({ fieldName: `${newId} classification`, message: "Obrigatório" });
     setPeriods([
       ...periods,
       {
@@ -533,7 +533,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
     const newStates = updatePeriodState(periods[periods.length - 1].id, true);
 
-    setPeriodsState([...newStates, {periodId: newId, isCollapsed: false}]);
+    setPeriodsState([...newStates, { periodId: newId, isCollapsed: false }]);
   };
 
   const cleanFields = (id: string) => {
@@ -571,7 +571,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setDate(date);
 
     if (getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())) {
-      setError({fieldName: "date", message: "Data Inválida!"});
+      setError({ fieldName: "date", message: "Data Inválida!" });
     } else {
       removeError("date");
     }
@@ -589,7 +589,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, description: text} : period;
+      return period.id === id ? { ...period, description: text } : period;
     });
 
     setPeriods(newPeriods);
@@ -625,16 +625,18 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
   const userRig = user?.rigs[0].rig!;
 
   const usersRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
+    user?.rigs.map(({ rig: { id, name } }) => {
       return {
         id,
         name,
       };
     }) || [];
 
-  const selectedContract = user?.rigs.find(({rig: {id}}) => {
+  const selectedContract = user?.rigs.find(({ rig: { id } }) => {
     return id === selectedRig;
   });
+
+  console.log("selected contract", selectedContract);
 
   //Configurações de formulário adicionais
 

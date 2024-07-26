@@ -19,6 +19,7 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
+import { uploadFilesService } from "@/app/services/uploadFilesService";
 
 const schema = z.object({
   date: z.date(),
@@ -37,7 +38,7 @@ export const useNewOccurrenceModal = () => {
     useOccurrencesContext();
 
   const [selectedHour, setSelectHour] = useState<string>("00:00");
-
+  const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
 
   const previewURL = useMemo(() => {
@@ -77,6 +78,13 @@ export const useNewOccurrenceModal = () => {
   const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(false);
   };
 
   const handleHourChange = (timeString: string) => {
@@ -96,11 +104,19 @@ export const useNewOccurrenceModal = () => {
 
   const { bases, isFetchingBases } = useBases();
 
-  const { isPending: isLoadingNewOccurrence, mutateAsync } = useMutation({
+  const {
+    isPending: isLoadingNewOccurrence,
+    mutateAsync: mutateNewOccurrenceAsync,
+  } = useMutation({
     mutationFn: occurrencesService.create,
   });
 
-  console.log("errors", errors);
+  const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
+    useMutation({
+      mutationFn: uploadFilesService.create,
+    });
+
+  //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
@@ -120,7 +136,7 @@ export const useNewOccurrenceModal = () => {
     });
 
     try {
-      await mutateAsync({
+      const occurrence = await mutateNewOccurrenceAsync({
         date: data.date.toISOString(),
         baseId: data.baseId,
         isAbsent: data.isAbsent === "true" ? true : false,
@@ -135,6 +151,15 @@ export const useNewOccurrenceModal = () => {
           ? (data.category as OccurrenceCategory)
           : undefined,
       });
+
+      if (file) {
+        await mutateUploadFileAsync({
+          occurrenceId: occurrence.id,
+          file: file,
+        });
+      }
+
+      setFile(null);
       reset();
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeNewOccurrenceModal();
@@ -163,5 +188,7 @@ export const useNewOccurrenceModal = () => {
     handleDrop,
     handleDragOver,
     file,
+    isDragging,
+    handleDragLeave,
   };
 };

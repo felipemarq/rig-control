@@ -7,8 +7,9 @@ import { Select } from "@/view/components/Select";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
 import { useMemo } from "react";
-import { FileIcon, FileUp } from "lucide-react";
+import { FileIcon, FileUp, Hand } from "lucide-react";
 import { UploadFilesModal } from "../UploadFilesModal";
+import { cn } from "@/lib/utils";
 
 export const NewOccurrenceModal = () => {
   const {
@@ -27,8 +28,9 @@ export const NewOccurrenceModal = () => {
     handleFileSelected,
     handleDragOver,
     handleDrop,
-
+    isDragging,
     file,
+    handleDragLeave,
   } = useNewOccurrenceModal();
 
   return (
@@ -207,7 +209,11 @@ export const NewOccurrenceModal = () => {
                 htmlFor="file"
                 onDrop={handleDrop}
                 onDragOver={handleDragOver}
-                className="border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200"
+                onDragLeave={handleDragLeave}
+                className={cn(
+                  "border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200",
+                  isDragging && "bg-gray-200"
+                )}
               >
                 {file && (
                   <div className="flex flex-col gap-4 items-center justify-center">
@@ -217,8 +223,13 @@ export const NewOccurrenceModal = () => {
                 )}
                 {!file && (
                   <div className="flex flex-col gap-4 items-center">
-                    <FileUp className="w-8 h-8 text-clack" />
-                    <span className="text-black">Anexar arquivo</span>
+                    {!isDragging && <FileUp className="w-8 h-8 text-clack" />}
+                    {isDragging && <Hand className="w-8 h-8 text-clack" />}
+
+                    <span className="text-black">
+                      {!isDragging && " Anexar arquivo"}
+                      {isDragging && " Solte o arquivo para fazer o upload"}
+                    </span>
                     <span className="text-gray-600">
                       {
                         "Clique ou arraste para fazer o upload do arquivo (tamanho máximo 10MB)"
