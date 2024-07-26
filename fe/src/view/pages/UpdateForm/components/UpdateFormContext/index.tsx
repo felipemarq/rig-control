@@ -1,24 +1,30 @@
-import {createContext, useCallback, useEffect, useMemo, useState} from "react";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate, useParams} from "react-router-dom";
-import {v4 as uuidv4} from "uuid";
-import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {Dayjs} from "dayjs";
-import {parse, differenceInMinutes} from "date-fns";
-import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
-import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
-import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
-import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
-import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
-import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
-import {useTemporaryEfficiencyByUserId} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { efficiencyMappers } from "../../../../../app/services/mappers/efficiencyMappers";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { Dayjs } from "dayjs";
+import { parse, differenceInMinutes } from "date-fns";
+import { useEfficiencyById } from "../../../../../app/hooks/efficiencies/useEfficiencyById";
+import { PersistanceEfficiency } from "../../../../../app/entities/PersistanceEfficiency";
+import { formatIsoStringToHours } from "../../../../../app/utils/formatIsoStringToHours";
+import { TemporaryEfficiencyResponse } from "../../../../../app/services/temporaryEfficienciesServices/getById";
+import { temporaryEfficienciesServices } from "../../../../../app/services/temporaryEfficienciesServices";
+import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
+import { useTemporaryEfficiencyByUserId } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
 
-type ErrorArgs = {fieldName: string; message: string};
+type ErrorArgs = { fieldName: string; message: string };
 
 interface UpdateFormContextValue {
   date: Date | undefined;
@@ -31,8 +37,10 @@ interface UpdateFormContextValue {
     state?: string | undefined;
     isAtive?: boolean | undefined;
     contract: {
-      id: string;
-      name: string;
+      client: {
+        id: string;
+        name: string;
+      };
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
@@ -82,7 +90,7 @@ interface UpdateFormContextValue {
   getPeriodState(periodId: string): boolean;
   isConfigsConfirmed: boolean;
   isSuckingTruckSelected: boolean;
-  usersRigs: {id: string; name: string}[];
+  usersRigs: { id: string; name: string }[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -133,8 +141,10 @@ interface UpdateFormContextValue {
           state?: string | undefined;
           isAtive?: boolean | undefined;
           contract: {
-            id: string;
-            name: string;
+            client: {
+              id: string;
+              name: string;
+            };
           };
         };
       }
@@ -156,11 +166,15 @@ type Periods = {
 
 export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 
-export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
-  const {handleToggleNavItem} = useSidebarContext();
+export const UpdateFormProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const { user } = useAuth();
+  const { handleToggleNavItem } = useSidebarContext();
 
-  const {efficiencyId} = useParams<{efficiencyId: string}>();
+  const { efficiencyId } = useParams<{ efficiencyId: string }>();
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -168,7 +182,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     throw new Error("efficiencyId is undefined");
   }
 
-  const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
+  const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId!);
 
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
@@ -249,7 +263,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
-  const {temporaryEfficiency} = useTemporaryEfficiencyByUserId(user?.id!);
+  const { temporaryEfficiency } = useTemporaryEfficiencyByUserId(user?.id!);
 
   useEffect(() => {
     setPeriods(initialPeriods);
@@ -257,26 +271,29 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   // const tes = efficiency.periods.map()
 
-  const {isPending: isLoadingEfficiency, mutateAsync} = useMutation({
+  const { isPending: isLoadingEfficiency, mutateAsync } = useMutation({
     mutationFn: efficienciesService.create,
   });
   const queryClient = useQueryClient();
 
   const [periodsState, setPeriodsState] = useState(() => {
-    return initialPeriods?.map(({id}) => ({periodId: id, isCollapsed: true}));
+    return initialPeriods?.map(({ id }) => ({
+      periodId: id,
+      isCollapsed: true,
+    }));
   });
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
   console.log("errors", errors);
 
-  const setError = ({fieldName, message}: ErrorArgs) => {
+  const setError = ({ fieldName, message }: ErrorArgs) => {
     const errorAlreadyExists = errors.find(
       (error) => error.fieldName === fieldName
     );
 
     if (errorAlreadyExists) return;
 
-    setErrors((prevState) => [...prevState, {fieldName, message}]);
+    setErrors((prevState) => [...prevState, { fieldName, message }]);
   };
 
   const removeError = (fieldName: string) => {
@@ -313,7 +330,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const {
     isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
-  } = useMutation({mutationFn: efficienciesService.remove});
+  } = useMutation({ mutationFn: efficienciesService.remove });
 
   const {
     isPending: isLoadingTemporary,
@@ -325,12 +342,12 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const handleSubmit = async (periods: Periods) => {
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId!);
-      queryClient.invalidateQueries({queryKey: ["efficiencies"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies"] });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
 
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
       availableHours: 24,
@@ -375,9 +392,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -408,7 +425,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const handleSubmitTemporary = async (periods: Periods) => {
     // Criação do objeto de persistência utilizando o mapeamento dos dados
 
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date!,
       availableHours: 24,
@@ -453,9 +470,9 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
       handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
@@ -469,7 +486,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, startHour: timeString} : period;
+      return period.id === id ? { ...period, startHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -481,7 +498,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, endHour: timeString} : period;
+      return period.id === id ? { ...period, endHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -489,13 +506,13 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handlePeriodType = (id: string, type: string) => {
     if (!type) {
-      setError({fieldName: `${id} type`, message: "Obrigatório"});
+      setError({ fieldName: `${id} type`, message: "Obrigatório" });
     } else {
       removeError(`${id} type`);
     }
     const newPeriods = periods.map((period) => {
       if (type === "DTM" && period.id === id) {
-        setError({fieldName: `${id} well`, message: "Obrigatório"});
+        setError({ fieldName: `${id} well`, message: "Obrigatório" });
         return {
           ...period,
           type: type,
@@ -506,7 +523,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
       }
 
       if (period.id === id) {
-        setError({fieldName: `${id} classification`, message: "Obrigatório"});
+        setError({ fieldName: `${id} classification`, message: "Obrigatório" });
 
         return {
           ...period,
@@ -524,7 +541,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handlePeriodClassification = (id: string, classification: string) => {
     if (!classification) {
-      setError({fieldName: `${id} classification`, message: "Obrigatório"});
+      setError({ fieldName: `${id} classification`, message: "Obrigatório" });
     } else {
       removeError(`${id} classification`);
     }
@@ -547,7 +564,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, repairClassification: repairClassification}
+        ? { ...period, repairClassification: repairClassification }
         : period;
     });
 
@@ -556,7 +573,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handlePeriodWell = (id: string, well: string) => {
     if (!well) {
-      setError({fieldName: `${id} well`, message: "Obrigatório"});
+      setError({ fieldName: `${id} well`, message: "Obrigatório" });
     } else {
       removeError(`${id} well`);
     }
@@ -574,7 +591,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, fluidRatio: ratio} : period;
+      return period.id === id ? { ...period, fluidRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -582,7 +599,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, equipmentRatio: ratio} : period;
+      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -596,10 +613,10 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const updatePeriodState = (id: string, state: boolean) => {
-    const newStates = periodsState.map(({periodId, isCollapsed}) => {
+    const newStates = periodsState.map(({ periodId, isCollapsed }) => {
       return periodId === id
-        ? {periodId, isCollapsed: state}
-        : {periodId, isCollapsed};
+        ? { periodId, isCollapsed: state }
+        : { periodId, isCollapsed };
     });
 
     setPeriodsState(newStates);
@@ -609,8 +626,8 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const addPeriod = () => {
     const newId = uuidv4();
-    setError({fieldName: `${newId} type`, message: "Obrigatório"});
-    setError({fieldName: `${newId} classification`, message: "Obrigatório"});
+    setError({ fieldName: `${newId} type`, message: "Obrigatório" });
+    setError({ fieldName: `${newId} classification`, message: "Obrigatório" });
     setPeriods([
       ...periods,
       {
@@ -629,7 +646,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
     const newStates = updatePeriodState(periods[periods.length - 1].id, true);
 
-    setPeriodsState([...newStates, {periodId: newId, isCollapsed: false}]);
+    setPeriodsState([...newStates, { periodId: newId, isCollapsed: false }]);
   };
 
   const cleanFields = (id: string) => {
@@ -666,7 +683,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const handleDateChange = (date: Date) => {
     setDate(date);
     if (getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())) {
-      setError({fieldName: "date", message: "Data Inválida!"});
+      setError({ fieldName: "date", message: "Data Inválida!" });
     } else {
       removeError("date");
     }
@@ -683,7 +700,7 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, description: text} : period;
+      return period.id === id ? { ...period, description: text } : period;
     });
 
     setPeriods(newPeriods);
@@ -720,14 +737,14 @@ export const UpdateFormProvider = ({children}: {children: React.ReactNode}) => {
   const userRig = user?.rigs[0].rig!;
 
   const usersRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
+    user?.rigs.map(({ rig: { id, name } }) => {
       return {
         id,
         name,
       };
     }) || [];
 
-  const selectedContract = user?.rigs.find(({rig: {id}}) => {
+  const selectedContract = user?.rigs.find(({ rig: { id } }) => {
     return id === selectedRig;
   });
 

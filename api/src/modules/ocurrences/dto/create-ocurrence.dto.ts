@@ -10,6 +10,7 @@ import {
 import { OccurrenceType } from '../entities/OccurrenceType';
 import { Nature } from '../entities/Nature';
 import { OccurrenceCategory } from '../entities/OccurrenceCategory';
+import { UF } from '../entities/UF';
 
 export class CreateOcurrenceDto {
   @IsString()
@@ -21,6 +22,11 @@ export class CreateOcurrenceDto {
   @IsNotEmpty()
   @IsDateString()
   hour: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsEnum(UF)
+  state: UF;
 
   @IsNotEmpty()
   description: string;

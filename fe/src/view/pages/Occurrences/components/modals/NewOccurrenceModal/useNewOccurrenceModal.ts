@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { ChangeEvent, DragEvent, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { occurrencesService } from "@/app/services/occurrencesService";
 import { AxiosError } from "axios";
@@ -19,6 +19,8 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
+import { uploadFilesService } from "@/app/services/uploadFilesService";
+import { UF } from "@/app/entities/Rig";
 
 const schema = z.object({
   date: z.date(),
@@ -28,6 +30,7 @@ const schema = z.object({
   nature: z.nativeEnum(Nature),
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
+  state: z.string().min(1, "Estado é obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -37,6 +40,54 @@ export const useNewOccurrenceModal = () => {
     useOccurrencesContext();
 
   const [selectedHour, setSelectHour] = useState<string>("00:00");
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
+
+  const previewURL = useMemo(() => {
+    if (!file) {
+      return null;
+    }
+
+    return URL.createObjectURL(file);
+  }, [file]);
+
+  const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.currentTarget;
+
+    if (!files) {
+      return;
+    }
+
+    const selectedFile = files[0];
+
+    setFile(selectedFile);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { files } = event.dataTransfer;
+
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const selectedFile = files[0];
+    setFile(selectedFile);
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(false);
+  };
 
   const handleHourChange = (timeString: string) => {
     setSelectHour(timeString);
@@ -55,11 +106,19 @@ export const useNewOccurrenceModal = () => {
 
   const { bases, isFetchingBases } = useBases();
 
-  const { isPending: isLoadingNewOccurrence, mutateAsync } = useMutation({
+  const {
+    isPending: isLoadingNewOccurrence,
+    mutateAsync: mutateNewOccurrenceAsync,
+  } = useMutation({
     mutationFn: occurrencesService.create,
   });
 
-  console.log("errors", errors);
+  const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
+    useMutation({
+      mutationFn: uploadFilesService.create,
+    });
+
+  //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
@@ -79,9 +138,10 @@ export const useNewOccurrenceModal = () => {
     });
 
     try {
-      await mutateAsync({
+      const occurrence = await mutateNewOccurrenceAsync({
         date: data.date.toISOString(),
         baseId: data.baseId,
+        state: data.state as UF,
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
         type: data.type,
@@ -94,6 +154,15 @@ export const useNewOccurrenceModal = () => {
           ? (data.category as OccurrenceCategory)
           : undefined,
       });
+
+      if (file) {
+        await mutateUploadFileAsync({
+          occurrenceId: occurrence.id,
+          file: file,
+        });
+      }
+
+      setFile(null);
       reset();
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeNewOccurrenceModal();
@@ -115,7 +184,14 @@ export const useNewOccurrenceModal = () => {
     control,
     handleSubmit,
     handleHourChange,
-    isLoadingNewOccurrence,
+    isLoadingNewOccurrence: isLoadingUploadFile || isLoadingNewOccurrence,
     errors,
+    previewURL,
+    handleFileSelected,
+    handleDrop,
+    handleDragOver,
+    file,
+    isDragging,
+    handleDragLeave,
   };
 };

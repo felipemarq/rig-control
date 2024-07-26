@@ -24,6 +24,7 @@ export type Occurrence = {
   date: string;
   hour: string;
   description: string;
+  state: UF;
   baseId: string;
   userId: string;
   createdAt: string;
@@ -32,6 +33,7 @@ export type Occurrence = {
   isAbsent: boolean;
   category?: OccurrenceCategory;
   nature: Nature;
+  files: [] | { path: string }[];
   base: {
     name: string;
     state: UF;

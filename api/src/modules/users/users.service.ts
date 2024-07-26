@@ -37,7 +37,9 @@ export class UsersService {
                 name: true,
                 state: true,
                 isActive: true,
-                contract: true,
+                contract: {
+                  select: { client: { select: { id: true, name: true } } },
+                },
               },
             },
           },

@@ -21,6 +21,10 @@ export class OccurrenceRepository {
     return await this.prismaService.occurrence.findMany(findManyDto);
   }
 
+  async findUnique(findUniqueDto: Prisma.OccurrenceFindUniqueArgs) {
+    return await this.prismaService.occurrence.findUnique(findUniqueDto);
+  }
+
   async update(updateDto: Prisma.OccurrenceUpdateArgs) {
     return await this.prismaService.occurrence.update(updateDto);
   }

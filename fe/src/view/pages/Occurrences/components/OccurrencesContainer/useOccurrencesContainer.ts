@@ -4,6 +4,8 @@ export const useOccurrencesContainer = () => {
   const { isFetchingOccurrences, occurrences, isInitialLoading } =
     useOccurrences();
 
+  console.log("Occurrences: ", occurrences);
+
   return {
     isFetchingOccurrences,
     occurrences,

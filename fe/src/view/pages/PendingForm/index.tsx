@@ -1,21 +1,21 @@
-import {Header} from "../../components/Header";
+import { Header } from "../../components/Header";
 
-import {cn} from "../../../app/utils/cn";
-import {PeriodsFormContainer} from "./components/PeriodsFormContainer";
-import {BraskemFormContainer} from "./components/BraskemFormContainer";
+import { cn } from "../../../app/utils/cn";
+import { PeriodsFormContainer } from "./components/PeriodsFormContainer";
+import { BraskemFormContainer } from "./components/BraskemFormContainer";
 import {
   PendingFormContext,
   PendingFormProvider,
 } from "./components/PendingFormContext";
-import {TresRFormContainer} from "./components/TresRForm";
-import {OrigemContainer} from "./components/OrigemForm";
-import {CarmoEnergyContainer} from "./components/CarmoEnergyForm";
-import {Button} from "../../components/Button";
-import {DatePickerInput} from "../../components/DatePickerInput";
-import {ChevronDown} from "lucide-react";
-import {Select} from "../../components/Select";
-import {PageLoader} from "../../components/PageLoader";
-import {AlertModal} from "./components/AlertModal";
+import { TresRFormContainer } from "./components/TresRForm";
+import { OrigemContainer } from "./components/OrigemForm";
+import { CarmoEnergyContainer } from "./components/CarmoEnergyForm";
+import { Button } from "../../components/Button";
+import { DatePickerInput } from "../../components/DatePickerInput";
+import { ChevronDown } from "lucide-react";
+import { Select } from "../../components/Select";
+import { PageLoader } from "../../components/PageLoader";
+import { AlertModal } from "./components/AlertModal";
 
 export const PendingForm = () => {
   return (
@@ -127,7 +127,7 @@ export const PendingForm = () => {
                           placeholder="Sonda"
                           value={selectedRig}
                           onChange={(value) => handleChangeRig(value)}
-                          options={usersRigs.map(({id, name}) => ({
+                          options={usersRigs.map(({ id, name }) => ({
                             value: id,
                             label: name,
                           }))}
@@ -135,17 +135,17 @@ export const PendingForm = () => {
                       </div>
                     </div>
                     <div className="flex justify-center">
-                      {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "petrobrás" && <></>}
-                      {(selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                      {(selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "braskem" ||
-                        selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                        selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                           "braském") && <BraskemFormContainer />}
-                      {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "3r" && <TresRFormContainer />}
-                      {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "origem" && <OrigemContainer />}
-                      {selectedContract?.rig.contract.name.toLocaleLowerCase() ===
+                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "carmo energy" && <CarmoEnergyContainer />}
                     </div>
                     <div className="flex justify-end w-full py-4 px-8">

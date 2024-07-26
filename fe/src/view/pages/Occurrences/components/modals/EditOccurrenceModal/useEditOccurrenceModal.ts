@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { ChangeEvent, DragEvent, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { occurrencesService } from "@/app/services/occurrencesService";
 import { AxiosError } from "axios";
@@ -20,6 +20,7 @@ import { QueryKeys } from "@/app/config/QueryKeys";
 import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
+import { UF } from "@/app/entities/Rig";
 
 const schema = z.object({
   date: z.date(),
@@ -29,6 +30,7 @@ const schema = z.object({
   nature: z.nativeEnum(Nature),
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
+  state: z.string().min(1, "Estado é obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -43,9 +45,53 @@ export const useEditOccurrenceModal = () => {
   const [selectedHour, setSelectHour] = useState<string>(
     formatIsoStringToHours(occurrenceBeingSeen?.hour!)
   );
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [file, setFile] = useState<File | null>(null);
 
   const handleHourChange = (timeString: string) => {
     setSelectHour(timeString);
+  };
+
+  const hasFile = occurrenceBeingSeen?.files.length! > 0;
+
+  const fileName = hasFile ? occurrenceBeingSeen?.files[0].path : null;
+
+  const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
+    const { files } = event.currentTarget;
+
+    if (!files) {
+      return;
+    }
+
+    const selectedFile = files[0];
+
+    setFile(selectedFile);
+  };
+
+  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    const { files } = event.dataTransfer;
+
+    if (!files || files.length === 0) {
+      return;
+    }
+
+    const selectedFile = files[0];
+    setFile(selectedFile);
+  };
+
+  const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    setIsDragging(false);
   };
 
   const {
@@ -58,6 +104,7 @@ export const useEditOccurrenceModal = () => {
     defaultValues: {
       date: new Date(occurrenceBeingSeen?.date!),
       baseId: occurrenceBeingSeen?.baseId,
+      state: occurrenceBeingSeen?.state as UF,
       description: occurrenceBeingSeen?.description,
       isAbsent: occurrenceBeingSeen?.isAbsent ? "true" : "false",
       nature: occurrenceBeingSeen?.nature,
@@ -86,16 +133,6 @@ export const useEditOccurrenceModal = () => {
       nature: data.nature,
       type: data.type,
       description: data.description,
-      createdAt: getCurrentISOString(),
-    });
-
-    console.log("Data", {
-      date: data.date.toISOString(),
-      baseId: data.baseId,
-      isAbsent: data.isAbsent === "true" ? true : false,
-      nature: data.nature,
-      type: data.type,
-      description: data.description,
       createdAt: occurrenceBeingSeen?.createdAt!,
       updatedAt: getCurrentISOString(),
     });
@@ -105,6 +142,7 @@ export const useEditOccurrenceModal = () => {
         id: occurrenceBeingSeen?.id!,
         date: data.date.toISOString(),
         baseId: data.baseId,
+        state: data.state as UF,
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
         type: data.type,
@@ -145,5 +183,13 @@ export const useEditOccurrenceModal = () => {
     isLoadingNewOccurrence,
     errors,
     selectedHour,
+    handleFileSelected,
+    handleDrop,
+    handleDragOver,
+    file,
+    isDragging,
+    handleDragLeave,
+    hasFile,
+    fileName,
   };
 };
