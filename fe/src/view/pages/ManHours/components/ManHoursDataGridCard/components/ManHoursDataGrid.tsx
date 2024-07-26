@@ -26,7 +26,7 @@ export const ManHoursDataGrid = ({
   const columns: GridColDef[] = [
     {
       field: "baseName",
-      headerName: "Base",
+      headerName: "Contrato",
       headerAlign: "center",
       flex: 0.2,
       renderCell(params: GridRenderCellParams) {

@@ -27,8 +27,10 @@ interface FormContextValue {
     state?: string | undefined;
     isAtive?: boolean | undefined;
     contract: {
-      id: string;
-      name: string;
+      client: {
+        id: string;
+        name: string;
+      };
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
@@ -129,8 +131,10 @@ interface FormContextValue {
           state?: string | undefined;
           isAtive?: boolean | undefined;
           contract: {
-            id: string;
-            name: string;
+            client: {
+              id: string;
+              name: string;
+            };
           };
         };
       }
@@ -635,8 +639,6 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   const selectedContract = user?.rigs.find(({ rig: { id } }) => {
     return id === selectedRig;
   });
-
-  console.log("selected contract", selectedContract);
 
   //Configurações de formulário adicionais
 

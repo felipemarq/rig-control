@@ -68,10 +68,16 @@ export class OccurrencesService {
         type: true,
         nature: true,
         category: true,
+        state: true,
         base: {
           select: {
             name: true,
             state: true,
+          },
+        },
+        files: {
+          select: {
+            path: true,
           },
         },
       },

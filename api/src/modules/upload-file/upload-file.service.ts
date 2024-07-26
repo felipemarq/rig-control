@@ -36,17 +36,19 @@ export class UploadFileService {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
+    const awsKey = `${occurrenceId}-${file.originalname}`;
+
     await this.s3Client.send(
       new PutObjectCommand({
         Bucket: 'conterp-file-uploader',
-        Key: occurrenceId,
+        Key: awsKey,
         Body: file.buffer,
       }),
     );
 
     await this.filesRepo.create({
       data: {
-        path: `https://conterp-file-uploader.s3.amazonaws.com/${occurrenceId}`,
+        path: `https://conterp-file-uploader.s3.amazonaws.com/${awsKey}`,
         userId,
         occurrenceId: occurrence.id,
       },

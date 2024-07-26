@@ -5,6 +5,7 @@ import {
 } from "@/app/entities/Occurrence";
 import { httpClient } from "../httpClient";
 import { Occurrence } from "@/app/entities/Occurrence";
+import { UF } from "@/app/entities/Rig";
 
 export interface CreateOccurrenceParams {
   date: string;
@@ -16,6 +17,7 @@ export interface CreateOccurrenceParams {
   createdAt: string;
   hour: string;
   category?: OccurrenceCategory;
+  state: UF;
 }
 
 export type CreateResponse = Occurrence;

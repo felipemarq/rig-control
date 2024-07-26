@@ -617,6 +617,7 @@ model ManHour {
 model Occurrence {
   id          String              @id @default(uuid()) @db.Uuid
   date        DateTime
+  state       UF
   hour        DateTime
   description String
   category    OccurrenceCategory?

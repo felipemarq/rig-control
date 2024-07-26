@@ -1,23 +1,23 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate, useParams} from "react-router-dom";
-import {v4 as uuidv4} from "uuid";
-import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {Dayjs} from "dayjs";
-import {parse, differenceInMinutes} from "date-fns";
-import {formatIsoStringToHours} from "../../../../../app/utils/formatIsoStringToHours";
-import {useTemporaryEfficiencyById} from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyById";
-import {TemporaryEfficiencyResponse} from "../../../../../app/services/temporaryEfficienciesServices/getById";
-import {PeriodType} from "../../../../../app/entities/PeriodType";
-import {temporaryEfficienciesServices} from "../../../../../app/services/temporaryEfficienciesServices";
-import {useSidebarContext} from "../../../../../app/contexts/SidebarContext";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { useNavigate, useParams } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { efficiencyMappers } from "../../../../../app/services/mappers/efficiencyMappers";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { Dayjs } from "dayjs";
+import { parse, differenceInMinutes } from "date-fns";
+import { formatIsoStringToHours } from "../../../../../app/utils/formatIsoStringToHours";
+import { useTemporaryEfficiencyById } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyById";
+import { TemporaryEfficiencyResponse } from "../../../../../app/services/temporaryEfficienciesServices/getById";
+import { PeriodType } from "../../../../../app/entities/PeriodType";
+import { temporaryEfficienciesServices } from "../../../../../app/services/temporaryEfficienciesServices";
+import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
 
-type ErrorArgs = {fieldName: string; message: string};
+type ErrorArgs = { fieldName: string; message: string };
 
 interface PendingFormContextValue {
   date: Date | undefined;
@@ -30,8 +30,10 @@ interface PendingFormContextValue {
     state?: string | undefined;
     isAtive?: boolean | undefined;
     contract: {
-      id: string;
-      name: string;
+      client: {
+        id: string;
+        name: string;
+      };
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
@@ -79,7 +81,7 @@ interface PendingFormContextValue {
   getPeriodState(periodId: string): boolean;
   isConfigsConfirmed: boolean;
   isSuckingTruckSelected: boolean;
-  usersRigs: {id: string; name: string}[];
+  usersRigs: { id: string; name: string }[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -132,8 +134,10 @@ interface PendingFormContextValue {
           state?: string | undefined;
           isAtive?: boolean | undefined;
           contract: {
-            id: string;
-            name: string;
+            client: {
+              id: string;
+              name: string;
+            };
           };
         };
       }
@@ -160,9 +164,9 @@ export const PendingFormProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const {user} = useAuth();
+  const { user } = useAuth();
 
-  const {efficiencyId} = useParams<{efficiencyId: string}>();
+  const { efficiencyId } = useParams<{ efficiencyId: string }>();
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -172,7 +176,7 @@ export const PendingFormProvider = ({
 
   //const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
 
-  const {temporaryEfficiency, isFetchingTemporaryEfficiency} =
+  const { temporaryEfficiency, isFetchingTemporaryEfficiency } =
     useTemporaryEfficiencyById(efficiencyId!);
 
   const responseEfficiency = temporaryEfficiency as TemporaryEfficiencyResponse;
@@ -255,7 +259,7 @@ export const PendingFormProvider = ({
         };
       }
 
-      const periodsState = initialPeriods?.map(({id}) => ({
+      const periodsState = initialPeriods?.map(({ id }) => ({
         periodId: id,
         isCollapsed: true,
       }));
@@ -271,7 +275,7 @@ export const PendingFormProvider = ({
   const [selectedRig, setSelectedRig] = useState<string>(
     responseEfficiency.rigId
   );
-  const {handleToggleNavItem} = useSidebarContext();
+  const { handleToggleNavItem } = useSidebarContext();
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>([]);
 
@@ -281,7 +285,7 @@ export const PendingFormProvider = ({
     setPeriods(initialPeriods);
   }, []);
 
-  const {isPending: isLoadingEfficiency, mutateAsync} = useMutation({
+  const { isPending: isLoadingEfficiency, mutateAsync } = useMutation({
     mutationFn: efficienciesService.create,
   });
   const queryClient = useQueryClient();
@@ -295,14 +299,14 @@ export const PendingFormProvider = ({
 
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
 
-  const setError = ({fieldName, message}: ErrorArgs) => {
+  const setError = ({ fieldName, message }: ErrorArgs) => {
     const errorAlreadyExists = errors.find(
       (error) => error.fieldName === fieldName
     );
 
     if (errorAlreadyExists) return;
 
-    setErrors((prevState) => [...prevState, {fieldName, message}]);
+    setErrors((prevState) => [...prevState, { fieldName, message }]);
   };
 
   const removeError = (fieldName: string) => {
@@ -344,7 +348,7 @@ export const PendingFormProvider = ({
   });
 
   const handleSubmit = async (periods: Periods) => {
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date ?? new Date(),
       availableHours: 24,
@@ -389,9 +393,9 @@ export const PendingFormProvider = ({
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -422,7 +426,7 @@ export const PendingFormProvider = ({
   const handleSubmitTemporary = async (periods: Periods) => {
     // Criação do objeto de persistência utilizando o mapeamento dos dados
 
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
       date: date!,
       availableHours: 24,
@@ -467,9 +471,9 @@ export const PendingFormProvider = ({
           well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
       handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
@@ -483,7 +487,7 @@ export const PendingFormProvider = ({
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, startHour: timeString} : period;
+      return period.id === id ? { ...period, startHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -495,7 +499,7 @@ export const PendingFormProvider = ({
     id: string
   ) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, endHour: timeString} : period;
+      return period.id === id ? { ...period, endHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
@@ -503,13 +507,13 @@ export const PendingFormProvider = ({
 
   const handlePeriodType = (id: string, type: string) => {
     if (!type) {
-      setError({fieldName: `${id} type`, message: "Obrigatório"});
+      setError({ fieldName: `${id} type`, message: "Obrigatório" });
     } else {
       removeError(`${id} type`);
     }
     const newPeriods = periods.map((period) => {
       if (type === "DTM" && period.id === id) {
-        setError({fieldName: `${id} well`, message: "Obrigatório"});
+        setError({ fieldName: `${id} well`, message: "Obrigatório" });
         return {
           ...period,
           type: type,
@@ -520,7 +524,7 @@ export const PendingFormProvider = ({
       }
 
       if (period.id === id) {
-        setError({fieldName: `${id} classification`, message: "Obrigatório"});
+        setError({ fieldName: `${id} classification`, message: "Obrigatório" });
 
         return {
           ...period,
@@ -538,7 +542,7 @@ export const PendingFormProvider = ({
 
   const handlePeriodClassification = (id: string, classification: string) => {
     if (!classification) {
-      setError({fieldName: `${id} classification`, message: "Obrigatório"});
+      setError({ fieldName: `${id} classification`, message: "Obrigatório" });
     } else {
       removeError(`${id} classification`);
     }
@@ -561,7 +565,7 @@ export const PendingFormProvider = ({
   ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, repairClassification: repairClassification}
+        ? { ...period, repairClassification: repairClassification }
         : period;
     });
 
@@ -570,7 +574,7 @@ export const PendingFormProvider = ({
 
   const handlePeriodWell = (id: string, well: string) => {
     if (!well) {
-      setError({fieldName: `${id} well`, message: "Obrigatório"});
+      setError({ fieldName: `${id} well`, message: "Obrigatório" });
     } else {
       removeError(`${id} well`);
     }
@@ -588,7 +592,7 @@ export const PendingFormProvider = ({
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, fluidRatio: ratio} : period;
+      return period.id === id ? { ...period, fluidRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -596,7 +600,7 @@ export const PendingFormProvider = ({
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, equipmentRatio: ratio} : period;
+      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -610,10 +614,10 @@ export const PendingFormProvider = ({
   };
 
   const updatePeriodState = (id: string, state: boolean) => {
-    const newStates = periodsState.map(({periodId, isCollapsed}) => {
+    const newStates = periodsState.map(({ periodId, isCollapsed }) => {
       return periodId === id
-        ? {periodId, isCollapsed: state}
-        : {periodId, isCollapsed};
+        ? { periodId, isCollapsed: state }
+        : { periodId, isCollapsed };
     });
 
     setPeriodsState(newStates);
@@ -623,8 +627,8 @@ export const PendingFormProvider = ({
 
   const addPeriod = () => {
     const newId = uuidv4();
-    setError({fieldName: `${newId} type`, message: "Obrigatório"});
-    setError({fieldName: `${newId} classification`, message: "Obrigatório"});
+    setError({ fieldName: `${newId} type`, message: "Obrigatório" });
+    setError({ fieldName: `${newId} classification`, message: "Obrigatório" });
     setPeriods([
       ...periods,
       {
@@ -643,7 +647,7 @@ export const PendingFormProvider = ({
 
     const newStates = updatePeriodState(periods[periods.length - 1].id, true);
 
-    setPeriodsState([...newStates, {periodId: newId, isCollapsed: false}]);
+    setPeriodsState([...newStates, { periodId: newId, isCollapsed: false }]);
   };
 
   const cleanFields = (id: string) => {
@@ -680,7 +684,7 @@ export const PendingFormProvider = ({
   const handleDateChange = (date: Date) => {
     setDate(date);
     if (getTotalDaysByDate(new Date(date)) >= getTotalDaysByDate(new Date())) {
-      setError({fieldName: "date", message: "Data Inválida!"});
+      setError({ fieldName: "date", message: "Data Inválida!" });
     } else {
       removeError("date");
     }
@@ -697,7 +701,7 @@ export const PendingFormProvider = ({
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, description: text} : period;
+      return period.id === id ? { ...period, description: text } : period;
     });
 
     setPeriods(newPeriods);
@@ -733,14 +737,14 @@ export const PendingFormProvider = ({
   const userRig = user?.rigs[0].rig!;
 
   const usersRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
+    user?.rigs.map(({ rig: { id, name } }) => {
       return {
         id,
         name,
       };
     }) || [];
 
-  const selectedContract = user?.rigs.find(({rig: {id}}) => {
+  const selectedContract = user?.rigs.find(({ rig: { id } }) => {
     return id === selectedRig;
   });
 

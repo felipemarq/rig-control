@@ -6,10 +6,9 @@ import { TimePicker } from "antd";
 import { Select } from "@/view/components/Select";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
-import { useMemo } from "react";
-import { FileIcon, FileUp, Hand } from "lucide-react";
-import { UploadFilesModal } from "../UploadFilesModal";
+import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { UF } from "@/app/entities/Rig";
 
 export const NewOccurrenceModal = () => {
   const {
@@ -24,7 +23,6 @@ export const NewOccurrenceModal = () => {
     handleHourChange,
     errors,
     isLoadingNewOccurrence,
-    previewURL,
     handleFileSelected,
     handleDragOver,
     handleDrop,
@@ -86,24 +84,45 @@ export const NewOccurrenceModal = () => {
                 )}
               />
             </div>
-            <div className="w-full">
-              <Controller
-                control={control}
-                name="baseId"
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    error={errors.baseId?.message}
-                    placeholder="Base"
-                    value={value}
-                    isLoading={isFetchingBases}
-                    onChange={onChange}
-                    options={bases.map(({ id, name }) => ({
-                      value: id,
-                      label: name,
-                    }))}
-                  />
-                )}
-              />
+            <div className="w-full flex gap-2">
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  name="baseId"
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      error={errors.baseId?.message}
+                      placeholder="Base"
+                      value={value}
+                      isLoading={isFetchingBases}
+                      onChange={onChange}
+                      options={bases.map(({ id, name }) => ({
+                        value: id,
+                        label: name,
+                      }))}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  defaultValue={UF.BA}
+                  name="state"
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      value={value}
+                      placeholder="Estado"
+                      onChange={onChange}
+                      options={Object.values(UF).map((uf) => ({
+                        value: uf,
+                        label: uf,
+                      }))}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 

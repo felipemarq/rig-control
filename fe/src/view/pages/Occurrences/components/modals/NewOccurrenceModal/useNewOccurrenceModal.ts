@@ -20,6 +20,7 @@ import { QueryKeys } from "@/app/config/QueryKeys";
 import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 import { uploadFilesService } from "@/app/services/uploadFilesService";
+import { UF } from "@/app/entities/Rig";
 
 const schema = z.object({
   date: z.date(),
@@ -29,6 +30,7 @@ const schema = z.object({
   nature: z.nativeEnum(Nature),
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
+  state: z.string().min(1, "Estado é obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -139,6 +141,7 @@ export const useNewOccurrenceModal = () => {
       const occurrence = await mutateNewOccurrenceAsync({
         date: data.date.toISOString(),
         baseId: data.baseId,
+        state: data.state as UF,
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
         type: data.type,
@@ -181,7 +184,7 @@ export const useNewOccurrenceModal = () => {
     control,
     handleSubmit,
     handleHourChange,
-    isLoadingNewOccurrence,
+    isLoadingNewOccurrence: isLoadingUploadFile || isLoadingNewOccurrence,
     errors,
     previewURL,
     handleFileSelected,

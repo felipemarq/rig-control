@@ -7,6 +7,9 @@ import { Select } from "@/view/components/Select";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
 import dayjs from "dayjs";
+import { UF } from "@/app/entities/Rig";
+import { FileUp, Hand } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 export const EditOccurrenceModal = () => {
   const {
@@ -22,6 +25,14 @@ export const EditOccurrenceModal = () => {
     errors,
     isLoadingNewOccurrence,
     selectedHour,
+    handleFileSelected,
+    handleDrop,
+    handleDragOver,
+    file,
+    hasFile,
+    isDragging,
+    handleDragLeave,
+    fileName,
   } = useEditOccurrenceModal();
 
   return (
@@ -77,24 +88,44 @@ export const EditOccurrenceModal = () => {
                 )}
               />
             </div>
-            <div className="w-full">
-              <Controller
-                control={control}
-                name="baseId"
-                render={({ field: { onChange, value } }) => (
-                  <Select
-                    error={errors.baseId?.message}
-                    placeholder="Base"
-                    value={value}
-                    isLoading={isFetchingBases}
-                    onChange={onChange}
-                    options={bases.map(({ id, name }) => ({
-                      value: id,
-                      label: name,
-                    }))}
-                  />
-                )}
-              />
+            <div className="w-full flex gap-2">
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  name="baseId"
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      error={errors.baseId?.message}
+                      placeholder="Base"
+                      value={value}
+                      isLoading={isFetchingBases}
+                      onChange={onChange}
+                      options={bases.map(({ id, name }) => ({
+                        value: id,
+                        label: name,
+                      }))}
+                    />
+                  )}
+                />
+              </div>
+
+              <div className="flex-1">
+                <Controller
+                  control={control}
+                  name="state"
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      value={value}
+                      placeholder="Estado"
+                      onChange={onChange}
+                      options={Object.values(UF).map((uf) => ({
+                        value: uf,
+                        label: uf,
+                      }))}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -193,6 +224,55 @@ export const EditOccurrenceModal = () => {
               />
             )}
           />
+          <div className="flex flex-col gap-4">
+            <div className="xs:w-full lg:col-span-4 h-32  ">
+              <label
+                htmlFor="file"
+                onDrop={handleDrop}
+                onDragOver={handleDragOver}
+                onDragLeave={handleDragLeave}
+                className={cn(
+                  "border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200",
+                  isDragging && "bg-gray-200"
+                )}
+              >
+                {file && (
+                  <div className="flex flex-col gap-4 items-center justify-center">
+                    <FileUp className="w-8 h-8 text-clack" />
+                    <div>{file.name}</div>
+                  </div>
+                )}
+                {!file && (
+                  <div className="flex flex-col gap-4 items-center">
+                    {!isDragging && <FileUp className="w-8 h-8 text-clack" />}
+                    {isDragging && <Hand className="w-8 h-8 text-clack" />}
+
+                    <span className="text-black">
+                      {!isDragging && !hasFile && "Anexar arquivo"}
+                      {!isDragging && hasFile && (
+                        <span>{fileName?.substring(84)}</span>
+                      )}
+
+                      {isDragging && " Solte o arquivo para fazer o upload"}
+                    </span>
+                    <span className="text-gray-600">
+                      {
+                        "Clique ou arraste para fazer o upload do arquivo (tamanho máximo 10MB)"
+                      }
+                    </span>
+                  </div>
+                )}
+              </label>
+
+              <input
+                type="file"
+                id="file"
+                className="sr-only"
+                onChange={handleFileSelected}
+                // onDrop={handleFileSelected}
+              ></input>
+            </div>
+          </div>
         </div>
 
         <Button

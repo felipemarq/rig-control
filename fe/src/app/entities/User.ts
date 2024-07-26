@@ -1,5 +1,5 @@
-import {AccessLevel} from "./AccessLevel";
-import {Contract} from "./Contract";
+import { AccessLevel } from "./AccessLevel";
+import { Contract } from "./Contract";
 
 export interface User {
   id: string;
@@ -19,8 +19,10 @@ export interface User {
       state?: string;
       isAtive?: boolean;
       contract: {
-        id: string;
-        name: string;
+        client: {
+          id: string;
+          name: string;
+        };
       };
     };
   }[];
