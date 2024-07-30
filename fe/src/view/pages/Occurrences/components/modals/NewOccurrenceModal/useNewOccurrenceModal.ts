@@ -63,6 +63,8 @@ export const useNewOccurrenceModal = () => {
     setFile(selectedFile);
   };
 
+  console.log(file);
+
   const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     event.stopPropagation();

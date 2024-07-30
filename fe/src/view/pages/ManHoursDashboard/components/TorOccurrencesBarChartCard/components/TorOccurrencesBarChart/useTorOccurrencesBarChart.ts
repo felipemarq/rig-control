@@ -1,3 +1,4 @@
+import { months } from "@/app/utils/months";
 import { useManHoursDashboard } from "@/view/pages/ManHoursDashboard/ManHourDashboardContext/useManHoursDashboard";
 import { BarDatum } from "@nivo/bar";
 
@@ -15,7 +16,7 @@ export const useTorOccurrencesBarChart = () => {
     }
 
     return {
-      month: occurrence.month,
+      month: months[occurrence.month - 1].label,
       tax: occurrence.tax,
     };
   })!;
