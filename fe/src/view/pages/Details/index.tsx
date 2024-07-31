@@ -2,10 +2,10 @@ import {
   DetailsContext,
   DetailsContextProvider,
 } from "./components/DetailsContext";
-import {Header} from "../../components/Header";
-import {DetailsModal} from "./components/DetailsModal";
-import {DeleteModal} from "../../components/DeleteModal";
-import {PeriodsDataGridCard} from "./components/PeriodsDataGridCard";
+import { Header } from "../../components/Header";
+import { DetailsModal } from "./components/DetailsModal";
+import { DeleteModal } from "../../components/DeleteModal";
+import { PeriodsDataGridCard } from "./components/PeriodsDataGridCard";
 
 export const Details = () => {
   return (
@@ -20,7 +20,7 @@ export const Details = () => {
           isLoadingRemoveEfficiency,
           handleDeleteEfficiency,
         }) => (
-          <div className="w-full h-full ">
+          <div className="w-full h-full overflow-y-auto">
             <Header
               title="Detalhes da Operação"
               displayRig={false}
@@ -42,7 +42,7 @@ export const Details = () => {
               isLoading={isLoadingRemoveEfficiency}
             />
 
-            <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
+            <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 h-full">
               <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
                 <PeriodsDataGridCard />
               </div>
