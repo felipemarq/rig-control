@@ -11,6 +11,17 @@ import { randomUUID } from 'crypto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { FilesRepository } from 'src/shared/database/repositories/files.repositories';
 
+interface OccurrenceWithFiles {
+  id: string;
+  files: {
+    id: string;
+    path: string;
+    userId: string;
+    occurrenceId: string;
+    createdAt: Date;
+  }[];
+}
+
 @Injectable()
 export class UploadFileService {
   private readonly s3Client = new S3Client({
@@ -28,12 +39,18 @@ export class UploadFileService {
     userId: string,
     occurrenceId: string,
   ) {
-    const occurrence = await this.occurrencesRepo.findUnique({
+    const occurrence = (await this.occurrencesRepo.findUnique({
       where: { id: occurrenceId },
-    });
+      select: { id: true, files: true },
+    })) as unknown as OccurrenceWithFiles;
 
     if (!occurrence) {
       throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    if (occurrence.files.length > 0) {
+      await this.deleteOccurenceFile(occurrenceId);
+      await this.filesRepo.deleteMany({ where: { occurrenceId } });
     }
 
     const awsKey = `${occurrenceId}-${file.originalname}`;
@@ -64,15 +81,13 @@ export class UploadFileService {
       throw new NotFoundException('Arquivo não encontrado!');
     }
 
+    const awsKey = file.path.split('/')[3];
+
     await this.s3Client.send(
       new DeleteObjectCommand({
         Bucket: 'conterp-file-uploader',
-        Key: occurrenceId,
+        Key: awsKey,
       }),
     );
-
-    await this.filesRepo.delete({
-      where: { id: file.id },
-    });
   }
 }

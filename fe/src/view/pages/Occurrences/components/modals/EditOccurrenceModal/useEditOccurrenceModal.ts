@@ -21,6 +21,7 @@ import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelect
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
 import { UF } from "@/app/entities/Rig";
+import { uploadFilesService } from "@/app/services/uploadFilesService";
 
 const schema = z.object({
   date: z.date(),
@@ -97,7 +98,6 @@ export const useEditOccurrenceModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
-    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -121,9 +121,14 @@ export const useEditOccurrenceModal = () => {
 
   const { bases, isFetchingBases } = useBases();
 
-  const { isPending: isLoadingNewOccurrence, mutateAsync } = useMutation({
+  const { isPending: isLoadingUpdateOccurrence, mutateAsync } = useMutation({
     mutationFn: occurrencesService.update,
   });
+
+  const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
+    useMutation({
+      mutationFn: uploadFilesService.create,
+    });
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
@@ -155,7 +160,14 @@ export const useEditOccurrenceModal = () => {
           ? (data.category as OccurrenceCategory)
           : undefined,
       });
-      reset();
+
+      if (file) {
+        await mutateUploadFileAsync({
+          occurrenceId: occurrenceBeingSeen?.id!,
+          file: file,
+        });
+      }
+      setFile(null);
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeEditOccurrenceModal();
       customColorToast(
@@ -163,6 +175,8 @@ export const useEditOccurrenceModal = () => {
         "#1c7b7b",
         "success"
       );
+
+      window.location.reload();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -180,7 +194,7 @@ export const useEditOccurrenceModal = () => {
     control,
     handleSubmit,
     handleHourChange,
-    isLoadingNewOccurrence,
+    isLoadingUpdateOccurrence: isLoadingUpdateOccurrence || isLoadingUploadFile,
     errors,
     selectedHour,
     handleFileSelected,

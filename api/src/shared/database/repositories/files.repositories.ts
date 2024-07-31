@@ -22,13 +22,14 @@ export class FilesRepository {
     return await this.prismaService.file.delete(deleteDto);
   }
 
+  async deleteMany(deleteManyDto: Prisma.FileDeleteManyArgs) {
+    return await this.prismaService.file.deleteMany(deleteManyDto);
+  }
+
   /*  async createMany(createDto: Prisma.FileCreateManyArgs) {
     return await this.prismaService.file.createMany(createDto);
   }
-
- 
-  
-
+    
   async findAll(findAllDto: Prisma.FileFindManyArgs) {
     return await this.prismaService.file.findMany(findAllDto);
   } */
