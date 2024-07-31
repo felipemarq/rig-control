@@ -78,7 +78,8 @@ export class UploadFileService {
     });
 
     if (!file) {
-      throw new NotFoundException('Arquivo não encontrado!');
+      return;
+      // throw new NotFoundException('Arquivo não encontrado!');
     }
 
     const awsKey = file.path.split('/')[3];

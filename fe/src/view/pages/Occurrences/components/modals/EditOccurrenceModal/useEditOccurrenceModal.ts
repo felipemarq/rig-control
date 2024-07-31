@@ -48,6 +48,15 @@ export const useEditOccurrenceModal = () => {
   );
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
 
   const handleHourChange = (timeString: string) => {
     setSelectHour(timeString);
@@ -130,6 +139,32 @@ export const useEditOccurrenceModal = () => {
       mutationFn: uploadFilesService.create,
     });
 
+  const {
+    mutateAsync: mutateAsyncRemoveOccurrence,
+    isPending: isLoadingDeleteOccurrence,
+  } = useMutation({
+    mutationFn: occurrencesService.remove,
+  });
+
+  const handleDeleteOccurrence = async () => {
+    try {
+      await mutateAsyncRemoveOccurrence(occurrenceBeingSeen!.id);
+
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
+      handleCloseDeleteModal();
+      closeEditOccurrenceModal();
+      customColorToast(
+        "Ocorrência deletada com sucesso!",
+        "#1c7b7b",
+        "success"
+      );
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+      console.log(error);
+      //navigate("/dashboard");
+    }
+  };
+
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
       date: data.date.toISOString(),
@@ -205,5 +240,10 @@ export const useEditOccurrenceModal = () => {
     handleDragLeave,
     hasFile,
     fileName,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    isDeleteModalOpen,
+    handleDeleteOccurrence,
+    isLoadingDeleteOccurrence,
   };
 };
