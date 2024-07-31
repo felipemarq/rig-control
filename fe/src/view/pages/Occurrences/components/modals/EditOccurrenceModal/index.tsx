@@ -23,7 +23,7 @@ export const EditOccurrenceModal = () => {
     control,
     handleHourChange,
     errors,
-    isLoadingNewOccurrence,
+    isLoadingUpdateOccurrence,
     selectedHour,
     handleFileSelected,
     handleDrop,
@@ -278,7 +278,7 @@ export const EditOccurrenceModal = () => {
         <Button
           type="submit"
           className="w-full mt-6"
-          isLoading={isLoadingNewOccurrence}
+          isLoading={isLoadingUpdateOccurrence}
         >
           Editar registro
         </Button>

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { OccurrencesService } from './occurrences.service';
 import { CreateOcurrenceDto } from './dto/create-ocurrence.dto';
@@ -37,14 +38,14 @@ export class OccurrencesController {
 
   @Put(':occurrenceId')
   update(
-    @Param('occurrenceId') occurrenceId: string,
+    @Param('occurrenceId', ParseUUIDPipe) occurrenceId: string,
     @Body() updateOcurrenceDto: UpdateOcurrenceDto,
   ) {
     return this.occurrencesService.update(occurrenceId, updateOcurrenceDto);
   }
 
   @Delete(':occurrenceId')
-  remove(@Param('occurrenceId') occurrenceId: string) {
+  remove(@Param('occurrenceId', ParseUUIDPipe) occurrenceId: string) {
     return this.occurrencesService.remove(occurrenceId);
   }
 }

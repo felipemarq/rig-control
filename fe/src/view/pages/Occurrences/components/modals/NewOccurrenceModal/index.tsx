@@ -72,6 +72,7 @@ export const NewOccurrenceModal = () => {
               <Controller
                 control={control}
                 name="type"
+                defaultValue={undefined}
                 render={({ field: { onChange, value } }) => (
                   <Select
                     error={errors.type?.message}
@@ -88,6 +89,7 @@ export const NewOccurrenceModal = () => {
               <div className="flex-1">
                 <Controller
                   control={control}
+                  defaultValue=""
                   name="baseId"
                   render={({ field: { onChange, value } }) => (
                     <Select
@@ -129,6 +131,7 @@ export const NewOccurrenceModal = () => {
           <div className="flex gap-4">
             <div className="w-full">
               <Controller
+                defaultValue={undefined}
                 control={control}
                 name="nature"
                 render={({ field: { onChange, value } }) => (
@@ -146,6 +149,7 @@ export const NewOccurrenceModal = () => {
             <div className="w-full flex gap-2">
               <div className="flex-1">
                 <Controller
+                  defaultValue=""
                   control={control}
                   name="isAbsent"
                   render={({ field: { onChange, value } }) => (
@@ -172,6 +176,7 @@ export const NewOccurrenceModal = () => {
 
               <div className="flex-1">
                 <Controller
+                  defaultValue=""
                   control={control}
                   name="category"
                   render={({ field: { onChange, value } }) => (
@@ -205,6 +210,7 @@ export const NewOccurrenceModal = () => {
           <Controller
             control={control}
             name="description"
+            defaultValue=""
             render={({ field: { onChange, value } }) => (
               <TextArea
                 maxLength={5000}

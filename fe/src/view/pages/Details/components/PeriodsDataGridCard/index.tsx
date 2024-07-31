@@ -1,4 +1,4 @@
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
 import {
   Card,
@@ -7,12 +7,12 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import {Pencil, Trash} from "lucide-react";
-import {Link} from "react-router-dom";
-import {Spinner} from "@/view/components/Spinner";
-import {usePeriodsDataGrid} from "./usePeriodsDataGrid";
-import {PeriodsDataGrid} from "./components/PeriodsDataGrid";
-import {NotFound} from "@/view/components/NotFound";
+import { Pencil, Trash } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Spinner } from "@/view/components/Spinner";
+import { usePeriodsDataGrid } from "./usePeriodsDataGrid";
+import { PeriodsDataGrid } from "./components/PeriodsDataGrid";
+import { NotFound } from "@/view/components/NotFound";
 
 export const PeriodsDataGridCard = () => {
   const {
@@ -28,7 +28,7 @@ export const PeriodsDataGridCard = () => {
   } = usePeriodsDataGrid();
 
   return (
-    <Card className="col-span-12 row-span-3 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] overflow-y-auto">
+    <Card className="col-span-12 row-span-4 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] overflow-y-auto">
       <CardHeader className="flex flex-row items-center justify-between gap-4 ">
         <div className="grid gap-2">
           <CardTitle>Ocorrências</CardTitle>

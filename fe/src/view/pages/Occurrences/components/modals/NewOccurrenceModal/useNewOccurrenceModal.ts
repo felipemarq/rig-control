@@ -63,6 +63,8 @@ export const useNewOccurrenceModal = () => {
     setFile(selectedFile);
   };
 
+  console.log(file);
+
   const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -96,7 +98,6 @@ export const useNewOccurrenceModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
-    reset,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -163,7 +164,7 @@ export const useNewOccurrenceModal = () => {
       }
 
       setFile(null);
-      reset();
+      window.location.reload();
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeNewOccurrenceModal();
       customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");

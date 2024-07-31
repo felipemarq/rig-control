@@ -1,15 +1,15 @@
-import {createContext, useState} from "react";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
-import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {useNavigate, useParams} from "react-router-dom";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {QueryKeys} from "../../../../../app/config/QueryKeys";
-import {useWindowWidth} from "@/app/hooks/useWindowWidth";
+import { createContext, useState } from "react";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { PersistanceEfficiency } from "../../../../../app/entities/PersistanceEfficiency";
+import { useEfficiencyById } from "../../../../../app/hooks/efficiencies/useEfficiencyById";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { QueryKeys } from "../../../../../app/config/QueryKeys";
+import { useWindowWidth } from "@/app/hooks/useWindowWidth";
 
 interface DetailsContextValues {
   isFetchingEfficiency: boolean;
@@ -37,7 +37,7 @@ export const DetailsContextProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const {efficiencyId} = useParams<{efficiencyId: string}>();
+  const { efficiencyId } = useParams<{ efficiencyId: string }>();
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -45,17 +45,19 @@ export const DetailsContextProvider = ({
     throw new Error("efficiencyId is undefined");
   }
 
-  const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
+  const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId!);
 
   const windowWidth = useWindowWidth();
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const {isUserAdm, user} = useAuth();
+  const { isUserAdm, user } = useAuth();
 
   //Temporário
   const canUserEdit =
-    isUserAdm || user?.email === "alissonmenezes@conterp.com.br";
+    isUserAdm ||
+    user?.email === "alissonmenezes@conterp.com.br" ||
+    user?.email === "adelsonferreira@conterp.com.br";
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
@@ -65,7 +67,7 @@ export const DetailsContextProvider = ({
   const {
     isPending: isLoadingUpdateEfficiency,
     mutateAsync: mutateAsyncUpdateEfficiency,
-  } = useMutation({mutationFn: efficienciesService.update});
+  } = useMutation({ mutationFn: efficienciesService.update });
 
   const handleUpdateEfficiency = async () => {
     try {
@@ -73,7 +75,7 @@ export const DetailsContextProvider = ({
         efficiencyId: efficiencyId,
         isEditable: true,
       });
-      queryClient.invalidateQueries({queryKey: [QueryKeys.EFFICIENCY]});
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EFFICIENCY] });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
@@ -82,12 +84,12 @@ export const DetailsContextProvider = ({
   const {
     isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
-  } = useMutation({mutationFn: efficienciesService.remove});
+  } = useMutation({ mutationFn: efficienciesService.remove });
 
   const handleDeleteEfficiency = async () => {
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId!);
-      queryClient.invalidateQueries({queryKey: [QueryKeys.EFFICIENCIES]});
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EFFICIENCIES] });
       customColorToast("Dados Deletados com Sucesso!", "#1c7b7b", "success");
       closeDeleteModal();
       navigate("/dashboard");

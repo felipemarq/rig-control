@@ -4,12 +4,17 @@ import { UpdateOcurrenceDto } from './dto/update-ocurrence.dto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { BaseRepository } from 'src/shared/database/repositories/base.repositories';
 import { ManHourRepository } from 'src/shared/database/repositories/manHour.repositories';
+import { UploadFileService } from '../upload-file/upload-file.service';
 
 interface OccurrenceCountByMonth {
   date: Date;
   _count: {
     id: number;
   };
+}
+
+interface OccurrenceWithFiles {
+  files: { path: string }[];
 }
 
 type TransformedManHoursData = {
@@ -35,6 +40,7 @@ export class OccurrencesService {
     private readonly occurrencesRepo: OccurrenceRepository,
     private readonly basesRepo: BaseRepository,
     private readonly manHoursRepo: ManHourRepository,
+    private readonly filesService: UploadFileService,
   ) {}
 
   async create(userId: string, createOcurrenceDto: CreateOcurrenceDto) {
@@ -109,6 +115,7 @@ export class OccurrencesService {
   }
 
   async remove(occurrenceId: string) {
+    await this.filesService.deleteOccurenceFile(occurrenceId);
     await this.occurrencesRepo.delete({
       where: { id: occurrenceId },
     });
