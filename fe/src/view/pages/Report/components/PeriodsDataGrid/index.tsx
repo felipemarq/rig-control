@@ -3,7 +3,6 @@ import {
   GridColDef,
   GridPaginationModel,
   GridRenderCellParams,
-  GridRowHeightParams,
   GridToolbar,
 } from "@mui/x-data-grid";
 
