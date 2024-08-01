@@ -1,5 +1,5 @@
 import { Occurrence } from "@/app/entities/Occurrence";
-import { DownloadIcon, HardHat, Paperclip, TrashIcon } from "lucide-react";
+import { DownloadIcon, HardHat, Paperclip } from "lucide-react";
 import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
 import { formatDate } from "@/app/utils/formatDate";
 import { Button } from "@/view/components/Button";
