@@ -1,9 +1,4 @@
-import {
-  DataGrid,
-  GridColDef,
-  GridRenderCellParams,
-  GridToolbar,
-} from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 
 import { NotFound } from "@/view/components/NotFound";
 import { TransformedManHoursData } from "@/app/utils/transformManHoursData";
@@ -307,7 +302,7 @@ export const ManHoursDataGrid = ({
       }}
       columns={columns}
       slots={{
-        toolbar: isDashboard ? undefined : GridToolbar,
+        // toolbar: isDashboard ? undefined : GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
       onCellEditStop={(params, event) =>

@@ -87,10 +87,6 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
             </Tooltip>
           </TooltipProvider>
         )}
-
-        <button className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-md hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all ">
-          <TrashIcon className="text-white" />
-        </button>
       </div>
     </div>
   );
