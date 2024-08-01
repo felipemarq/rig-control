@@ -13,8 +13,8 @@ interface OccurrenceCountByMonth {
   };
 }
 
-interface OccurrenceWithFiles {
-  files: { path: string }[];
+interface BaseWithClientId {
+  contract: { clientId: string };
 }
 
 type TransformedManHoursData = {
@@ -46,16 +46,21 @@ export class OccurrencesService {
   async create(userId: string, createOcurrenceDto: CreateOcurrenceDto) {
     const { baseId } = createOcurrenceDto;
 
-    const baseExists = await this.basesRepo.findUnique({
+    const baseExists = (await this.basesRepo.findUnique({
       where: { id: baseId },
-    });
+      select: { contract: { select: { clientId: true } } },
+    })) as unknown as BaseWithClientId;
 
     if (!baseExists) {
       throw new NotFoundException('Base não encontrada');
     }
 
     return await this.occurrencesRepo.create({
-      data: { userId, ...createOcurrenceDto },
+      data: {
+        userId,
+        clientId: baseExists.contract.clientId,
+        ...createOcurrenceDto,
+      },
     });
   }
 

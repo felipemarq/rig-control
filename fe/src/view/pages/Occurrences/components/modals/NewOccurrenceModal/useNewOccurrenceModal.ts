@@ -107,6 +107,8 @@ export const useNewOccurrenceModal = () => {
 
   const { bases, isFetchingBases } = useBases();
 
+  console.log("Bases: ", bases);
+
   const {
     isPending: isLoadingNewOccurrence,
     mutateAsync: mutateNewOccurrenceAsync,
