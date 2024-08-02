@@ -4,7 +4,7 @@ import { UpdateOcurrenceDto } from './dto/update-ocurrence.dto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { BaseRepository } from 'src/shared/database/repositories/base.repositories';
 import { ManHourRepository } from 'src/shared/database/repositories/manHour.repositories';
-import { UploadFileService } from '../upload-file/upload-file.service';
+import { FileService } from '../file/file.service';
 
 interface OccurrenceCountByMonth {
   date: Date;
@@ -40,7 +40,7 @@ export class OccurrencesService {
     private readonly occurrencesRepo: OccurrenceRepository,
     private readonly basesRepo: BaseRepository,
     private readonly manHoursRepo: ManHourRepository,
-    private readonly filesService: UploadFileService,
+    private readonly filesService: FileService,
   ) {}
 
   async create(userId: string, createOcurrenceDto: CreateOcurrenceDto) {

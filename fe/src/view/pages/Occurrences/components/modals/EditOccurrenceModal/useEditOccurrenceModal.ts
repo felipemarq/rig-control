@@ -21,7 +21,7 @@ import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelect
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
 import { UF } from "@/app/entities/Rig";
-import { uploadFilesService } from "@/app/services/uploadFilesService";
+import { filesService } from "@/app/services/filesService";
 
 const schema = z.object({
   date: z.date(),
@@ -136,7 +136,7 @@ export const useEditOccurrenceModal = () => {
 
   const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
     useMutation({
-      mutationFn: uploadFilesService.create,
+      mutationFn: filesService.create,
     });
 
   const {

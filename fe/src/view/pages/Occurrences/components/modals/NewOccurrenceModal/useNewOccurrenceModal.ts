@@ -19,7 +19,7 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
-import { uploadFilesService } from "@/app/services/uploadFilesService";
+import { filesService } from "@/app/services/filesService";
 import { UF } from "@/app/entities/Rig";
 
 const schema = z.object({
@@ -118,7 +118,7 @@ export const useNewOccurrenceModal = () => {
 
   const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
     useMutation({
-      mutationFn: uploadFilesService.create,
+      mutationFn: filesService.create,
     });
 
   //console.log("errors", errors);

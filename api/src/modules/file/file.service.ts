@@ -1,6 +1,4 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUploadFileDto } from './dto/create-upload-file.dto';
-import { UpdateUploadFileDto } from './dto/update-upload-file.dto';
 import { ConfigService } from '@nestjs/config';
 import {
   DeleteObjectCommand,
@@ -23,7 +21,7 @@ interface OccurrenceWithFiles {
 }
 
 @Injectable()
-export class UploadFileService {
+export class FileService {
   private readonly s3Client = new S3Client({
     region: this.configService.getOrThrow('AWS_S3_REGION'),
   });

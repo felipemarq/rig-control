@@ -1,5 +1,5 @@
 import { create } from "./create";
 
-export const uploadFilesService = {
+export const filesService = {
   create: create,
 };
