@@ -6,14 +6,14 @@ import {
   GridToolbar,
 } from "@mui/x-data-grid";
 
-import {NotFound} from "../../../../components/NotFound";
-import {translateType} from "../../../../../app/utils/translateType";
-import {translateClassification} from "../../../../../app/utils/translateClassification";
-import {Period} from "../../../../../app/entities/Period";
-import {formatDate} from "../../../../../app/utils/formatDate";
-import {localeTextDataGridConfig} from "../../../../../app/utils/localeTextDataGridConfig";
-import {GetByPeriodTypeFilters} from "../../../../../app/services/periodsService/getByPeriodType";
-import {translateRepairClassification} from "../../../../../app/utils/translateRepairClassification";
+import { NotFound } from "../../../../components/NotFound";
+import { translateType } from "../../../../../app/utils/translateType";
+import { translateClassification } from "../../../../../app/utils/translateClassification";
+import { Period } from "../../../../../app/entities/Period";
+import { formatDate } from "../../../../../app/utils/formatDate";
+import { localeTextDataGridConfig } from "../../../../../app/utils/localeTextDataGridConfig";
+import { GetByPeriodTypeFilters } from "../../../../../app/services/periodsService/getByPeriodType";
+import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -134,6 +134,7 @@ export const PeriodsDataGrid = ({
         page: Number(filters.pageIndex) - 1,
         pageSize: Number(filters.pageSize),
       }}
+      density="comfortable"
       onPaginationModelChange={(model) => onPaginationModelChange(model)}
       getRowHeight={() => "auto"}
       getEstimatedRowHeight={() => 200}
@@ -156,8 +157,8 @@ export const PeriodsDataGrid = ({
           borderBottom: "none",
           borderRightColor: "black",
         },
-        "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": {py: "8px"},
-        "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {py: "15px"},
+        "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": { py: "8px" },
+        "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": { py: "15px" },
         "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
           py: "22px",
         },
@@ -176,6 +177,13 @@ export const PeriodsDataGrid = ({
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
           color: "#1c7b7b !important",
+        },
+        "& .MuiDataGrid-root--densityCompact .MuiDataGrid-cell": { py: "8px" },
+        "& .MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
+          py: "15px",
+        },
+        "& .MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
+          py: "22px",
         },
       }}
     />

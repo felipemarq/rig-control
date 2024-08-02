@@ -1,5 +1,5 @@
 import { Occurrence } from "@/app/entities/Occurrence";
-import { DownloadIcon, HardHat, Paperclip, TrashIcon } from "lucide-react";
+import { DownloadIcon, HardHat, Paperclip } from "lucide-react";
 import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
 import { formatDate } from "@/app/utils/formatDate";
 import { Button } from "@/view/components/Button";
@@ -87,10 +87,6 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
             </Tooltip>
           </TooltipProvider>
         )}
-
-        <button className="text-white bg-redAccent-500 w-12 h-12 flex justify-center items-center rounded-md hover:bg-redAccent-400 duration-250 active:bg-redAccent-700 transition-all ">
-          <TrashIcon className="text-white" />
-        </button>
       </div>
     </div>
   );

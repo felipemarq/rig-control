@@ -73,10 +73,11 @@ model Contract {
 }
 
 model Client {
-  id            String     @id @default(uuid()) @db.Uuid
-  name          String     @unique
-  logoImagePath String?    @map("logo_image_path")
+  id            String       @id @default(uuid()) @db.Uuid
+  name          String       @unique
+  logoImagePath String?      @map("logo_image_path")
   contracts     Contract[]
+  occurrences   Occurrence[]
 }
 
 enum AccessLevel {
@@ -622,6 +623,7 @@ model Occurrence {
   description String
   category    OccurrenceCategory?
   baseId      String              @db.Uuid
+  clientId    String?             @map("client_id") @db.Uuid
   userId      String              @db.Uuid
   createdAt   DateTime            @default(now()) @map("created_at")
   updatedAt   DateTime?           @map("updated_at")
@@ -630,9 +632,10 @@ model Occurrence {
   isAbsent Boolean        @map("is_absent")
   nature   Nature
 
-  user  User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  base  Base   @relation(fields: [baseId], references: [id], onDelete: Cascade)
-  files File[]
+  client Client? @relation(fields: [clientId], references: [id])
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  base   Base    @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  files  File[]
 
   @@map("occurrences")
 }

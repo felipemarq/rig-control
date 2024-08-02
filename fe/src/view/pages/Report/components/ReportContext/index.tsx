@@ -1,27 +1,27 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useRigs} from "../../../../../app/hooks/rigs/useRigs";
-import {Rig} from "../../../../../app/entities/Rig";
-import {PeriodType} from "../../../../../app/entities/PeriodType";
-import {OrderByType} from "../../../../../app/entities/OrderBy";
-import {useGetByPeriodType} from "../../../../../app/hooks/periods/useGetByPeriodType";
-import {GetByPeriodTypeFilters} from "../../../../../app/services/periodsService/getByPeriodType";
-import {endOfMonth, format, startOfMonth} from "date-fns";
-import {SelectOptions} from "../../../../../app/entities/SelectOptions";
-import {filterOptions} from "../../../../../app/utils/filterOptions";
-import {getPeriodRange} from "../../../../../app/utils/getPeriodRange";
-import {FilterType} from "../../../../../app/entities/FilterType";
-import {months} from "../../../../../app/utils/months";
-import {years} from "../../../../../app/utils/years";
-import {periodTypes} from "../../../../../app/utils/periodTypes";
-import {Period} from "../../../../../app/entities/Period";
-import {PeriodClassification} from "../../../../../app/entities/PeriodClassification";
-import {RepairClassification} from "../../../../../app/entities/RepairClassification";
-import {periodClassifications} from "../../../../../app/utils/periodClassifications";
-import {GridPaginationModel} from "@mui/x-data-grid";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { useRigs } from "../../../../../app/hooks/rigs/useRigs";
+import { Rig } from "../../../../../app/entities/Rig";
+import { PeriodType } from "../../../../../app/entities/PeriodType";
+import { OrderByType } from "../../../../../app/entities/OrderBy";
+import { useGetByPeriodType } from "../../../../../app/hooks/periods/useGetByPeriodType";
+import { GetByPeriodTypeFilters } from "../../../../../app/services/periodsService/getByPeriodType";
+import { endOfMonth, format, startOfMonth } from "date-fns";
+import { SelectOptions } from "../../../../../app/entities/SelectOptions";
+import { filterOptions } from "../../../../../app/utils/filterOptions";
+import { getPeriodRange } from "../../../../../app/utils/getPeriodRange";
+import { FilterType } from "../../../../../app/entities/FilterType";
+import { months } from "../../../../../app/utils/months";
+import { years } from "../../../../../app/utils/years";
+import { periodTypes } from "../../../../../app/utils/periodTypes";
+import { Period } from "../../../../../app/entities/Period";
+import { PeriodClassification } from "../../../../../app/entities/PeriodClassification";
+import { RepairClassification } from "../../../../../app/entities/RepairClassification";
+import { periodClassifications } from "../../../../../app/utils/periodClassifications";
+import { GridPaginationModel } from "@mui/x-data-grid";
 
 interface ReportContextValues {
-  rigs: Rig[] | {id: string; name: string}[];
+  rigs: Rig[] | { id: string; name: string }[];
   periods: Array<Period>;
   selectedYear: string;
   filterOptions: SelectOptions;
@@ -34,10 +34,7 @@ interface ReportContextValues {
   handleToggleFilterType(filterType: FilterType): void;
   handleTogglePeriodType(type: PeriodType): void;
   handleApplyFilters(): void;
-  toggleFilterContainerVisibility(): void;
   handleClearFilters(): void;
-  handleClearSelectedPeriodClassification(): void;
-  handleClearSelectedRepairClassification(): void;
   handleChangePageSize(pageSize: number | string): void;
   handleChangePageIndex(pageIndex: number | string): void;
   handlePeriodClassification(classification: PeriodClassification): void;
@@ -56,7 +53,6 @@ interface ReportContextValues {
   selectedPeriodClassification: string;
   selectedEndDate: string;
   selectedStartDate: string;
-  isFilterContainerVisible: boolean;
   selectedPeriodType: PeriodType;
   isEmpty: boolean;
   isFetchingPeriods: boolean;
@@ -67,9 +63,9 @@ interface ReportContextValues {
 
 export const ReportContext = createContext({} as ReportContextValues);
 
-export const ReportProvider = ({children}: {children: React.ReactNode}) => {
+export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
   const currentDate = new Date();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
@@ -81,18 +77,17 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     lastDayOfMonth,
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
-  const {isUserAdm} = useAuth();
+  const { isUserAdm } = useAuth();
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
-  const {rigs} = useRigs(isUserAdm);
+  const { rigs } = useRigs(isUserAdm);
 
-  const userRigs = user?.rigs.map(({rig: {id, name}}) => ({id, name})) || [];
+  const userRigs =
+    user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
 
-  const emptyOptions = [{value: "", label: ""}];
+  const emptyOptions = [{ value: "", label: "" }];
 
   //estado dos filtros
-  const [isFilterContainerVisible, setIsFilterContainerVisible] =
-    useState(true);
   const [selectedRig, setSelectedRig] = useState<string>("");
   const [selectedStartDate, setSelectedStartDate] =
     useState<string>(formattedFirstDay);
@@ -131,29 +126,25 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     pageIndex: "1",
   });
 
-  const {periodsResponse, refetchPeriods, isFetchingPeriods} =
+  const { periodsResponse, refetchPeriods, isFetchingPeriods } =
     useGetByPeriodType(filters);
 
   const isEmpty = periodsResponse.data.length === 0;
 
-  const periodTypeOptions = periodTypes.map(({id, type}) => ({
+  const periodTypeOptions = periodTypes.map(({ id, type }) => ({
     label: type,
     value: id,
   }));
 
-  const toggleFilterContainerVisibility = () => {
-    setIsFilterContainerVisible((prevState) => !prevState);
-  };
-
   const getPeriodClassificationsByType = (type: PeriodType) => {
-    return periodClassifications[type].map(({id, classification}) => ({
+    return periodClassifications[type].map(({ id, classification }) => ({
       value: id,
       label: classification,
     }));
   };
 
   const getRepairClassification = (repairType: string) => {
-    return periodClassifications.REPAIR.find(({id}) => id === repairType)
+    return periodClassifications.REPAIR.find(({ id }) => id === repairType)
       ?.repairClassification;
   };
   /* 
@@ -187,22 +178,9 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
     });
   };
 
-  const handleClearSelectedPeriodClassification = () => {
-    setFilters((prev) => ({...prev, periodClassification: "", pageIndex: "1"}));
-    setSelectedPeriodClassification("");
-  };
-
-  const handleClearSelectedRepairClassification = () => {
-    setFilters((prev) => ({
-      ...prev,
-      repairClassification: null,
-      pageIndex: "1",
-    }));
-  };
-
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId, pageIndex: "1"}));
+    setFilters((prevState) => ({ ...prevState, rigId: rigId, pageIndex: "1" }));
   };
 
   const handleStartDateChange = (date: Date) => {
@@ -224,10 +202,31 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleTogglePeriodType = (type: PeriodType) => {
+    if (type === ("" as PeriodType)) {
+      const periodClassificationOptions = getPeriodClassificationsByType(
+        PeriodType.WORKING
+      );
+      setPeriodClassificationOptions(
+        periodClassificationOptions ? periodClassificationOptions : null
+      );
+      setSelectedPeriodClassification("");
+      setSelectedPeriodType(PeriodType.WORKING);
+      setFilters((prevState) => ({
+        ...prevState,
+        pageIndex: "1",
+        periodType: PeriodType.WORKING,
+        periodClassification: "",
+        repairClassification: null,
+      }));
+
+      return;
+    }
+
     const periodClassificationOptions = getPeriodClassificationsByType(type);
     setPeriodClassificationOptions(
       periodClassificationOptions ? periodClassificationOptions : null
     );
+
     setSelectedPeriodClassification("");
     setSelectedPeriodType(type);
     setFilters((prevState) => ({
@@ -311,7 +310,10 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
   };
 
   const handleChangePageSize = (pageSize: number | string) => {
-    setFilters((prevState) => ({...prevState, pageSize: pageSize.toString()}));
+    setFilters((prevState) => ({
+      ...prevState,
+      pageSize: pageSize.toString(),
+    }));
   };
 
   const handleChangePageIndex = (pageIndex: number | string) => {
@@ -337,9 +339,6 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
         filterOptions,
         selectedFilterType,
         repairClassificationOptions,
-        isFilterContainerVisible,
-        handleClearSelectedPeriodClassification,
-        handleClearSelectedRepairClassification,
         handleClearFilters,
         handleToggleFilterType,
         handleChangePeriod,
@@ -350,7 +349,6 @@ export const ReportProvider = ({children}: {children: React.ReactNode}) => {
         handleApplyFilters,
         handleChangePageSize,
         handleChangePageIndex,
-        toggleFilterContainerVisibility,
         onPaginationModelChange,
         selectedRig,
         months,

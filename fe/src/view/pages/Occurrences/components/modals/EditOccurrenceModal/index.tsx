@@ -10,6 +10,7 @@ import dayjs from "dayjs";
 import { UF } from "@/app/entities/Rig";
 import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { DeleteModal } from "@/view/components/DeleteModal";
 
 export const EditOccurrenceModal = () => {
   const {
@@ -33,7 +34,25 @@ export const EditOccurrenceModal = () => {
     isDragging,
     handleDragLeave,
     fileName,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    isDeleteModalOpen,
+    handleDeleteOccurrence,
+    isLoadingDeleteOccurrence,
   } = useEditOccurrenceModal();
+
+  if (isDeleteModalOpen) {
+    return (
+      <DeleteModal
+        open={isDeleteModalOpen}
+        title="Tem certeza que deseja excluir essa ocorrência?"
+        description=" Ao excluir a ocorrência, também serão excluídos todos os  planos de ação e arquivos relacionadas."
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteOccurrence}
+        isLoading={isLoadingDeleteOccurrence}
+      />
+    );
+  }
 
   return (
     <Modal
@@ -275,13 +294,24 @@ export const EditOccurrenceModal = () => {
           </div>
         </div>
 
-        <Button
-          type="submit"
-          className="w-full mt-6"
-          isLoading={isLoadingUpdateOccurrence}
-        >
-          Editar registro
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            onClick={handleOpenDeleteModal}
+            className="w-full mt-6"
+            variant="danger"
+            disabled={isLoadingUpdateOccurrence}
+          >
+            Deletar
+          </Button>
+
+          <Button
+            type="submit"
+            className="w-full mt-6"
+            isLoading={isLoadingUpdateOccurrence}
+          >
+            Editar
+          </Button>
+        </div>
       </form>
     </Modal>
   );
