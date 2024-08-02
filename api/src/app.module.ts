@@ -21,6 +21,7 @@ import { BasesModule } from './modules/bases/bases.module';
 import { ManHoursModule } from './modules/man-hours/man-hours.module';
 import { UploadFileModule } from './modules/upload-file/upload-file.module';
 import { ConfigModule } from '@nestjs/config';
+import { OccurrenceActionsModule } from './modules/occurrence-actions/occurrence-actions.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { ConfigModule } from '@nestjs/config';
     ManHoursModule,
     UploadFileModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    OccurrenceActionsModule,
   ],
   controllers: [],
   providers: [
