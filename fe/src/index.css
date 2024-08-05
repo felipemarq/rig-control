@@ -40,6 +40,17 @@ body,
   animation: sticky-nav 300ms;
 }
 
+/* For Webkit-based browsers (Chrome, Safari and Opera) */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* For IE, Edge and Firefox */
+.scrollbar-hide {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
 @keyframes sticky-nav {
   0% {
     transform: translateY(-6em);

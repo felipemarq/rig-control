@@ -6,8 +6,13 @@ import { OccurrenceItem } from "./OccurrenceItem";
 import { NotFound } from "@/view/components/NotFound";
 
 export const OccurrencesContainer = () => {
-  const { occurrences, isFetchingOccurrences, isInitialLoading } =
-    useOccurrencesContainer();
+  const {
+    occurrences,
+    isFetchingOccurrences,
+    isInitialLoading,
+    filteredOccurrences,
+    handleChangeSearchTerm,
+  } = useOccurrencesContainer();
 
   const hasOccurrences = occurrences.length > 0;
 
@@ -38,9 +43,10 @@ export const OccurrencesContainer = () => {
                 <div className="w-3/4">
                   <Input
                     name="search"
+                    onChange={(value) => handleChangeSearchTerm(value)}
                     variant="modal"
                     className="bg-gray-200 h-12"
-                    placeholder="Pesquisar..."
+                    placeholder="Pesquisar por título..."
                   />
                 </div>
 
@@ -49,7 +55,7 @@ export const OccurrencesContainer = () => {
                 </Button>
               </header>
               <div className="flex flex-col gap-3 mt-6">
-                {occurrences.map((occurrence) => (
+                {filteredOccurrences.map((occurrence) => (
                   <OccurrenceItem occurrence={occurrence} key={occurrence.id} />
                 ))}
               </div>

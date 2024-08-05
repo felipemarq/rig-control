@@ -23,11 +23,12 @@ import { filesService } from "@/app/services/filesService";
 import { UF } from "@/app/entities/Rig";
 import { useClients } from "@/app/hooks/clients/useClients";
 import { SelectOptions } from "@/app/entities/SelectOptions";
-import { occurrenceSeveritySelectOptions } from "../../../utils/OccurrenceSeveritySelectOptions";
 import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
+import { occurrenceSeveritySelectOptions } from "../../../utils/occurrenceSeveritySelectOptions";
 
 const schema = z.object({
   date: z.date(),
+  title: z.string().min(1, "Obrigatório."),
   isAbsent: z.string().min(1, "Obrigatório."),
   type: z.nativeEnum(OccurrenceType),
   category: z.string(),
@@ -180,6 +181,7 @@ export const useNewOccurrenceModal = () => {
     try {
       const occurrence = await mutateNewOccurrenceAsync({
         date: data.date.toISOString(),
+        title: data.title,
         baseId: data.baseId,
         state: data.state as UF,
         clientId: data.clientId,

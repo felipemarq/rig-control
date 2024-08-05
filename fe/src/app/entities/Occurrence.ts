@@ -22,6 +22,7 @@ export enum Nature {
 
 export type Occurrence = {
   id: string;
+  title: string;
   date: string;
   hour: string;
   description: string;

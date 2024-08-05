@@ -10,6 +10,7 @@ import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
 
 export interface CreateOccurrenceParams {
   date: string;
+  title: string;
   isAbsent: boolean;
   type: OccurrenceType;
   nature: Nature;
@@ -17,6 +18,7 @@ export interface CreateOccurrenceParams {
   clientId: string;
   description?: string | undefined;
   createdAt: string;
+  updatedAt?: string;
   hour: string;
   category?: OccurrenceCategory;
   severity?: OccurrenceSeverity;

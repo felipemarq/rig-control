@@ -16,7 +16,6 @@ import { OccurrenceSeverity } from '../entities/OccurrenceSeverity';
 export class CreateOcurrenceDto {
   @IsString()
   @IsNotEmpty()
-  @IsDateString()
   title: string;
 
   @IsString()

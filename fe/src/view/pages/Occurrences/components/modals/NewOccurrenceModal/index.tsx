@@ -10,6 +10,7 @@ import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UF } from "@/app/entities/Rig";
 import { Nature } from "@/app/entities/Occurrence";
+import { Input } from "@/view/components/Input";
 
 export const NewOccurrenceModal = () => {
   const {
@@ -41,9 +42,26 @@ export const NewOccurrenceModal = () => {
       title="Novo registro"
       open={isNewOccurrenceModalOpen}
       onClose={closeNewOccurrenceModal}
+      overflow
     >
       <form onSubmit={handleSubmit}>
         <div className="mt-10 flex flex-col gap-4 ">
+          <div>
+            <Controller
+              control={control}
+              name="title"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  placeholder="Título da Ocorrência"
+                  maxLength={60}
+                  variant="modal"
+                  name="title"
+                  value={value}
+                  onChange={(value) => onChange(value)}
+                />
+              )}
+            />
+          </div>
           <div className="flex gap-4 ">
             <div className="w-full">
               <Controller

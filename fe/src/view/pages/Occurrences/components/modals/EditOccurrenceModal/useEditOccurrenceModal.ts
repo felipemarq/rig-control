@@ -25,10 +25,11 @@ import { filesService } from "@/app/services/filesService";
 import { useClients } from "@/app/hooks/clients/useClients";
 import { SelectOptions } from "@/app/entities/SelectOptions";
 import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
-import { occurrenceSeveritySelectOptions } from "../../../utils/OccurrenceSeveritySelectOptions";
+import { occurrenceSeveritySelectOptions } from "../../../utils/occurrenceSeveritySelectOptions";
 
 const schema = z.object({
   date: z.date(),
+  title: z.string().min(1, "Obrigatório."),
   isAbsent: z.string().min(1, "Obrigatório."),
   type: z.nativeEnum(OccurrenceType),
   category: z.string(),
@@ -121,6 +122,7 @@ export const useEditOccurrenceModal = () => {
     defaultValues: {
       date: new Date(occurrenceBeingSeen?.date!),
       baseId: occurrenceBeingSeen?.baseId,
+      title: occurrenceBeingSeen?.title,
       state: occurrenceBeingSeen?.state as UF,
       description: occurrenceBeingSeen?.description,
       isAbsent: occurrenceBeingSeen?.isAbsent ? "true" : "false",
@@ -223,6 +225,7 @@ export const useEditOccurrenceModal = () => {
         : undefined,
       description: data.description,
       createdAt: occurrenceBeingSeen?.createdAt!,
+
       hour: formatTimeStringToIsoString(selectedHour),
       category: Object.values(OccurrenceCategory).includes(
         data.category as OccurrenceCategory
@@ -235,6 +238,7 @@ export const useEditOccurrenceModal = () => {
       await mutateAsync({
         id: occurrenceBeingSeen?.id!,
         date: data.date.toISOString(),
+        title: data.title,
         baseId: data.baseId,
         clientId: data.clientId,
         state: data.state as UF,
@@ -249,6 +253,7 @@ export const useEditOccurrenceModal = () => {
         description: data.description,
         createdAt: occurrenceBeingSeen?.createdAt!,
         hour: formatTimeStringToIsoString(selectedHour),
+        updatedAt: getCurrentISOString(),
         category: Object.values(OccurrenceCategory).includes(
           data.category as OccurrenceCategory
         )
