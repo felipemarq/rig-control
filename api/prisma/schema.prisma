@@ -623,6 +623,7 @@ model ManHour {
 
 model Occurrence {
   id          String              @id @default(uuid()) @db.Uuid
+  title       String
   date        DateTime
   state       UF
   hour        DateTime

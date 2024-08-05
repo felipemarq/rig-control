@@ -67,6 +67,7 @@ export class OccurrencesService {
     return this.occurrencesRepo.findMany({
       select: {
         id: true,
+        title: true,
         date: true,
         hour: true,
         description: true,
