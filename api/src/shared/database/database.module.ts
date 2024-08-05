@@ -19,6 +19,8 @@ import { OccurrenceRepository } from './repositories/occurrences.repositories';
 import { BaseRepository } from './repositories/base.repositories';
 import { ManHourRepository } from './repositories/manHour.repositories';
 import { FilesRepository } from './repositories/files.repositories';
+import { OccurrenceActionsRepository } from './repositories/occurrence-actions.repositories';
+import { ClientRepository } from './repositories/client.repositories';
 
 @Global()
 @Module({
@@ -43,6 +45,8 @@ import { FilesRepository } from './repositories/files.repositories';
     BaseRepository,
     ManHourRepository,
     FilesRepository,
+    OccurrenceActionsRepository,
+    ClientRepository,
   ],
   exports: [
     PrismaService,
@@ -64,6 +68,8 @@ import { FilesRepository } from './repositories/files.repositories';
     BaseRepository,
     FilesRepository,
     ManHourRepository,
+    OccurrenceActionsRepository,
+    ClientRepository,
   ],
 })
 export class DatabaseModule {}

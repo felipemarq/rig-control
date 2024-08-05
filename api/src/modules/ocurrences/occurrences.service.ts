@@ -4,7 +4,7 @@ import { UpdateOcurrenceDto } from './dto/update-ocurrence.dto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { BaseRepository } from 'src/shared/database/repositories/base.repositories';
 import { ManHourRepository } from 'src/shared/database/repositories/manHour.repositories';
-import { UploadFileService } from '../upload-file/upload-file.service';
+import { FileService } from '../file/file.service';
 
 interface OccurrenceCountByMonth {
   date: Date;
@@ -40,7 +40,7 @@ export class OccurrencesService {
     private readonly occurrencesRepo: OccurrenceRepository,
     private readonly basesRepo: BaseRepository,
     private readonly manHoursRepo: ManHourRepository,
-    private readonly filesService: UploadFileService,
+    private readonly filesService: FileService,
   ) {}
 
   async create(userId: string, createOcurrenceDto: CreateOcurrenceDto) {
@@ -58,7 +58,6 @@ export class OccurrencesService {
     return await this.occurrencesRepo.create({
       data: {
         userId,
-        clientId: baseExists.contract.clientId,
         ...createOcurrenceDto,
       },
     });
@@ -68,17 +67,20 @@ export class OccurrencesService {
     return this.occurrencesRepo.findMany({
       select: {
         id: true,
+        title: true,
         date: true,
         hour: true,
         description: true,
         baseId: true,
         userId: true,
+        clientId: true,
         createdAt: true,
         isAbsent: true,
         updatedAt: true,
         type: true,
         nature: true,
         category: true,
+        severity: true,
         state: true,
         base: {
           select: {
@@ -115,7 +117,15 @@ export class OccurrencesService {
 
     return await this.occurrencesRepo.update({
       where: { id: occurrenceId },
-      data: updateOcurrenceDto,
+      data: {
+        ...updateOcurrenceDto,
+        category: updateOcurrenceDto.category
+          ? updateOcurrenceDto.category
+          : null,
+        severity: updateOcurrenceDto.severity
+          ? updateOcurrenceDto.severity
+          : null,
+      },
     });
   }
 

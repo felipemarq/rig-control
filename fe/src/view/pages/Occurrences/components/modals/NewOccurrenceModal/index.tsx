@@ -9,6 +9,8 @@ import { Controller } from "react-hook-form";
 import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UF } from "@/app/entities/Rig";
+import { Nature } from "@/app/entities/Occurrence";
+import { Input } from "@/view/components/Input";
 
 export const NewOccurrenceModal = () => {
   const {
@@ -29,6 +31,10 @@ export const NewOccurrenceModal = () => {
     isDragging,
     file,
     handleDragLeave,
+    clientSelectOptions,
+    isFetchingClients,
+    selectedNature,
+    occurrenceSeveritySelectOptions,
   } = useNewOccurrenceModal();
 
   return (
@@ -36,10 +42,28 @@ export const NewOccurrenceModal = () => {
       title="Novo registro"
       open={isNewOccurrenceModalOpen}
       onClose={closeNewOccurrenceModal}
+      overflow
     >
       <form onSubmit={handleSubmit}>
-        <div className="mt-10 flex flex-col gap-4">
-          <div className="flex gap-4">
+        <div className="mt-10 flex flex-col gap-4 ">
+          <div>
+            <Controller
+              control={control}
+              name="title"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  error={errors.title?.message}
+                  placeholder="Título da Ocorrência"
+                  maxLength={60}
+                  variant="modal"
+                  name="title"
+                  value={value}
+                  onChange={(value) => onChange(value)}
+                />
+              )}
+            />
+          </div>
+          <div className="flex gap-4 ">
             <div className="w-full">
               <Controller
                 control={control}
@@ -54,16 +78,35 @@ export const NewOccurrenceModal = () => {
               />
             </div>
 
-            <div className="w-full">
-              <TimePicker
-                placeholder="Hora do ocorrido"
-                className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
-                //defaultValue={dayjs("00:00", "HH:mm")}
-                onChange={(_time, timeString) =>
-                  handleHourChange(timeString as string)
-                }
-                format={"HH:mm"}
-              />
+            <div className="flex gap-2 w-full">
+              <div className="w-full">
+                <TimePicker
+                  placeholder="Hora do ocorrido"
+                  className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
+                  //defaultValue={dayjs("00:00", "HH:mm")}
+                  onChange={(_time, timeString) =>
+                    handleHourChange(timeString as string)
+                  }
+                  format={"HH:mm"}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  control={control}
+                  name="clientId"
+                  defaultValue={undefined}
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      error={errors.clientId?.message}
+                      placeholder="Cliente"
+                      value={value}
+                      isLoading={isFetchingClients}
+                      onChange={onChange}
+                      options={clientSelectOptions}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -94,7 +137,7 @@ export const NewOccurrenceModal = () => {
                   render={({ field: { onChange, value } }) => (
                     <Select
                       error={errors.baseId?.message}
-                      placeholder="Base"
+                      placeholder="Contrato"
                       value={value}
                       isLoading={isFetchingBases}
                       onChange={onChange}
@@ -174,36 +217,62 @@ export const NewOccurrenceModal = () => {
                 />
               </div>
 
-              <div className="flex-1">
-                <Controller
-                  defaultValue=""
-                  control={control}
-                  name="category"
-                  render={({ field: { onChange, value } }) => (
-                    <Select
-                      error={errors.category?.message}
-                      placeholder="Classificação"
-                      value={value}
-                      isLoading={isFetchingBases}
-                      onChange={onChange}
-                      options={[
-                        {
-                          value: "TOR",
-                          label: "TOR",
-                        },
-                        {
-                          value: "TAR",
-                          label: "TAR",
-                        },
-                        {
-                          value: " ",
-                          label: "Sem classificação",
-                        },
-                      ]}
-                    />
-                  )}
-                />
-              </div>
+              {selectedNature === Nature.INCIDENT && (
+                <div className="flex-1">
+                  <Controller
+                    defaultValue=""
+                    control={control}
+                    name="severity"
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        className={cn(!selectedNature && "cursor-not-allowed")}
+                        disabled={!selectedNature}
+                        error={errors.severity?.message}
+                        placeholder="Classificação"
+                        value={value!}
+                        isLoading={isFetchingBases}
+                        onChange={onChange}
+                        options={occurrenceSeveritySelectOptions}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              {selectedNature !== Nature.INCIDENT && (
+                <div className="flex-1">
+                  <Controller
+                    defaultValue=""
+                    control={control}
+                    name="category"
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        className={cn(!selectedNature && "cursor-not-allowed")}
+                        disabled={!selectedNature}
+                        error={errors.category?.message}
+                        placeholder="Classificação"
+                        value={value}
+                        isLoading={isFetchingBases}
+                        onChange={onChange}
+                        options={[
+                          {
+                            value: "TOR",
+                            label: "TOR",
+                          },
+                          {
+                            value: "TAR",
+                            label: "TAR",
+                          },
+                          {
+                            value: " ",
+                            label: "Sem classificação",
+                          },
+                        ]}
+                      />
+                    )}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

@@ -19,8 +19,10 @@ import { SystemVersionModule } from './modules/system-version/system-version.mod
 import { OccurrencesModule } from './modules/ocurrences/occurrences.module';
 import { BasesModule } from './modules/bases/bases.module';
 import { ManHoursModule } from './modules/man-hours/man-hours.module';
-import { UploadFileModule } from './modules/upload-file/upload-file.module';
+import { FileModule } from './modules/file/file.module';
 import { ConfigModule } from '@nestjs/config';
+import { OccurrenceActionsModule } from './modules/occurrence-actions/occurrence-actions.module';
+import { ClientsModule } from './modules/clients/clients.module';
 
 @Module({
   imports: [
@@ -42,8 +44,10 @@ import { ConfigModule } from '@nestjs/config';
     OccurrencesModule,
     BasesModule,
     ManHoursModule,
-    UploadFileModule,
+    FileModule,
     ConfigModule.forRoot({ isGlobal: true }),
+    OccurrenceActionsModule,
+    ClientsModule,
   ],
   controllers: [],
   providers: [

@@ -586,6 +586,12 @@ enum OccurrenceCategory {
   TOR
 }
 
+enum OccurrenceSeverity {
+  MINOR
+  MODERATE
+  SEVERE
+}
+
 model Base {
   id          String       @id @default(uuid()) @db.Uuid
   name        String       @unique
@@ -617,11 +623,13 @@ model ManHour {
 
 model Occurrence {
   id          String              @id @default(uuid()) @db.Uuid
+  title       String
   date        DateTime
   state       UF
   hour        DateTime
   description String
   category    OccurrenceCategory?
+  severity    OccurrenceSeverity?
   baseId      String              @db.Uuid
   clientId    String?             @map("client_id") @db.Uuid
   userId      String              @db.Uuid
@@ -632,33 +640,40 @@ model Occurrence {
   isAbsent Boolean        @map("is_absent")
   nature   Nature
 
-  client Client? @relation(fields: [clientId], references: [id])
-  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  base   Base    @relation(fields: [baseId], references: [id], onDelete: Cascade)
-  files  File[]
+  client            Client?            @relation(fields: [clientId], references: [id])
+  user              User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  base              Base               @relation(fields: [baseId], references: [id], onDelete: Cascade)
+  files             File[]
+  occurrenceActions OccurrenceAction[]
 
   @@map("occurrences")
 }
 
 model OccurrenceAction {
-  id          String   @id @default(uuid()) @db.Uuid
-  title       String
-  dueDate     DateTime
-  responsible String
-  description String
-  isFinished  Boolean  @default(false)
+  id           String     @id @default(uuid()) @db.Uuid
+  occurrenceId String     @map("occurrence_id") @db.Uuid
+  title        String
+  dueDate      DateTime
+  responsible  String
+  description  String
+  isFinished   Boolean    @default(false)
+  createdAt    DateTime   @default(now()) @map("created_at")
+  files        File[]
+  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 
   @@map("occurrence_action")
 }
 
 model File {
-  id           String      @id @default(uuid()) @db.Uuid
-  path         String
-  userId       String      @map("user_id") @db.Uuid
-  occurrenceId String?     @map("occurrence_id") @db.Uuid
-  createdAt    DateTime    @default(now()) @map("created_at")
-  user         User        @relation(fields: [userId], references: [id], onDelete: Cascade)
-  occurrence   Occurrence? @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  id                 String            @id @default(uuid()) @db.Uuid
+  path               String
+  userId             String            @map("user_id") @db.Uuid
+  occurrenceId       String?           @map("occurrence_id") @db.Uuid
+  occurrenceActionId String?           @map("occurrence_action_id") @db.Uuid
+  createdAt          DateTime          @default(now()) @map("created_at")
+  user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  occurrence         Occurrence?       @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  occurrenceAction   OccurrenceAction? @relation(fields: [occurrenceActionId], references: [id], onDelete: Cascade)
 
   @@map("files")
 }

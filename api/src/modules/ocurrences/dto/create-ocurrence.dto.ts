@@ -11,8 +11,13 @@ import { OccurrenceType } from '../entities/OccurrenceType';
 import { Nature } from '../entities/Nature';
 import { OccurrenceCategory } from '../entities/OccurrenceCategory';
 import { UF } from '../entities/UF';
+import { OccurrenceSeverity } from '../entities/OccurrenceSeverity';
 
 export class CreateOcurrenceDto {
+  @IsString()
+  @IsNotEmpty()
+  title: string;
+
   @IsString()
   @IsNotEmpty()
   @IsDateString()
@@ -36,6 +41,11 @@ export class CreateOcurrenceDto {
   @IsNotEmpty()
   baseId: string;
 
+  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
+  clientId: string;
+
   @IsString()
   @IsNotEmpty()
   @IsDateString()
@@ -52,6 +62,10 @@ export class CreateOcurrenceDto {
   @IsEnum(OccurrenceCategory)
   @IsOptional()
   category: OccurrenceCategory;
+
+  @IsEnum(OccurrenceSeverity)
+  @IsOptional()
+  severity: OccurrenceSeverity;
 
   @IsEnum(Nature)
   @IsNotEmpty()

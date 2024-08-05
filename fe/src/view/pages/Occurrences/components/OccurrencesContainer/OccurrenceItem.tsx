@@ -1,6 +1,12 @@
-import { Occurrence } from "@/app/entities/Occurrence";
-import { DownloadIcon, HardHat, Paperclip } from "lucide-react";
-import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
+import { Occurrence, OccurrenceType } from "@/app/entities/Occurrence";
+import {
+  Cross,
+  DownloadIcon,
+  HardHat,
+  Paperclip,
+  TreePine,
+  Waypoints,
+} from "lucide-react";
 import { formatDate } from "@/app/utils/formatDate";
 import { Button } from "@/view/components/Button";
 import { useOccurrencesContext } from "../OccurrencesContext/useOccurencesContext";
@@ -25,15 +31,22 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
     >
       <div className="flex gap-6 items-center ">
         <div className="bg-white p-4 rounded-full h-1/2">
-          <HardHat />
+          {occurrence.type === OccurrenceType.SAFETY && (
+            <HardHat className="text-orange-400" />
+          )}
+          {occurrence.type === OccurrenceType.ENVIRONMENT && (
+            <TreePine className="text-green-500" />
+          )}
+          {occurrence.type === OccurrenceType.HEALTH && (
+            <Cross className="text-red-500" />
+          )}
+          {occurrence.type === OccurrenceType.PROCESS && (
+            <Waypoints className="text-blue-500" />
+          )}
         </div>
         <div className=" flex flex-col gap-2 ">
           <span className="text-lg text-primary font-bold">
-            {
-              occurrenceTypeSelectOptions.find(
-                ({ value }) => value === occurrence.type
-              )?.label
-            }
+            {occurrence.title}
           </span>
           <span className="text-primary">
             {formatDate(new Date(occurrence.date))}

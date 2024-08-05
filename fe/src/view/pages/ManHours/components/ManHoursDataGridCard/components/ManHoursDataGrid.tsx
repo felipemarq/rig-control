@@ -23,7 +23,7 @@ export const ManHoursDataGrid = ({
       field: "baseName",
       headerName: "Contrato",
       headerAlign: "center",
-      flex: 0.2,
+      flex: 0.6,
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
@@ -217,6 +217,7 @@ export const ManHoursDataGrid = ({
       headerAlign: "center",
       editable: true,
       flex: 0.2,
+
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">

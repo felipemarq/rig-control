@@ -8,13 +8,13 @@ import {
   ParseUUIDPipe,
   Delete,
 } from '@nestjs/common';
-import { UploadFileService } from './upload-file.service';
+import { FileService } from './file.service';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 
-@Controller('upload-file')
-export class UploadFileController {
-  constructor(private readonly uploadFileService: UploadFileService) {}
+@Controller('file')
+export class FileController {
+  constructor(private readonly fileService: FileService) {}
 
   @Post('/occurrence/:occurrenceId')
   @UseInterceptors(FileInterceptor('file'))
@@ -27,17 +27,13 @@ export class UploadFileController {
       throw new BadRequestException('Arquivo inválido!');
     }
 
-    await this.uploadFileService.uploadOccurenceFile(
-      file,
-      userId,
-      occurrenceId,
-    );
+    await this.fileService.uploadOccurenceFile(file, userId, occurrenceId);
   }
 
   @Delete('/occurrence/:occurrenceId')
   async deleteOccurenceFile(
     @Param('occurrenceId', ParseUUIDPipe) occurrenceId: string,
   ) {
-    await this.uploadFileService.deleteOccurenceFile(occurrenceId);
+    await this.fileService.deleteOccurenceFile(occurrenceId);
   }
 }

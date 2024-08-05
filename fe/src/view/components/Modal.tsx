@@ -9,6 +9,7 @@ interface ModalProps {
   title: string;
   onClose?(): void;
   maxWidth?: string;
+  overflow?: boolean;
 }
 
 export const Modal = ({
@@ -17,6 +18,7 @@ export const Modal = ({
   title,
   onClose,
   maxWidth,
+  overflow,
 }: ModalProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={onClose}>
@@ -31,9 +33,9 @@ export const Modal = ({
             "data-[state=open]:animate-contentShow",
             "fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[99]",
             "p-6 space-y-10 bg-white rounded-2xl",
-            `shadow=[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full max-w-[${
-              maxWidth ? maxWidth : "800px"
-            }] outline-none`
+            "shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full",
+            maxWidth ? `max-w-[${maxWidth}]` : "max-w-[800px]",
+            overflow && "max-h-[90vh] overflow-y-auto scrollbar-hide"
           )}
         >
           <header className="relative h-12 flex items-center justify-center text-gray-800 ">
