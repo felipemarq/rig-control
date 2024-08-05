@@ -207,35 +207,34 @@ export const Sidebar = ({ className }: SidebarProps) => {
                   </>
                 </SubMenu>
               )}
-              {isUserAdm ||
-                (user?.email === "rommelcaldas@conterp.com.br" && (
-                  <>
-                    <SubMenu
-                      label="SMS"
-                      icon={<Shield />}
-                      className="hover:bg-primary text-white"
-                    >
-                      <Link to="/dashboard/man-hours">
-                        <MenuItem className="bg-primary" icon={<BarChart />}>
-                          {" "}
-                          Dashboard
-                        </MenuItem>
-                      </Link>
+              {(isUserAdm || user?.email === "rommelcaldas@conterp.com.br") && (
+                <>
+                  <SubMenu
+                    label="SMS"
+                    icon={<Shield />}
+                    className="hover:bg-primary text-white"
+                  >
+                    <Link to="/dashboard/man-hours">
+                      <MenuItem className="bg-primary" icon={<BarChart />}>
+                        {" "}
+                        Dashboard
+                      </MenuItem>
+                    </Link>
 
-                      <Link to="/occurrences">
-                        <MenuItem icon={<TrafficCone />} className="bg-primary">
-                          Registros
-                        </MenuItem>
-                      </Link>
-                      <Link to="/man-hours">
-                        <MenuItem className="bg-primary" icon={<Clock />}>
-                          {" "}
-                          Homem Hora
-                        </MenuItem>
-                      </Link>
-                    </SubMenu>
-                  </>
-                ))}
+                    <Link to="/occurrences">
+                      <MenuItem icon={<TrafficCone />} className="bg-primary">
+                        Registros
+                      </MenuItem>
+                    </Link>
+                    <Link to="/man-hours">
+                      <MenuItem className="bg-primary" icon={<Clock />}>
+                        {" "}
+                        Homem Hora
+                      </MenuItem>
+                    </Link>
+                  </SubMenu>
+                </>
+              )}
             </Menu>
           </div>
           <div className=" bg-primary p-4">
