@@ -140,6 +140,8 @@ export const useNewOccurrenceModal = () => {
     label: name,
   }));
 
+  console.log("clientSelectOptions", clientSelectOptions);
+
   const {
     isPending: isLoadingNewOccurrence,
     mutateAsync: mutateNewOccurrenceAsync,
