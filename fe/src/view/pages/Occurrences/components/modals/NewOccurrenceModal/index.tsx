@@ -52,6 +52,7 @@ export const NewOccurrenceModal = () => {
               name="title"
               render={({ field: { onChange, value } }) => (
                 <Input
+                  error={errors.title?.message}
                   placeholder="Título da Ocorrência"
                   maxLength={60}
                   variant="modal"
