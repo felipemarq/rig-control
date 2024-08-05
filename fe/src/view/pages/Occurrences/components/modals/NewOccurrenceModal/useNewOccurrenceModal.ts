@@ -21,6 +21,8 @@ import { occurrenceTypeSelectOptions } from "../../../utils/occurrenceTypeSelect
 import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 import { filesService } from "@/app/services/filesService";
 import { UF } from "@/app/entities/Rig";
+import { useClients } from "@/app/hooks/clients/useClients";
+import { SelectOptions } from "@/app/entities/SelectOptions";
 
 const schema = z.object({
   date: z.date(),
@@ -29,6 +31,7 @@ const schema = z.object({
   category: z.string(),
   nature: z.nativeEnum(Nature),
   baseId: z.string().min(1, "Base é obrigatório."),
+  clientId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
   state: z.string().min(1, "Estado é obrigatório"),
 });
@@ -106,8 +109,12 @@ export const useNewOccurrenceModal = () => {
   const queryClient = useQueryClient();
 
   const { bases, isFetchingBases } = useBases();
+  const { clients, isFetchingClients } = useClients();
 
-  console.log("Bases: ", bases);
+  const clientSelectOptions: SelectOptions = clients.map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
 
   const {
     isPending: isLoadingNewOccurrence,
@@ -127,6 +134,8 @@ export const useNewOccurrenceModal = () => {
     console.log("Data", {
       date: data.date.toISOString(),
       baseId: data.baseId,
+      state: data.state as UF,
+      clientId: data.clientId,
       isAbsent: data.isAbsent === "true" ? true : false,
       nature: data.nature,
       type: data.type,
@@ -145,6 +154,7 @@ export const useNewOccurrenceModal = () => {
         date: data.date.toISOString(),
         baseId: data.baseId,
         state: data.state as UF,
+        clientId: data.clientId,
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
         type: data.type,
@@ -196,5 +206,7 @@ export const useNewOccurrenceModal = () => {
     file,
     isDragging,
     handleDragLeave,
+    clientSelectOptions,
+    isFetchingClients,
   };
 };

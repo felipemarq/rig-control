@@ -29,6 +29,8 @@ export const NewOccurrenceModal = () => {
     isDragging,
     file,
     handleDragLeave,
+    clientSelectOptions,
+    isFetchingClients,
   } = useNewOccurrenceModal();
 
   return (
@@ -38,8 +40,8 @@ export const NewOccurrenceModal = () => {
       onClose={closeNewOccurrenceModal}
     >
       <form onSubmit={handleSubmit}>
-        <div className="mt-10 flex flex-col gap-4">
-          <div className="flex gap-4">
+        <div className="mt-10 flex flex-col gap-4 ">
+          <div className="flex gap-4 ">
             <div className="w-full">
               <Controller
                 control={control}
@@ -54,16 +56,35 @@ export const NewOccurrenceModal = () => {
               />
             </div>
 
-            <div className="w-full">
-              <TimePicker
-                placeholder="Hora do ocorrido"
-                className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
-                //defaultValue={dayjs("00:00", "HH:mm")}
-                onChange={(_time, timeString) =>
-                  handleHourChange(timeString as string)
-                }
-                format={"HH:mm"}
-              />
+            <div className="flex gap-2 w-full">
+              <div className="w-full">
+                <TimePicker
+                  placeholder="Hora do ocorrido"
+                  className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
+                  //defaultValue={dayjs("00:00", "HH:mm")}
+                  onChange={(_time, timeString) =>
+                    handleHourChange(timeString as string)
+                  }
+                  format={"HH:mm"}
+                />
+              </div>
+              <div className="w-full">
+                <Controller
+                  control={control}
+                  name="clientId"
+                  defaultValue={undefined}
+                  render={({ field: { onChange, value } }) => (
+                    <Select
+                      error={errors.clientId?.message}
+                      placeholder="Cliente"
+                      value={value}
+                      isLoading={isFetchingClients}
+                      onChange={onChange}
+                      options={clientSelectOptions}
+                    />
+                  )}
+                />
+              </div>
             </div>
           </div>
 
@@ -94,7 +115,7 @@ export const NewOccurrenceModal = () => {
                   render={({ field: { onChange, value } }) => (
                     <Select
                       error={errors.baseId?.message}
-                      placeholder="Base"
+                      placeholder="Contrato"
                       value={value}
                       isLoading={isFetchingBases}
                       onChange={onChange}

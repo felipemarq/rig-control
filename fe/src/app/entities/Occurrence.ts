@@ -27,6 +27,7 @@ export type Occurrence = {
   state: UF;
   baseId: string;
   userId: string;
+  clientId: string;
   createdAt: string;
   updatedAt?: string;
   type: OccurrenceType;

@@ -14,12 +14,12 @@ export const OccurrencesContainer = () => {
   return (
     <div className=" h-full">
       {isInitialLoading && (
-        <div>
+        <div className="h-full w-full flex items-center justify-center">
           <Spinner />
         </div>
       )}
       {!isInitialLoading && (
-        <div className=" h-full">
+        <div className="h-full w-full flex items-center justify-center">
           {isFetchingOccurrences && (
             <div>
               <Spinner />

@@ -36,6 +36,11 @@ export class CreateOcurrenceDto {
   @IsNotEmpty()
   baseId: string;
 
+  @IsUUID()
+  @IsString()
+  @IsNotEmpty()
+  clientId: string;
+
   @IsString()
   @IsNotEmpty()
   @IsDateString()

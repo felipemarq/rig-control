@@ -58,7 +58,6 @@ export class OccurrencesService {
     return await this.occurrencesRepo.create({
       data: {
         userId,
-        clientId: baseExists.contract.clientId,
         ...createOcurrenceDto,
       },
     });
@@ -73,6 +72,7 @@ export class OccurrencesService {
         description: true,
         baseId: true,
         userId: true,
+        clientId: true,
         createdAt: true,
         isAbsent: true,
         updatedAt: true,

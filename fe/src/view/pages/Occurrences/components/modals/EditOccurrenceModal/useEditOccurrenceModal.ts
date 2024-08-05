@@ -22,6 +22,8 @@ import { natureSelectOptions } from "../../../utils/natureSelectOptions";
 import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
 import { UF } from "@/app/entities/Rig";
 import { filesService } from "@/app/services/filesService";
+import { useClients } from "@/app/hooks/clients/useClients";
+import { SelectOptions } from "@/app/entities/SelectOptions";
 
 const schema = z.object({
   date: z.date(),
@@ -32,6 +34,7 @@ const schema = z.object({
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
   state: z.string().min(1, "Estado é obrigatório"),
+  clientId: z.string().min(1, "Base é obrigatório."),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -118,6 +121,7 @@ export const useEditOccurrenceModal = () => {
       isAbsent: occurrenceBeingSeen?.isAbsent ? "true" : "false",
       nature: occurrenceBeingSeen?.nature,
       type: occurrenceBeingSeen?.type,
+      clientId: occurrenceBeingSeen?.clientId,
       category: Object.values(OccurrenceCategory).includes(
         occurrenceBeingSeen?.category as OccurrenceCategory
       )
@@ -129,6 +133,13 @@ export const useEditOccurrenceModal = () => {
   const queryClient = useQueryClient();
 
   const { bases, isFetchingBases } = useBases();
+
+  const { clients, isFetchingClients } = useClients();
+
+  const clientSelectOptions: SelectOptions = clients.map(({ id, name }) => ({
+    value: id,
+    label: name,
+  }));
 
   const { isPending: isLoadingUpdateOccurrence, mutateAsync } = useMutation({
     mutationFn: occurrencesService.update,
@@ -182,6 +193,7 @@ export const useEditOccurrenceModal = () => {
         id: occurrenceBeingSeen?.id!,
         date: data.date.toISOString(),
         baseId: data.baseId,
+        clientId: data.clientId,
         state: data.state as UF,
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
@@ -245,5 +257,7 @@ export const useEditOccurrenceModal = () => {
     isDeleteModalOpen,
     handleDeleteOccurrence,
     isLoadingDeleteOccurrence,
+    clientSelectOptions,
+    isFetchingClients,
   };
 };

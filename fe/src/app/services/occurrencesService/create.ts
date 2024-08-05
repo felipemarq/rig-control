@@ -13,6 +13,7 @@ export interface CreateOccurrenceParams {
   type: OccurrenceType;
   nature: Nature;
   baseId: string;
+  clientId: string;
   description?: string | undefined;
   createdAt: string;
   hour: string;
