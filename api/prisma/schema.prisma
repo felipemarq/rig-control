@@ -586,6 +586,12 @@ enum OccurrenceCategory {
   TOR
 }
 
+enum OccurrenceSeverity {
+  MINOR
+  MODERATE
+  SEVERE
+}
+
 model Base {
   id          String       @id @default(uuid()) @db.Uuid
   name        String       @unique
@@ -622,6 +628,7 @@ model Occurrence {
   hour        DateTime
   description String
   category    OccurrenceCategory?
+  severity    OccurrenceSeverity?
   baseId      String              @db.Uuid
   clientId    String?             @map("client_id") @db.Uuid
   userId      String              @db.Uuid

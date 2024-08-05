@@ -79,6 +79,7 @@ export class OccurrencesService {
         type: true,
         nature: true,
         category: true,
+        severity: true,
         state: true,
         base: {
           select: {
@@ -115,7 +116,15 @@ export class OccurrencesService {
 
     return await this.occurrencesRepo.update({
       where: { id: occurrenceId },
-      data: updateOcurrenceDto,
+      data: {
+        ...updateOcurrenceDto,
+        category: updateOcurrenceDto.category
+          ? updateOcurrenceDto.category
+          : null,
+        severity: updateOcurrenceDto.severity
+          ? updateOcurrenceDto.severity
+          : null,
+      },
     });
   }
 

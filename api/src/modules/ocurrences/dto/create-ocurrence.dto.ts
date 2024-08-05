@@ -11,6 +11,7 @@ import { OccurrenceType } from '../entities/OccurrenceType';
 import { Nature } from '../entities/Nature';
 import { OccurrenceCategory } from '../entities/OccurrenceCategory';
 import { UF } from '../entities/UF';
+import { OccurrenceSeverity } from '../entities/OccurrenceSeverity';
 
 export class CreateOcurrenceDto {
   @IsString()
@@ -57,6 +58,10 @@ export class CreateOcurrenceDto {
   @IsEnum(OccurrenceCategory)
   @IsOptional()
   category: OccurrenceCategory;
+
+  @IsEnum(OccurrenceSeverity)
+  @IsOptional()
+  severity: OccurrenceSeverity;
 
   @IsEnum(Nature)
   @IsNotEmpty()

@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, DragEvent, useMemo, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useMemo, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { occurrencesService } from "@/app/services/occurrencesService";
 import { AxiosError } from "axios";
@@ -23,12 +23,15 @@ import { filesService } from "@/app/services/filesService";
 import { UF } from "@/app/entities/Rig";
 import { useClients } from "@/app/hooks/clients/useClients";
 import { SelectOptions } from "@/app/entities/SelectOptions";
+import { occurrenceSeveritySelectOptions } from "../../../utils/OccurrenceSeveritySelectOptions";
+import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
 
 const schema = z.object({
   date: z.date(),
   isAbsent: z.string().min(1, "Obrigatório."),
   type: z.nativeEnum(OccurrenceType),
   category: z.string(),
+  severity: z.string().min(0, "Please enter a valid value").optional(),
   nature: z.nativeEnum(Nature),
   baseId: z.string().min(1, "Base é obrigatório."),
   clientId: z.string().min(1, "Base é obrigatório."),
@@ -66,8 +69,6 @@ export const useNewOccurrenceModal = () => {
     setFile(selectedFile);
   };
 
-  console.log(file);
-
   const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     event.stopPropagation();
@@ -101,10 +102,32 @@ export const useNewOccurrenceModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
+    watch,
+    setValue,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
+
+  const selectedNature = watch("nature");
+
+  /*  console.log("selectedSeverity", selectedSeverity);
+  console.log("errors", errors);
+  occurrenceSeveritySelectOptions;
+  console.log(
+    "occurrenceSeveritySelectOptions",
+    occurrenceSeveritySelectOptions
+  ); */
+
+  console.log("errors", errors);
+
+  useEffect(() => {
+    if (selectedNature === Nature.INCIDENT) {
+      setValue("category", ""); // Limpa o valor de category
+    } else {
+      setValue("severity", undefined); // Limpa o valor de severity
+    }
+  }, [selectedNature, setValue]);
 
   const queryClient = useQueryClient();
 
@@ -139,6 +162,11 @@ export const useNewOccurrenceModal = () => {
       isAbsent: data.isAbsent === "true" ? true : false,
       nature: data.nature,
       type: data.type,
+      severity: Object.values(OccurrenceSeverity).includes(
+        data.severity as OccurrenceSeverity
+      )
+        ? (data.severity as OccurrenceSeverity)
+        : (data.severity as OccurrenceSeverity),
       description: data.description,
       createdAt: getCurrentISOString(),
       hour: formatTimeStringToIsoString(selectedHour),
@@ -158,6 +186,11 @@ export const useNewOccurrenceModal = () => {
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
         type: data.type,
+        severity: Object.values(OccurrenceSeverity).includes(
+          data.severity as OccurrenceSeverity
+        )
+          ? (data.severity as OccurrenceSeverity)
+          : undefined,
         description: data.description,
         createdAt: getCurrentISOString(),
         hour: formatTimeStringToIsoString(selectedHour),
@@ -176,7 +209,11 @@ export const useNewOccurrenceModal = () => {
       }
 
       setFile(null);
-      window.location.reload();
+
+      if (file) {
+        window.location.reload();
+      }
+
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeNewOccurrenceModal();
       customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
@@ -193,6 +230,7 @@ export const useNewOccurrenceModal = () => {
     bases,
     isFetchingBases,
     occurrenceTypeSelectOptions,
+    occurrenceSeveritySelectOptions,
     natureSelectOptions,
     control,
     handleSubmit,
@@ -208,5 +246,6 @@ export const useNewOccurrenceModal = () => {
     handleDragLeave,
     clientSelectOptions,
     isFetchingClients,
+    selectedNature,
   };
 };

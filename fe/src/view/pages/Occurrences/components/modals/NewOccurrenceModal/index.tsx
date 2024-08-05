@@ -9,6 +9,7 @@ import { Controller } from "react-hook-form";
 import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UF } from "@/app/entities/Rig";
+import { Nature } from "@/app/entities/Occurrence";
 
 export const NewOccurrenceModal = () => {
   const {
@@ -31,6 +32,8 @@ export const NewOccurrenceModal = () => {
     handleDragLeave,
     clientSelectOptions,
     isFetchingClients,
+    selectedNature,
+    occurrenceSeveritySelectOptions,
   } = useNewOccurrenceModal();
 
   return (
@@ -195,36 +198,62 @@ export const NewOccurrenceModal = () => {
                 />
               </div>
 
-              <div className="flex-1">
-                <Controller
-                  defaultValue=""
-                  control={control}
-                  name="category"
-                  render={({ field: { onChange, value } }) => (
-                    <Select
-                      error={errors.category?.message}
-                      placeholder="Classificação"
-                      value={value}
-                      isLoading={isFetchingBases}
-                      onChange={onChange}
-                      options={[
-                        {
-                          value: "TOR",
-                          label: "TOR",
-                        },
-                        {
-                          value: "TAR",
-                          label: "TAR",
-                        },
-                        {
-                          value: " ",
-                          label: "Sem classificação",
-                        },
-                      ]}
-                    />
-                  )}
-                />
-              </div>
+              {selectedNature === Nature.INCIDENT && (
+                <div className="flex-1">
+                  <Controller
+                    defaultValue=""
+                    control={control}
+                    name="severity"
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        className={cn(!selectedNature && "cursor-not-allowed")}
+                        disabled={!selectedNature}
+                        error={errors.severity?.message}
+                        placeholder="Classificação"
+                        value={value!}
+                        isLoading={isFetchingBases}
+                        onChange={onChange}
+                        options={occurrenceSeveritySelectOptions}
+                      />
+                    )}
+                  />
+                </div>
+              )}
+
+              {selectedNature !== Nature.INCIDENT && (
+                <div className="flex-1">
+                  <Controller
+                    defaultValue=""
+                    control={control}
+                    name="category"
+                    render={({ field: { onChange, value } }) => (
+                      <Select
+                        className={cn(!selectedNature && "cursor-not-allowed")}
+                        disabled={!selectedNature}
+                        error={errors.category?.message}
+                        placeholder="Classificação"
+                        value={value}
+                        isLoading={isFetchingBases}
+                        onChange={onChange}
+                        options={[
+                          {
+                            value: "TOR",
+                            label: "TOR",
+                          },
+                          {
+                            value: "TAR",
+                            label: "TAR",
+                          },
+                          {
+                            value: " ",
+                            label: "Sem classificação",
+                          },
+                        ]}
+                      />
+                    )}
+                  />
+                </div>
+              )}
             </div>
           </div>
 

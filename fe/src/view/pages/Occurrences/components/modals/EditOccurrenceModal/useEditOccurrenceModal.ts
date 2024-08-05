@@ -8,7 +8,7 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { ChangeEvent, DragEvent, useState } from "react";
+import { ChangeEvent, DragEvent, useEffect, useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { occurrencesService } from "@/app/services/occurrencesService";
 import { AxiosError } from "axios";
@@ -24,6 +24,8 @@ import { UF } from "@/app/entities/Rig";
 import { filesService } from "@/app/services/filesService";
 import { useClients } from "@/app/hooks/clients/useClients";
 import { SelectOptions } from "@/app/entities/SelectOptions";
+import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
+import { occurrenceSeveritySelectOptions } from "../../../utils/OccurrenceSeveritySelectOptions";
 
 const schema = z.object({
   date: z.date(),
@@ -31,6 +33,7 @@ const schema = z.object({
   type: z.nativeEnum(OccurrenceType),
   category: z.string(),
   nature: z.nativeEnum(Nature),
+  severity: z.string().min(0, "Please enter a valid value").optional(),
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
   state: z.string().min(1, "Estado é obrigatório"),
@@ -110,6 +113,8 @@ export const useEditOccurrenceModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
+    setValue,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -120,6 +125,11 @@ export const useEditOccurrenceModal = () => {
       description: occurrenceBeingSeen?.description,
       isAbsent: occurrenceBeingSeen?.isAbsent ? "true" : "false",
       nature: occurrenceBeingSeen?.nature,
+      severity: Object.values(OccurrenceSeverity).includes(
+        occurrenceBeingSeen?.severity as OccurrenceSeverity
+      )
+        ? (occurrenceBeingSeen?.severity as OccurrenceSeverity)
+        : " ",
       type: occurrenceBeingSeen?.type,
       clientId: occurrenceBeingSeen?.clientId,
       category: Object.values(OccurrenceCategory).includes(
@@ -129,6 +139,26 @@ export const useEditOccurrenceModal = () => {
         : " ",
     },
   });
+
+  const selectedNature = watch("nature");
+
+  /*  console.log("selectedSeverity", selectedSeverity);
+  console.log("errors", errors);
+  occurrenceSeveritySelectOptions;
+  console.log(
+    "occurrenceSeveritySelectOptions",
+    occurrenceSeveritySelectOptions
+  ); */
+
+  console.log("errors", errors);
+
+  useEffect(() => {
+    if (selectedNature === Nature.INCIDENT) {
+      setValue("category", ""); // Limpa o valor de category
+    } else {
+      setValue("severity", undefined); // Limpa o valor de severity
+    }
+  }, [selectedNature, setValue]);
 
   const queryClient = useQueryClient();
 
@@ -178,14 +208,27 @@ export const useEditOccurrenceModal = () => {
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
+      id: occurrenceBeingSeen?.id!,
       date: data.date.toISOString(),
       baseId: data.baseId,
+      clientId: data.clientId,
+      state: data.state as UF,
       isAbsent: data.isAbsent === "true" ? true : false,
       nature: data.nature,
       type: data.type,
+      severity: Object.values(OccurrenceSeverity).includes(
+        data.severity as OccurrenceSeverity
+      )
+        ? (data.severity as OccurrenceSeverity)
+        : undefined,
       description: data.description,
       createdAt: occurrenceBeingSeen?.createdAt!,
-      updatedAt: getCurrentISOString(),
+      hour: formatTimeStringToIsoString(selectedHour),
+      category: Object.values(OccurrenceCategory).includes(
+        data.category as OccurrenceCategory
+      )
+        ? (data.category as OccurrenceCategory)
+        : undefined,
     });
 
     try {
@@ -198,6 +241,11 @@ export const useEditOccurrenceModal = () => {
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
         type: data.type,
+        severity: Object.values(OccurrenceSeverity).includes(
+          data.severity as OccurrenceSeverity
+        )
+          ? (data.severity as OccurrenceSeverity)
+          : undefined,
         description: data.description,
         createdAt: occurrenceBeingSeen?.createdAt!,
         hour: formatTimeStringToIsoString(selectedHour),
@@ -223,7 +271,9 @@ export const useEditOccurrenceModal = () => {
         "success"
       );
 
-      window.location.reload();
+      if (file) {
+        window.location.reload();
+      }
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -259,5 +309,7 @@ export const useEditOccurrenceModal = () => {
     isLoadingDeleteOccurrence,
     clientSelectOptions,
     isFetchingClients,
+    occurrenceSeveritySelectOptions,
+    selectedNature,
   };
 };

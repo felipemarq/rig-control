@@ -1,3 +1,4 @@
+import { OccurrenceSeverity } from "./OccurrenceSeverity";
 import { UF } from "./Rig";
 
 export enum OccurrenceType {
@@ -32,6 +33,7 @@ export type Occurrence = {
   updatedAt?: string;
   type: OccurrenceType;
   isAbsent: boolean;
+  severity?: OccurrenceSeverity;
   category?: OccurrenceCategory;
   nature: Nature;
   files: [] | { path: string }[];
