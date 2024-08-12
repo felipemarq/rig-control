@@ -1,13 +1,17 @@
 import { ResponsivePie } from "@nivo/pie";
-import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
+import { EquipmentData } from "../../useGrouppedRepairsPieChartCard";
 
-export const RepairDetailsPieChart = () => {
-  const { chartData /* handleCloseDetailsGraph */, handleFilterPeriods } =
-    useRepairDetailsPieChart();
+interface GrouppedRepairPieChartProps {
+  data: EquipmentData[];
+}
 
+export const GrouppedRepairPieChart = ({
+  data,
+}: GrouppedRepairPieChartProps) => {
+  console.log("data in chart", data);
   return (
     <ResponsivePie
-      data={chartData}
+      data={data}
       theme={{
         axis: {
           domain: {
@@ -60,16 +64,15 @@ export const RepairDetailsPieChart = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      onClick={(event) =>
+      arcLabel={(value) =>
+        value.data.percentage < 15 ? "" : `${value.data.label}`
+      }
+      /* onClick={(event) =>
         handleFilterPeriods("REPAIR", event.data.classification)
       }
       arcLabel={(value) =>
         value.data.percentage < 15 ? "" : `${value.data.label}`
-      }
-      /* tooltip={(value) => {
-        console.log(value);
-        return <div>{value.datum.data.value}</div>;
-      }} */
+      } */
       enableArcLinkLabels={false}
       arcLinkLabelsTextColor={"#1c7b7b"}
       arcLinkLabelsThickness={1}
@@ -77,31 +80,6 @@ export const RepairDetailsPieChart = () => {
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
       valueFormat={(value) => `${value} Hrs`}
-      /*  legends={[
-          {
-            anchor: "bottom",
-            direction: "column",
-            justify: false,
-            translateX: 200,
-            translateY: 56,
-            itemsSpacing: 10,
-            itemWidth: 85,
-            itemHeight: 24,
-            itemTextColor: "#343A40",
-            itemDirection: "left-to-right",
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: "circle",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemTextColor: "#1c7b7b",
-                },
-              },
-            ],
-          },
-        ]} */
     />
   );
 };

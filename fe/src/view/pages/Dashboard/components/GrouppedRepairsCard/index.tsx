@@ -8,6 +8,10 @@ import {
 } from "@/components/ui/table";
 import { useGrouppedRepairs } from "./useGrouppedRepairs";
 import { ExternalLink, PieChart } from "lucide-react";
+
+import { cn } from "@/lib/utils";
+import { NotFound } from "@/view/components/NotFound";
+import { formatNumberWithFixedDecimals } from "@/app/utils/formatNumberWithFixedDecimals";
 import {
   Card,
   CardContent,
@@ -15,9 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { NotFound } from "@/view/components/NotFound";
-import { formatNumberWithFixedDecimals } from "@/app/utils/formatNumberWithFixedDecimals";
 
 export const GrouppedRepairsCard = () => {
   const { repairGroupedData, handleSelectEquipment, hasRepairData } =
@@ -52,8 +53,9 @@ export const GrouppedRepairsCard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {repairGroupedData.groupedData.map(
-                ({ id, equipment, totalHours }) => (
+              {repairGroupedData.groupedData
+                .sort((a, b) => b.totalHours - a.totalHours)
+                .map(({ id, equipment, totalHours }) => (
                   <TableRow key={id}>
                     <TableCell>
                       <div className="font-medium">{equipment}</div>
@@ -68,8 +70,7 @@ export const GrouppedRepairsCard = () => {
                       <ExternalLink />
                     </TableCell>
                   </TableRow>
-                )
-              )}
+                ))}
             </TableBody>
           </Table>
         )}
