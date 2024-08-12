@@ -1,17 +1,17 @@
-import React, {createContext, useMemo, useState} from "react";
-import {useAuth} from "../../../../app/hooks/useAuth";
-import {User} from "../../../../app/entities/User";
-import {differenceInDays, parse} from "date-fns";
-import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
-import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
-import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbilledPeriods";
-import {GetUnbilledPeriodsResponse} from "../../../../app/services/periodsService/getUnbilledPeriods";
-import {PeriodType} from "../../../../app/entities/PeriodType";
-import {UF} from "../../../../app/entities/Rig";
-import {PieChartData} from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
-import {getDiffInMinutes} from "../../../../app/utils/getDiffInMinutes";
-import {formatNumberWithFixedDecimals} from "../../../../app/utils/formatNumberWithFixedDecimals";
-import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
+import React, { createContext, useMemo, useState } from "react";
+import { useAuth } from "../../../../app/hooks/useAuth";
+import { User } from "../../../../app/entities/User";
+import { differenceInDays, parse } from "date-fns";
+import { useEfficienciesRigsAverage } from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
+import { RigsAverageResponse } from "../../../../app/services/efficienciesService/getRigsAverage";
+import { useGetUnbilledPeriods } from "../../../../app/hooks/periods/useGetUnbilledPeriods";
+import { GetUnbilledPeriodsResponse } from "../../../../app/services/periodsService/getUnbilledPeriods";
+import { PeriodType } from "../../../../app/entities/PeriodType";
+import { UF } from "../../../../app/entities/Rig";
+import { PieChartData } from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
+import { getDiffInMinutes } from "../../../../app/utils/getDiffInMinutes";
+import { formatNumberWithFixedDecimals } from "../../../../app/utils/formatNumberWithFixedDecimals";
+import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
@@ -59,10 +59,10 @@ export const GlobalDashboardProvider = ({
   children: React.ReactNode;
 }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout} = useAuth();
+  const { user, signout } = useAuth();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const {filters} = useFiltersContext();
+  const { filters } = useFiltersContext();
 
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
   const [selectedPieChartView, setSelectedPieChartView] = useState(
@@ -80,7 +80,7 @@ export const GlobalDashboardProvider = ({
 
   // Utilização dos hooks para eficiências e médias de eficiência
 
-  const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
+  const { rigsAverage, refetchRigsAverage, isFetchingRigsAverage } =
     useEfficienciesRigsAverage(
       {
         startDate: filters.startDate,
@@ -98,7 +98,7 @@ export const GlobalDashboardProvider = ({
     }
 
     return rigsAverage.filter(
-      ({state}) => (state as string) === selectedDashboardView
+      ({ state }) => (state as string) === selectedDashboardView
     );
   }, [selectedDashboardView, rigsAverage]);
 
@@ -112,7 +112,7 @@ export const GlobalDashboardProvider = ({
     rigsAverageTotalHours += Math.round(rigAverage.avg);
   });
 
-  const {unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods} =
+  const { unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods } =
     useGetUnbilledPeriods(
       {
         startDate: filters.startDate,
@@ -120,13 +120,6 @@ export const GlobalDashboardProvider = ({
       },
       true
     );
-
-  console.log(
-    formatNumberWithFixedDecimals(
-      rigsAverageTotalHours / filteredRigsAverage.length,
-      2
-    )
-  );
 
   const averageHours = formatNumberWithFixedDecimals(
     rigsAverageTotalHours / filteredRigsAverage.length,
@@ -152,7 +145,7 @@ export const GlobalDashboardProvider = ({
   );
 
   const mappedRigsAverage = filteredRigsAverage
-    .map(({count, rig, rigId, state}) => {
+    .map(({ count, rig, rigId, state }) => {
       return {
         rig,
         daysNotRegistered: totalDaysSelected - count,

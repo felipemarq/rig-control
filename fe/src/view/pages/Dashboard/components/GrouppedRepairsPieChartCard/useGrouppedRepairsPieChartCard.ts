@@ -93,8 +93,6 @@ export const useGrouppedRepairsPieChartCard = () => {
     ),
   }));
 
-  console.log("data before", chartData);
-
   const hasRepairData = repairGroupedData.groupedData.length > 0;
 
   return {
