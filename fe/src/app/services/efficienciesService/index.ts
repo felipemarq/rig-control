@@ -1,10 +1,11 @@
-import {create} from "./create";
-import {getAll} from "./getAll";
-import {getAverage} from "./getAverage";
-import {getById} from "./getById";
-import {getRigsAverage} from "./getRigsAverage";
-import {remove} from "./remove";
-import {update} from "./update";
+import { create } from "./create";
+import { getAll } from "./getAll";
+import { getAverage } from "./getAverage";
+import { getById } from "./getById";
+import { getRigsAverage } from "./getRigsAverage";
+import { getWellsCountByRig } from "./getWellsCountByRig";
+import { remove } from "./remove";
+import { update } from "./update";
 
 export const efficienciesService = {
   create: create,
@@ -14,4 +15,5 @@ export const efficienciesService = {
   getById: getById,
   getAverage: getAverage,
   getRigsAverage: getRigsAverage,
+  getWellsCountByRig: getWellsCountByRig,
 };

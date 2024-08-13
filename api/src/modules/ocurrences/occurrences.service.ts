@@ -95,7 +95,7 @@ export class OccurrencesService {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        date: 'desc',
       },
     });
   }
