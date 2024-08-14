@@ -20,9 +20,7 @@ export type OccurrencesTaxesResponse = {
 
 export const getTaxes = async (baseId?: string) => {
   const { data } = await httpClient.get<OccurrencesTaxesResponse>(
-    `/occurrences/${baseId}` /* {
-    params: filters,
-  } */
+    `/occurrences/taxes/${baseId}`
   );
 
   return data;
