@@ -358,17 +358,6 @@ export class OccurrencesService {
       },
     });
 
-    const manHours = await this.manHoursRepo.findMany({
-      select: {
-        id: true,
-        baseId: true,
-        hours: true,
-        month: true,
-        year: true,
-        base: { select: { name: true } },
-      },
-    });
-
     const now = new Date();
 
     const manHoursAgg: { _sum: { hours: number }; month: number }[] =
