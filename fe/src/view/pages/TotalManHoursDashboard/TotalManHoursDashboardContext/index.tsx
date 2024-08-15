@@ -1,19 +1,16 @@
-import { useOccurrencesTaxesByBaseId } from "@/app/hooks/occurrences/useOccurrencesTaxesByBaseId";
+import { useOccurrencesTaxes } from "@/app/hooks/occurrences/useOccurrencesTaxes";
 import { useBases } from "@/app/hooks/useBases";
 import { BasesResponse } from "@/app/services/basesService/getAll";
 import { OccurrencesTaxesResponse } from "@/app/services/occurrencesService/getTaxes";
-import { createContext, useMemo, useState } from "react";
+
+import { createContext, useMemo } from "react";
 
 // Definição do tipo do contexto
-interface ManHourDashboardContextValue {
-  handleChangeBaseId(baseId: string): void;
-  selectedBaseId: string;
+interface TotalManHoursDashboardContextValue {
   bases: BasesResponse;
   isFetchingBases: boolean;
   occurrencesTaxes: OccurrencesTaxesResponse | undefined;
-  applyFilters(): void;
   isFetchingOccurrencesTaxes: boolean;
-  selectedBaseName: string | undefined;
   totalOccurrences: {
     totalTarOccurrences: number;
     totalTorOccurrences: number;
@@ -23,37 +20,22 @@ interface ManHourDashboardContextValue {
 }
 
 // Criação do contexto
-export const ManHourDashboardContext = createContext(
-  {} as ManHourDashboardContextValue
+export const TotalManHoursDashboardContext = createContext(
+  {} as TotalManHoursDashboardContextValue
 );
 
-export const ManHourDashboardProvider = ({
+export const TotalManHoursDashboardProvider = ({
   children,
 }: {
   children: React.ReactNode;
 }) => {
-  const [selectedBaseId, setSelectedBaseId] = useState<string>("");
-
   const { bases, isFetchingBases } = useBases();
 
   const {
     occurrencesTaxes,
-    refetchOccurrencesTaxes,
     isFetchingOccurrencesTaxes,
     isOccurrencesTaxesInitialLoading,
-  } = useOccurrencesTaxesByBaseId(selectedBaseId);
-
-  const selectedBaseName = useMemo(() => {
-    return bases.find((base) => base.id === selectedBaseId)?.name;
-  }, [selectedBaseId]);
-
-  const handleChangeBaseId = (baseId: string) => {
-    setSelectedBaseId(baseId);
-  };
-
-  const applyFilters = () => {
-    refetchOccurrencesTaxes();
-  };
+  } = useOccurrencesTaxes();
 
   const totalOccurrences = useMemo(() => {
     let totalTarOccurrences = 0;
@@ -86,21 +68,17 @@ export const ManHourDashboardProvider = ({
   }, [occurrencesTaxes]);
 
   return (
-    <ManHourDashboardContext.Provider
+    <TotalManHoursDashboardContext.Provider
       value={{
-        handleChangeBaseId,
-        selectedBaseId,
         bases,
         isFetchingBases,
         occurrencesTaxes,
-        applyFilters,
         isFetchingOccurrencesTaxes:
           isOccurrencesTaxesInitialLoading || isFetchingOccurrencesTaxes,
-        selectedBaseName,
         totalOccurrences,
       }}
     >
       {children}
-    </ManHourDashboardContext.Provider>
+    </TotalManHoursDashboardContext.Provider>
   );
 };

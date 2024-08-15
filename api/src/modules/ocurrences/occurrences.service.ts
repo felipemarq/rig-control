@@ -162,7 +162,7 @@ export class OccurrencesService {
       by: ['date'],
       where: {
         baseId: baseId,
-        category: 'TOR',
+        OR: [{ category: 'TOR' }, { category: 'TAR' }],
       },
       _count: {
         id: true,
@@ -321,7 +321,7 @@ export class OccurrencesService {
     const torOccurrences = await this.occurrencesRepo.groupBy({
       by: ['date'],
       where: {
-        category: 'TOR',
+        OR: [{ category: 'TOR' }, { category: 'TAR' }],
       },
       _count: {
         id: true,

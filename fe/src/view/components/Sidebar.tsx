@@ -214,12 +214,22 @@ export const Sidebar = ({ className }: SidebarProps) => {
                     icon={<Shield />}
                     className="hover:bg-primary text-white"
                   >
-                    <Link to="/dashboard/man-hours">
-                      <MenuItem className="bg-primary" icon={<BarChart />}>
-                        {" "}
-                        Dashboard
-                      </MenuItem>
-                    </Link>
+                    <SubMenu
+                      label="Dashboard"
+                      icon={<BarChart />}
+                      className="hover:bg-primary bg-primary text-white"
+                    >
+                      <Link to="/dashboard/total-man-hours">
+                        <MenuItem className="bg-primary">
+                          {" "}
+                          Dashboard Geral
+                        </MenuItem>
+                      </Link>
+
+                      <Link to="/dashboard/man-hours">
+                        <MenuItem className="bg-primary"> Dashboard</MenuItem>
+                      </Link>
+                    </SubMenu>
 
                     <Link to="/occurrences">
                       <MenuItem icon={<TrafficCone />} className="bg-primary">
