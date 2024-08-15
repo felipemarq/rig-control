@@ -17,14 +17,14 @@ export const OccurrencesContainer = () => {
   const hasOccurrences = occurrences.length > 0;
 
   return (
-    <div className=" h-full">
+    <div className=" h-full ">
       {isInitialLoading && (
         <div className="h-full w-full flex items-center justify-center">
           <Spinner />
         </div>
       )}
       {!isInitialLoading && (
-        <div className="h-full w-full flex items-center justify-center">
+        <div className="h-full w-full flex items-center justify-center ">
           {isFetchingOccurrences && (
             <div>
               <Spinner />
@@ -38,7 +38,7 @@ export const OccurrencesContainer = () => {
           )}
 
           {!isFetchingOccurrences && hasOccurrences && (
-            <div className="w-full h-full p-4">
+            <div className="w-full h-full p-4 overflow-y-auto scrollbar-hide">
               <header className="flex gap-3 justify-between">
                 <div className="w-3/4">
                   <Input
@@ -54,7 +54,7 @@ export const OccurrencesContainer = () => {
                   Filtrar dados
                 </Button>
               </header>
-              <div className="flex flex-col gap-3 mt-6">
+              <div className="flex flex-col gap-3 mt-6 mb-6 ">
                 {filteredOccurrences.map((occurrence) => (
                   <OccurrenceItem occurrence={occurrence} key={occurrence.id} />
                 ))}
