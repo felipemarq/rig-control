@@ -11,6 +11,7 @@ import { UnbilledPeriodsPieChartCard } from "./components/UnbilledPeriodsPieChar
 import { PeriodsDetailsPieChartCard } from "./components/PeriodsDetailsPieChartCard";
 import { FilterSheet } from "@/view/components/FilterSheet";
 import { Header } from "@/view/components/Header";
+import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard";
 
 export const GlobalDashboard = () => {
   return (
@@ -74,6 +75,7 @@ export const GlobalDashboard = () => {
                       {isDetailsGraphVisible && <PeriodsDetailsPieChartCard />}
                     </>
                   )}
+                  <UnbilledPeriodsByRigCard />
                 </div>
               </main>
             </div>

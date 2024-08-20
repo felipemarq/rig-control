@@ -1,9 +1,9 @@
-import {ResponsivePie} from "@nivo/pie";
-import {useUnbilledPeriodsPieChart} from "./useUnbilledPeriodsPieChart";
-import {PeriodType} from "../../../../../../app/entities/PeriodType";
+import { ResponsivePie } from "@nivo/pie";
+import { useUnbilledPeriodsPieChart } from "./useUnbilledPeriodsPieChart";
+import { PeriodType } from "../../../../../../app/entities/PeriodType";
 
 export const UnbilledPeriodsPieChart = () => {
-  const {chartData, handleSelectedPieChartViewChange} =
+  const { chartData, handleSelectedPieChartViewChange } =
     useUnbilledPeriodsPieChart();
   return (
     <div className="w-full h-full relative">
@@ -52,8 +52,8 @@ export const UnbilledPeriodsPieChart = () => {
             },
           },
         }}
-        colors={{datum: "data.color"}}
-        margin={{top: 0, right: 10, bottom: 80, left: 10}}
+        colors={{ datum: "data.color" }}
+        margin={{ top: 10, right: 10, bottom: 90, left: 10 }}
         sortByValue={true}
         innerRadius={0.45}
         activeOuterRadiusOffset={8}
@@ -66,10 +66,10 @@ export const UnbilledPeriodsPieChart = () => {
           handleSelectedPieChartViewChange(event.id as PeriodType)
         }
         valueFormat={(value) => `${value} Hrs`}
-        enableArcLinkLabels={true}
+        enableArcLinkLabels={false}
         arcLinkLabelsTextColor={"#679d4d"}
-        arcLinkLabelsThickness={3}
-        arcLinkLabelsColor={{from: "color"}}
+        arcLinkLabelsThickness={1}
+        arcLinkLabelsColor={{ from: "color" }}
         arcLabelsTextColor="#fff"
         arcLabelsSkipAngle={10}
         /* legends={[
@@ -98,7 +98,7 @@ export const UnbilledPeriodsPieChart = () => {
           },
         ]} */
       />
-      <small className="absolute bottom-12 right-14 italic text-gray-700">
+      <small className="absolute bottom-12 right-14 italic text-gray-700 text-xs">
         * Clique no gráfico para ver detalhes
       </small>
     </div>

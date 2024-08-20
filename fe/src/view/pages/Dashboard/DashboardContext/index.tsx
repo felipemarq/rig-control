@@ -75,8 +75,9 @@ export const DashboardProvider = ({
   const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
-  const { wellsCount, isFetchingWellsCount, refetchWellsCount } =
-    useGetWellsCountByRig(filters.rigId);
+  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(
+    filters.rigId
+  );
   const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
 
   const isEmpty: boolean = efficiencies.length === 0;

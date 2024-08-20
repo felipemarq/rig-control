@@ -1,7 +1,7 @@
-import {differenceInMinutes, parse} from "date-fns";
-import {useGlobalDashboard} from "../../../../GlobalDashboardContext/useDashboard";
+import { differenceInMinutes, parse } from "date-fns";
+import { useGlobalDashboard } from "../../../../GlobalDashboardContext/useDashboard";
 
-import {translateClassification} from "../../../../../../../app/utils/translateClassification";
+import { translateClassification } from "../../../../../../../app/utils/translateClassification";
 
 export type PieChartData = {
   id: string;
@@ -11,8 +11,13 @@ export type PieChartData = {
 }[];
 
 export const usePeriodsDetailsPieChart = () => {
-  const {unbilledPeriods, selectedPieChartView, handleCloseDetailsGraph} =
-    useGlobalDashboard();
+  const {
+    unbilledPeriods,
+    selectedPieChartView,
+    handleCloseDetailsGraph,
+    handleSelectedDetailPieChartViewChange,
+    selectedDetailPieChartView,
+  } = useGlobalDashboard();
 
   const pieChartColors = [
     "#1c7b7b", // primary 500
@@ -40,6 +45,7 @@ export const usePeriodsDetailsPieChart = () => {
 
       const parsedStartHour = parseHour(current.startHour);
       const parsedEndHour = parseHour(current.endHour);
+
       const diffInHours =
         differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
@@ -47,7 +53,7 @@ export const usePeriodsDetailsPieChart = () => {
         acc.push({
           id: classification,
           label: classification,
-          value: Math.ceil(Number(diffInHours.toFixed(2))),
+          value: Number(diffInHours.toFixed(2)),
           color: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
         });
       } else {
@@ -55,9 +61,7 @@ export const usePeriodsDetailsPieChart = () => {
           accItem.id === classification
             ? {
                 ...accItem,
-                value: Math.ceil(
-                  Number((accItem.value + diffInHours).toFixed(2))
-                ),
+                value: Number((accItem.value + diffInHours).toFixed(2)),
               }
             : accItem
         );
@@ -66,9 +70,13 @@ export const usePeriodsDetailsPieChart = () => {
       return acc;
     }, []);
 
+  console.log("ChartData", chartData);
+  console.log("selectedDetailPieChartView", selectedDetailPieChartView);
+
   return {
     chartData,
     selectedPieChartView,
     handleCloseDetailsGraph,
+    handleSelectedDetailPieChartViewChange,
   };
 };

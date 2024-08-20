@@ -16,8 +16,10 @@ import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
   selectedPieChartView: PeriodType;
+  selectedDetailPieChartView: null | string;
   isEmpty: boolean;
   handleSelectedPieChartViewChange(type: PeriodType): void;
+  handleSelectedDetailPieChartViewChange(type: string): void;
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
@@ -69,9 +71,18 @@ export const GlobalDashboardProvider = ({
     PeriodType.REPAIR
   );
 
+  const [selectedDetailPieChartView, setSelectedDetailPieChartView] = useState<
+    null | string
+  >(null);
+
   const handleSelectedPieChartViewChange = (type: PeriodType) => {
     setIsDetailsGraphVisible(true);
     setSelectedPieChartView(type);
+    setSelectedDetailPieChartView(null);
+  };
+
+  const handleSelectedDetailPieChartViewChange = (classification: string) => {
+    setSelectedDetailPieChartView(classification);
   };
 
   const handleCloseDetailsGraph = () => {
@@ -170,14 +181,13 @@ export const GlobalDashboardProvider = ({
 
       const foundIndex = acc.findIndex((item) => item.id === current.type);
 
-      const diffInMinutes =
-        getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
+      const diffInHours = getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
 
       if (foundIndex === -1) {
         acc.push({
           id: current.type,
           label: current.type,
-          value: formatNumberWithFixedDecimals(diffInMinutes, 2),
+          value: Number(diffInHours.toFixed(2)),
           color: current.type === "REPAIR" ? "#1c7b7b" : "#81c460",
         });
       } else {
@@ -185,10 +195,7 @@ export const GlobalDashboardProvider = ({
           accItem.id === current.type
             ? {
                 ...accItem,
-                value: formatNumberWithFixedDecimals(
-                  (accItem.value += diffInMinutes),
-                  2
-                ),
+                value: Number((accItem.value + diffInHours).toFixed(2)),
               }
             : accItem
         );
@@ -214,6 +221,8 @@ export const GlobalDashboardProvider = ({
   return (
     <GlobalDashboardContext.Provider
       value={{
+        handleSelectedDetailPieChartViewChange,
+        selectedDetailPieChartView,
         handleChangeDashboardView,
         selectedDashboardView,
         statBox,

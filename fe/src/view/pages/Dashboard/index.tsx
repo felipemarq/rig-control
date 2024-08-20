@@ -14,7 +14,6 @@ import { CalendarChartCard } from "./components/CalendarChartCard";
 import { WrongVersionAlertModal } from "./components/WrongVersionAlertModal";
 import { WellDataGridCard } from "./components/WellDataGridCard";
 import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
-import { GrouppedRepairPieChart } from "./components/GrouppedRepairsPieChartCard/components/GrouppedRepairPieChart";
 import { GrouppedRepairPieChartCard } from "./components/GrouppedRepairsPieChartCard";
 import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
 

@@ -1,4 +1,5 @@
-import {PeriodType} from "./PeriodType";
+import { PeriodType } from "./PeriodType";
+import { PersistanceEfficiency } from "./PersistanceEfficiency";
 
 export type Period = {
   id: string;
@@ -13,4 +14,5 @@ export type Period = {
     id: string;
     name: string;
   };
+  efficiency?: PersistanceEfficiency;
 };

@@ -1,10 +1,11 @@
-import {ResponsivePie} from "@nivo/pie";
-import {usePeriodsDetailsPieChart} from "./usePeriodsDetailsPieChart";
+import { ResponsivePie } from "@nivo/pie";
+import { usePeriodsDetailsPieChart } from "./usePeriodsDetailsPieChart";
 
 export const PeriodsDetailsPieChart = () => {
-  const {chartData} = usePeriodsDetailsPieChart();
+  const { chartData, handleSelectedDetailPieChartViewChange } =
+    usePeriodsDetailsPieChart();
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full relative">
       <ResponsivePie
         data={chartData}
         theme={{
@@ -49,8 +50,8 @@ export const PeriodsDetailsPieChart = () => {
             },
           },
         }}
-        colors={{datum: "data.color"}}
-        margin={{top: 10, right: 10, bottom: 100, left: 10}}
+        colors={{ datum: "data.color" }}
+        margin={{ top: 10, right: 10, bottom: 90, left: 10 }}
         sortByValue={true}
         innerRadius={0.45}
         activeOuterRadiusOffset={8}
@@ -59,15 +60,17 @@ export const PeriodsDetailsPieChart = () => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
-        //onClick={(event) => handleChartClick(event.id as string)}
+        onClick={(event) =>
+          handleSelectedDetailPieChartViewChange(event.id as string)
+        }
         enableArcLinkLabels={false}
         arcLinkLabelsTextColor={"#1c7b7b"}
         arcLinkLabelsThickness={3}
-        arcLinkLabelsColor={{from: "color"}}
+        arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor="#fff"
         valueFormat={(value) => `${value} Hrs`}
-        legends={[
+        /* legends={[
           {
             anchor: "bottom",
             direction: "column",
@@ -91,8 +94,11 @@ export const PeriodsDetailsPieChart = () => {
               },
             ],
           },
-        ]}
+        ]} */
       />
+      <small className="absolute bottom-16 right-14 italic text-gray-700 text-xs">
+        * Clique no gráfico para ver detalhes
+      </small>
     </div>
   );
 };
