@@ -95,7 +95,7 @@ export class OccurrencesService {
         },
       },
       orderBy: {
-        createdAt: 'desc',
+        date: 'desc',
       },
     });
   }
@@ -138,7 +138,7 @@ export class OccurrencesService {
     return null;
   }
 
-  async getTaxes(baseId: string) {
+  async getTaxesByRigId(baseId: string) {
     const baseExists = await this.basesRepo.findUnique({
       where: { id: baseId },
     });
@@ -162,7 +162,7 @@ export class OccurrencesService {
       by: ['date'],
       where: {
         baseId: baseId,
-        category: 'TOR',
+        OR: [{ category: 'TOR' }, { category: 'TAR' }],
       },
       _count: {
         id: true,
@@ -275,6 +275,153 @@ export class OccurrencesService {
         const tax =
           (countsByMonth[month] / transformedManHours[Number(month)]) *
           1_000_000;
+
+        return {
+          month: Number(month),
+          count: countsByMonth[month],
+          tax: isNaN(tax) ? 0 : tax,
+        };
+      });
+    };
+
+    const totalTarOccurrences = aggroupOccurrencesByMonth(tarOccurrences);
+
+    const totalTorOccurrences = aggroupOccurrencesByMonth(torOccurrences);
+
+    const totalNotAbsentOccurrences = aggroupOccurrencesByMonth(
+      notIsAbsentOccurrences,
+    );
+
+    const totalAbsentOccurrences =
+      aggroupOccurrencesByMonth(isAbsentOccurrences);
+
+    const totalCommutingOccurrences =
+      aggroupOccurrencesByMonth(commutingOccurrences);
+
+    return {
+      tarOccurrences: totalTarOccurrences,
+      torOccurrences: totalTorOccurrences,
+      notAbsentOccurrences: totalNotAbsentOccurrences,
+      absentOccurrences: totalAbsentOccurrences,
+      commutingOccurrences: totalCommutingOccurrences,
+    };
+  }
+
+  async getAllTaxes() {
+    const tarOccurrences = await this.occurrencesRepo.groupBy({
+      by: ['date'],
+      where: {
+        category: 'TAR',
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const torOccurrences = await this.occurrencesRepo.groupBy({
+      by: ['date'],
+      where: {
+        OR: [{ category: 'TOR' }, { category: 'TAR' }],
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const notIsAbsentOccurrences = await this.occurrencesRepo.groupBy({
+      by: ['date'],
+      where: {
+        isAbsent: false,
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const isAbsentOccurrences = await this.occurrencesRepo.groupBy({
+      by: ['date'],
+      where: {
+        isAbsent: true,
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const commutingOccurrences = await this.occurrencesRepo.groupBy({
+      by: ['date'],
+      where: {
+        nature: 'COMMUTING_ACCIDENT',
+      },
+      _count: {
+        id: true,
+      },
+    });
+
+    const now = new Date();
+
+    const manHoursAgg: { _sum: { hours: number }; month: number }[] =
+      await this.manHoursRepo.groupBy({
+        by: ['month'],
+        _sum: {
+          hours: true,
+        },
+        where: { year: now.getFullYear() },
+      });
+
+    const aggroupedMenHours = {
+      1: 0,
+      2: 0,
+      3: 0,
+      4: 0,
+      5: 0,
+      6: 0,
+      7: 0,
+      8: 0,
+      9: 0,
+      10: 0,
+      11: 0,
+      12: 0,
+    };
+
+    // Iterando sobre o array e somando as horas para cada mês
+    manHoursAgg.forEach(({ _sum, month }) => {
+      if (aggroupedMenHours.hasOwnProperty(month)) {
+        aggroupedMenHours[month] += _sum?.hours || 0;
+      }
+    });
+
+    const aggroupOccurrencesByMonth = (
+      occurrences: OccurrenceCountByMonth[],
+    ) => {
+      const countsByMonth: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+      };
+
+      occurrences.forEach(({ date, _count }) => {
+        const month = date.getMonth() + 1; // Convertendo para mês (1-12)
+
+        if (countsByMonth[month]) {
+          countsByMonth[month] += _count.id;
+        } else {
+          countsByMonth[month] = _count.id;
+        }
+      });
+
+      return Object.keys(countsByMonth).map((month) => {
+        const tax =
+          (countsByMonth[month] / aggroupedMenHours[Number(month)]) * 1_000_000;
 
         return {
           month: Number(month),

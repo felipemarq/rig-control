@@ -1,6 +1,6 @@
-import {useDaysNotRegisteredCard} from "./useDaysNotRegisteredCard";
-import {cn} from "../../../../../app/utils/cn";
-import {AlertTriangle} from "lucide-react";
+import { useDaysNotRegisteredCard } from "./useDaysNotRegisteredCard";
+import { cn } from "../../../../../app/utils/cn";
+import { AlertTriangle } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -18,13 +18,13 @@ import {
 } from "@/components/ui/table";
 
 export const DaysNotRegisteredCard = () => {
-  const {mappedRigsAverage} = useDaysNotRegisteredCard();
+  const { mappedRigsAverage } = useDaysNotRegisteredCard();
 
   return (
     <>
       <Card
         className={cn(
-          "col-span-12   row-span-3  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-5"
+          "col-span-12   row-span-3  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4"
         )}
       >
         <CardHeader className="px-7">
@@ -46,7 +46,7 @@ export const DaysNotRegisteredCard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mappedRigsAverage.map(({rig, daysNotRegistered, rigId}) => (
+              {mappedRigsAverage.map(({ rig, daysNotRegistered, rigId }) => (
                 <TableRow key={rigId}>
                   <TableCell>
                     <div className="font-medium">{rig}</div>

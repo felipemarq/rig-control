@@ -43,7 +43,7 @@ export class EfficienciesRepository {
   }
 
   async getAverage(rigId: string, year: number) {
-    const efficiencyAverageByRig = await this.prisma.$queryRaw`
+    /*    const efficiencyAverageByRig = await this.prisma.$queryRaw`
     SELECT
       e.rig_id AS rigId,
       r.name AS rigName,
@@ -55,7 +55,7 @@ export class EfficienciesRepository {
       rigs r ON e.rig_id = r.id 
     GROUP BY
       e.rig_id, r.name;
-  `;
+  `; */
 
     return await this.prisma.$queryRaw`
     SELECT
@@ -67,6 +67,36 @@ export class EfficienciesRepository {
     GROUP BY month
     ORDER BY month;
   `;
+  }
+
+  async getWellsCountByRig(rigId: string, year: number) {
+    console.log(year);
+    const results: any = await this.prisma.$queryRaw`
+    SELECT
+      r.name as rig_name,
+      EXTRACT(YEAR FROM e."date") as year,
+      EXTRACT(MONTH FROM e."date") as month,
+      COUNT(DISTINCT e."well") as well_count
+    FROM
+      "efficiencies" e
+    JOIN
+      "rigs" r ON r.id = e."rig_id"
+    WHERE
+      e."well" IS NOT NULL
+      AND EXTRACT(YEAR FROM date) = ${year}
+      AND r.id = ${rigId}::UUID
+    GROUP BY
+      r.name, year, month
+    ORDER BY
+      year ASC, month ASC, r.name ASC;
+  `;
+
+    const formattedResults = results.map((result) => ({
+      ...result,
+      well_count: result.well_count.toString(), // Converte BigInt para string
+    }));
+
+    return formattedResults;
   }
 
   async update(updateDto: Prisma.EfficiencyUpdateArgs) {

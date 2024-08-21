@@ -14,6 +14,8 @@ import { CalendarChartCard } from "./components/CalendarChartCard";
 import { WrongVersionAlertModal } from "./components/WrongVersionAlertModal";
 import { WellDataGridCard } from "./components/WellDataGridCard";
 import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
+import { GrouppedRepairPieChartCard } from "./components/GrouppedRepairsPieChartCard";
+import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
 
 export const Dashboard = () => {
   return (
@@ -49,6 +51,8 @@ export const Dashboard = () => {
 
                   <GrouppedRepairsCard />
 
+                  <GrouppedRepairPieChartCard />
+
                   <RepairDetailsPieChartCard />
 
                   <GrouppedGlossesCard />
@@ -56,6 +60,8 @@ export const Dashboard = () => {
                   <GlossDetailsPieChartCard />
 
                   <AverageBarChartCard />
+
+                  <WellsCountBarChartCard />
 
                   {isWrongVersion && <WrongVersionAlertModal />}
 

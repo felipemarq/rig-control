@@ -47,4 +47,9 @@ export class ManHourRepository {
     //@ts-ignore
     return await this.prismaService.manHour.groupBy(groupByDto);
   }
+
+  async groupBy(groupByDto: Prisma.ManHourGroupByArgs): Promise<any[]> {
+    //@ts-ignore
+    return await this.prismaService.manHour.groupBy(groupByDto);
+  }
 }

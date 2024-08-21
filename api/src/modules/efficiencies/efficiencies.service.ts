@@ -791,6 +791,13 @@ export class EfficienciesService {
     return await this.efficiencyRepo.getAverage(rigId, year);
   }
 
+  async getWellsCountByRig(rigId: string) {
+    //Mudar para params depois
+    const year = new Date().getFullYear();
+
+    return await this.efficiencyRepo.getWellsCountByRig(rigId, year);
+  }
+
   async getRigsAvailableHoursAverage(filters: {
     startDate: string;
     endDate: string;

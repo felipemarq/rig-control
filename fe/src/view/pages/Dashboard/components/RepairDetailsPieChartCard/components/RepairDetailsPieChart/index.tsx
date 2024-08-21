@@ -4,6 +4,7 @@ import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
 export const RepairDetailsPieChart = () => {
   const { chartData /* handleCloseDetailsGraph */, handleFilterPeriods } =
     useRepairDetailsPieChart();
+
   return (
     <ResponsivePie
       data={chartData}
@@ -62,7 +63,14 @@ export const RepairDetailsPieChart = () => {
       onClick={(event) =>
         handleFilterPeriods("REPAIR", event.data.classification)
       }
-      enableArcLinkLabels={true}
+      arcLabel={(value) =>
+        value.data.percentage < 15 ? "" : `${value.data.label}`
+      }
+      /* tooltip={(value) => {
+        console.log(value);
+        return <div>{value.datum.data.value}</div>;
+      }} */
+      enableArcLinkLabels={false}
       arcLinkLabelsTextColor={"#1c7b7b"}
       arcLinkLabelsThickness={1}
       arcLinkLabelsColor={{ from: "color" }}

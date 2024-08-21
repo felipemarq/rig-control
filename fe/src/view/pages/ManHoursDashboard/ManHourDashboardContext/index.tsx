@@ -1,4 +1,4 @@
-import { useOccurrencesTaxes } from "@/app/hooks/occurrences/useOccurrencesTaxes";
+import { useOccurrencesTaxesByBaseId } from "@/app/hooks/occurrences/useOccurrencesTaxesByBaseId";
 import { useBases } from "@/app/hooks/useBases";
 import { BasesResponse } from "@/app/services/basesService/getAll";
 import { OccurrencesTaxesResponse } from "@/app/services/occurrencesService/getTaxes";
@@ -41,7 +41,7 @@ export const ManHourDashboardProvider = ({
     refetchOccurrencesTaxes,
     isFetchingOccurrencesTaxes,
     isOccurrencesTaxesInitialLoading,
-  } = useOccurrencesTaxes(selectedBaseId);
+  } = useOccurrencesTaxesByBaseId(selectedBaseId);
 
   const selectedBaseName = useMemo(() => {
     return bases.find((base) => base.id === selectedBaseId)?.name;

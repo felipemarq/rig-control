@@ -4,6 +4,7 @@ export enum QueryKeys {
   BASES = "bases",
   WELLS = "wells",
   CLIENTS = "clients",
+  AVERAGE = "average",
   OCCURRENCES = "occurrences",
   OCCURRENCES_TAXES = "occurrences-taxes",
   MAN_HOURS = "man-hours",
@@ -19,4 +20,6 @@ export enum QueryKeys {
   DELETION_REQUESTS = "deletion-requests",
   TEMPORARY_EFFICIENCY = "temporary-efficiency",
   TEMPORARY_EFFICIENCIES = "temporary-efficiencies",
+  RIGS_AVERAGE = "rigs-average",
+  WELLS_COUNT = "wells-count",
 }

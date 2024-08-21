@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Query,
+  MiddlewareConsumer,
 } from '@nestjs/common';
 import { EfficienciesService } from './efficiencies.service';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
@@ -31,6 +32,11 @@ export class EfficienciesController {
     });
   }
 
+  @Get('/well-count/:rigId')
+  getWellsCountByRig(@Param('rigId') rigId: string) {
+    return this.efficienciesService.getWellsCountByRig(rigId);
+  }
+
   // Rotas com parâmetros de caminho (mais específicas)
   @Get(':efficiencyId')
   findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
@@ -47,7 +53,6 @@ export class EfficienciesController {
   getAverage(@Param('rigId') rigId: string) {
     return this.efficienciesService.getAverage(rigId);
   }
-
   // Rotas com parâmetros de consulta (menos específicas)
   @Get()
   findAll(

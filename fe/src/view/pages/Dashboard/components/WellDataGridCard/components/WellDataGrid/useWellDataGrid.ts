@@ -106,7 +106,5 @@ export const useWellsDataGrid = () => {
     []
   );
 
-  console.log(data);
-
   return { data };
 };

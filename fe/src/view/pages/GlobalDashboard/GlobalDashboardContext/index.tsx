@@ -1,23 +1,25 @@
-import React, {createContext, useMemo, useState} from "react";
-import {useAuth} from "../../../../app/hooks/useAuth";
-import {User} from "../../../../app/entities/User";
-import {differenceInDays, parse} from "date-fns";
-import {useEfficienciesRigsAverage} from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
-import {RigsAverageResponse} from "../../../../app/services/efficienciesService/getRigsAverage";
-import {useGetUnbilledPeriods} from "../../../../app/hooks/periods/useGetUnbilledPeriods";
-import {GetUnbilledPeriodsResponse} from "../../../../app/services/periodsService/getUnbilledPeriods";
-import {PeriodType} from "../../../../app/entities/PeriodType";
-import {UF} from "../../../../app/entities/Rig";
-import {PieChartData} from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
-import {getDiffInMinutes} from "../../../../app/utils/getDiffInMinutes";
-import {formatNumberWithFixedDecimals} from "../../../../app/utils/formatNumberWithFixedDecimals";
-import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
+import React, { createContext, useMemo, useState } from "react";
+import { useAuth } from "../../../../app/hooks/useAuth";
+import { User } from "../../../../app/entities/User";
+import { differenceInDays, parse } from "date-fns";
+import { useEfficienciesRigsAverage } from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
+import { RigsAverageResponse } from "../../../../app/services/efficienciesService/getRigsAverage";
+import { useGetUnbilledPeriods } from "../../../../app/hooks/periods/useGetUnbilledPeriods";
+import { GetUnbilledPeriodsResponse } from "../../../../app/services/periodsService/getUnbilledPeriods";
+import { PeriodType } from "../../../../app/entities/PeriodType";
+import { UF } from "../../../../app/entities/Rig";
+import { PieChartData } from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
+import { getDiffInMinutes } from "../../../../app/utils/getDiffInMinutes";
+import { formatNumberWithFixedDecimals } from "../../../../app/utils/formatNumberWithFixedDecimals";
+import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
   selectedPieChartView: PeriodType;
+  selectedDetailPieChartView: null | string;
   isEmpty: boolean;
   handleSelectedPieChartViewChange(type: PeriodType): void;
+  handleSelectedDetailPieChartViewChange(type: string): void;
   handleApplyFilters(): void;
   user: User | undefined;
   signout(): void;
@@ -59,19 +61,28 @@ export const GlobalDashboardProvider = ({
   children: React.ReactNode;
 }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
-  const {user, signout} = useAuth();
+  const { user, signout } = useAuth();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
-  const {filters} = useFiltersContext();
+  const { filters } = useFiltersContext();
 
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
   const [selectedPieChartView, setSelectedPieChartView] = useState(
     PeriodType.REPAIR
   );
 
+  const [selectedDetailPieChartView, setSelectedDetailPieChartView] = useState<
+    null | string
+  >(null);
+
   const handleSelectedPieChartViewChange = (type: PeriodType) => {
     setIsDetailsGraphVisible(true);
     setSelectedPieChartView(type);
+    setSelectedDetailPieChartView(null);
+  };
+
+  const handleSelectedDetailPieChartViewChange = (classification: string) => {
+    setSelectedDetailPieChartView(classification);
   };
 
   const handleCloseDetailsGraph = () => {
@@ -80,7 +91,7 @@ export const GlobalDashboardProvider = ({
 
   // Utilização dos hooks para eficiências e médias de eficiência
 
-  const {rigsAverage, refetchRigsAverage, isFetchingRigsAverage} =
+  const { rigsAverage, refetchRigsAverage, isFetchingRigsAverage } =
     useEfficienciesRigsAverage(
       {
         startDate: filters.startDate,
@@ -98,7 +109,7 @@ export const GlobalDashboardProvider = ({
     }
 
     return rigsAverage.filter(
-      ({state}) => (state as string) === selectedDashboardView
+      ({ state }) => (state as string) === selectedDashboardView
     );
   }, [selectedDashboardView, rigsAverage]);
 
@@ -112,7 +123,7 @@ export const GlobalDashboardProvider = ({
     rigsAverageTotalHours += Math.round(rigAverage.avg);
   });
 
-  const {unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods} =
+  const { unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods } =
     useGetUnbilledPeriods(
       {
         startDate: filters.startDate,
@@ -120,13 +131,6 @@ export const GlobalDashboardProvider = ({
       },
       true
     );
-
-  console.log(
-    formatNumberWithFixedDecimals(
-      rigsAverageTotalHours / filteredRigsAverage.length,
-      2
-    )
-  );
 
   const averageHours = formatNumberWithFixedDecimals(
     rigsAverageTotalHours / filteredRigsAverage.length,
@@ -152,7 +156,7 @@ export const GlobalDashboardProvider = ({
   );
 
   const mappedRigsAverage = filteredRigsAverage
-    .map(({count, rig, rigId, state}) => {
+    .map(({ count, rig, rigId, state }) => {
       return {
         rig,
         daysNotRegistered: totalDaysSelected - count,
@@ -177,14 +181,13 @@ export const GlobalDashboardProvider = ({
 
       const foundIndex = acc.findIndex((item) => item.id === current.type);
 
-      const diffInMinutes =
-        getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
+      const diffInHours = getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
 
       if (foundIndex === -1) {
         acc.push({
           id: current.type,
           label: current.type,
-          value: formatNumberWithFixedDecimals(diffInMinutes, 2),
+          value: Number(diffInHours.toFixed(2)),
           color: current.type === "REPAIR" ? "#1c7b7b" : "#81c460",
         });
       } else {
@@ -192,10 +195,7 @@ export const GlobalDashboardProvider = ({
           accItem.id === current.type
             ? {
                 ...accItem,
-                value: formatNumberWithFixedDecimals(
-                  (accItem.value += diffInMinutes),
-                  2
-                ),
+                value: Number((accItem.value + diffInHours).toFixed(2)),
               }
             : accItem
         );
@@ -221,6 +221,8 @@ export const GlobalDashboardProvider = ({
   return (
     <GlobalDashboardContext.Provider
       value={{
+        handleSelectedDetailPieChartViewChange,
+        selectedDetailPieChartView,
         handleChangeDashboardView,
         selectedDashboardView,
         statBox,

@@ -32,6 +32,8 @@ export const useRepairDetailsPieChart = () => {
     "#a3de83", // Verde pastel
   ];
 
+  let totalHours = 0;
+
   const parseHour = (hourString: string) =>
     parse(hourString.split("T")[1].slice(0, 5), "HH:mm", new Date());
 
@@ -47,6 +49,8 @@ export const useRepairDetailsPieChart = () => {
       const parsedEndHour = parseHour(current.endHour);
       const diffInHours =
         differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+      totalHours += Number(diffInHours.toFixed(2));
 
       if (!foundItem) {
         acc.push({
@@ -69,10 +73,13 @@ export const useRepairDetailsPieChart = () => {
       }
 
       return acc;
-    }, []);
+    }, [])
+    .map((data) => ({
+      ...data,
+      percentage: Number(((data.value / totalHours) * 100).toFixed(2)),
+    }));
 
-  console.log("repairPeriods", repairPeriods);
-  console.log("chartData", chartData);
+  console.log("chartDataDetails", chartData);
 
   return {
     chartData,

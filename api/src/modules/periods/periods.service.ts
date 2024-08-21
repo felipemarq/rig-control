@@ -73,6 +73,7 @@ export class PeriodsService {
         endHour: { lte: new Date(filters.endDate) },
         OR: [{ type: 'GLOSS' }, { type: 'REPAIR' }],
       },
+      include: { efficiency: { include: { rig: true } } },
     });
   }
 

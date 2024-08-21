@@ -16,6 +16,8 @@ import { userLogsService } from "@/app/services/userLogsService";
 import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
 import { AverageResponse } from "@/app/services/efficienciesService/getAverage";
 import { useEfficiencyAverage } from "@/app/hooks/efficiencies/useEfficiencyAverage";
+import { useGetWellsCountByRig } from "@/app/hooks/efficiencies/useGetWellsCountByRig";
+import { RigWellsCountResponse } from "@/app/services/efficienciesService/getWellsCountByRig";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -51,6 +53,7 @@ interface DashboardContextValue {
     type: "REPAIR" | "GLOSS",
     classification: string
   ) => void;
+  wellsCount: RigWellsCountResponse;
 }
 
 // Criação do contexto
@@ -72,6 +75,9 @@ export const DashboardProvider = ({
   const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
+  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(
+    filters.rigId
+  );
   const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
 
   const isEmpty: boolean = efficiencies.length === 0;
@@ -80,7 +86,7 @@ export const DashboardProvider = ({
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchEffciencies();
-
+    refetchWellsCount();
     refetchAverage();
   };
 
@@ -213,6 +219,7 @@ export const DashboardProvider = ({
         isPeriodDataGridModalOpen,
         periodDataGridModalData,
         handleFilterPeriods,
+        wellsCount,
       }}
     >
       {children}

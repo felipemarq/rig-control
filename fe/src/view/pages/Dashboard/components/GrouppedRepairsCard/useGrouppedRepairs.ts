@@ -1,8 +1,8 @@
-import {useDashboard} from "../../DashboardContext/useDashboard";
-import {translateClassification} from "../../../../../app/utils/translateClassification";
-import {getDiffInMinutes} from "../../../../../app/utils/getDiffInMinutes";
-import {parse} from "date-fns";
-import {formatNumberWithFixedDecimals} from "../../../../../app/utils/formatNumberWithFixedDecimals";
+import { useDashboard } from "../../DashboardContext/useDashboard";
+import { translateClassification } from "../../../../../app/utils/translateClassification";
+import { getDiffInMinutes } from "../../../../../app/utils/getDiffInMinutes";
+import { parse } from "date-fns";
+import { formatNumberWithFixedDecimals } from "../../../../../app/utils/formatNumberWithFixedDecimals";
 
 interface EquipmentData {
   id: string;
@@ -17,7 +17,7 @@ interface GrouppedEquipmentData {
 }
 
 export const useGrouppedRepairs = () => {
-  const {repairPeriods, handleSelectEquipment} = useDashboard();
+  const { repairPeriods, handleSelectEquipment } = useDashboard();
 
   const repairGroupedData: GrouppedEquipmentData = repairPeriods.reduce(
     (acc: GrouppedEquipmentData, current) => {
@@ -62,7 +62,7 @@ export const useGrouppedRepairs = () => {
 
       return acc;
     },
-    {totalRepairHours: 0, groupedData: []}
+    { totalRepairHours: 0, groupedData: [] }
   );
 
   const hasRepairData = repairGroupedData.groupedData.length > 0;

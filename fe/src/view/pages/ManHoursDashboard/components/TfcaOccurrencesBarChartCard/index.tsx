@@ -14,9 +14,9 @@ export const TfcaOccurrencesBarChartCard = () => {
     useManHoursDashboard();
 
   return (
-    <Card className="col-span-12 row-span-3 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
+    <Card className="col-span-12 row-span-5 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
       <CardHeader className="px-7">
-        <CardTitle>TFCA </CardTitle>
+        <CardTitle>TFCA</CardTitle>
         <CardDescription>
           {`Taxa de frequência com afastamento registrados da base ${
             selectedBaseName ? selectedBaseName : ""

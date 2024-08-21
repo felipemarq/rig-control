@@ -1,11 +1,11 @@
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
-import {NotFound} from "@/view/components/NotFound";
-import {Spinner} from "@/view/components/Spinner";
-import {UnbilledPeriodsPieChart} from "./UnbilledPeriodsPieChart";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
+import { NotFound } from "@/view/components/NotFound";
+import { Spinner } from "@/view/components/Spinner";
+import { UnbilledPeriodsPieChart } from "./UnbilledPeriodsPieChart";
 
 export const UnbilledPeriodsPieChartCard = () => {
-  const {isFetchingRigsAverage, rigsAverage, isFetchingUnbilledPeriods} =
+  const { isFetchingRigsAverage, rigsAverage, isFetchingUnbilledPeriods } =
     useGlobalDashboard();
   return (
     <Card className="col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">

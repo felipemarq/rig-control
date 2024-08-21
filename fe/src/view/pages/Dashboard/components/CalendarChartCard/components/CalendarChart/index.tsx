@@ -1,9 +1,9 @@
 // install (please try to align the version of installed @nivo packages)
 // yarn add @nivo/calendar
-import {ResponsiveCalendar} from "@nivo/calendar";
-import {useCalendarChart} from "./useCalendarChart";
-import {cn} from "@/lib/utils";
-import {formatDate} from "@/app/utils/formatDate";
+import { ResponsiveCalendar } from "@nivo/calendar";
+import { useCalendarChart } from "./useCalendarChart";
+import { cn } from "@/lib/utils";
+import { formatDate } from "@/app/utils/formatDate";
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
@@ -12,7 +12,7 @@ import {formatDate} from "@/app/utils/formatDate";
 // you'll often use just a few of them.
 
 export const CalendarChart = () => {
-  const {calendarRange, data, navigate} = useCalendarChart();
+  const { calendarRange, data, navigate } = useCalendarChart();
 
   return (
     <ResponsiveCalendar
@@ -22,7 +22,7 @@ export const CalendarChart = () => {
       maxValue={1}
       emptyColor="#eeeeee"
       colors={["#FACC15", "#FACC15", "#FACC15", "#1c7b7b"]}
-      margin={{top: 0, right: 40, bottom: 0, left: 40}}
+      margin={{ top: 0, right: 40, bottom: 0, left: 40 }}
       yearSpacing={40}
       monthBorderColor="#ffffff"
       monthSpacing={0}

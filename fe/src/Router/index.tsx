@@ -31,6 +31,7 @@ import { Occurrences } from "@/view/pages/Occurrences";
 import { ManHours } from "@/view/pages/ManHours";
 import { ManHoursDashboard } from "@/view/pages/ManHoursDashboard";
 import { InDevelopmentPage } from "@/view/pages/InDevelopmentPage";
+import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
@@ -87,6 +88,11 @@ export const Router = () => {
             <Route path="/occurrences" element={<Occurrences />} />
             <Route path="/man-hours" element={<ManHours />} />
             <Route path="/occurrences/man-hours" element={<ManHours />} />
+            <Route
+              path="/dashboard/total-man-hours"
+              element={<TotalManHoursDashboard />}
+            />
+
             <Route
               path="/dashboard/man-hours"
               element={<ManHoursDashboard />}
