@@ -16,12 +16,15 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { ExternalLink } from "lucide-react";
 
 export const UnbilledPeriodsByRigCard = () => {
   const {
     mappedRigsUnbilledHours,
     selectedPieChartView,
     selectedDetailPieChartView,
+    handleChangeRig,
+    navigate,
   } = useUnbilledPeriodsByRigCard();
 
   return (
@@ -29,7 +32,7 @@ export const UnbilledPeriodsByRigCard = () => {
       <Card
         className={cn(
           "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4",
-          mappedRigsUnbilledHours.length > 4 && "row-span-3"
+          mappedRigsUnbilledHours.length > 5 && "row-span-3"
         )}
       >
         <CardHeader className="px-7">
@@ -57,6 +60,11 @@ export const UnbilledPeriodsByRigCard = () => {
                     Horas
                   </div>
                 </TableHead>
+                <TableHead>
+                  <div className="flex gap-4 justify-center items-center">
+                    Ver mais
+                  </div>
+                </TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -71,6 +79,18 @@ export const UnbilledPeriodsByRigCard = () => {
                       <div>
                         <div className="flex gap-4 justify-center items-center">
                           {value} Hrs
+                        </div>
+                      </div>
+                    </TableCell>
+                    <TableCell className={cn("text-center")}>
+                      <div
+                        onClick={() => {
+                          handleChangeRig(id);
+                          navigate(`/dashboard`);
+                        }}
+                      >
+                        <div className="flex gap-4 justify-center items-center">
+                          <ExternalLink />
                         </div>
                       </div>
                     </TableCell>
