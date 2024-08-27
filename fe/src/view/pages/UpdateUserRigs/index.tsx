@@ -1,13 +1,13 @@
-import {useParams} from "react-router-dom";
-import {cn} from "../../../app/utils/cn";
-import {Header} from "../../components/Header";
-import {useUpdateUserRigs} from "./useUpdateUserRigs";
-import {Spinner} from "../../components/Spinner";
-import {Button} from "../../components/Button";
+import { useParams } from "react-router-dom";
+import { cn } from "../../../app/utils/cn";
+import { Header } from "../../components/Header";
+import { useUpdateUserRigs } from "./useUpdateUserRigs";
+import { Spinner } from "../../components/Spinner";
+import { Button } from "../../components/Button";
 import emptyState from "../../../assets/icons/emptyState.svg";
 
 export const UpdateUserRigs = () => {
-  const {id} = useParams();
+  const { id } = useParams();
   const {
     isLoading,
     userBeingEdited,
@@ -54,7 +54,7 @@ export const UpdateUserRigs = () => {
                 )}
                 {userRigs.length > 0 && (
                   <>
-                    {userRigs.map(({id, name, isActive}) => (
+                    {userRigs.map(({ id, name, isActive }) => (
                       <div
                         key={id}
                         onClick={() => handleUnlinkRig(id)}
@@ -91,7 +91,7 @@ export const UpdateUserRigs = () => {
                 )}
                 {availableRigs.length > 0 && (
                   <>
-                    {availableRigs.map(({id, name}) => (
+                    {availableRigs.map(({ id, name }) => (
                       <div
                         key={id}
                         onClick={() => handleLinkRig(id)}
@@ -115,7 +115,7 @@ export const UpdateUserRigs = () => {
           onClick={() => handleSubmit()}
           isLoading={isLoading || isLoadingUpdateRigs}
           className="w-1/2"
-          disabled={userRigs.length === 0 ? true : false || isLoadingUpdateRigs}
+          //disabled={userRigs.length === 0 ? true : false || isLoadingUpdateRigs}
         >
           Enviar
         </Button>

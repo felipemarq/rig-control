@@ -29,7 +29,7 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from "@/components/ui/hover-card";
-//import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 export const ListUsers = () => {
   const {
@@ -42,7 +42,7 @@ export const ListUsers = () => {
     handleChangeSearchTerm,
   } = useListUsers();
 
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header title="Usuários" displayRig={false} displayPeriodRange={false} />
@@ -119,7 +119,6 @@ export const ListUsers = () => {
                     <Card
                       className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
                       key={id}
-                      // onClick={() => navigate(`/users/update-rigs/${id}`)}
                     >
                       <CardHeader className="flex">
                         <CardTitle className="flex justify-between flex-col gap-2 items-center ">
@@ -137,7 +136,7 @@ export const ListUsers = () => {
                           </div>
                         </CardDescription>
                       </CardHeader>
-                      <CardContent className=" flex justify-center items-center">
+                      <CardContent className=" flex flex-col justify-center items-center">
                         {Number(new Date(userLog[0].loginTime)) > 0 && (
                           <div className="flex justify-around">
                             <span className="text-sm">
@@ -171,6 +170,12 @@ export const ListUsers = () => {
                             </span>
                           </div>
                         )}
+                        <span
+                          className="text-xs underline cursor-pointer text-primary"
+                          onClick={() => navigate(`/users/update-rigs/${id}`)}
+                        >
+                          Editar Sondas
+                        </span>
                       </CardContent>
                     </Card>
                   ))}
