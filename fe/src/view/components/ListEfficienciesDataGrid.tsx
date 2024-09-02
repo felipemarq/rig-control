@@ -279,7 +279,7 @@ export const ListEfficienciesDataGrid = ({
       }}
       columns={columns}
       slots={{
-        toolbar: isDashboard ? undefined : GridToolbar,
+        //toolbar: isDashboard ? undefined : GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
       pagination

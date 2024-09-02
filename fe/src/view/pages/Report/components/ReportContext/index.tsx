@@ -109,10 +109,10 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [repairClassificationOptions, setRepairClassificationOptions] =
     useState<null | SelectOptions>(null);
-  const [selectedYear, setSeletectedYear] = useState<string>("2023");
+  const [selectedYear, setSeletectedYear] = useState<string>("2024");
 
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.PERIOD
+    FilterType.CUSTOM
   );
   const [filters, setFilters] = useState<GetByPeriodTypeFilters>({
     rigId: "",
