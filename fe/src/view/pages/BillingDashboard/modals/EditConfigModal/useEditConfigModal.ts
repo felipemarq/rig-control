@@ -150,7 +150,6 @@ export const useEditConfigModal = () => {
       fluidRatioBt20And50Tax: configBeingEdited?.fluidRatioBt20And50Tax,
       fluidRatioGt50Tax: configBeingEdited?.fluidRatioGt50Tax,
       mobilization: configBeingEdited?.mobilization,
-      readjustment: configBeingEdited?.readjustment,
       bobRentTax: configBeingEdited?.bobRentTax,
       dtmHourTax: configBeingEdited?.dtmHourTax,
       extraTrailerTax: configBeingEdited?.extraTrailerTax,
@@ -169,8 +168,9 @@ export const useEditConfigModal = () => {
       truckKmTax: configBeingEdited?.truckKmTax,
       truckTankTax: configBeingEdited?.truckTankTax,
       christmasTreeDisassemblyTax:
-        configBeingEdited?.christmasTreeDisassemblyTax,
+      configBeingEdited?.christmasTreeDisassemblyTax,
       demobilization: configBeingEdited?.demobilization,
+      readjustment: configBeingEdited?.readjustment,
     },
   });
 

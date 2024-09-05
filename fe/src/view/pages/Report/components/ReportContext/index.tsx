@@ -129,8 +129,6 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
   const { periodsResponse, refetchPeriods, isFetchingPeriods } =
     useGetByPeriodType(filters);
 
-  console.log("periodsResponse", periodsResponse);
-
   const isEmpty = periodsResponse.data.length === 0;
 
   const periodTypeOptions = periodTypes.map(({ id, type }) => ({
