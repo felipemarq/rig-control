@@ -2,7 +2,7 @@ import { Header } from "../../components/Header";
 import { Spinner } from "../../components/Spinner";
 import { useListController } from "./useListController";
 import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
 
 export const List = () => {
