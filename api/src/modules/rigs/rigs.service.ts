@@ -43,6 +43,8 @@ export class RigsService {
       truckCartRentTax,
       truckKmTax,
       christmasTreeDisassemblyTax,
+      munckTax,
+      truckTankTax,
     } = createRigDto;
 
     const rigNameAlreadyExists = await this.rigsRepo.findUnique({
@@ -89,6 +91,8 @@ export class RigsService {
             truckCartRentTax,
             truckKmTax,
             christmasTreeDisassemblyTax,
+            munckTax,
+            truckTankTax,
           },
         },
       },

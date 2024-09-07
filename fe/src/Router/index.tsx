@@ -32,6 +32,7 @@ import { ManHours } from "@/view/pages/ManHours";
 import { ManHoursDashboard } from "@/view/pages/ManHoursDashboard";
 import { InDevelopmentPage } from "@/view/pages/InDevelopmentPage";
 import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
+import { BillingConfiguration } from "@/view/pages/BillingConfiguration";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
@@ -91,6 +92,10 @@ export const Router = () => {
             <Route
               path="/dashboard/total-man-hours"
               element={<TotalManHoursDashboard />}
+            />
+            <Route
+              path="/billingConfiguration"
+              element={<BillingConfiguration />}
             />
 
             <Route

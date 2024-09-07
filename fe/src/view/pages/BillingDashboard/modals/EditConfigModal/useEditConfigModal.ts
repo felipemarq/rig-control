@@ -1,14 +1,14 @@
-import {z} from "zod";
-import {useBillingDashboard} from "../../BillingDashboardContext/useBillingDashboard";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {currencyStringToNumber} from "../../../../../app/utils/currencyStringToNumber";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {billingConfigService} from "../../../../../app/services/billingConfigServices";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {QueryKeys} from "../../../../../app/config/QueryKeys";
+import { z } from "zod";
+import { useBillingDashboard } from "../../BillingDashboardContext/useBillingDashboard";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { currencyStringToNumber } from "../../../../../app/utils/currencyStringToNumber";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { billingConfigService } from "../../../../../app/services/billingConfigServices";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { QueryKeys } from "../../../../../app/config/QueryKeys";
 
 const schema = z.object({
   availableHourTax: z.union([z.string().nonempty("Obrigatório"), z.number()]),
@@ -122,11 +122,14 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const useEditConfigModal = () => {
-  const {isEditConfigModalOpen, handleCloseEditConfigModal, configBeingEdited} =
-    useBillingDashboard();
+  const {
+    isEditConfigModalOpen,
+    handleCloseEditConfigModal,
+    configBeingEdited,
+  } = useBillingDashboard();
 
-  const {isPending: isLoading, mutateAsync: mutateAsyncUpdateConfig} =
-    useMutation({mutationFn: billingConfigService.update});
+  const { isPending: isLoading, mutateAsync: mutateAsyncUpdateConfig } =
+    useMutation({ mutationFn: billingConfigService.update });
 
   const queryClient = useQueryClient();
 
@@ -134,7 +137,7 @@ export const useEditConfigModal = () => {
     handleSubmit: hookFormHandleSubmit,
     register,
     control,
-    formState: {errors},
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -168,7 +171,7 @@ export const useEditConfigModal = () => {
       truckKmTax: configBeingEdited?.truckKmTax,
       truckTankTax: configBeingEdited?.truckTankTax,
       christmasTreeDisassemblyTax:
-      configBeingEdited?.christmasTreeDisassemblyTax,
+        configBeingEdited?.christmasTreeDisassemblyTax,
       demobilization: configBeingEdited?.demobilization,
       readjustment: configBeingEdited?.readjustment,
     },
@@ -275,7 +278,7 @@ export const useEditConfigModal = () => {
         rigId: configBeingEdited?.rig.id!,
       });
 
-      queryClient.invalidateQueries({queryKey: [QueryKeys.CONFIG_BILLINGS]});
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.CONFIG_BILLINGS] });
 
       customColorToast(
         "Configuração editada com sucesso!",

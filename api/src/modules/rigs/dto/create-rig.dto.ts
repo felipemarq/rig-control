@@ -173,4 +173,14 @@ export class CreateRigDto {
   @IsOptional()
   @IsNotEmpty()
   christmasTreeDisassemblyTax: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  munckTax: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  truckTankTax: number;
 }

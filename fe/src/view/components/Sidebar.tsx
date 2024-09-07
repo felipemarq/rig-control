@@ -159,6 +159,12 @@ export const Sidebar = ({ className }: SidebarProps) => {
                           Faturamento por Sonda
                         </MenuItem>
                       </Link>
+
+                      <Link to="/billingConfiguration">
+                        <MenuItem className="bg-primary">
+                          billingConfiguration
+                        </MenuItem>
+                      </Link>
                     </SubMenu>
 
                     <Link
