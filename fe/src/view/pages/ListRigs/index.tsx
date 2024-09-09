@@ -12,7 +12,6 @@ import {
 
 import { EditRigModal } from "./modals/EditRigModal";
 import { ListRigsContext, ListRigsProvider } from "./ListRigsContext";
-import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
@@ -80,7 +79,10 @@ export const ListRigs = () => {
                             <div className=" ">
                               <img
                                 className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
-                                src={stateFlagImagePath}
+                                src={
+                                  stateFlagImagePath ??
+                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bandeira_da_Bahia.svg/383px-Bandeira_da_Bahia.svg.png"
+                                }
                               />
                             </div>
                             <div className="flex-1 flex justify-between items-center">
@@ -106,13 +108,22 @@ export const ListRigs = () => {
                             </div>
                           </CardHeader>
 
-                          <CardFooter className="flex justify-between ">
-                            <Button
-                              className="w-full"
+                          <CardFooter className="flex justify-between flex-col gap-4 ">
+                            <span
+                              className="text-xs underline cursor-pointer text-primary"
                               onClick={() => handleSetRigBeingEdited(id)}
                             >
-                              Editar
-                            </Button>
+                              Editar Sonda
+                            </span>
+
+                            <span
+                              className="text-xs underline cursor-pointer text-primary"
+                              onClick={() =>
+                                navigate(`/billing-configuration/${id}`)
+                              }
+                            >
+                              Ver Valores para faturamento
+                            </span>
                           </CardFooter>
                         </Card>
                       )

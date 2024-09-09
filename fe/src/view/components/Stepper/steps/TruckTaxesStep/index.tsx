@@ -6,9 +6,9 @@ import {
   StepperPreviousButton,
 } from "../..";
 import { useStepper } from "../../useStepper";
-import { FormData } from "../../../../pages/BillingConfiguration";
 import { TaxInput } from "@/view/components/TaxInput";
 import { InputCurrency } from "@/view/components/InputCurrency";
+import { FormData } from "@/view/pages/CreateBillingConfiguration/useCreateBillingConfiguration";
 
 export function TruckTaxesStep() {
   const { nextStep } = useStepper();

@@ -1,13 +1,14 @@
 import { Controller, useFormContext } from "react-hook-form";
 import { useStepper } from "../../useStepper";
 import { StepHeader, StepperFooter, StepperNextButton } from "../..";
-import { FormData } from "../../../../pages/BillingConfiguration";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
 import { TaxInput } from "@/view/components/TaxInput";
 import { InputCurrency } from "@/view/components/InputCurrency";
+import { FormData } from "@/view/pages/CreateBillingConfiguration/useCreateBillingConfiguration";
+import { Select } from "@/view/components/Select";
 
 export function PeriodAndTaxesStep() {
-  const { nextStep } = useStepper();
+  const { nextStep, isFetchingRigs, rigs } = useStepper();
   const { control, ...form } = useFormContext<FormData>();
 
   async function handleNextStep() {
@@ -39,6 +40,27 @@ export function PeriodAndTaxesStep() {
         </div> */}
 
         <div className="flex w-full justify-between gap-4">
+          <div className="flex-1">
+            <Controller
+              control={control}
+              name="periodAndTaxesStep.rigId"
+              render={({ field: { onChange, value } }) => (
+                <Select
+                  isLoading={isFetchingRigs}
+                  error={
+                    form.formState.errors.periodAndTaxesStep?.rigId?.message
+                  }
+                  placeholder="Sonda"
+                  value={value}
+                  onChange={onChange}
+                  options={rigs.map(({ id, name }) => ({
+                    value: id,
+                    label: name,
+                  }))}
+                />
+              )}
+            />
+          </div>
           <div className="flex-1">
             <Controller
               control={control}

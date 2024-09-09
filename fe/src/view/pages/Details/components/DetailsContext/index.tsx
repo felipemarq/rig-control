@@ -45,7 +45,7 @@ export const DetailsContextProvider = ({
     throw new Error("efficiencyId is undefined");
   }
 
-  const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId!);
+  const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId);
 
   const windowWidth = useWindowWidth();
 

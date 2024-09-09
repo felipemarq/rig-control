@@ -1,4 +1,3 @@
-import { Label } from "@radix-ui/react-label";
 import { Controller, useFormContext } from "react-hook-form";
 import {
   StepHeader,
@@ -6,11 +5,10 @@ import {
   StepperNextButton,
   StepperPreviousButton,
 } from "../..";
-import { Input } from "@/components/ui/input";
 import { useStepper } from "../../useStepper";
-import { FormData } from "../../../../pages/BillingConfiguration";
 import { TaxInput } from "@/view/components/TaxInput";
 import { InputCurrency } from "@/view/components/InputCurrency";
+import { FormData } from "@/view/pages/CreateBillingConfiguration/useCreateBillingConfiguration";
 
 export function EquipmentTaxesStep() {
   const { nextStep } = useStepper();

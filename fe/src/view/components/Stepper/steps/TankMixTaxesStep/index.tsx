@@ -1,11 +1,10 @@
-import { Label } from "@radix-ui/react-label";
 import { Controller, useFormContext } from "react-hook-form";
 import { StepHeader, StepperFooter, StepperPreviousButton } from "../..";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { FormData } from "../../../../pages/BillingConfiguration";
+
 import { TaxInput } from "@/view/components/TaxInput";
 import { InputCurrency } from "@/view/components/InputCurrency";
+import { FormData } from "@/view/pages/CreateBillingConfiguration/useCreateBillingConfiguration";
 
 export function TankMixTaxesStep() {
   const form = useFormContext<FormData>();

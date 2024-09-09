@@ -2,10 +2,16 @@ import { cn } from "@/lib/utils";
 import React, { createContext, useCallback, useState } from "react";
 import { useStepper } from "./useStepper";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/app/hooks/useAuth";
+import { useRigs } from "@/app/hooks/rigs/useRigs";
+import { RigsResponse } from "@/app/services/rigsService/getAll";
 
 interface IStepperContextValue {
   previousStep: () => void;
   nextStep: () => void;
+  goToStep: (index: number) => void;
+  rigs: RigsResponse;
+  isFetchingRigs: boolean;
 }
 
 interface IStepHeaderProps {
@@ -26,6 +32,9 @@ interface IStepperProps {
 export function Stepper({ steps, initialStep = 0 }: IStepperProps) {
   const [currentStep, setCurrentStep] = useState(initialStep);
 
+  const { isUserAdm } = useAuth();
+  const { rigs, isFetchingRigs } = useRigs(isUserAdm);
+
   const previousStep = useCallback(() => {
     setCurrentStep((prevState) => Math.max(0, prevState - 1));
   }, []);
@@ -34,9 +43,15 @@ export function Stepper({ steps, initialStep = 0 }: IStepperProps) {
     setCurrentStep((prevState) => Math.min(steps.length - 1, prevState + 1));
   }, [steps]);
 
+  const goToStep = useCallback((index: number) => {
+    setCurrentStep(index);
+  }, []);
+
   return (
-    <StepperContext.Provider value={{ previousStep, nextStep }}>
-      <div className="h-full ">
+    <StepperContext.Provider
+      value={{ previousStep, nextStep, goToStep, isFetchingRigs, rigs }}
+    >
+      <div className="h-full">
         <ul className="flex ">
           {steps.map((step, index) => (
             <li

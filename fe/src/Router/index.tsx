@@ -32,6 +32,7 @@ import { ManHours } from "@/view/pages/ManHours";
 import { ManHoursDashboard } from "@/view/pages/ManHoursDashboard";
 import { InDevelopmentPage } from "@/view/pages/InDevelopmentPage";
 import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
+import { CreateBillingConfiguration } from "@/view/pages/CreateBillingConfiguration";
 import { BillingConfiguration } from "@/view/pages/BillingConfiguration";
 
 export const Router = () => {
@@ -94,7 +95,11 @@ export const Router = () => {
               element={<TotalManHoursDashboard />}
             />
             <Route
-              path="/billingConfiguration"
+              path="/create-billing-configuration"
+              element={<CreateBillingConfiguration />}
+            />
+            <Route
+              path="/billing-configuration/:rigId"
               element={<BillingConfiguration />}
             />
 
