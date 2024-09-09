@@ -1,45 +1,13 @@
-import {httpClient} from "../httpClient";
+import { httpClient } from "../httpClient";
+import { BillingConfigCreateParams } from "./create";
 
-export interface BillingConfigResponse {
+export interface BillingUpdateParams extends BillingConfigCreateParams {
   id: string;
-  rigId: string;
-  availableHourTax: number;
-  glossHourTax: number;
-  dtmLt20Tax: number;
-  dtmBt20And50Tax: number;
-  dtmGt50Tax: number;
-  fluidRatioLt20Tax: number;
-  fluidRatioBt20And50Tax: number;
-  fluidRatioGt50Tax: number;
-  equipmentRatioLt20Tax: number;
-  equipmentRatioBt20And50Tax: number;
-  equipmentRatioGt50Tax: number;
-  readjustment: number;
-  mobilization: number;
-  bobRentTax: number;
-  christmasTreeDisassemblyTax: number;
-  demobilization: number;
-  dtmHourTax: number;
-  extraTrailerTax: number;
-  generatorFuelTax: number;
-  mixTankDemobilizationTax: number;
-  mixTankDtmTax: number;
-  mixTankHourRentTax: number;
-  mixTankMobilizationTax: number;
-  mixTankMonthRentTax: number;
-  mixTankOperatorTax: number;
-  munckTax: number;
-  powerSwivelTax: number;
-  suckingTruckTax: number;
-  transportationTax: number;
-  truckCartRentTax: number;
-  truckKmTax: number;
-  truckTankTax: number;
 }
 
-export const update = async ({id, ...params}: BillingConfigResponse) => {
+export const update = async ({ id, ...params }: BillingUpdateParams) => {
   //await timeout(1500);
-  const {data} = await httpClient.put(`/billings-config/${id}`, params);
+  const { data } = await httpClient.put(`/billings-config/${id}`, params);
 
   return data;
 };

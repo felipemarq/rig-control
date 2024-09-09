@@ -1,5 +1,6 @@
 import {
   IsBoolean,
+  IsDateString,
   IsEnum,
   IsNotEmpty,
   IsNumber,
@@ -21,6 +22,16 @@ export class CreateRigDto {
   @IsNotEmpty()
   @IsEnum(UF)
   state: UF;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsDateString()
+  startDate: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsDateString()
+  endDate: string;
 
   @IsBoolean()
   isActive: boolean;
@@ -173,4 +184,14 @@ export class CreateRigDto {
   @IsOptional()
   @IsNotEmpty()
   christmasTreeDisassemblyTax: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  munckTax: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  truckTankTax: number;
 }

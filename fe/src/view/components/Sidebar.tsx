@@ -25,10 +25,11 @@ import {
 } from "lucide-react";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "@/assets/images/conterp-logo.png";
 import { useAuth } from "@/app/hooks/useAuth";
 import { useSidebarContext } from "@/app/contexts/SidebarContext";
+import { Badge } from "@/components/ui/badge";
 
 interface SidebarProps {
   className?: string;
@@ -54,10 +55,30 @@ const menuItemStyles: MenuItemStyles = {
   }),
 };
 
+const AdmLabel = () => {
+  return (
+    <div className="flex gap-4">
+      {" "}
+      <span>Adm..</span>
+      <Badge className="bg-[#72a514]">Novo</Badge>
+    </div>
+  );
+};
+
+const BillingLabel = () => {
+  return (
+    <div className="flex gap-4">
+      {" "}
+      <span>Fatur..</span>
+      <Badge className="bg-[#72a514]">Novo</Badge>
+    </div>
+  );
+};
+
 export const Sidebar = ({ className }: SidebarProps) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const { activeTab, handleToggleNavItem } = useSidebarContext();
-
+  const navigate = useNavigate();
   const { isUserAdm, signout, user } = useAuth();
 
   return (
@@ -68,7 +89,7 @@ export const Sidebar = ({ className }: SidebarProps) => {
             {!isCollapsed && (
               <div className=" w-full flex justify-center">
                 <img
-                  //onClick={() => navigate("/")}
+                  onClick={() => navigate("/")}
                   src={logo}
                   // width={}
                   height={40}
@@ -138,13 +159,13 @@ export const Sidebar = ({ className }: SidebarProps) => {
               </SubMenu>
               {isUserAdm && (
                 <SubMenu
-                  label="Administração"
+                  label={<AdmLabel />}
                   icon={<ShieldCheck />}
                   className="hover:bg-primary text-white"
                 >
                   <>
                     <SubMenu
-                      label="Faturamento"
+                      label={<BillingLabel />}
                       icon={<CircleDollarSign />}
                       className="hover:bg-primary  bg-primary text-white"
                     >
@@ -159,6 +180,16 @@ export const Sidebar = ({ className }: SidebarProps) => {
                           Faturamento por Sonda
                         </MenuItem>
                       </Link>
+
+                      <Link to="/create-billing-configuration">
+                        <MenuItem className="bg-primary">
+                          <div className="flex gap-4">
+                            {" "}
+                            <span>Valores F..</span>
+                            <Badge className="bg-[#72a514]">Novo</Badge>
+                          </div>
+                        </MenuItem>
+                      </Link>
                     </SubMenu>
 
                     <Link
@@ -170,7 +201,11 @@ export const Sidebar = ({ className }: SidebarProps) => {
                       )}
                     >
                       <MenuItem icon={<Construction />} className="bg-primary">
-                        Sondas
+                        <div className="flex gap-4">
+                          {" "}
+                          <span>Sondas..</span>
+                          <Badge className="bg-[#72a514]">Novo</Badge>
+                        </div>
                       </MenuItem>
                     </Link>
 

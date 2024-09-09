@@ -42,7 +42,7 @@ export class BillingsConfigurationController {
     if (!isUserAdm) {
       throw new UnauthorizedException('Acesso Restrito!');
     }
-    return this.billingsConfigurationService.findUnique(rigId);
+    return this.billingsConfigurationService.findAllByRigId(rigId);
   }
 
   @Put(':billingConfigId')

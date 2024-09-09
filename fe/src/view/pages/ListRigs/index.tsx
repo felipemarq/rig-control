@@ -1,6 +1,6 @@
-import {PlusIcon} from "@radix-ui/react-icons";
-import {Header} from "../../components/Header";
-import {Spinner} from "../../components/Spinner";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
 import {
   Card,
   CardHeader,
@@ -10,16 +10,22 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import {EditRigModal} from "./modals/EditRigModal";
-import {ListRigsContext, ListRigsProvider} from "./ListRigsContext";
-import {Button} from "@/components/ui/button";
-import {Badge} from "@/components/ui/badge";
+import { EditRigModal } from "./modals/EditRigModal";
+import { ListRigsContext, ListRigsProvider } from "./ListRigsContext";
+import { Badge } from "@/components/ui/badge";
+import { useNavigate } from "react-router-dom";
 
 export const ListRigs = () => {
+  const navigate = useNavigate();
   return (
     <ListRigsProvider>
       <ListRigsContext.Consumer>
-        {({isFetchingRigs, rigs, rigBeingEdited, handleSetRigBeingEdited}) => (
+        {({
+          isFetchingRigs,
+          rigs,
+          rigBeingEdited,
+          handleSetRigBeingEdited,
+        }) => (
           <div className="w-full h-full overflow-y-scroll">
             <Header
               title="Sondas"
@@ -47,7 +53,10 @@ export const ListRigs = () => {
                         Adicionar Sonda
                       </span>
                     </div> */}
-                    <Card className="cursor-pointer col-span-12 lg:col-span-3">
+                    <Card
+                      className="cursor-pointer col-span-12 lg:col-span-3"
+                      onClick={() => navigate("/create-rig")}
+                    >
                       <CardHeader>
                         <CardTitle className="flex justify-center">
                           Criar uma nova Sonda
@@ -61,7 +70,7 @@ export const ListRigs = () => {
                       </CardContent>
                     </Card>
                     {rigs.map(
-                      ({id, name, state, isActive, stateFlagImagePath}) => (
+                      ({ id, name, state, isActive, stateFlagImagePath }) => (
                         <Card
                           className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
                           key={id}
@@ -70,7 +79,10 @@ export const ListRigs = () => {
                             <div className=" ">
                               <img
                                 className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
-                                src={stateFlagImagePath}
+                                src={
+                                  stateFlagImagePath ??
+                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bandeira_da_Bahia.svg/383px-Bandeira_da_Bahia.svg.png"
+                                }
                               />
                             </div>
                             <div className="flex-1 flex justify-between items-center">
@@ -96,13 +108,22 @@ export const ListRigs = () => {
                             </div>
                           </CardHeader>
 
-                          <CardFooter className="flex justify-between ">
-                            <Button
-                              className="w-full"
+                          <CardFooter className="flex justify-between flex-col gap-4 ">
+                            <span
+                              className="text-xs underline cursor-pointer text-primary"
                               onClick={() => handleSetRigBeingEdited(id)}
                             >
-                              Editar
-                            </Button>
+                              Editar Sonda
+                            </span>
+
+                            <span
+                              className="text-xs underline cursor-pointer text-primary"
+                              onClick={() =>
+                                navigate(`/billing-configuration/${id}`)
+                              }
+                            >
+                              Ver Valores para faturamento
+                            </span>
                           </CardFooter>
                         </Card>
                       )

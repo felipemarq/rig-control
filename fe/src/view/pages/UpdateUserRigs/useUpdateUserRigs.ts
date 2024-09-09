@@ -1,14 +1,14 @@
-import {useEffect, useMemo, useState} from "react";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {useUsers} from "../../../app/hooks/users/useUsers";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {usersService} from "../../../app/services/usersService";
-import {customColorToast} from "../../../app/utils/customColorToast";
-import {useNavigate} from "react-router-dom";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
-import {AxiosError} from "axios";
-import {useRigs} from "../../../app/hooks/rigs/useRigs";
-import {useSidebarContext} from "../../../app/contexts/SidebarContext";
+import { useEffect, useMemo, useState } from "react";
+import { useAuth } from "../../../app/hooks/useAuth";
+import { useUsers } from "../../../app/hooks/users/useUsers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { usersService } from "../../../app/services/usersService";
+import { customColorToast } from "../../../app/utils/customColorToast";
+import { useNavigate } from "react-router-dom";
+import { treatAxiosError } from "../../../app/utils/treatAxiosError";
+import { AxiosError } from "axios";
+import { useRigs } from "../../../app/hooks/rigs/useRigs";
+import { useSidebarContext } from "../../../app/contexts/SidebarContext";
 
 interface Rig {
   id: string;
@@ -17,23 +17,23 @@ interface Rig {
 }
 
 export const useUpdateUserRigs = (id: string) => {
-  const {user} = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
-  const [filters] = useState({contractId: ""});
-  const {handleToggleNavItem} = useSidebarContext();
+  const [filters] = useState({ contractId: "" });
+  const { handleToggleNavItem } = useSidebarContext();
 
   const [userRigs, setUserRigs] = useState<Array<Rig>>([]);
   const [availableRigs, setAvailableRigs] = useState<Array<Rig>>([]);
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const {rigs, isFetchingRigs} = useRigs(isUserAdm);
+  const { rigs, isFetchingRigs } = useRigs(isUserAdm);
 
   const queryClient = useQueryClient();
 
-  const {users, isFetchingUsers} = useUsers(filters);
+  const { users, isFetchingUsers } = useUsers(filters);
 
-  const {isPending: isLoadingUpdateRigs, mutateAsync} = useMutation({
+  const { isPending: isLoadingUpdateRigs, mutateAsync } = useMutation({
     mutationFn: usersService.updateRigs,
   });
 
@@ -43,7 +43,7 @@ export const useUpdateUserRigs = (id: string) => {
 
   useEffect(() => {
     const userRigs = userBeingEdited?.rigs.map(
-      ({rig: {id, name, isAtive}}) => ({
+      ({ rig: { id, name, isAtive } }) => ({
         id,
         name,
         isActive: isAtive,
@@ -63,6 +63,8 @@ export const useUpdateUserRigs = (id: string) => {
     setUserRigs(userRigs);
   }, [userBeingEdited, rigs]);
 
+  console.log(userRigs);
+
   const handleLinkRig = (rigId: string) => {
     const rig = availableRigs.find((rig) => rig.id === rigId)!;
     setAvailableRigs((prev) => prev.filter((rig) => rig.id !== rigId));
@@ -76,16 +78,16 @@ export const useUpdateUserRigs = (id: string) => {
   };
 
   const handleSubmit = async () => {
-    const rigsToPersistence = userRigs.map(({id}) => id);
+    const rigsToPersistence = userRigs.map(({ id }) => id);
     const userId = userBeingEdited?.id!;
 
-    const body = {userId, rigs: rigsToPersistence};
+    const body = { userId, rigs: rigsToPersistence };
     try {
       await mutateAsync(body);
       navigate("/users");
       handleToggleNavItem("Usuários");
       customColorToast("Sondas editadas com sucesso!", "#1c7b7b", "success");
-      queryClient.invalidateQueries({queryKey: ["users"]});
+      queryClient.invalidateQueries({ queryKey: ["users"] });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

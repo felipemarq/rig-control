@@ -1,12 +1,12 @@
-import {Header} from "../../components/Header";
-import {Spinner} from "../../components/Spinner";
-import {useListController} from "./useListController";
-import {CustomFilterSheet} from "@/view/components/CustomFilterSheet";
-import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card";
-import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
+import { useListController } from "./useListController";
+import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
 
 export const List = () => {
-  const {efficiencies, handleApplyFilters, isFetchingEfficiencies} =
+  const { efficiencies, handleApplyFilters, isFetchingEfficiencies } =
     useListController();
 
   return (
@@ -26,11 +26,9 @@ export const List = () => {
         )}
 
         {!isFetchingEfficiencies && (
-          <div className="w-full h-full  p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[70vh]">
+          <div className="w-full h-full  p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[80vh]">
             <Card className="w-full h-full overflow-y-auto">
-              <CardHeader>
-                <CardTitle>Recent Sales</CardTitle>
-              </CardHeader>
+              <CardHeader></CardHeader>
               <CardContent className="">
                 <ListEfficienciesDataGrid
                   data={efficiencies}

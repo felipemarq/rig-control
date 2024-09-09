@@ -42,9 +42,9 @@ export interface BillingConfigResponse {
   endDate: string;
 }
 
-export const getAll = async () => {
+export const getAllByRigId = async (rigId: string) => {
   const { data } = await httpClient.get<Array<BillingConfigResponse>>(
-    `billings-config/`
+    `billings-config/${rigId}`
   );
 
   return data;

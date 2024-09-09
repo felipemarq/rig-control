@@ -1,11 +1,8 @@
 import { httpClient } from "../httpClient";
+import { BillingConfigResponse } from "./getAll";
 
-export interface BillingConfigResponse {
-  id: string;
-  rig: {
-    id: string;
-    name: string;
-  };
+export interface BillingConfigCreateParams {
+  rigId: string;
   availableHourTax: number;
   glossHourTax: number;
   dtmLt20Tax: number;
@@ -38,13 +35,13 @@ export interface BillingConfigResponse {
   truckCartRentTax: number;
   truckKmTax: number;
   truckTankTax: number;
-  startDate: string;
-  endDate: string;
 }
 
-export const getAll = async () => {
-  const { data } = await httpClient.get<Array<BillingConfigResponse>>(
-    `billings-config/`
+export const create = async (params: BillingConfigCreateParams) => {
+  //await timeout(1500);
+  const { data } = await httpClient.post<BillingConfigResponse>(
+    `/billings-config/`,
+    params
   );
 
   return data;

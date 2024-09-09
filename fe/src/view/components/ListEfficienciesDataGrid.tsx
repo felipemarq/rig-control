@@ -2,7 +2,6 @@ import {
   DataGrid,
   GridColDef,
   GridRenderCellParams,
-  GridToolbar,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
@@ -279,7 +278,7 @@ export const ListEfficienciesDataGrid = ({
       }}
       columns={columns}
       slots={{
-        toolbar: isDashboard ? undefined : GridToolbar,
+        //toolbar: isDashboard ? undefined : GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
       pagination

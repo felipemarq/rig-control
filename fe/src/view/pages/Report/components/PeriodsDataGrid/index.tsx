@@ -14,6 +14,8 @@ import { formatDate } from "../../../../../app/utils/formatDate";
 import { localeTextDataGridConfig } from "../../../../../app/utils/localeTextDataGridConfig";
 import { GetByPeriodTypeFilters } from "../../../../../app/services/periodsService/getByPeriodType";
 import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
+import { getDiffInMinutes } from "@/app/utils/getDiffInMinutes";
+import { parse } from "date-fns";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -40,7 +42,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary py-1 px-6 rounded-sm">
+            <div className="text-gray-800 font-medium tracking-tighter ">
               {formatDate(new Date(params.value))}
             </div>
           </div>
@@ -56,7 +58,7 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
+            <div className="text-gray-800 font-medium tracking-tighter ">
               {translateType(params.value)}
             </div>
           </div>
@@ -72,8 +74,38 @@ export const PeriodsDataGrid = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
+            <div className="text-gray-800 font-medium tracking-tighter ">
               {translateClassification(params.value)}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "minutes",
+      headerName: "Minutos",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "center",
+      /*  valueGetter: (value) => {
+        console.log("value", value);
+        return value.row.type;
+      }, */
+      renderCell(params: GridRenderCellParams) {
+        const parsedStartHour = parse(
+          params.row.startHour.split("T")[1].slice(0, 5),
+          "HH:mm",
+          new Date()
+        );
+        const parsedEndHour = parse(
+          params.row.endHour.split("T")[1].slice(0, 5),
+          "HH:mm",
+          new Date()
+        );
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-gray-800 font-medium tracking-tighter ">
+              {getDiffInMinutes(parsedEndHour, parsedStartHour)}
             </div>
           </div>
         );
@@ -87,7 +119,7 @@ export const PeriodsDataGrid = ({
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
-          <div className="w-full text-white flex justify-center">
+          <div className="text-gray-800 font-medium tracking-tighter ">
             {params.value}
           </div>
         );
@@ -151,38 +183,60 @@ export const PeriodsDataGrid = ({
       className="border-none"
       sx={{
         "& .MuiDataGrid-root": {
-          border: "none",
+          border: "none !important",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: "none",
-          borderRightColor: "black",
-        },
-        "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": { py: "8px" },
-        "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": { py: "15px" },
-        "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-          py: "22px",
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-columnHeaders": {
-          backgroundColor: "#1c7b7b",
-          color: "#fff",
-          borderBottom: "none",
+          fontWeight: 400,
+          color: "hsl(var(--muted-foreground))",
+          borderRadius: "var(--none, 0px)",
+          borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
+          alignItems: "space-between !important",
+        },
+        "& .MuiDataGrid-columnHeaderTitle": {
+          fontWeight: "bold",
+        },
+        "& .MuiTablePagination-root": {
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: "#499595",
+          backgroundColor: "hsl(var(--card))",
+          padding: 0,
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#1c7b7b",
-          color: "#fff",
+          backgroundColor: "hsl(var(--card))",
+          color: "hsl(var(--muted-foreground))",
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: "#1c7b7b !important",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-columnSeparator": {
+          display: "none",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-withBorderColor": {
+          border: "none",
         },
         "& .MuiDataGrid-root--densityCompact .MuiDataGrid-cell": { py: "8px" },
         "& .MuiDataGrid-root--densityStandard .MuiDataGrid-cell": {
           py: "15px",
         },
         "& .MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
+          py: "22px",
+        },
+        "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": { py: "8px" },
+        "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": { py: "15px" },
+        "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
           py: "22px",
         },
       }}
