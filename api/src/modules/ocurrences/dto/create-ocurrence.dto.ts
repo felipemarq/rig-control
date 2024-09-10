@@ -8,7 +8,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { OccurrenceType } from '../entities/OccurrenceType';
-import { Nature } from '../entities/Nature';
+import { Nature } from '../entities/OccurenceNature';
 import { OccurrenceCategory } from '../entities/OccurrenceCategory';
 import { UF } from '../entities/UF';
 import { OccurrenceSeverity } from '../entities/OccurrenceSeverity';
