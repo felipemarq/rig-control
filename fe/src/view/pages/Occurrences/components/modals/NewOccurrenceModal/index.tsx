@@ -9,7 +9,7 @@ import { Controller } from "react-hook-form";
 import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { UF } from "@/app/entities/Rig";
-import { Nature } from "@/app/entities/Occurrence";
+import { OccurenceNature } from "@/app/entities/Occurrence";
 import { Input } from "@/view/components/Input";
 
 export const NewOccurrenceModal = () => {
@@ -217,7 +217,7 @@ export const NewOccurrenceModal = () => {
                 />
               </div>
 
-              {selectedNature === Nature.INCIDENT && (
+              {selectedNature === OccurenceNature.INCIDENT && (
                 <div className="flex-1">
                   <Controller
                     defaultValue=""
@@ -239,7 +239,7 @@ export const NewOccurrenceModal = () => {
                 </div>
               )}
 
-              {selectedNature !== Nature.INCIDENT && (
+              {selectedNature !== OccurenceNature.INCIDENT && (
                 <div className="flex-1">
                   <Controller
                     defaultValue=""

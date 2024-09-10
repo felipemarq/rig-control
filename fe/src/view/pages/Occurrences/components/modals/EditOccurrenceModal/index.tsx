@@ -11,7 +11,7 @@ import { UF } from "@/app/entities/Rig";
 import { FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { DeleteModal } from "@/view/components/DeleteModal";
-import { Nature } from "@/app/entities/Occurrence";
+import { OccurenceNature } from "@/app/entities/Occurrence";
 import { Input } from "@/view/components/Input";
 
 export const EditOccurrenceModal = () => {
@@ -234,7 +234,7 @@ export const EditOccurrenceModal = () => {
                 />
               </div>
 
-              {selectedNature === Nature.INCIDENT && (
+              {selectedNature === OccurenceNature.INCIDENT && (
                 <div className="flex-1">
                   <Controller
                     defaultValue=""
@@ -256,7 +256,7 @@ export const EditOccurrenceModal = () => {
                 </div>
               )}
 
-              {selectedNature !== Nature.INCIDENT && (
+              {selectedNature !== OccurenceNature.INCIDENT && (
                 <div className="flex-1">
                   <Controller
                     defaultValue=""

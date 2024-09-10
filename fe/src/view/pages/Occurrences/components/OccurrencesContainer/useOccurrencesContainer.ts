@@ -1,9 +1,10 @@
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 import { ChangeEvent, useMemo, useState } from "react";
+import { useOccurrencesContext } from "../OccurrencesContext/useOccurencesContext";
 
 export const useOccurrencesContainer = () => {
-  const { isFetchingOccurrences, occurrences, isInitialLoading } =
-    useOccurrences();
+  const { occurrences, isFetchingOccurrences, isInitialLoading } =
+    useOccurrencesContext();
 
   const [searchTerm, setSearchTerm] = useState("");
 

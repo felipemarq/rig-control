@@ -16,10 +16,14 @@ export class OccurrenceSeverityValidationPipe implements PipeTransform {
         ).join(', ')}`,
       );
     }
+
     return value;
   }
 
   private isValidOccurrenceSeverity(value: any): value is OccurrenceSeverity {
+    if (!value) {
+      return true;
+    }
     return Object.values(OccurrenceSeverity).includes(value);
   }
 }

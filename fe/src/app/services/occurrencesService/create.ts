@@ -1,5 +1,5 @@
 import {
-  Nature,
+  OccurenceNature,
   OccurrenceCategory,
   OccurrenceType,
 } from "@/app/entities/Occurrence";
@@ -13,7 +13,7 @@ export interface CreateOccurrenceParams {
   title: string;
   isAbsent: boolean;
   type: OccurrenceType;
-  nature: Nature;
+  nature: OccurenceNature;
   baseId: string;
   clientId: string;
   description?: string | undefined;

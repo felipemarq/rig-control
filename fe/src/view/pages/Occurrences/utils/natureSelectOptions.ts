@@ -1,21 +1,21 @@
-import { Nature } from "@/app/entities/Occurrence";
+import { OccurenceNature } from "@/app/entities/Occurrence";
 import { SelectOptions } from "@/app/entities/SelectOptions";
 
 export const natureSelectOptions: SelectOptions = [
   {
-    value: Nature.ACCIDENT,
+    value: OccurenceNature.ACCIDENT,
     label: "Acidente",
   },
   {
-    value: Nature.INCIDENT,
+    value: OccurenceNature.INCIDENT,
     label: "Incidente",
   },
   {
-    value: Nature.COMMUTING_ACCIDENT,
+    value: OccurenceNature.COMMUTING_ACCIDENT,
     label: "Acidente de Trajeto",
   },
   {
-    value: Nature.DEATH,
+    value: OccurenceNature.DEATH,
     label: "Morte",
   },
 ];

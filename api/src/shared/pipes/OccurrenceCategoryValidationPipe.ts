@@ -20,6 +20,9 @@ export class OccurrenceCategoryValidationPipe implements PipeTransform {
   }
 
   private isValidOccurrenceCategory(value: any): value is OccurrenceCategory {
+    if (!value) {
+      return true;
+    }
     return Object.values(OccurrenceCategory).includes(value);
   }
 }

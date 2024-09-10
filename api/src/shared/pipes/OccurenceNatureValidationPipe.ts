@@ -16,10 +16,14 @@ export class OccurenceNatureValidationPipe implements PipeTransform {
         ).join(', ')}`,
       );
     }
+
     return value;
   }
 
   private isValidOccurenceNature(value: any): value is OccurenceNature {
+    if (!value) {
+      return true;
+    }
     return Object.values(OccurenceNature).includes(value);
   }
 }

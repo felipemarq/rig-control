@@ -20,6 +20,9 @@ export class OccurrenceTypeValidationPipe implements PipeTransform {
   }
 
   private isValidOccurrenceType(value: any): value is OccurrenceType {
+    if (!value) {
+      return true;
+    }
     return Object.values(OccurrenceType).includes(value);
   }
 }

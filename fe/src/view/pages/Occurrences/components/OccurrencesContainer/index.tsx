@@ -1,9 +1,9 @@
 import { Spinner } from "@/view/components/Spinner";
 import { useOccurrencesContainer } from "./useOccurrencesContainer";
 import { Input } from "@/view/components/Input";
-import { Button } from "@/view/components/Button";
 import { OccurrenceItem } from "./OccurrenceItem";
 import { NotFound } from "@/view/components/NotFound";
+import { FilterSheet } from "../FilterSheet";
 
 export const OccurrencesContainer = () => {
   const {
@@ -50,9 +50,7 @@ export const OccurrencesContainer = () => {
                   />
                 </div>
 
-                <Button variant="ghost" className="rounded-md w-56 ">
-                  Filtrar dados
-                </Button>
+                <FilterSheet />
               </header>
               <div className="flex flex-col gap-3 mt-6 mb-6 ">
                 {filteredOccurrences.map((occurrence) => (

@@ -8,7 +8,7 @@ import {
   IsUUID,
 } from 'class-validator';
 import { OccurrenceType } from '../entities/OccurrenceType';
-import { Nature } from '../entities/OccurenceNature';
+import { OccurenceNature } from '../entities/OccurenceNature';
 import { OccurrenceCategory } from '../entities/OccurrenceCategory';
 import { UF } from '../entities/UF';
 import { OccurrenceSeverity } from '../entities/OccurrenceSeverity';
@@ -67,9 +67,9 @@ export class CreateOcurrenceDto {
   @IsOptional()
   severity: OccurrenceSeverity;
 
-  @IsEnum(Nature)
+  @IsEnum(OccurenceNature)
   @IsNotEmpty()
-  nature: Nature;
+  nature: OccurenceNature;
 
   @IsString()
   @IsOptional()

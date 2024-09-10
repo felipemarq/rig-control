@@ -82,6 +82,8 @@ export class OccurrencesService {
   ) {
     let whereClause: Prisma.OccurrenceWhereInput = {};
 
+    console.log({ startDate, endDate });
+
     whereClause = {
       AND: [
         { date: { gte: new Date(startDate) } },
