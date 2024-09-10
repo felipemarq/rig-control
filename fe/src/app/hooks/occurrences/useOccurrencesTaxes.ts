@@ -4,7 +4,7 @@ import { QueryKeys } from "@/app/config/QueryKeys";
 
 export const useOccurrencesTaxes = () => {
   const { data, isFetching, refetch, isLoading } = useQuery({
-    queryKey: [QueryKeys.OCCURRENCES_TAXES],
+    queryKey: [QueryKeys.TOTAL_OCCURRENCES_TAXES],
     queryFn: () => occurrencesService.getTaxes(),
     enabled: true,
     staleTime: 1000,
