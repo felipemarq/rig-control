@@ -26,7 +26,6 @@ import { GlobalDashboard } from "../view/pages/GlobalDashboard";
 import { useAuth } from "../app/hooks/useAuth";
 import { FormMenu } from "../view/pages/FormMenu";
 import { PendingForm } from "../view/pages/PendingForm";
-import { AppLayout } from "@/view/Layouts/AppLayout";
 import { Occurrences } from "@/view/pages/Occurrences";
 import { ManHours } from "@/view/pages/ManHours";
 import { ManHoursDashboard } from "@/view/pages/ManHoursDashboard";
@@ -34,6 +33,7 @@ import { InDevelopmentPage } from "@/view/pages/InDevelopmentPage";
 import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
 import { CreateBillingConfiguration } from "@/view/pages/CreateBillingConfiguration";
 import { BillingConfiguration } from "@/view/pages/BillingConfiguration";
+import { ShadcnLayout } from "@/view/Layouts/ShadcnLayout";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
@@ -51,7 +51,7 @@ export const Router = () => {
         {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
-          <Route element={<AppLayout />}>
+          <Route element={<ShadcnLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/in-development" element={<InDevelopmentPage />} />
 
@@ -107,6 +107,10 @@ export const Router = () => {
               path="/dashboard/man-hours"
               element={<ManHoursDashboard />}
             />
+          </Route>
+
+          <Route element={<ShadcnLayout />}>
+            <Route path="/dashboard-test" element={<Dashboard />} />
           </Route>
         </Route>
       </Routes>
