@@ -17,6 +17,7 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/app/utils/cn";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { Badge } from "./ui/badge";
 
 export function NavMain({
   className,
@@ -24,6 +25,7 @@ export function NavMain({
   searchResults,
 }: {
   items: {
+    hasNews?: boolean;
     title: string;
     url: string;
     icon: LucideIcon;
@@ -31,15 +33,14 @@ export function NavMain({
     items?: {
       title: string;
       url: string;
+      hasNews?: boolean;
     }[];
   }[];
   searchResults: React.ComponentProps<typeof SidebarSearch>["results"];
 } & React.ComponentProps<"ul">) {
   return (
     <ul className={cn("grid gap-0.5 text-white", className)}>
-      <li>
-        <SidebarSearch results={searchResults} />
-      </li>
+      <li>{/*   <SidebarSearch results={searchResults} /> */}</li>
       {items.map((item) => (
         <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
           <li>
@@ -50,7 +51,8 @@ export function NavMain({
               >
                 <item.icon className="h-4 w-4 shrink-0" />
                 <div className="flex flex-1 overflow-hidden">
-                  <div className="line-clamp-1 pr-6">{item.title}</div>
+                  <div className="line-clamp-1 pr-6">{item.title}</div>{" "}
+                  {item.hasNews && <Badge className="bg-[#72a514]">Novo</Badge>}
                 </div>
               </Link>
               <CollapsibleTrigger asChild>
@@ -71,7 +73,10 @@ export function NavMain({
                       to={subItem.url}
                       className="min-w-8 flex h-8 items-center gap-2 overflow-hidden rounded-md px-2 text-sm font-medium text-white ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
                     >
-                      <div className="line-clamp-1">{subItem.title}</div>
+                      <div className="line-clamp-1">{subItem.title}</div>{" "}
+                      {subItem.hasNews && (
+                        <Badge className="bg-[#72a514]">Novo</Badge>
+                      )}
                     </Link>
                   </li>
                 ))}
