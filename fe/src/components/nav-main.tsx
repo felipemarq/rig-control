@@ -22,7 +22,6 @@ import { Badge } from "./ui/badge";
 export function NavMain({
   className,
   items,
-  searchResults,
 }: {
   items: {
     hasNews?: boolean;

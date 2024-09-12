@@ -34,6 +34,7 @@ import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
 import { CreateBillingConfiguration } from "@/view/pages/CreateBillingConfiguration";
 import { BillingConfiguration } from "@/view/pages/BillingConfiguration";
 import { ShadcnLayout } from "@/view/Layouts/ShadcnLayout";
+import { AppLayout } from "@/view/Layouts/AppLayout";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
@@ -51,7 +52,7 @@ export const Router = () => {
         {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
-          <Route element={<ShadcnLayout />}>
+          <Route element={<AppLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/in-development" element={<InDevelopmentPage />} />
 

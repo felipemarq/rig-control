@@ -20,18 +20,20 @@ export const ShadcnLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
   //const {isUserAdm, userAccessLevel} = useAuth();
   return (
-    <div className=" w-full h-full flex ">
-      {/* <Navbar /> */}
-      <SidebarLayout>
+    <SidebarLayout>
+      <div className=" w-full h-full flex ">
+        {/* <Navbar /> */}
+
         <AppSidebar />
 
         <SidebarTrigger />
-      </SidebarLayout>
-      {/*  <Sidebar /> */}
 
-      <SystemVersion />
+        {/*  <Sidebar /> */}
 
-      <Outlet />
-    </div>
+        <SystemVersion />
+
+        <Outlet />
+      </div>
+    </SidebarLayout>
   );
 };
