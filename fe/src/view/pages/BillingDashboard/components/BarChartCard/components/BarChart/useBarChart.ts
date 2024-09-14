@@ -13,7 +13,6 @@ export const useBarChart = () => {
     }
   );
 
-  console.log("Chart Data", data);
   return {
     data,
   };

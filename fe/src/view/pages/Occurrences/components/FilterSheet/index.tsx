@@ -11,7 +11,7 @@ import { Button } from "@/view/components/Button";
 import { Select } from "@/view/components/Select";
 import { useOccurrencesContext } from "../OccurrencesContext/useOccurencesContext";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
-import { OccurrenceType } from "@/app/entities/Occurrence";
+import { OccurenceNature, OccurrenceType } from "@/app/entities/Occurrence";
 import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../../utils/natureSelectOptions";
 export const FilterSheet = () => {
@@ -94,7 +94,7 @@ export const FilterSheet = () => {
 
               <ToggleGroup
                 onValueChange={(value) =>
-                  handleChangeFilters("type")(value as OccurrenceType)
+                  handleChangeFilters("nature")(value as OccurenceNature)
                 }
                 type="single"
                 className="flex-col items-start gap-2"

@@ -16,7 +16,6 @@ import { WellDataGridCard } from "./components/WellDataGridCard";
 import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
 import { GrouppedRepairPieChartCard } from "./components/GrouppedRepairsPieChartCard";
 import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
-import { DatePickerInput } from "@/view/components/DatePickerInput";
 
 export const Dashboard = () => {
   return (
@@ -29,7 +28,7 @@ export const Dashboard = () => {
           isWrongVersion,
           periodDataGridModalData,
         }) => (
-          <div className="overflow-y-auto">
+          <div className="">
             <Header displayRig title="Dashboard por Sonda">
               <CustomFilterSheet
                 isLoading={isFetchingEfficiencies}
@@ -40,7 +39,7 @@ export const Dashboard = () => {
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
                 <StatboxContainer />
-<DatePickerInput/>
+
                 <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
                   {!exceedsEfficiencyThreshold && <LineChartCard />}
 

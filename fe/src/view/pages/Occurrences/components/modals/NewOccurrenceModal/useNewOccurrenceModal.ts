@@ -124,7 +124,6 @@ export const useNewOccurrenceModal = () => {
     occurrenceSeveritySelectOptions
   ); */
 
-  console.log("errors", errors);
 
   useEffect(() => {
     if (selectedNature === OccurenceNature.INCIDENT) {
@@ -143,7 +142,6 @@ export const useNewOccurrenceModal = () => {
     label: name,
   }));
 
-  console.log("clientSelectOptions", clientSelectOptions);
 
   const {
     isPending: isLoadingNewOccurrence,

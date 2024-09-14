@@ -11,7 +11,7 @@ export class OccurrenceCategoryValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (!this.isValidOccurrenceCategory(value)) {
       throw new BadRequestException(
-        `Tipo de ocorrência inválido. Deveria ser um dos seguintes valores: ${Object.values(
+        `Categoria de ocorrência inválido. Deveria ser um dos seguintes valores: ${Object.values(
           OccurrenceCategory,
         ).join(', ')}`,
       );

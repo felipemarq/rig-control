@@ -7,6 +7,7 @@ export const useStatboxContainer = () => {
     totalRepairAmount,
     totalUnbilledAmount,
     isFetchingBillings,
+    averageEfficiency
   } = useBillingDashboard();
 
   return {
@@ -15,5 +16,6 @@ export const useStatboxContainer = () => {
     totalRepairAmount,
     isFetchingBillings,
     totalUnbilledAmount,
+    averageEfficiency
   };
 };

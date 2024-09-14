@@ -52,7 +52,7 @@ export const Router = () => {
         {/* Rota para páginas autenticadas */}
         <Route element={<AuthGuard isPrivate={true} />}>
           {/* Define o layout baseado na largura da janela */}
-          <Route element={<AppLayout />}>
+          <Route element={<ShadcnLayout />}>
             <Route path="/" element={<Dashboard />} />
             <Route path="/in-development" element={<InDevelopmentPage />} />
 

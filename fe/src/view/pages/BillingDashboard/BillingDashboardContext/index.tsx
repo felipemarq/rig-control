@@ -20,6 +20,7 @@ import { months } from "../../../../app/utils/months";
 import { years } from "../../../../app/utils/years";
 import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 import { formatCurrencyStringToNegativeNumber } from "@/app/utils/formatCurrencyStringToNegativeNumber";
+import { useEfficienciesRigsAverage } from "@/app/hooks/efficiencies/useEfficienciesRigsAverage";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -83,6 +84,7 @@ interface BillingDashboardContextValue {
   years: SelectOptions;
   selectedYear: string;
   handleToggleFilterType(filterType: FilterType): void;
+  averageEfficiency: number
 }
 
 export const BillingDashboardContext = createContext(
@@ -138,6 +140,7 @@ export const BillingDashboardProvider = ({
     isEnd: false,
   });
 
+
   //Edit Rig
   const handleCloseEditRigModal = useCallback(() => {
     setIsEditRigModalOpen(false);
@@ -173,6 +176,36 @@ export const BillingDashboardProvider = ({
   const { configs, isFetchingConfig } = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;
+
+  const { rigsAverage, refetchRigsAverage, isFetchingRigsAverage } =
+  useEfficienciesRigsAverage(
+    {
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    },
+    true
+  );
+
+  console.log({ rigsAverage, refetchRigsAverage, isFetchingRigsAverage })
+
+
+
+  const averageEfficiency = useMemo(()=> {
+    let total = 0
+  
+    rigsAverage.forEach((average) => {
+      total += average.avg
+    })
+    console.log("total",total)
+
+    const average = total/rigsAverage.length
+
+    const percentage = (average/24) * 100
+
+    return percentage
+  },[rigsAverage])
+
+  console.log("averageEfficiency",averageEfficiency)
 
   const {
     totalAmount,
@@ -258,6 +291,7 @@ export const BillingDashboardProvider = ({
         configs,
         configBeingEdited,
         rigs,
+        averageEfficiency
       }}
     >
       {children}

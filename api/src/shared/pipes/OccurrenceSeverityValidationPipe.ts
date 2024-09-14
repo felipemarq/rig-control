@@ -11,7 +11,7 @@ export class OccurrenceSeverityValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (!this.isValidOccurrenceSeverity(value)) {
       throw new BadRequestException(
-        `Tipo de ocorrência inválido. Deveria ser um dos seguintes valores: ${Object.values(
+        `Gravidade de ocorrência inválido. Deveria ser um dos seguintes valores: ${Object.values(
           OccurrenceSeverity,
         ).join(', ')}`,
       );
