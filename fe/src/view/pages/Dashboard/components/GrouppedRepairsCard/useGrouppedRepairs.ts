@@ -67,6 +67,8 @@ export const useGrouppedRepairs = () => {
 
   const hasRepairData = repairGroupedData.groupedData.length > 0;
 
+  console.log("repair", repairGroupedData);
+
   return {
     repairGroupedData,
     handleSelectEquipment,

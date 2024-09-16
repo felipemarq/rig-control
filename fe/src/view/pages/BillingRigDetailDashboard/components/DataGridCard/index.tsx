@@ -1,5 +1,5 @@
-import {Button} from "@/components/ui/button";
-import {useDataGridCard} from "./useDataGridCard";
+import { Button } from "@/components/ui/button";
+import { useDataGridCard } from "./useDataGridCard";
 import {
   Card,
   CardHeader,
@@ -7,17 +7,17 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import {ArrowUpRight} from "lucide-react";
-import {Link} from "react-router-dom";
-import {Spinner} from "@/view/components/Spinner";
+import { ArrowUpRight } from "lucide-react";
+import { Link } from "react-router-dom";
+import { Spinner } from "@/view/components/Spinner";
 
-import {NotFound} from "@/view/components/NotFound";
-import {ListBillingDataGrid} from "../ListBillingDataGrid";
+import { NotFound } from "@/view/components/NotFound";
+import { ListBillingDataGrid } from "../ListBillingDataGrid";
 
 export const DataGridCard = () => {
-  const {isEmpty, isFetchingBilling} = useDataGridCard();
+  const { isEmpty, isFetchingBilling } = useDataGridCard();
   return (
-    <Card className="col-span-12 row-span-3 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] overflow-y-auto">
+    <Card className="col-span-12 row-span-3 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] overflow-y-auto scrollbar-hide">
       <CardHeader className="flex flex-row items-center">
         <div className="grid gap-2">
           <CardTitle>Ocorrências</CardTitle>

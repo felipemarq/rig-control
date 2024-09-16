@@ -31,11 +31,11 @@ export class PeriodsController {
   }
 
   @Get('/unbilled')
-  getAverageEfficiency(
+  async getAverageEfficiency(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    return this.periodsService.getUnbilledPeriods({
+    return await this.periodsService.getUnbilledPeriods({
       startDate,
       endDate,
     });

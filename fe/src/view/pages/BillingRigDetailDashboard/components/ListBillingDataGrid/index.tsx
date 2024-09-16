@@ -1,10 +1,10 @@
-import {DataGrid, GridToolbar} from "@mui/x-data-grid";
+import { DataGrid } from "@mui/x-data-grid";
 
-import {NotFound} from "../../../../components/NotFound";
-import {useDataGrid} from "./useDataGrid";
+import { NotFound } from "../../../../components/NotFound";
+import { useDataGrid } from "./useDataGrid";
 
 export const ListBillingDataGrid = () => {
-  const {columns, data} = useDataGrid();
+  const { columns, data } = useDataGrid();
 
   const NotFoundDataGrid = () => {
     return (
@@ -82,12 +82,11 @@ export const ListBillingDataGrid = () => {
       }}
       columns={columns}
       slots={{
-        toolbar: GridToolbar,
         noRowsOverlay: NotFoundDataGrid,
       }}
       initialState={{
         sorting: {
-          sortModel: [{field: "qtd", sort: "desc"}],
+          sortModel: [{ field: "qtd", sort: "desc" }],
         },
       }}
       //getRowId={(row) => row.rigid}

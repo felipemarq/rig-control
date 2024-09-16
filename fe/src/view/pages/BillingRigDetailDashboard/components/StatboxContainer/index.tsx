@@ -5,12 +5,12 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {DollarSign, TimerOff, Wrench} from "lucide-react";
-import {useStatboxContainer} from "./useStatboxContainer";
-import {formatCurrency} from "@/app/utils/formatCurrency";
+import { DollarSign, TimerOff, Wrench } from "lucide-react";
+import { useStatboxContainer } from "./useStatboxContainer";
+import { formatCurrency } from "@/app/utils/formatCurrency";
 
 export const StatboxContainer = () => {
-  const {totalAmount, totalRepairAmount, totalUnbilledAmount} =
+  const { totalAmount, totalRepairAmount, totalUnbilledAmount } =
     useStatboxContainer();
 
   return (
@@ -32,7 +32,7 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Card className="col-span-12 row-span-1 lg:col-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Glosa
@@ -49,7 +49,7 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Card className=" col-span-12 row-span-1 lg:col-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card className=" col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Reparo
