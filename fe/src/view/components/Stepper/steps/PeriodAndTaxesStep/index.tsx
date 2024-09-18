@@ -114,7 +114,7 @@ export function PeriodAndTaxesStep() {
           />
         </TaxInput>
 
-        <TaxInput title="Taxa hora indisponível" label="R$">
+        <TaxInput title="Taxa hora standBy" label="R$">
           <Controller
             control={control}
             name="periodAndTaxesStep.glossHourTax"

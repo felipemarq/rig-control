@@ -224,8 +224,9 @@ export class EfficienciesService {
     //criando valores de faturamento
     // Talvez mudar isso aqui de lugar
 
-    const totalUnavailableHours = 24 - availableHours;
-    let scheduledStopTotalHours = 0;
+    let billedScheduledStopTotalHours = 0;
+    let unbilledScheduledStopTotalHours = 0;
+    let standByTotalHours = 0;
     let dtmLt20TotalHours = 0;
     let dtmBt20And50TotalHours = 0;
     let dtmGt50TotalHours = 0;
@@ -318,9 +319,24 @@ export class EfficienciesService {
             dtmGt50TotalHours += diffInMinutes / 60;
           }
         }
+        billedScheduledStopTotalHours = 0;
 
-        if (type === 'SCHEDULED_STOP') {
-          scheduledStopTotalHours += diffInMinutes / 60;
+        if (
+          type === 'SCHEDULED_STOP' &&
+          classification === 'BILLED_SCHEDULED_STOP'
+        ) {
+          billedScheduledStopTotalHours += diffInMinutes / 60;
+        }
+
+        if (
+          type === 'SCHEDULED_STOP' &&
+          classification === 'UNBILLED_SCHEDULED_STOP'
+        ) {
+          unbilledScheduledStopTotalHours += diffInMinutes / 60;
+        }
+
+        if (type === 'STAND_BY') {
+          standByTotalHours += diffInMinutes / 60;
         }
 
         if (type === 'REPAIR') {
@@ -368,18 +384,22 @@ export class EfficienciesService {
     }
 
     const availableHourAmount =
-      (availableHours - scheduledStopTotalHours) *
-      rigBillingConfiguration.availableHourTax;
+      availableHours * rigBillingConfiguration.availableHourTax;
 
     const scheduledStopAmount =
-      scheduledStopTotalHours *
-      (rigBillingConfiguration.availableHourTax * 0.8);
+      billedScheduledStopTotalHours * rigBillingConfiguration.availableHourTax;
+
+    const standByHourAmount =
+      standByTotalHours * rigBillingConfiguration.standByHourTax;
+    const unbilledScheduledStopTotalAmount =
+      unbilledScheduledStopTotalHours *
+      rigBillingConfiguration.availableHourTax;
 
     const glossHourAmount =
-      totalGlossHours * rigBillingConfiguration.glossHourTax;
+      totalGlossHours * rigBillingConfiguration.availableHourTax;
 
     const repairHourAmount =
-      totalRepairHours * rigBillingConfiguration.glossHourTax;
+      totalRepairHours * rigBillingConfiguration.availableHourTax;
     const dtmLt20Amount =
       dtmLt20TotalAmmount * rigBillingConfiguration.dtmLt20Tax;
 
@@ -503,37 +523,37 @@ export class EfficienciesService {
     truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
 
     const totalAmmount =
-      (availableHourAmount +
-        dtmHourAmount +
-        dtmLt20Amount +
-        dtmBt20And50Amount +
-        dtmGt50Amount +
-        fluidLt20Amount +
-        fluidBt20And50Amount +
-        fluidGt50Amount +
-        equipmentLt20Amount +
-        equipmentBt20And50Amount +
-        equipmentGt50Amount +
-        christmasTreeDisassemblyAmount +
-        mixTankDemobilizationTotalAmount +
-        mixTankMobilizationTotalAmount +
-        mixTankDTMTotalAmount +
-        mixTankOperatorTotalAmount +
-        mixTankMonthRentTotalAmount +
-        mixTankHourRentTotalAmount +
-        generatorFuelTotalAmount +
-        munckTotalAmount +
-        truckTankTotalAmount +
-        mobilizationTotalAmount +
-        extraTrailerTotalAmount +
-        powerSwivelTotalAmount +
-        suckingTruckTotalAmount +
-        transportationTotalAmount +
-        truckCartRentTotalAmount +
-        bobRentTotalAmount +
-        truckKmTotalAmount +
-        scheduledStopAmount) *
-      rigBillingConfiguration.readjustment;
+      availableHourAmount +
+      dtmHourAmount +
+      dtmLt20Amount +
+      dtmBt20And50Amount +
+      dtmGt50Amount +
+      fluidLt20Amount +
+      fluidBt20And50Amount +
+      fluidGt50Amount +
+      equipmentLt20Amount +
+      equipmentBt20And50Amount +
+      equipmentGt50Amount +
+      christmasTreeDisassemblyAmount +
+      mixTankDemobilizationTotalAmount +
+      mixTankMobilizationTotalAmount +
+      mixTankDTMTotalAmount +
+      mixTankOperatorTotalAmount +
+      mixTankMonthRentTotalAmount +
+      mixTankHourRentTotalAmount +
+      generatorFuelTotalAmount +
+      munckTotalAmount +
+      truckTankTotalAmount +
+      mobilizationTotalAmount +
+      extraTrailerTotalAmount +
+      powerSwivelTotalAmount +
+      suckingTruckTotalAmount +
+      transportationTotalAmount +
+      truckCartRentTotalAmount +
+      bobRentTotalAmount +
+      truckKmTotalAmount +
+      scheduledStopAmount +
+      standByHourAmount;
 
     efficiencyData['dtmHours'] =
       dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
@@ -568,6 +588,7 @@ export class EfficienciesService {
         scheduledStopAmount,
         glossHourAmount,
         repairHourAmount,
+        unbilledScheduledStopAmount: unbilledScheduledStopTotalAmount,
         dtmLt20Amount,
         dtmBt20And50Amount,
         dtmGt50Amount,
@@ -581,6 +602,7 @@ export class EfficienciesService {
         efficiencyId: efficiency.id,
         rigId,
         total: totalAmmount,
+        standByHourAmount,
       },
     });
 

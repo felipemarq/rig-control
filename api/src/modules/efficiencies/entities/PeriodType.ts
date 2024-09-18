@@ -4,4 +4,5 @@ export enum PeriodType {
   DTM = 'DTM',
   WORKING = 'WORKING',
   SCHEDULED_STOP = 'SCHEDULED_STOP',
+  STAND_BY = 'STAND_BY',
 }
