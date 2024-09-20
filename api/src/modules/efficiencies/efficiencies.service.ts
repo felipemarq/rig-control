@@ -559,7 +559,13 @@ export class EfficienciesService {
       dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
 
     const efficiency = await this.efficiencyRepo.create({
-      data: { ...efficiencyData, repairHours: totalRepairHours },
+      data: {
+        ...efficiencyData,
+        repairHours: totalRepairHours,
+        standByHours: standByTotalHours,
+        unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
+        billedScheduledStopHours: billedScheduledStopTotalHours,
+      },
     });
 
     await this.billingRepo.create({
@@ -735,6 +741,7 @@ export class EfficienciesService {
         repairHours: true,
         isEditable: true,
         rig: true,
+        standByHours: true,
         user: {
           select: {
             name: true,

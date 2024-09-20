@@ -1,16 +1,16 @@
-import {GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
-import {useBillingRigDetailDashboard} from "../../BillingRigDetailDashboardContext/useBillingDashboard";
-import {formatCurrency} from "../../../../../app/utils/formatCurrency";
-import {totalsInterface} from "../../../../../app/utils/getTotals";
+import { GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { useBillingRigDetailDashboard } from "../../BillingRigDetailDashboardContext/useBillingDashboard";
+import { formatCurrency } from "../../../../../app/utils/formatCurrency";
+import { totalsInterface } from "../../../../../app/utils/getTotals";
 import {
   taxNames,
   taxSuffix,
   taxTranslation,
 } from "../../../../../app/utils/taxLabels";
-import {formatCurrencyStringToNegativeNumber} from "@/app/utils/formatCurrencyStringToNegativeNumber";
+import { formatCurrencyStringToNegativeNumber } from "@/app/utils/formatCurrencyStringToNegativeNumber";
 
 export const useDataGrid = () => {
-  const {billing, totals} = useBillingRigDetailDashboard();
+  const { billing, totals } = useBillingRigDetailDashboard();
 
   const getSuffix = (params: string) => {
     taxSuffix;
@@ -56,7 +56,7 @@ export const useDataGrid = () => {
     },
   ];
 
-  billing.forEach(({rigname}) => {
+  billing.forEach(({ rigname }) => {
     columns.push({
       field: rigname,
       headerName: "VB (R$)",
@@ -110,6 +110,7 @@ export const useDataGrid = () => {
       const rigData: any = billing.find((item) => item.rigname === rigname);
       rowData[rigname] = rigData ? rigData[taxa] : 0;
       rowData["qtd"] = totals[taxa as keyof totalsInterface];
+      console.log(taxa);
     });
 
     return rowData;

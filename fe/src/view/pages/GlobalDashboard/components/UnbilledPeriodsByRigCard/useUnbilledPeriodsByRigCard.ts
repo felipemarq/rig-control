@@ -57,10 +57,6 @@ export const useUnbilledPeriodsByRigCard = () => {
     },
     []
   );
-  // const classification = translateClassification(current.classification)!;
-  console.log("mappedRigsUnbilledHours", mappedRigsUnbilledHours);
-  console.log("selectedDetailPieChartView", selectedDetailPieChartView);
-  console.log("unbilledPeriods", unbilledPeriods);
 
   return {
     mappedRigsUnbilledHours,

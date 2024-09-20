@@ -137,6 +137,9 @@ model Efficiency {
   well                          String
   createdAt                     DateTime?         @map("created_at")
   availableHours                Float             @map("available_hours")
+  standByHours                  Float?            @map("standby_hours")
+  unbilledScheduledStopHours    Float?            @map("unbilled_scheduled_stop_hours")
+  billedScheduledStopHours      Float?            @map("billed_scheduled_stop_hours")
   repairHours                   Float?            @map("repair_hours")
   dtmHours                      Float             @map("dtm_hours")
   isEditable                    Boolean?          @default(false) @map("is_editable")
