@@ -1,4 +1,3 @@
-import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 import { ChangeEvent, useMemo, useState } from "react";
 import { useOccurrencesContext } from "../OccurrencesContext/useOccurencesContext";
 

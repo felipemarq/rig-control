@@ -1,19 +1,20 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {localStorageKeys} from "../config/localStorageKeys";
-import {useQuery, useQueryClient} from "@tanstack/react-query";
-import {usersService} from "../services/usersService";
-import {User} from "../entities/User";
-import {treatAxiosError} from "../utils/treatAxiosError";
-import {AxiosError} from "axios";
-import {PageLoader} from "../../view/components/PageLoader";
-import {AccessLevel} from "../entities/AccessLevel";
-import {QueryKeys} from "../config/QueryKeys";
-import {useSystemVersion} from "../hooks/useSystemVersion";
-import {currentVersion} from "../config/CurrentVersion";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { localStorageKeys } from "../config/localStorageKeys";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { usersService } from "../services/usersService";
+import { User } from "../entities/User";
+import { treatAxiosError } from "../utils/treatAxiosError";
+import { AxiosError } from "axios";
+import { PageLoader } from "../../view/components/PageLoader";
+import { AccessLevel } from "../entities/AccessLevel";
+import { QueryKeys } from "../config/QueryKeys";
+import { useSystemVersion } from "../hooks/useSystemVersion";
+import { currentVersion } from "../config/CurrentVersion";
 
 interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
+  isUserSms: boolean;
   userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
@@ -23,7 +24,7 @@ interface AuthContextValue {
 
 export const AuthContext = createContext({} as AuthContextValue);
 
-export const AuthProvider = ({children}: {children: React.ReactNode}) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [signedIn, setSignedIn] = useState<boolean>(() => {
     const storedAccessToken = localStorage.getItem(
       localStorageKeys.ACCESS_TOKEN
@@ -43,10 +44,10 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   const signout = useCallback(() => {
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
     setSignedIn(false);
-    queryClient.invalidateQueries({queryKey: [QueryKeys.ME]});
+    queryClient.invalidateQueries({ queryKey: [QueryKeys.ME] });
   }, []);
 
-  const {data, isError, error, isFetching, isSuccess} = useQuery({
+  const { data, isError, error, isFetching, isSuccess } = useQuery({
     queryKey: [QueryKeys.ME],
     queryFn: () => usersService.me(),
     enabled: signedIn,
@@ -54,6 +55,9 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
   });
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
+
+  const isUserSms =
+    data?.email === ("rommelcaldas@conterp.com.br" || "bianca@conterp.com.br");
 
   const userAccessLevel = data?.accessLevel!;
 
@@ -64,7 +68,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
     }
   }, [isError, signout]);
 
-  const {systemVersion, refetchSystemVersion} = useSystemVersion();
+  const { systemVersion, refetchSystemVersion } = useSystemVersion();
 
   useEffect(() => {
     refetchSystemVersion();
@@ -82,6 +86,7 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         signout,
         user: data,
         isUserAdm,
+        isUserSms,
         userAccessLevel,
         isWrongVersion,
       }}

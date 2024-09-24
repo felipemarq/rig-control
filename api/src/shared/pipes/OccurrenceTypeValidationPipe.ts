@@ -20,7 +20,6 @@ export class OccurrenceTypeValidationPipe implements PipeTransform {
   }
 
   private isValidOccurrenceType(value: any): value is OccurrenceType {
-    console.log("valeu now", value)
     if (!value) {
       return true;
     }

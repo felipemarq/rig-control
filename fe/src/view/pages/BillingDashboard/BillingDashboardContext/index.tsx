@@ -176,14 +176,13 @@ export const BillingDashboardProvider = ({
 
   const isEmpty: boolean = billings.length === 0;
 
-  const { rigsAverage, refetchRigsAverage, isFetchingRigsAverage } =
-    useEfficienciesRigsAverage(
-      {
-        startDate: filters.startDate,
-        endDate: filters.endDate,
-      },
-      true
-    );
+  const { rigsAverage } = useEfficienciesRigsAverage(
+    {
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    },
+    true
+  );
 
   const averageEfficiency = useMemo(() => {
     let total = 0;

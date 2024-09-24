@@ -34,7 +34,6 @@ import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
 import { CreateBillingConfiguration } from "@/view/pages/CreateBillingConfiguration";
 import { BillingConfiguration } from "@/view/pages/BillingConfiguration";
 import { ShadcnLayout } from "@/view/Layouts/ShadcnLayout";
-import { AppLayout } from "@/view/Layouts/AppLayout";
 
 export const Router = () => {
   const { isUserAdm } = useAuth();

@@ -1,11 +1,5 @@
-import {
-  OccurenceNature,
-  Occurrence,
-  OccurrenceCategory,
-  OccurrenceType,
-} from "@/app/entities/Occurrence";
-import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
-import { UF } from "@/app/entities/Rig";
+import { Occurrence } from "@/app/entities/Occurrence";
+
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 import { useBases } from "@/app/hooks/useBases";
 import { BasesResponse } from "@/app/services/basesService/getAll";
@@ -14,7 +8,7 @@ import {
   OccurrencesResponse,
 } from "@/app/services/occurrencesService/getAll";
 import { endOfYear, format, startOfYear } from "date-fns";
-import React, { createContext, useCallback, useEffect, useState } from "react";
+import React, { createContext, useCallback, useState } from "react";
 
 // Definição do tipo do contexto
 interface OccurrencesContextValue {
@@ -66,10 +60,8 @@ export const OccurrencesProvider = ({
     "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
   );
 
-  const [selectedStartDate, setSelectedStartDate] =
-    useState<string>(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] =
-    useState<string>(formattedLastDay);
+  const [selectedStartDate] = useState<string>(formattedFirstDay);
+  const [selectedEndDate] = useState<string>(formattedLastDay);
 
   const { bases, isFetchingBases } = useBases();
 

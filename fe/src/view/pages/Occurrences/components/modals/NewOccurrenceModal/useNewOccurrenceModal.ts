@@ -1,4 +1,3 @@
-import { useBases } from "@/app/hooks/useBases";
 import { useOccurrencesContext } from "../../OccurrencesContext/useOccurencesContext";
 import {
   OccurenceNature,
@@ -124,7 +123,6 @@ export const useNewOccurrenceModal = () => {
     occurrenceSeveritySelectOptions
   ); */
 
-
   useEffect(() => {
     if (selectedNature === OccurenceNature.INCIDENT) {
       setValue("category", ""); // Limpa o valor de category
@@ -141,7 +139,6 @@ export const useNewOccurrenceModal = () => {
     value: id,
     label: name,
   }));
-
 
   const {
     isPending: isLoadingNewOccurrence,

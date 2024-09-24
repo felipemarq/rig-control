@@ -2,7 +2,7 @@ import { Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { currentVersion } from "@/app/config/CurrentVersion";
 import { SidebarLayout, SidebarTrigger } from "@/components/ui/sidebar";
-import { AppSidebar } from "@/components/app-sidebar";
+import { AppSidebar } from "@/components/AppSidebar";
 
 export const SystemVersion = () => {
   return (
