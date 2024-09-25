@@ -1,4 +1,5 @@
 import { Component, ErrorInfo } from "react";
+import * as Sentry from "@sentry/react";
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -20,6 +21,10 @@ export class ErrorBoundary extends Component<IErrorBoundaryProps, IErrorBoundary
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
     console.log(error, errorInfo);
+    if (import.meta.env.PROD) {
+      Sentry.captureException(error);
+      return;
+    }
   }
 
   render() {

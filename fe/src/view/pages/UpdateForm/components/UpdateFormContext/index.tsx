@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import { useAuth } from "../../../../../app/hooks/useAuth";
 import { useNavigate, useParams } from "react-router-dom";
 import { v4 as uuidv4 } from "uuid";
@@ -23,7 +17,7 @@ import { TemporaryEfficiencyResponse } from "../../../../../app/services/tempora
 import { temporaryEfficienciesServices } from "../../../../../app/services/temporaryEfficienciesServices";
 import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
 import { useTemporaryEfficiencyByUserId } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
-
+import * as Sentry from "@sentry/react";
 type ErrorArgs = { fieldName: string; message: string };
 
 interface UpdateFormContextValue {
@@ -44,11 +38,7 @@ interface UpdateFormContextValue {
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
-  handleStartHourChange(
-    time: Dayjs | null,
-    timeString: string,
-    id: string
-  ): void;
+  handleStartHourChange(time: Dayjs | null, timeString: string, id: string): void;
   handleDeletePeriod(id: string): void;
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
@@ -129,10 +119,7 @@ interface UpdateFormContextValue {
     isCollapsed: boolean;
   }[];
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
-  handleChristmasTreeDisassemblyHours(
-    time: Dayjs | null,
-    timeString: string
-  ): void;
+  handleChristmasTreeDisassemblyHours(time: Dayjs | null, timeString: string): void;
   selectedContract:
     | {
         rig: {
@@ -166,11 +153,7 @@ type Periods = {
 
 export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 
-export const UpdateFormProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const { handleToggleNavItem } = useSidebarContext();
 
@@ -187,36 +170,22 @@ export const UpdateFormProvider = ({
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
   const initialPeriods = useMemo(() => {
-    const initialPeriods = responseEfficiency?.periods?.map(
-      ({
-        startHour,
-        endHour,
-        description,
-        type,
-        classification,
-        repairClassification,
-        well,
-      }) => {
-        return {
-          id: uuidv4(),
-          startHour: formatIsoStringToHours(startHour),
-          endHour: formatIsoStringToHours(endHour),
-          type: type,
-          classification: classification,
-          repairClassification: repairClassification,
-          description: description,
-          equipmentRatio: "",
-          fluidRatio: "",
-          well: well?.name ?? "",
-        };
-      }
-    );
+    const initialPeriods = responseEfficiency?.periods?.map(({ startHour, endHour, description, type, classification, repairClassification, well }) => {
+      return {
+        id: uuidv4(),
+        startHour: formatIsoStringToHours(startHour),
+        endHour: formatIsoStringToHours(endHour),
+        type: type,
+        classification: classification,
+        repairClassification: repairClassification,
+        description: description,
+        equipmentRatio: "",
+        fluidRatio: "",
+        well: well?.name ?? "",
+      };
+    });
 
-    for (
-      let index = 0;
-      index < responseEfficiency?.equipmentRatio?.length;
-      index++
-    ) {
+    for (let index = 0; index < responseEfficiency?.equipmentRatio?.length; index++) {
       initialPeriods[index] = {
         id: initialPeriods[index].id,
         startHour: initialPeriods[index].startHour,
@@ -231,11 +200,7 @@ export const UpdateFormProvider = ({
       };
     }
 
-    for (
-      let index = 0;
-      index < responseEfficiency?.fluidRatio?.length;
-      index++
-    ) {
+    for (let index = 0; index < responseEfficiency?.fluidRatio?.length; index++) {
       initialPeriods[index] = {
         id: initialPeriods[index].id,
         startHour: initialPeriods[index].startHour,
@@ -255,9 +220,7 @@ export const UpdateFormProvider = ({
 
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
-  const [selectedRig, setSelectedRig] = useState<string>(
-    responseEfficiency.rigId
-  );
+  const [selectedRig, setSelectedRig] = useState<string>(responseEfficiency.rigId);
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>(initialPeriods);
 
@@ -287,9 +250,7 @@ export const UpdateFormProvider = ({
   console.log("errors", errors);
 
   const setError = ({ fieldName, message }: ErrorArgs) => {
-    const errorAlreadyExists = errors.find(
-      (error) => error.fieldName === fieldName
-    );
+    const errorAlreadyExists = errors.find((error) => error.fieldName === fieldName);
 
     if (errorAlreadyExists) return;
 
@@ -297,15 +258,11 @@ export const UpdateFormProvider = ({
   };
 
   const removeError = (fieldName: string) => {
-    setErrors((prevState) =>
-      prevState.filter((error) => error.fieldName !== fieldName)
-    );
+    setErrors((prevState) => prevState.filter((error) => error.fieldName !== fieldName));
   };
 
   const getErrorMessageByFildName = (fieldName: string) => {
-    let findErrorMessage = errors.find(
-      (error) => error.fieldName === fieldName
-    )?.message;
+    let findErrorMessage = errors.find((error) => error.fieldName === fieldName)?.message;
 
     if (!findErrorMessage) {
       findErrorMessage = "";
@@ -327,15 +284,9 @@ export const UpdateFormProvider = ({
     setConfigsConfirmed(true);
   };
 
-  const {
-    isPending: isLoadingRemoveEfficiency,
-    mutateAsync: mutateAsyncRemoveEfficiency,
-  } = useMutation({ mutationFn: efficienciesService.remove });
+  const { isPending: isLoadingRemoveEfficiency, mutateAsync: mutateAsyncRemoveEfficiency } = useMutation({ mutationFn: efficienciesService.remove });
 
-  const {
-    isPending: isLoadingTemporary,
-    mutateAsync: mutateAsyncTemporaryEfficiency,
-  } = useMutation({
+  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } = useMutation({
     mutationFn: temporaryEfficienciesServices.create,
   });
 
@@ -344,6 +295,7 @@ export const UpdateFormProvider = ({
       await mutateAsyncRemoveEfficiency(efficiencyId!);
       queryClient.invalidateQueries({ queryKey: ["efficiencies"] });
     } catch (error: any | typeof AxiosError) {
+      Sentry.captureException(error);
       treatAxiosError(error);
     }
 
@@ -480,11 +432,7 @@ export const UpdateFormProvider = ({
   };
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
-  const handleStartHourChange = (
-    _time: Dayjs | null,
-    timeString: string,
-    id: string
-  ) => {
+  const handleStartHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? { ...period, startHour: timeString } : period;
     });
@@ -492,11 +440,7 @@ export const UpdateFormProvider = ({
     setPeriods(newPeriods);
   };
 
-  const handleEndHourChange = (
-    _time: Dayjs | null,
-    timeString: string,
-    id: string
-  ) => {
+  const handleEndHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? { ...period, endHour: timeString } : period;
     });
@@ -558,14 +502,9 @@ export const UpdateFormProvider = ({
     setPeriods(newPeriods);
   };
 
-  const handleRepairClassification = (
-    id: string,
-    repairClassification: string
-  ) => {
+  const handleRepairClassification = (id: string, repairClassification: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id
-        ? { ...period, repairClassification: repairClassification }
-        : period;
+      return period.id === id ? { ...period, repairClassification: repairClassification } : period;
     });
 
     setPeriods(newPeriods);
@@ -606,17 +545,13 @@ export const UpdateFormProvider = ({
   };
 
   const getPeriodState = (periodId: string) => {
-    const periodState = periodsState.find(
-      (period) => period.periodId === periodId
-    );
+    const periodState = periodsState.find((period) => period.periodId === periodId);
     return periodState?.isCollapsed ?? false;
   };
 
   const updatePeriodState = (id: string, state: boolean) => {
     const newStates = periodsState.map(({ periodId, isCollapsed }) => {
-      return periodId === id
-        ? { periodId, isCollapsed: state }
-        : { periodId, isCollapsed };
+      return periodId === id ? { periodId, isCollapsed: state } : { periodId, isCollapsed };
     });
 
     setPeriodsState(newStates);
@@ -676,9 +611,7 @@ export const UpdateFormProvider = ({
     return intDays;
   };
 
-  const isDateValid = date
-    ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())
-    : false;
+  const isDateValid = date ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date()) : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
@@ -754,29 +687,23 @@ export const UpdateFormProvider = ({
 
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
   const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
-  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] =
-    useState(false);
-  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
-    useState(false);
-  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
-    useState(false);
+  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
+  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] = useState(false);
+  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] = useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
-  const [isDemobilizationSelected, setIsDemobilizationSelected] =
-    useState(false);
+  const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
   const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
   const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
   const [isTruckCartSelected, setIsTruckCartSelected] = useState(false);
   const [isMunckSelected, setIsMunckSelected] = useState(false);
-  const [isTransportationSelected, setIsTransportationSelected] =
-    useState(false);
+  const [isTransportationSelected, setIsTransportationSelected] = useState(false);
   const [truckKm, setTruckKm] = useState(0);
   const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(false);
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
   const [mobilizationPlace, setMobilizationPlace] = useState("");
   const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(false);
-  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] =
-    useState<string>("");
+  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] = useState<string>("");
   const [bobRentHours, setBobRentHours] = useState<string>("");
 
   const handleMixTankCheckBox = () => {
@@ -812,23 +739,17 @@ export const UpdateFormProvider = ({
     setIsTankMixDTMSelected((prevState) => !prevState);
   }, []);
 
-  const handleBobRentHours = useCallback(
-    (_time: Dayjs | null, timeString: string) => {
-      setBobRentHours(timeString);
-    },
-    []
-  );
+  const handleBobRentHours = useCallback((_time: Dayjs | null, timeString: string) => {
+    setBobRentHours(timeString);
+  }, []);
 
   const handleTankMixMobilizationCheckbox = useCallback(() => {
     setIsTankMixMobilizationSelected((prevState) => !prevState);
   }, []);
 
-  const handleChristmasTreeDisassemblyHours = useCallback(
-    (_time: Dayjs | null, timeString: string) => {
-      setChristmasTreeDisassemblyHours(timeString);
-    },
-    []
-  );
+  const handleChristmasTreeDisassemblyHours = useCallback((_time: Dayjs | null, timeString: string) => {
+    setChristmasTreeDisassemblyHours(timeString);
+  }, []);
 
   //===========================================
 
@@ -873,11 +794,7 @@ export const UpdateFormProvider = ({
   return (
     <UpdateFormContext.Provider
       value={{
-        isFetching:
-          isLoadingRemoveEfficiency ||
-          isFetchingEfficiency ||
-          isLoadingEfficiency ||
-          isLoadingTemporary,
+        isFetching: isLoadingRemoveEfficiency || isFetchingEfficiency || isLoadingEfficiency || isLoadingTemporary,
         date,
         handleChangeRig,
         handleDateChange,
@@ -897,10 +814,7 @@ export const UpdateFormProvider = ({
         handleSubmit,
         cleanFields,
         handlePeriodWell,
-        isLoading:
-          isLoadingEfficiency ||
-          isLoadingRemoveEfficiency ||
-          isLoadingTemporary,
+        isLoading: isLoadingEfficiency || isLoadingRemoveEfficiency || isLoadingTemporary,
         userRig,
         usersRigs,
         isPending,

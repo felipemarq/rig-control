@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/react";
 import { createContext, useCallback, useEffect, useState } from "react";
 import { localStorageKeys } from "../config/localStorageKeys";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
@@ -26,9 +27,7 @@ export const AuthContext = createContext({} as AuthContextValue);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [signedIn, setSignedIn] = useState<boolean>(() => {
-    const storedAccessToken = localStorage.getItem(
-      localStorageKeys.ACCESS_TOKEN
-    );
+    const storedAccessToken = localStorage.getItem(localStorageKeys.ACCESS_TOKEN);
 
     return !!storedAccessToken;
   });
@@ -43,6 +42,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const signout = useCallback(() => {
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
+    Sentry.setUser(null);
     setSignedIn(false);
     queryClient.invalidateQueries({ queryKey: [QueryKeys.ME] });
   }, []);
@@ -56,10 +56,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
 
-  const isUserSms =
-    data?.email === ("rommelcaldas@conterp.com.br" || "bianca@conterp.com.br");
+  const isUserSms = data?.email === ("rommelcaldas@conterp.com.br" || "bianca@conterp.com.br");
 
   const userAccessLevel = data?.accessLevel!;
+
+  useEffect(() => {
+    if (import.meta.env.PROD) {
+      Sentry.setUser({
+        email: data?.email,
+        username: data?.name,
+      });
+    }
+  }, []);
 
   useEffect(() => {
     if (isError) {
