@@ -8,7 +8,6 @@ import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
-  let totalScheduledStopHours = 0;
 
   const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
     domainEfficiency.christmasTreeDisassemblyHours
@@ -32,17 +31,10 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
       const parsedStartHour = parse(startHour, "HH:mm", new Date());
       const parsedEndHour = parse(endHour, "HH:mm", new Date());
 
-      if (type === "WORKING" || type === "DTM" || type === "SCHEDULED_STOP") {
+      if (type === "WORKING" || type === "DTM") {
         const diffInMinutes = getDiffInMinutes(parsedEndHour, parsedStartHour);
 
         totalAvailableHours += diffInMinutes / 60;
-      }
-
-      //temporarily
-      if (type === "SCHEDULED_STOP") {
-        const diffInMinutes = getDiffInMinutes(parsedEndHour, parsedStartHour);
-
-        totalScheduledStopHours += diffInMinutes / 60;
       }
 
       const formatTimeStringToIsoString = (timeString: string) => {

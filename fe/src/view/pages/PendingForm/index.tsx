@@ -3,10 +3,7 @@ import { Header } from "../../components/Header";
 import { cn } from "../../../app/utils/cn";
 import { PeriodsFormContainer } from "./components/PeriodsFormContainer";
 import { BraskemFormContainer } from "./components/BraskemFormContainer";
-import {
-  PendingFormContext,
-  PendingFormProvider,
-} from "./components/PendingFormContext";
+import { PendingFormContext, PendingFormProvider } from "./components/PendingFormContext";
 import { TresRFormContainer } from "./components/TresRForm";
 import { OrigemContainer } from "./components/OrigemForm";
 import { CarmoEnergyContainer } from "./components/CarmoEnergyForm";
@@ -17,7 +14,7 @@ import { Select } from "../../components/Select";
 import { PageLoader } from "../../components/PageLoader";
 import { AlertModal } from "./components/AlertModal";
 
-export const PendingForm = () => {
+const PendingForm = () => {
   return (
     <PendingFormProvider>
       <PendingFormContext.Consumer>
@@ -50,8 +47,8 @@ export const PendingForm = () => {
                   title=" Boletim Diário de Ocorrência"
                 >
                   <div className="text-secondary-foreground">
-                    Selecione a sonda em atividade e preencha suas configurações
-                    para adicionar novos períodos.
+                    Selecione a sonda em atividade e preencha suas configurações para adicionar
+                    novos períodos.
                   </div>
                 </Header>
 
@@ -62,9 +59,7 @@ export const PendingForm = () => {
                     !isPending && "bg-secondary"
                   )}
                 >
-                  {isPending && (
-                    <span> Minutos restantes: {remainingMinutes}</span>
-                  )}
+                  {isPending && <span> Minutos restantes: {remainingMinutes}</span>}
                   {!isPending && <span> Horários Preenchidos!</span>}
                 </div>
 
@@ -80,9 +75,7 @@ export const PendingForm = () => {
                       }`
                     )}
                   >
-                    <h2 className="text-primary font-bold">
-                      Configurações da Sonda:
-                    </h2>
+                    <h2 className="text-primary font-bold">Configurações da Sonda:</h2>
 
                     <button
                       onClick={() => toggleVisibility()}
@@ -141,8 +134,9 @@ export const PendingForm = () => {
                         "braskem" ||
                         selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                           "braském") && <BraskemFormContainer />}
-                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
-                        "3r" && <TresRFormContainer />}
+                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() === "3r" && (
+                        <TresRFormContainer />
+                      )}
                       {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "origem" && <OrigemContainer />}
                       {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
@@ -186,3 +180,5 @@ export const PendingForm = () => {
     </PendingFormProvider>
   );
 };
+
+export default PendingForm;

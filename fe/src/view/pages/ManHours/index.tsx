@@ -1,7 +1,7 @@
 import { ManHoursDataGridCard } from "./components/ManHoursDataGridCard";
 import { useManHoursController } from "./useManHoursController";
 
-export const ManHours = () => {
+const ManHours = () => {
   const {} = useManHoursController();
   return (
     <div className="w-full h-full overflow-y-auto flex justify-center items-center">
@@ -11,3 +11,5 @@ export const ManHours = () => {
     </div>
   );
 };
+
+export default ManHours;

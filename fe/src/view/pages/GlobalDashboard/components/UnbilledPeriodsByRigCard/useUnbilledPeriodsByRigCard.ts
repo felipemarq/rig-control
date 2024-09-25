@@ -8,12 +8,9 @@ export const useUnbilledPeriodsByRigCard = () => {
   const { unbilledPeriods, selectedPieChartView, selectedDetailPieChartView } =
     useGlobalDashboard();
 
+  const { handleChangeRig } = useFiltersContext();
 
-    const { handleChangeRig } = useFiltersContext();
-
-    const navigate = useNavigate();
-
-   
+  const navigate = useNavigate();
 
   const parseHour = (hourString: string) =>
     parse(hourString.split("T")[1].slice(0, 5), "HH:mm", new Date());
@@ -60,13 +57,12 @@ export const useUnbilledPeriodsByRigCard = () => {
     },
     []
   );
-  // const classification = translateClassification(current.classification)!;
-  console.log("filteredPeriods", filteredPeriods);
 
   return {
     mappedRigsUnbilledHours,
     selectedPieChartView,
     selectedDetailPieChartView,
-    handleChangeRig,navigate
+    handleChangeRig,
+    navigate,
   };
 };

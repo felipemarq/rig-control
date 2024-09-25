@@ -3,10 +3,7 @@ import { Header } from "../../components/Header";
 import { cn } from "../../../app/utils/cn";
 import { PeriodsFormContainer } from "./components/PeriodsFormContainer";
 import { BraskemFormContainer } from "./components/BraskemFormContainer";
-import {
-  UpdateFormContext,
-  UpdateFormProvider,
-} from "./components/UpdateFormContext";
+import { UpdateFormContext, UpdateFormProvider } from "./components/UpdateFormContext";
 import { TresRFormContainer } from "./components/TresRForm";
 import { OrigemContainer } from "./components/OrigemForm";
 import { AlertModal } from "./components/AlertModal";
@@ -17,7 +14,7 @@ import { ChevronDown } from "lucide-react";
 import { Select } from "../../components/Select";
 import { PageLoader } from "../../components/PageLoader";
 
-export const UpdateForm = () => {
+const UpdateForm = () => {
   return (
     <UpdateFormProvider>
       <UpdateFormContext.Consumer>
@@ -50,8 +47,8 @@ export const UpdateForm = () => {
                   title=" Boletim Diário de Ocorrência"
                 >
                   <div className="text-secondary-foreground">
-                    Selecione a sonda em atividade e preencha suas configurações
-                    para adicionar novos períodos.
+                    Selecione a sonda em atividade e preencha suas configurações para adicionar
+                    novos períodos.
                   </div>
                 </Header>
 
@@ -62,9 +59,7 @@ export const UpdateForm = () => {
                     !isPending && "bg-secondary"
                   )}
                 >
-                  {isPending && (
-                    <span> Minutos restantes: {remainingMinutes}</span>
-                  )}
+                  {isPending && <span> Minutos restantes: {remainingMinutes}</span>}
                   {!isPending && <span> Horários Preenchidos!</span>}
                 </div>
 
@@ -80,9 +75,7 @@ export const UpdateForm = () => {
                       }`
                     )}
                   >
-                    <h2 className="text-primary font-bold">
-                      Configurações da Sonda:
-                    </h2>
+                    <h2 className="text-primary font-bold">Configurações da Sonda:</h2>
 
                     <button
                       onClick={() => toggleVisibility()}
@@ -141,8 +134,9 @@ export const UpdateForm = () => {
                         "braskem" ||
                         selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                           "braském") && <BraskemFormContainer />}
-                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
-                        "3r" && <TresRFormContainer />}
+                      {selectedContract?.rig.contract.client.name.toLocaleLowerCase() === "3r" && (
+                        <TresRFormContainer />
+                      )}
                       {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
                         "origem" && <OrigemContainer />}
                       {selectedContract?.rig.contract.client.name.toLocaleLowerCase() ===
@@ -186,3 +180,5 @@ export const UpdateForm = () => {
     </UpdateFormProvider>
   );
 };
+
+export default UpdateForm;

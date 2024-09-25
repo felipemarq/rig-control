@@ -20,6 +20,12 @@ interface ManHourDashboardContextValue {
     totalTfcaOccurrences: number;
     totalTfsaOccurrences: number;
   };
+  isEmpty: boolean | undefined;
+  hasTorOccurrence: boolean | undefined;
+  hasTarOccurrence: boolean | undefined;
+  hasNotAbsentOccurrence: boolean | undefined;
+  hasCommutingOccurrence: boolean | undefined;
+  hasAbsentOccurrencesOccurrence: boolean | undefined;
 }
 
 // Criação do contexto
@@ -84,20 +90,50 @@ export const ManHourDashboardProvider = ({
       totalTfsaOccurrences,
     };
   }, [occurrencesTaxes]);
+  const allTaxes = occurrencesTaxes?.absentOccurrences.concat(
+    occurrencesTaxes?.commutingOccurrences,
+    occurrencesTaxes?.notAbsentOccurrences,
+    occurrencesTaxes?.tarOccurrences,
+    occurrencesTaxes?.torOccurrences
+  );
+  const isEmpty = allTaxes?.every((tax) => tax.count === 0);
+
+  const hasTorOccurrence = occurrencesTaxes?.torOccurrences.some(
+    (tax) => tax.count > 0
+  );
+  const hasTarOccurrence = occurrencesTaxes?.tarOccurrences.some(
+    (tax) => tax.count > 0
+  );
+  const hasNotAbsentOccurrence = occurrencesTaxes?.notAbsentOccurrences.some(
+    (tax) => tax.count > 0
+  );
+  const hasCommutingOccurrence = occurrencesTaxes?.commutingOccurrences.some(
+    (tax) => tax.count > 0
+  );
+  const hasAbsentOccurrencesOccurrence =
+    occurrencesTaxes?.absentOccurrences.some((tax) => tax.count > 0);
+
+  console.log("isEmpty", isEmpty);
 
   return (
     <ManHourDashboardContext.Provider
       value={{
-        handleChangeBaseId,
-        selectedBaseId,
         bases,
-        isFetchingBases,
-        occurrencesTaxes,
+        isEmpty,
         applyFilters,
+        selectedBaseId,
+        isFetchingBases,
+        hasTorOccurrence,
+        hasTarOccurrence,
+        occurrencesTaxes,
+        handleChangeBaseId,
+        hasNotAbsentOccurrence,
+        hasCommutingOccurrence,
         isFetchingOccurrencesTaxes:
           isOccurrencesTaxesInitialLoading || isFetchingOccurrencesTaxes,
         selectedBaseName,
         totalOccurrences,
+        hasAbsentOccurrencesOccurrence,
       }}
     >
       {children}

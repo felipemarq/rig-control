@@ -1,4 +1,4 @@
-export enum Nature {
+export enum OccurenceNature {
   ACCIDENT = 'ACCIDENT',
   INCIDENT = 'INCIDENT',
   DEATH = 'DEATH',

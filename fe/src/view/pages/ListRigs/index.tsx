@@ -1,37 +1,21 @@
 import { PlusIcon } from "@radix-ui/react-icons";
 import { Header } from "../../components/Header";
 import { Spinner } from "../../components/Spinner";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardDescription, CardFooter, CardTitle } from "@/components/ui/card";
 
 import { EditRigModal } from "./modals/EditRigModal";
 import { ListRigsContext, ListRigsProvider } from "./ListRigsContext";
 import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 
-export const ListRigs = () => {
+const ListRigs = () => {
   const navigate = useNavigate();
   return (
     <ListRigsProvider>
       <ListRigsContext.Consumer>
-        {({
-          isFetchingRigs,
-          rigs,
-          rigBeingEdited,
-          handleSetRigBeingEdited,
-        }) => (
+        {({ isFetchingRigs, rigs, rigBeingEdited, handleSetRigBeingEdited }) => (
           <div className="w-full h-full overflow-y-scroll">
-            <Header
-              title="Sondas"
-              displayRig={false}
-              displayPeriodRange={false}
-            />
+            <Header title="Sondas" displayRig={false} displayPeriodRange={false} />
 
             <div className="w-full h-full ">
               <div className="border border-b-2">
@@ -53,14 +37,9 @@ export const ListRigs = () => {
                         Adicionar Sonda
                       </span>
                     </div> */}
-                    <Card
-                      className="cursor-pointer col-span-12 lg:col-span-3"
-                      onClick={() => navigate("/create-rig")}
-                    >
+                    <Card className="cursor-pointer col-span-12 lg:col-span-3" onClick={() => navigate("/create-rig")}>
                       <CardHeader>
-                        <CardTitle className="flex justify-center">
-                          Criar uma nova Sonda
-                        </CardTitle>
+                        <CardTitle className="flex justify-center">Criar uma nova Sonda</CardTitle>
                         <CardDescription> </CardDescription>
                       </CardHeader>
                       <CardContent className=" h-[60%] flex justify-center items-center">
@@ -69,65 +48,45 @@ export const ListRigs = () => {
                         </div>
                       </CardContent>
                     </Card>
-                    {rigs.map(
-                      ({ id, name, state, isActive, stateFlagImagePath }) => (
-                        <Card
-                          className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
-                          key={id}
-                        >
-                          <CardHeader className="flex flex-row gap-6  items-center">
-                            <div className=" ">
-                              <img
-                                className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
-                                src={
-                                  stateFlagImagePath ??
-                                  "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bandeira_da_Bahia.svg/383px-Bandeira_da_Bahia.svg.png"
-                                }
-                              />
+                    {rigs.map(({ id, name, state, isActive, stateFlagImagePath }) => (
+                      <Card className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around" key={id}>
+                        <CardHeader className="flex flex-row gap-6  items-center">
+                          <div className=" ">
+                            <img
+                              className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
+                              src={stateFlagImagePath ?? "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bandeira_da_Bahia.svg/383px-Bandeira_da_Bahia.svg.png"}
+                            />
+                          </div>
+                          <div className="flex-1 flex justify-between items-center">
+                            <div className="flex flex-col gap-2">
+                              <CardTitle>{name}</CardTitle>
+                              <CardDescription>{state}</CardDescription>
                             </div>
-                            <div className="flex-1 flex justify-between items-center">
-                              <div className="flex flex-col gap-2">
-                                <CardTitle>{name}</CardTitle>
-                                <CardDescription>{state}</CardDescription>
+                            {isActive && (
+                              <div>
+                                <Badge className="bg-emerald-500">Ativa</Badge>
                               </div>
-                              {isActive && (
-                                <div>
-                                  <Badge className="bg-emerald-500">
-                                    Ativa
-                                  </Badge>
-                                </div>
-                              )}
+                            )}
 
-                              {!isActive && (
-                                <div>
-                                  <Badge variant="destructive">
-                                    Desativada
-                                  </Badge>
-                                </div>
-                              )}
-                            </div>
-                          </CardHeader>
+                            {!isActive && (
+                              <div>
+                                <Badge variant="destructive">Desativada</Badge>
+                              </div>
+                            )}
+                          </div>
+                        </CardHeader>
 
-                          <CardFooter className="flex justify-between flex-col gap-4 ">
-                            <span
-                              className="text-xs underline cursor-pointer text-primary"
-                              onClick={() => handleSetRigBeingEdited(id)}
-                            >
-                              Editar Sonda
-                            </span>
+                        <CardFooter className="flex justify-between flex-col gap-4 ">
+                          <span className="text-xs underline cursor-pointer text-primary" onClick={() => handleSetRigBeingEdited(id)}>
+                            Editar Sonda
+                          </span>
 
-                            <span
-                              className="text-xs underline cursor-pointer text-primary"
-                              onClick={() =>
-                                navigate(`/billing-configuration/${id}`)
-                              }
-                            >
-                              Ver Valores para faturamento
-                            </span>
-                          </CardFooter>
-                        </Card>
-                      )
-                    )}
+                          <span className="text-xs underline cursor-pointer text-primary" onClick={() => navigate(`/billing-configuration/${id}`)}>
+                            Ver Valores para faturamento
+                          </span>
+                        </CardFooter>
+                      </Card>
+                    ))}
                   </div>
                 )}
               </div>
@@ -140,3 +99,4 @@ export const ListRigs = () => {
     </ListRigsProvider>
   );
 };
+export default ListRigs;

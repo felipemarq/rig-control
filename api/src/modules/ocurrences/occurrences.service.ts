@@ -6,6 +6,13 @@ import { BaseRepository } from 'src/shared/database/repositories/base.repositori
 import { ManHourRepository } from 'src/shared/database/repositories/manHour.repositories';
 import { FileService } from '../file/file.service';
 
+import { OccurrenceCategory } from './entities/OccurrenceCategory';
+import { OccurrenceSeverity } from './entities/OccurrenceSeverity';
+import { OccurrenceType } from './entities/OccurrenceType';
+import { UF } from './entities/UF';
+import { OccurenceNature } from './entities/OccurenceNature';
+import { Prisma } from '@prisma/client';
+
 interface OccurrenceCountByMonth {
   date: Date;
   _count: {
@@ -63,8 +70,70 @@ export class OccurrencesService {
     });
   }
 
-  findAll() {
-    return this.occurrencesRepo.findMany({
+  async findAll(
+    nature: OccurenceNature,
+    category: OccurrenceCategory,
+    severity: OccurrenceSeverity,
+    type: OccurrenceType,
+    uf: UF,
+    baseId: string,
+    startDate: string,
+    endDate: string,
+  ) {
+    let whereClause: Prisma.OccurrenceWhereInput = {};
+
+    console.log({ startDate, endDate });
+
+    whereClause = {
+      AND: [
+        { date: { gte: new Date(startDate) } },
+        { date: { lte: new Date(endDate) } },
+      ],
+    };
+
+    if (nature) {
+      whereClause = {
+        ...whereClause,
+        nature: nature,
+      };
+    }
+
+    if (category) {
+      whereClause = {
+        ...whereClause,
+        category: category,
+      };
+    }
+
+    if (severity) {
+      whereClause = {
+        ...whereClause,
+        severity: severity,
+      };
+    }
+
+    if (type) {
+      whereClause = {
+        ...whereClause,
+        type: type,
+      };
+    }
+
+    if (baseId) {
+      whereClause = {
+        ...whereClause,
+        baseId: baseId,
+      };
+    }
+
+    if (uf) {
+      whereClause = {
+        ...whereClause,
+        state: uf,
+      };
+    }
+
+    return await this.occurrencesRepo.findMany({
       select: {
         id: true,
         title: true,
@@ -97,6 +166,7 @@ export class OccurrencesService {
       orderBy: {
         date: 'desc',
       },
+      where: whereClause,
     });
   }
 

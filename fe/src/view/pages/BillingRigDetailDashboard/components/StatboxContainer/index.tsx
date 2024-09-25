@@ -5,13 +5,17 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {DollarSign, TimerOff, Wrench} from "lucide-react";
-import {useStatboxContainer} from "./useStatboxContainer";
-import {formatCurrency} from "@/app/utils/formatCurrency";
+import { DollarSign, TimerOff, Wrench } from "lucide-react";
+import { useStatboxContainer } from "./useStatboxContainer";
+import { formatCurrency } from "@/app/utils/formatCurrency";
 
 export const StatboxContainer = () => {
-  const {totalAmount, totalRepairAmount, totalUnbilledAmount} =
-    useStatboxContainer();
+  const {
+    totalAmount,
+    totalRepairAmount,
+    totalUnbilledAmount,
+    totalGlossAmount,
+  } = useStatboxContainer();
 
   return (
     <>
@@ -32,10 +36,10 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Card className="col-span-12 row-span-1 lg:col-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
-            Glosa
+            Faturamento Perdido
           </CardTitle>
           <TimerOff className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
@@ -49,7 +53,7 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Card className=" col-span-12 row-span-1 lg:col-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card className=" col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Reparo
@@ -59,6 +63,22 @@ export const StatboxContainer = () => {
         <CardContent>
           <div className="text-2xl font-bold text-redAccent-500">
             {formatCurrency(totalRepairAmount)}
+          </div>
+          <p className="text-xs text-muted-foreground text-redAccent-500">
+            Total não faturado por reparo de equipamento
+          </p>
+        </CardContent>
+      </Card>
+      <Card className=" col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+          <CardTitle className="text-sm font-medium text-redAccent-500">
+            Glosa
+          </CardTitle>
+          <Wrench className="h-8 w-8 text-muted-foreground text-redAccent-500" />
+        </CardHeader>
+        <CardContent>
+          <div className="text-2xl font-bold text-redAccent-500">
+            {formatCurrency(totalGlossAmount)}
           </div>
           <p className="text-xs text-muted-foreground text-redAccent-500">
             Total não faturado por reparo de equipamento

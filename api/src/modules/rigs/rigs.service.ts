@@ -79,6 +79,7 @@ export class RigsService {
             fluidRatioLt20Tax,
             generatorFuelTax,
             glossHourTax,
+            standByHourTax: glossHourTax,
             mixTankDemobilizationTax,
             mixTankDtmTax,
             mixTankHourRentTax,

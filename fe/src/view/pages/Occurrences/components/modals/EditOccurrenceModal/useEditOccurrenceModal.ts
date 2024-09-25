@@ -1,7 +1,7 @@
 import { useBases } from "@/app/hooks/useBases";
 import { useOccurrencesContext } from "../../OccurrencesContext/useOccurencesContext";
 import {
-  Nature,
+  OccurenceNature,
   OccurrenceCategory,
   OccurrenceType,
 } from "@/app/entities/Occurrence";
@@ -33,7 +33,7 @@ const schema = z.object({
   isAbsent: z.string().min(1, "Obrigatório."),
   type: z.nativeEnum(OccurrenceType),
   category: z.string(),
-  nature: z.nativeEnum(Nature),
+  nature: z.nativeEnum(OccurenceNature),
   severity: z.string().min(0, "Please enter a valid value").optional(),
   baseId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
@@ -155,7 +155,7 @@ export const useEditOccurrenceModal = () => {
   console.log("errors", errors);
 
   useEffect(() => {
-    if (selectedNature === Nature.INCIDENT) {
+    if (selectedNature === OccurenceNature.INCIDENT) {
       setValue("category", ""); // Limpa o valor de category
     } else {
       setValue("severity", undefined); // Limpa o valor de severity

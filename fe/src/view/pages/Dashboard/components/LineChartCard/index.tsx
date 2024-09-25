@@ -1,25 +1,15 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardDescription,
-} from "@/components/ui/card";
-import {cn} from "@/lib/utils";
-import {NotFound} from "@/view/components/NotFound";
-import {Spinner} from "@/view/components/Spinner";
+import { Card, CardHeader, CardTitle, CardContent, CardDescription } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
+import { NotFound } from "@/view/components/NotFound";
+import { Spinner } from "@/view/components/Spinner";
 
-import {useLineChartCard} from "./useLineChartCard";
-import {LineChart} from "./components/LineChart";
+import { useLineChartCard } from "./useLineChartCard";
+import { LineChart } from "./components/LineChart";
 
 export const LineChartCard = () => {
-  const {isFetchingEfficiencies, isEmpty} = useLineChartCard();
+  const { isFetchingEfficiencies, isEmpty } = useLineChartCard();
   return (
-    <Card
-      className={cn(
-        "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-      )}
-    >
+    <Card className={cn("col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]")}>
       <CardHeader className="pb-0">
         <CardTitle>Eficiência Diária</CardTitle>
         <CardDescription>Gráfico com os dias</CardDescription>

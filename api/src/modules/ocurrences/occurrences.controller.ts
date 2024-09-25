@@ -8,11 +8,22 @@ import {
   Delete,
   Put,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { OccurrencesService } from './occurrences.service';
 import { CreateOcurrenceDto } from './dto/create-ocurrence.dto';
 import { UpdateOcurrenceDto } from './dto/update-ocurrence.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { OccurrenceCategory } from './entities/OccurrenceCategory';
+import { OccurrenceSeverity } from './entities/OccurrenceSeverity';
+import { OccurrenceType } from './entities/OccurrenceType';
+
+import { UF } from './entities/UF';
+import { OccurenceNature } from './entities/OccurenceNature';
+import { OccurrenceCategoryValidationPipe } from 'src/shared/pipes/OccurrenceCategoryValidationPipe';
+import { OccurrenceSeverityValidationPipe } from 'src/shared/pipes/OccurrenceSeverityValidationPipe';
+import { OccurrenceTypeValidationPipe } from 'src/shared/pipes/OccurrenceTypeValidationPipe';
+import { OccurenceNatureValidationPipe } from 'src/shared/pipes/OccurenceNatureValidationPipe';
 
 @Controller('occurrences')
 export class OccurrencesController {
@@ -37,8 +48,28 @@ export class OccurrencesController {
   }
 
   @Get()
-  findAll() {
-    return this.occurrencesService.findAll();
+  findAll(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('category', OccurrenceCategoryValidationPipe)
+    category: OccurrenceCategory,
+    @Query('severity', OccurrenceSeverityValidationPipe)
+    severity: OccurrenceSeverity,
+    @Query('type', OccurrenceTypeValidationPipe) type: OccurrenceType,
+    @Query('uf') uf: UF,
+    @Query('baseId') baseId: string,
+    @Query('nature', OccurenceNatureValidationPipe) nature: OccurenceNature,
+  ) {
+    return this.occurrencesService.findAll(
+      nature,
+      category,
+      severity,
+      type,
+      uf,
+      baseId,
+      startDate,
+      endDate,
+    );
   }
 
   @Put(':occurrenceId')

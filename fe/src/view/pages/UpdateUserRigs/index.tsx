@@ -6,26 +6,13 @@ import { Spinner } from "../../components/Spinner";
 import { Button } from "../../components/Button";
 import emptyState from "../../../assets/icons/emptyState.svg";
 
-export const UpdateUserRigs = () => {
+const UpdateUserRigs = () => {
   const { id } = useParams();
-  const {
-    isLoading,
-    userBeingEdited,
-    availableRigs,
-    userRigs,
-    handleLinkRig,
-    handleSubmit,
-    handleUnlinkRig,
-    isLoadingUpdateRigs,
-  } = useUpdateUserRigs(id!);
+  const { isLoading, userBeingEdited, availableRigs, userRigs, handleLinkRig, handleSubmit, handleUnlinkRig, isLoadingUpdateRigs } = useUpdateUserRigs(id!);
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="Editar Sondas dos usuário"
-        displayRig={false}
-        displayPeriodRange={false}
-      />
+      <Header title="Editar Sondas dos usuário" displayRig={false} displayPeriodRange={false} />
 
       <div className="lg:min-w-[1200px]  mx-auto max-w-[715px]  bg-gray-400 p-4 gap-2 rounded-md flex flex-col lg:flex-row lg:justify-center ">
         {isLoading && (
@@ -38,17 +25,13 @@ export const UpdateUserRigs = () => {
           <>
             {" "}
             <div className="bg-primary min-h-[380px] rounded-md p-4 lg:w-1/2">
-              <span className="text-white tracking-[-0.5] mb-14 font-medium block">
-                Sondas vinculadas à: {userBeingEdited?.name}
-              </span>
+              <span className="text-white tracking-[-0.5] mb-14 font-medium block">Sondas vinculadas à: {userBeingEdited?.name}</span>
               <div className="flex flex-wrap gap-2">
                 {userRigs.length === 0 && (
                   <div className="w-full h-full flex justify-center items-center flex-col">
                     <img src={emptyState} />
                     <h2 className="text-primary mt-1 flex-1">
-                      <span className="text-white tracking-[-0.5] mb-14 font-medium block">
-                        O usuário deve estar vinculado a, no mínimo, uma sonda.
-                      </span>
+                      <span className="text-white tracking-[-0.5] mb-14 font-medium block">O usuário deve estar vinculado a, no mínimo, uma sonda.</span>
                     </h2>
                   </div>
                 )}
@@ -61,12 +44,7 @@ export const UpdateUserRigs = () => {
                         className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary "
                       >
                         <span className="text-gray-800">{name}</span>
-                        <span
-                          className={cn(
-                            "w-5 h-5 bg-secondary rounded-full",
-                            isActive === false && "bg-redAccent-500"
-                          )}
-                        ></span>
+                        <span className={cn("w-5 h-5 bg-secondary rounded-full", isActive === false && "bg-redAccent-500")}></span>
                       </div>
                     ))}
                   </>
@@ -74,18 +52,13 @@ export const UpdateUserRigs = () => {
               </div>
             </div>
             <div className="bg-primary min-h-[380px] rounded-md p-4 lg:w-1/2">
-              <span className="text-white tracking-[-0.5] mb-14 font-medium block">
-                Sondas cadastradas no sistema
-              </span>
+              <span className="text-white tracking-[-0.5] mb-14 font-medium block">Sondas cadastradas no sistema</span>
               <div className="flex flex-wrap gap-2">
                 {availableRigs.length === 0 && (
                   <div className="w-full h-full flex justify-center items-center flex-col">
                     <img src={emptyState} />
                     <h2 className="text-primary mt-1 flex-1">
-                      <span className="text-white tracking-[-0.5] mb-14 font-medium block">
-                        O usuário está cadastrado em todas as sondas associadas
-                        ao contrato.
-                      </span>
+                      <span className="text-white tracking-[-0.5] mb-14 font-medium block">O usuário está cadastrado em todas as sondas associadas ao contrato.</span>
                     </h2>
                   </div>
                 )}
@@ -98,9 +71,7 @@ export const UpdateUserRigs = () => {
                         className="p-4 bg-white cursor-pointer rounded-2xl shadow-[0_1px_2px] flex w-1/4 justify-between items-center border-l-4  border-secondary "
                       >
                         <span className="text-gray-800">{name}</span>
-                        <span
-                          className={cn("w-5 h-5 bg-secondary rounded-full")}
-                        ></span>
+                        <span className={cn("w-5 h-5 bg-secondary rounded-full")}></span>
                       </div>
                     ))}
                   </>
@@ -123,3 +94,4 @@ export const UpdateUserRigs = () => {
     </div>
   );
 };
+export default UpdateUserRigs;

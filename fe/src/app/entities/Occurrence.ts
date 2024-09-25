@@ -13,7 +13,7 @@ export enum OccurrenceCategory {
   TOR = "TOR",
 }
 
-export enum Nature {
+export enum OccurenceNature {
   ACCIDENT = "ACCIDENT",
   INCIDENT = "INCIDENT",
   DEATH = "DEATH",
@@ -36,7 +36,7 @@ export type Occurrence = {
   isAbsent: boolean;
   severity?: OccurrenceSeverity;
   category?: OccurrenceCategory;
-  nature: Nature;
+  nature: OccurenceNature;
   files: [] | { path: string }[];
   base: {
     name: string;

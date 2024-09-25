@@ -17,7 +17,7 @@ import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
 import { GrouppedRepairPieChartCard } from "./components/GrouppedRepairsPieChartCard";
 import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
 
-export const Dashboard = () => {
+const Dashboard = () => {
   return (
     <DashboardProvider>
       <DashboardContext.Consumer>
@@ -28,7 +28,7 @@ export const Dashboard = () => {
           isWrongVersion,
           periodDataGridModalData,
         }) => (
-          <div className="overflow-y-auto">
+          <div className="">
             <Header displayRig title="Dashboard por Sonda">
               <CustomFilterSheet
                 isLoading={isFetchingEfficiencies}
@@ -75,3 +75,5 @@ export const Dashboard = () => {
     </DashboardProvider>
   );
 };
+
+export default Dashboard;

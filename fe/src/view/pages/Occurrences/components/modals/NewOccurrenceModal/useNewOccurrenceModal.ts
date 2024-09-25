@@ -1,7 +1,6 @@
-import { useBases } from "@/app/hooks/useBases";
 import { useOccurrencesContext } from "../../OccurrencesContext/useOccurencesContext";
 import {
-  Nature,
+  OccurenceNature,
   OccurrenceCategory,
   OccurrenceType,
 } from "@/app/entities/Occurrence";
@@ -33,7 +32,7 @@ const schema = z.object({
   type: z.nativeEnum(OccurrenceType),
   category: z.string(),
   severity: z.string().min(0, "Please enter a valid value").optional(),
-  nature: z.nativeEnum(Nature),
+  nature: z.nativeEnum(OccurenceNature),
   baseId: z.string().min(1, "Base é obrigatório."),
   clientId: z.string().min(1, "Base é obrigatório."),
   description: z.string().min(1, "Descrição é obrigatório."),
@@ -43,8 +42,12 @@ const schema = z.object({
 export type FormData = z.infer<typeof schema>;
 
 export const useNewOccurrenceModal = () => {
-  const { closeNewOccurrenceModal, isNewOccurrenceModalOpen } =
-    useOccurrencesContext();
+  const {
+    closeNewOccurrenceModal,
+    isNewOccurrenceModalOpen,
+    bases,
+    isFetchingBases,
+  } = useOccurrencesContext();
 
   const [selectedHour, setSelectHour] = useState<string>("00:00");
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -120,10 +123,8 @@ export const useNewOccurrenceModal = () => {
     occurrenceSeveritySelectOptions
   ); */
 
-  console.log("errors", errors);
-
   useEffect(() => {
-    if (selectedNature === Nature.INCIDENT) {
+    if (selectedNature === OccurenceNature.INCIDENT) {
       setValue("category", ""); // Limpa o valor de category
     } else {
       setValue("severity", undefined); // Limpa o valor de severity
@@ -132,15 +133,12 @@ export const useNewOccurrenceModal = () => {
 
   const queryClient = useQueryClient();
 
-  const { bases, isFetchingBases } = useBases();
   const { clients, isFetchingClients } = useClients();
 
   const clientSelectOptions: SelectOptions = clients.map(({ id, name }) => ({
     value: id,
     label: name,
   }));
-
-  console.log("clientSelectOptions", clientSelectOptions);
 
   const {
     isPending: isLoadingNewOccurrence,
@@ -158,7 +156,7 @@ export const useNewOccurrenceModal = () => {
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("Data", {
-      date: data.date.toISOString(),
+      date: data.date?.toISOString(),
       baseId: data.baseId,
       state: data.state as UF,
       clientId: data.clientId,
@@ -182,14 +180,14 @@ export const useNewOccurrenceModal = () => {
 
     try {
       const occurrence = await mutateNewOccurrenceAsync({
-        date: data.date.toISOString(),
-        title: data.title,
-        baseId: data.baseId,
+        date: data.date?.toISOString()!,
+        title: data.title!,
+        baseId: data.baseId!,
         state: data.state as UF,
-        clientId: data.clientId,
+        clientId: data.clientId!,
         isAbsent: data.isAbsent === "true" ? true : false,
         nature: data.nature,
-        type: data.type,
+        type: data.type!,
         severity: Object.values(OccurrenceSeverity).includes(
           data.severity as OccurrenceSeverity
         )

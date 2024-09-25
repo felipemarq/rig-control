@@ -66,6 +66,9 @@ export const taxTranslation: Record<string, string> = {
   truckcartrentamount: "Locação Caminhão + Carreta",
   truckkmamount: "Km Caminhão",
   trucktankamount: "Locação Caminhão + Tanque",
+  scheduledstopamount: "Parada programada faturada",
+  standbyhouramount: "Stand By",
+  unbilledscheduledstopamount: "Parada programada não faturada",
 };
 
 export const taxSuffix: Record<string, string> = {

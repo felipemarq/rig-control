@@ -137,6 +137,9 @@ model Efficiency {
   well                          String
   createdAt                     DateTime?         @map("created_at")
   availableHours                Float             @map("available_hours")
+  standByHours                  Float?            @map("standby_hours")
+  unbilledScheduledStopHours    Float?            @map("unbilled_scheduled_stop_hours")
+  billedScheduledStopHours      Float?            @map("billed_scheduled_stop_hours")
   repairHours                   Float?            @map("repair_hours")
   dtmHours                      Float             @map("dtm_hours")
   isEditable                    Boolean?          @default(false) @map("is_editable")
@@ -178,6 +181,8 @@ enum PeriodType {
   DTM
   WORKING
   SCHEDULED_STOP
+  COMMERCIALLY_STOPPED
+  STAND_BY
 
   @@map("period_type")
 }
@@ -209,6 +214,10 @@ enum PeriodClassification {
   BT20AND50
   GT50
   SCHEDULED_STOP
+  COMMERCIALLY_STOPPED
+  STAND_BY
+  UNBILLED_SCHEDULED_STOP
+  BILLED_SCHEDULED_STOP
   OTHERS
 }
 
@@ -375,6 +384,7 @@ model BillingConfiguration {
   endDate                     DateTime? @map("end_date")
   dtmHourTax                  Float?    @default(0) @map("dtm_hour_tax")
   glossHourTax                Float     @map("gloss_hour_tax")
+  standByHourTax              Float?    @map("standby_hour_tax")
   dtmLt20Tax                  Float?    @default(0) @map("dtm_lt_20_tax")
   dtmBt20And50Tax             Float?    @default(0) @map("dtm_bt_20_and_50_tax")
   dtmGt50Tax                  Float?    @default(0) @map("dtm_gt_50_tax")
@@ -414,45 +424,48 @@ model BillingConfiguration {
 }
 
 model Billing {
-  id                             String   @id @default(uuid()) @db.Uuid
-  rigId                          String   @map("rig_id") @db.Uuid
-  efficiencyId                   String   @map("efficiency_id") @db.Uuid
-  availableHourAmount            Float    @map("available_hour_amount")
-  dtmHourAmount                  Float    @map("dtm_hour_amount")
-  glossHourAmount                Float    @map("gloss_hour_amount")
-  repairHourAmount               Float?   @map("repair_hour_amount")
-  dtmLt20Amount                  Float    @map("dtm_lt_20_amount")
-  dtmBt20And50Amount             Float    @map("dtm_bt_20_and_50_amount")
-  dtmGt50Amount                  Float    @map("dtm_gt_50_amount")
-  fluidLt20Amount                Float    @map("fluid_lt_20_amount")
-  fluidBt20And50Amount           Float    @map("fluid_bt_20_and_50_amount")
-  fluidGt50Amount                Float    @map("fluid_gt_50_amount")
-  equipmentLt20Amount            Float    @map("equipment_lt_20_amount")
-  equipmentBt20And50Amount       Float    @map("equipment_bt_20_and_50_amount")
-  equipmentGt50Amount            Float    @map("equipment_gt_50_amount")
-  mobilizationAmount             Float    @map("mobilization_amount")
-  demobilizationAmount           Float    @map("demobilization_amount")
-  extraTrailerAmount             Float    @map("extra_trailer_amount")
-  powerSwivelAmount              Float    @map("power_swivel_amount")
-  truckCartRentAmount            Float    @map("truck_cart_rent_amount")
-  transportationAmount           Float    @map("transportation_amount")
-  truckKmAmount                  Float    @map("truck_km_amount")
-  bobRentAmount                  Float    @map("bob_rent_amount")
-  mixTankMonthRentAmount         Float    @map("mix_tank_month_rent_amount")
-  mixTankHourRentAmount          Float    @map("mix_tank_hour_rent_amount") //
-  generatorFuelAmount            Float    @map("generator_fuel_amount")
-  mixTankOperatorAmount          Float    @map("mix_tank_operator_amount")
-  mixTankDtmAmount               Float    @map("mix_tank_dtm_amount")
-  mixTankMobilizationAmount      Float    @map("mix_tank_mobilization_amount")
-  mixTankDemobilizationAmount    Float    @map("mix_tank_demobilization_amount")
-  suckingTruckAmount             Float    @map("sucking_truck_amount")
-  truckTankAmount                Float    @map("truck_TankAmount")
-  christmasTreeDisassemblyAmount Float    @map("christmas_tree_disassembly_amount")
-  scheduledStopAmount            Float?   @map("scheduled_stop_amount")
-  munckAmount                    Float    @map("munck_amount")
-  createdAt                      DateTime @default(now())
-  createdBy                      String?
-  updatedBy                      String?
+  id                             String @id @default(uuid()) @db.Uuid
+  rigId                          String @map("rig_id") @db.Uuid
+  efficiencyId                   String @map("efficiency_id") @db.Uuid
+  availableHourAmount            Float  @map("available_hour_amount")
+  dtmHourAmount                  Float  @map("dtm_hour_amount")
+  repairHourAmount               Float? @map("repair_hour_amount")
+  glossHourAmount                Float  @map("gloss_hour_amount")
+  scheduledStopAmount            Float? @map("scheduled_stop_amount")
+  unbilledScheduledStopAmount    Float? @map("unbilled_scheduled_stop_amount")
+  standByHourAmount              Float? @map("standby_hour_amount")
+  dtmLt20Amount                  Float  @map("dtm_lt_20_amount")
+  dtmBt20And50Amount             Float  @map("dtm_bt_20_and_50_amount")
+  dtmGt50Amount                  Float  @map("dtm_gt_50_amount")
+  fluidLt20Amount                Float  @map("fluid_lt_20_amount")
+  fluidBt20And50Amount           Float  @map("fluid_bt_20_and_50_amount")
+  fluidGt50Amount                Float  @map("fluid_gt_50_amount")
+  equipmentLt20Amount            Float  @map("equipment_lt_20_amount")
+  equipmentBt20And50Amount       Float  @map("equipment_bt_20_and_50_amount")
+  equipmentGt50Amount            Float  @map("equipment_gt_50_amount")
+  mobilizationAmount             Float  @map("mobilization_amount")
+  demobilizationAmount           Float  @map("demobilization_amount")
+  extraTrailerAmount             Float  @map("extra_trailer_amount")
+  powerSwivelAmount              Float  @map("power_swivel_amount")
+  truckCartRentAmount            Float  @map("truck_cart_rent_amount")
+  transportationAmount           Float  @map("transportation_amount")
+  truckKmAmount                  Float  @map("truck_km_amount")
+  bobRentAmount                  Float  @map("bob_rent_amount")
+  mixTankMonthRentAmount         Float  @map("mix_tank_month_rent_amount")
+  mixTankHourRentAmount          Float  @map("mix_tank_hour_rent_amount") //
+  generatorFuelAmount            Float  @map("generator_fuel_amount")
+  mixTankOperatorAmount          Float  @map("mix_tank_operator_amount")
+  mixTankDtmAmount               Float  @map("mix_tank_dtm_amount")
+  mixTankMobilizationAmount      Float  @map("mix_tank_mobilization_amount")
+  mixTankDemobilizationAmount    Float  @map("mix_tank_demobilization_amount")
+  suckingTruckAmount             Float  @map("sucking_truck_amount")
+  truckTankAmount                Float  @map("truck_TankAmount")
+  christmasTreeDisassemblyAmount Float  @map("christmas_tree_disassembly_amount")
+
+  munckAmount Float    @map("munck_amount")
+  createdAt   DateTime @default(now())
+  createdBy   String?
+  updatedBy   String?
 
   date  DateTime
   total Float

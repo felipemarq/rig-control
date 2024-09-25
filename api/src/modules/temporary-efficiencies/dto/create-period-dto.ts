@@ -6,9 +6,9 @@ import {
   IsString,
   IsUUID,
 } from 'class-validator';
-import { PeriodClassification } from '../entities/PeriodClassification';
-import { PeriodType } from '../entities/PeriodType';
-import { RepairClassification } from '../entities/RepairClassification';
+import { PeriodClassification } from 'src/modules/efficiencies/entities/PeriodClassification';
+import { PeriodType } from 'src/modules/efficiencies/entities/PeriodType';
+import { RepairClassification } from 'src/modules/efficiencies/entities/RepairClassification';
 
 export class PeriodDto {
   @IsString()

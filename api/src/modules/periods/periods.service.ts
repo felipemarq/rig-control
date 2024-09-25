@@ -67,14 +67,20 @@ export class PeriodsService {
       throw new BadRequestException('Datas são necessárias');
     }
 
-    return await this.periodsRepo.findMany({
+    const res = await this.periodsRepo.findMany({
       where: {
-        startHour: { gte: new Date(filters.startDate) },
-        endHour: { lte: new Date(filters.endDate) },
+        efficiency: {
+          date: {
+            gte: new Date(filters.startDate),
+            lte: new Date(filters.endDate),
+          },
+        },
         OR: [{ type: 'GLOSS' }, { type: 'REPAIR' }],
       },
       include: { efficiency: { include: { rig: true } } },
     });
+
+    return res;
   }
 
   update(id: number, updatePeriodDto: UpdatePeriodDto) {

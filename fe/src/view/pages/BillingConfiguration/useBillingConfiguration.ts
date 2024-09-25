@@ -12,7 +12,6 @@ export const useBillingConfiguration = () => {
 
   const { billingConfigs } = useBillingConfigByRigId(rigId);
 
-  console.log("billingConfigs", JSON.stringify(billingConfigs));
   return {
     billingConfigs,
   };

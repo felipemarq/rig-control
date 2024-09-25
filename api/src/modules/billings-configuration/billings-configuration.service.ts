@@ -31,34 +31,12 @@ export class BillingsConfigurationService {
     }
 
     return this.billingConfigRepo.create({
-      data: createBillingsConfigurationDto,
+      data: {
+        ...createBillingsConfigurationDto,
+        standByHourTax: createBillingsConfigurationDto.glossHourTax,
+      },
     });
   }
-
-  /* {
-    OR: [
-      {
-        startDate: {
-          lt: createBillingsConfigurationDto.endDate, // start_date < endDate
-        },
-      },
-      {
-        startDate: null,
-      },
-    ],
-  },
-  {
-    OR: [
-      {
-        endDate: {
-          gt: createBillingsConfigurationDto.startDate, // end_date > startDate
-        },
-      },
-      {
-        endDate: null,
-      },
-    ],
-  }, */
 
   async findAll() {
     return this.billingConfigRepo.findAll({

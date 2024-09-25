@@ -1,19 +1,26 @@
-import {createContext, useCallback, useEffect, useMemo, useState} from "react";
+import {
+  createContext,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import React from "react";
-import {useBillings} from "../../../../app/hooks/billings/useBillings";
-import {BillingResponse} from "../../../../app/services/billingServices/getAll";
-import {formatCurrency} from "../../../../app/utils/formatCurrency";
-import {useConfigBillings} from "../../../../app/hooks/useConfigBillings";
-import {BillingConfigResponse} from "../../../../app/services/billingConfigServices/getAll";
-import {FilterType} from "../../../../app/entities/FilterType";
-import {filterOptions} from "../../../../app/utils/filterOptions";
-import {SelectOptions} from "../../../../app/entities/SelectOptions";
-import {useRigs} from "../../../../app/hooks/rigs/useRigs";
-import {Rig} from "../../../../app/entities/Rig";
-import {months} from "../../../../app/utils/months";
-import {years} from "../../../../app/utils/years";
-import {useFiltersContext} from "../../../../app/hooks/useFiltersContext";
-import {formatCurrencyStringToNegativeNumber} from "@/app/utils/formatCurrencyStringToNegativeNumber";
+import { useBillings } from "../../../../app/hooks/billings/useBillings";
+import { BillingResponse } from "../../../../app/services/billingServices/getAll";
+import { formatCurrency } from "../../../../app/utils/formatCurrency";
+import { useConfigBillings } from "../../../../app/hooks/useConfigBillings";
+import { BillingConfigResponse } from "../../../../app/services/billingConfigServices/getAll";
+import { FilterType } from "../../../../app/entities/FilterType";
+import { filterOptions } from "../../../../app/utils/filterOptions";
+import { SelectOptions } from "../../../../app/entities/SelectOptions";
+import { useRigs } from "../../../../app/hooks/rigs/useRigs";
+import { Rig } from "../../../../app/entities/Rig";
+import { months } from "../../../../app/utils/months";
+import { years } from "../../../../app/utils/years";
+import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
+import { formatCurrencyStringToNegativeNumber } from "@/app/utils/formatCurrencyStringToNegativeNumber";
+import { useEfficienciesRigsAverage } from "@/app/hooks/efficiencies/useEfficienciesRigsAverage";
 
 interface BillingDashboardContextValue {
   handleStartDateChange(date: Date): void;
@@ -77,6 +84,7 @@ interface BillingDashboardContextValue {
   years: SelectOptions;
   selectedYear: string;
   handleToggleFilterType(filterType: FilterType): void;
+  averageEfficiency: number;
 }
 
 export const BillingDashboardContext = createContext(
@@ -105,7 +113,7 @@ export const BillingDashboardProvider = ({
   } = useFiltersContext();
   // Obtenha a data atual
 
-  const {rigs} = useRigs(true);
+  const { rigs } = useRigs(true);
 
   // Defina os estados iniciais
 
@@ -161,22 +169,35 @@ export const BillingDashboardProvider = ({
     []
   );
 
-  const {billings, isFetchingBillings, refetchBillings} = useBillings(filters);
+  const { billings, isFetchingBillings, refetchBillings } =
+    useBillings(filters);
 
-  const {configs, isFetchingConfig} = useConfigBillings();
+  const { configs, isFetchingConfig } = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;
 
-  /*  const filteredRigsAverage = useMemo(() => {
-    if (selectedDashboardView === "ALL") {
-      return billings;
-    }
+  const { rigsAverage } = useEfficienciesRigsAverage(
+    {
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    },
+    true
+  );
 
-    return billings.filter(
-      ({state}) => (state as string) === selectedDashboardView
-    );
-  }, [selectedDashboardView, billings]);
- */
+  const averageEfficiency = useMemo(() => {
+    let total = 0;
+
+    rigsAverage.forEach((average) => {
+      total += average.avg;
+    });
+
+    const average = total / rigsAverage.length;
+
+    const percentage = (average / 24) * 100;
+
+    return percentage;
+  }, [rigsAverage]);
+
   const {
     totalAmount,
     totalGlossAmount,
@@ -187,7 +208,7 @@ export const BillingDashboardProvider = ({
     let totalRepairUnbilled = 0;
     let totalGlossUnbilled = 0;
 
-    billings.forEach(({total, repairhouramount, glosshouramount}) => {
+    billings.forEach(({ total, repairhouramount, glosshouramount }) => {
       totalBillings += total;
       totalGlossUnbilled += glosshouramount;
 
@@ -261,6 +282,7 @@ export const BillingDashboardProvider = ({
         configs,
         configBeingEdited,
         rigs,
+        averageEfficiency,
       }}
     >
       {children}

@@ -1,31 +1,18 @@
-import {PlusIcon} from "@radix-ui/react-icons";
-import {Header} from "../../components/Header";
-import {Spinner} from "../../components/Spinner";
-import {useFormMenu} from "./useFormMenu";
-import {Link} from "react-router-dom";
-import {formatDate} from "../../../app/utils/formatDate";
-import {TrashIcon} from "lucide-react";
-import {DeleteModal} from "../../components/DeleteModal";
+import { PlusIcon } from "@radix-ui/react-icons";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
+import { useFormMenu } from "./useFormMenu";
+import { Link } from "react-router-dom";
+import { formatDate } from "../../../app/utils/formatDate";
+import { TrashIcon } from "lucide-react";
+import { DeleteModal } from "../../components/DeleteModal";
 
-export const FormMenu = () => {
-  const {
-    temporaryEfficiency,
-    navigate,
-    isFetchingTemporaryEfficiencies,
-    closeDeleteModal,
-    isDeleteModalOpen,
-    openDeleteModal,
-    handleDeleteEfficiency,
-    isLoadingRemoveEfficiency,
-  } = useFormMenu();
+const FormMenu = () => {
+  const { temporaryEfficiency, navigate, isFetchingTemporaryEfficiencies, closeDeleteModal, isDeleteModalOpen, openDeleteModal, handleDeleteEfficiency, isLoadingRemoveEfficiency } = useFormMenu();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="Formulário"
-        displayRig={false}
-        displayPeriodRange={false}
-      />
+      <Header title="Formulário" displayRig={false} displayPeriodRange={false} />
 
       <div className="w-full h-full ">
         <div className="border border-b-2">
@@ -43,15 +30,11 @@ export const FormMenu = () => {
                 <div className="h-11 w-11 rounded-full border-2 border-dashed border-white flex justify-center items-center">
                   <PlusIcon className="w-6 h-6 text-white" />
                 </div>
-                <span className="font-medium tracking-[-0.5px] block text-center  text-white">
-                  Iniciar um novo Boletim de Ocorência
-                </span>
+                <span className="font-medium tracking-[-0.5px] block text-center  text-white">Iniciar um novo Boletim de Ocorência</span>
               </div>
 
               <div className="w-full mt-8">
-                <span className="font-semibold text-2xl tracking-[-0.5px] block text-center  text-gray-600">
-                  Boletim de Ocorência salvo
-                </span>
+                <span className="font-semibold text-2xl tracking-[-0.5px] block text-center  text-gray-600">Boletim de Ocorência salvo</span>
               </div>
 
               <div className="p-4 flex flex-col gap-2 rounded-md shadow-[0_0_4px] justify-between  lg:w-3/4 ">
@@ -59,39 +42,23 @@ export const FormMenu = () => {
                   <div className="flex">
                     <div className="flex flex-col">
                       <div className="flex gap-4">
-                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                          Data:
-                        </span>
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {formatDate(new Date(temporaryEfficiency.date))}
-                        </span>
+                        <span className="text-gray-800 tracking-[-0.5] font-medium block">Data:</span>
+                        <span className="text-gray-600 tracking-[-0.5] font-medium block">{formatDate(new Date(temporaryEfficiency.date))}</span>
                       </div>
 
                       <div className="flex gap-4">
-                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                          Poço:
-                        </span>
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {temporaryEfficiency.well}
-                        </span>
+                        <span className="text-gray-800 tracking-[-0.5] font-medium block">Poço:</span>
+                        <span className="text-gray-600 tracking-[-0.5] font-medium block">{temporaryEfficiency.well}</span>
                       </div>
 
                       <div className="flex gap-4">
-                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                          Horas Disponíveis:
-                        </span>
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {temporaryEfficiency.availableHours}
-                        </span>
+                        <span className="text-gray-800 tracking-[-0.5] font-medium block">Horas Disponíveis:</span>
+                        <span className="text-gray-600 tracking-[-0.5] font-medium block">{temporaryEfficiency.availableHours}</span>
                       </div>
 
                       <div className="flex gap-4">
-                        <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                          Quantidade de períodos:
-                        </span>
-                        <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                          {temporaryEfficiency.temporaryPeriods.length}
-                        </span>
+                        <span className="text-gray-800 tracking-[-0.5] font-medium block">Quantidade de períodos:</span>
+                        <span className="text-gray-600 tracking-[-0.5] font-medium block">{temporaryEfficiency.temporaryPeriods.length}</span>
                       </div>
                     </div>
 
@@ -102,10 +69,7 @@ export const FormMenu = () => {
                       >
                         <TrashIcon className="text-white" />
                       </button>
-                      <Link
-                        className="text-white tracking-[-0.5]  font-semibold px-4 py-2 rounded-md bg-primary hover:bg-primary"
-                        to={`/pending-form/${temporaryEfficiency.id}`}
-                      >
+                      <Link className="text-white tracking-[-0.5]  font-semibold px-4 py-2 rounded-md bg-primary hover:bg-primary" to={`/pending-form/${temporaryEfficiency.id}`}>
                         Continuar Boletim
                       </Link>
                     </div>
@@ -121,9 +85,7 @@ export const FormMenu = () => {
                 )}
 
                 {!temporaryEfficiency && (
-                  <div className="text-gray-600 tracking-[-0.5] font-medium  p-6 flex justify-center items-center">
-                    Você não tem registro salvo. Inicie um novo boletim acima!
-                  </div>
+                  <div className="text-gray-600 tracking-[-0.5] font-medium  p-6 flex justify-center items-center">Você não tem registro salvo. Inicie um novo boletim acima!</div>
                 )}
               </div>
             </div>
@@ -133,3 +95,5 @@ export const FormMenu = () => {
     </div>
   );
 };
+
+export default FormMenu;

@@ -5,19 +5,19 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import {cn} from "@/lib/utils";
-import {NotFound} from "@/view/components/NotFound";
-import {Spinner} from "@/view/components/Spinner";
+import { cn } from "@/lib/utils";
+import { NotFound } from "@/view/components/NotFound";
+import { Spinner } from "@/view/components/Spinner";
 
-import {useLineChartCard} from "./useLineChartCard";
-import {LineChart} from "./components/LineChart";
+import { useLineChartCard } from "./useLineChartCard";
+import { LineChart } from "./components/LineChart";
 
 export const LineChartCard = () => {
-  const {isFetchingEfficiencies, isEmpty} = useLineChartCard();
+  const { isFetchingEfficiencies, isEmpty } = useLineChartCard();
   return (
     <Card
       className={cn(
-        "row-span-2 lg:col-span-7 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
+        "row-span-2 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
       )}
     >
       <CardHeader className="pb-0">
