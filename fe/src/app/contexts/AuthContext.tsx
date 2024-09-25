@@ -11,6 +11,7 @@ import { AccessLevel } from "../entities/AccessLevel";
 import { QueryKeys } from "../config/QueryKeys";
 import { useSystemVersion } from "../hooks/useSystemVersion";
 import { currentVersion } from "../config/CurrentVersion";
+import { clarity } from "react-microsoft-clarity";
 
 interface AuthContextValue {
   signedIn: boolean;
@@ -66,6 +67,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         email: data?.email,
         username: data?.name,
       });
+
+      // Identify the user
+      if (clarity.hasStarted()) {
+        clarity.identify(data?.id ?? "", { name: data?.name, email: data?.email });
+      }
     }
   }, []);
 

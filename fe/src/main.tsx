@@ -4,6 +4,7 @@ import { App } from "./App.tsx";
 import "./index.css";
 import "@/lib/dynamicImportErrorListener";
 import "@/lib/sentry.ts";
+import "@/lib/clarity.ts";
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>

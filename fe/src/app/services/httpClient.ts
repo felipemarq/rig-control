@@ -3,12 +3,8 @@ import { localStorageKeys } from "../config/localStorageKeys";
 //import {localStorageKeys} from "../config/localStorageKeys";
 //import { timeout } from "../utils/timeout";
 
-enum URLPath {
-  DEV = "http://127.0.0.1:3000",
-  PROD = "https://rig-control-backendv6-1.onrender.com",
-}
 export const httpClient = axios.create({
-  baseURL: URLPath.DEV,
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
 httpClient.interceptors.request.use(async (config) => {

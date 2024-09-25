@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { type LucideIcon } from "lucide-react";
 
 import { cn } from "@/app/utils/cn";
+import { Badge } from "./ui/badge";
 
 export function NavSecondary({
   className,
@@ -27,11 +28,12 @@ export function NavSecondary({
         <li key={item.title}>
           <Link
             to={item.url}
-            className="flex h-7 items-center gap-2.5 overflow-hidden rounded-md px-1.5 text-xs ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2"
+            className="flex h-7 items-center gap-2.5 overflow-hidden rounded-md px-1.5 text-xs ring-ring transition-all cursor-not-allowed hover:text-accent-foreground focus-visible:outline-none focus-visible:ring-2"
           >
             <item.icon className="h-4 w-4 shrink-0 translate-x-0.5 text-white" />
-            <div className="line-clamp-1 grow overflow-hidden pr-6 font-medium text-white">
+            <div className="line-clamp-1 grow overflow-hidden pr-6 font-medium text-white flex items-center gap-2">
               {item.title}
+              <Badge className="bg-gray-500 hover:bg-gray-500">Em breve</Badge>
             </div>
           </Link>
         </li>

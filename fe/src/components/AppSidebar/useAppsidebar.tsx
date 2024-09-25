@@ -1,14 +1,5 @@
 import { useAuth } from "@/app/hooks/useAuth";
-import {
-  History,
-  LifeBuoy,
-  Send,
-  Settings2,
-  Star,
-  Workflow,
-  CircleDollarSign,
-  Shield,
-} from "lucide-react";
+import { History, LifeBuoy, Send, Settings2, Star, Workflow, CircleDollarSign, Shield } from "lucide-react";
 
 import whiteIcon from "@/assets/images/white-icon.png";
 import { useMemo } from "react";
@@ -33,6 +24,7 @@ export const useAppsidebar = () => {
         url: "#",
         icon: Workflow,
         isActive: true,
+
         items: [
           {
             title: "Dashboard Geral",
@@ -69,6 +61,7 @@ export const useAppsidebar = () => {
             url: "/list-rigs",
             icon: Settings2,
             description: "Configure your playground",
+            hasNews: true,
           },
           {
             title: "Listar Contratos",
@@ -107,6 +100,7 @@ export const useAppsidebar = () => {
             url: "/create-billing-configuration",
             icon: Settings2,
             description: "Configure your playground",
+            hasNews: true,
           },
         ],
       },
@@ -145,12 +139,12 @@ export const useAppsidebar = () => {
     ],
     navSecondary: [
       {
-        title: "Support",
+        title: "Suporte",
         url: "#",
         icon: LifeBuoy,
       },
       {
-        title: "Feedback",
+        title: "Sugestões",
         url: "#",
         icon: Send,
       },
