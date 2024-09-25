@@ -3,7 +3,7 @@ import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
 import { useUpdateUser } from "./useUpdateUser";
 
-export const UpdateUser = () => {
+const UpdateUser = () => {
   const { errors, register, handleSubmit, isLoading } = useUpdateUser();
 
   return (
@@ -14,12 +14,8 @@ export const UpdateUser = () => {
         <form className="p-4" onSubmit={handleSubmit}>
           <div className="w-full p-8 bg-gray-300 rounded-lg flex flex-col gap-2 lg:w-1/2 lg:mx-auto">
             <header className="py-6">
-              <h1 className="text-xl font-bold text-gray-900">
-                Atualizar Usuário
-              </h1>
-              <span className="tracking-tighter text-gray-700">
-                Edite suas informações de perfil abaixo
-              </span>
+              <h1 className="text-xl font-bold text-gray-900">Atualizar Usuário</h1>
+              <span className="tracking-tighter text-gray-700">Edite suas informações de perfil abaixo</span>
             </header>
             <div className="w-full">
               <Input
@@ -67,3 +63,5 @@ export const UpdateUser = () => {
     </div>
   );
 };
+
+export default UpdateUser;

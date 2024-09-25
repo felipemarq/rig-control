@@ -13,7 +13,7 @@ import { FilterSheet } from "@/view/components/FilterSheet";
 import { Header } from "@/view/components/Header";
 import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard";
 
-export const GlobalDashboard = () => {
+const GlobalDashboard = () => {
   return (
     <GlobalDashboardProvider>
       <GlobalDashboardContext.Consumer>
@@ -85,3 +85,5 @@ export const GlobalDashboard = () => {
     </GlobalDashboardProvider>
   );
 };
+
+export default GlobalDashboard;

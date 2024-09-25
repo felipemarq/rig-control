@@ -1,7 +1,4 @@
-import {
-  BillingDashboardContext,
-  BillingDashboardProvider,
-} from "./BillingDashboardContext";
+import { BillingDashboardContext, BillingDashboardProvider } from "./BillingDashboardContext";
 import "swiper/css";
 import { FilterSheet } from "@/view/components/FilterSheet";
 import { StatboxContainer } from "./components/StatboxContainer";
@@ -11,7 +8,7 @@ import { BarChartCard } from "./components/BarChartCard";
 
 export const description = "A multiple bar chart";
 
-export const BillingDashboard = () => {
+const BillingDashboard = () => {
   return (
     <BillingDashboardProvider>
       <BillingDashboardContext.Consumer>
@@ -19,10 +16,7 @@ export const BillingDashboard = () => {
           <div>
             <div className="flex justify-between p-4">
               <BagdeStatus displayRig={false} />
-              <FilterSheet
-                onApplyFilters={handleApplyFilters}
-                isLoading={isFetchingBillings}
-              />
+              <FilterSheet onApplyFilters={handleApplyFilters} isLoading={isFetchingBillings} />
             </div>
 
             <div className="flex w-full flex-col">
@@ -41,3 +35,5 @@ export const BillingDashboard = () => {
     </BillingDashboardProvider>
   );
 };
+
+export default BillingDashboard;

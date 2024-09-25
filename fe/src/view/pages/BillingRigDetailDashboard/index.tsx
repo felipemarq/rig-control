@@ -1,7 +1,4 @@
-import {
-  BillingRigDetailDashboardContext,
-  BillingRigDetailDashboardProvider,
-} from "./BillingRigDetailDashboardContext";
+import { BillingRigDetailDashboardContext, BillingRigDetailDashboardProvider } from "./BillingRigDetailDashboardContext";
 import "swiper/css";
 import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
 import { StatboxContainer } from "./components/StatboxContainer";
@@ -17,10 +14,7 @@ export const BillingRigDetailDashboard = () => {
           <div className="overflow-y-auto">
             <div className="flex justify-between items-center p-4">
               <BagdeStatus displayRig />
-              <CustomFilterSheet
-                isLoading={isFetchingBilling}
-                onApplyFilters={handleApplyFilters}
-              />
+              <CustomFilterSheet isLoading={isFetchingBilling} onApplyFilters={handleApplyFilters} />
             </div>
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
@@ -37,3 +31,5 @@ export const BillingRigDetailDashboard = () => {
     </BillingRigDetailDashboardProvider>
   );
 };
+
+export default BillingRigDetailDashboard;

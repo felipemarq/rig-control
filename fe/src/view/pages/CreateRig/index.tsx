@@ -11,27 +11,18 @@ import { TruckTaxesStep } from "@/view/components/Stepper/steps/TruckTaxesStep";
 import { EquipmentTaxesStep } from "@/view/components/Stepper/steps/EquipmentTaxesStep";
 import { TankMixTaxesStep } from "@/view/components/Stepper/steps/TankMixTaxesStep";
 
-export const CreateRig = () => {
+const CreateRig = () => {
   const { form, handleSubmit, contracts } = useCreateRig();
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="Cadastrar Sonda"
-        displayRig={false}
-        displayPeriodRange={false}
-      >
+      <Header title="Cadastrar Sonda" displayRig={false} displayPeriodRange={false}>
         <></>
       </Header>
 
       <div className="min-h-fit flex justify-center py-6  w-full  mb-10">
         <FormProvider {...form}>
-          <form
-            onSubmit={handleSubmit}
-            className="w-2/5  rounded-xl border bg-card text-card-foreground shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-2 "
-          >
-            <div className="p-4 text-black w-full text-center">
-              Dados da Sonda
-            </div>
+          <form onSubmit={handleSubmit} className="w-2/5  rounded-xl border bg-card text-card-foreground shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-2 ">
+            <div className="p-4 text-black w-full text-center">Dados da Sonda</div>
             <div className="w-full p-4   flex flex-col gap-2 lg:flex-row">
               <div className="w-full">
                 <Input
@@ -86,9 +77,7 @@ export const CreateRig = () => {
             </div>
 
             <div className="m-4  flex justify-center">
-              <span className="m-4 text-black">
-                Dados para previsão de cálculo da sonda
-              </span>
+              <span className="m-4 text-black">Dados para previsão de cálculo da sonda</span>
             </div>
 
             <Stepper
@@ -121,3 +110,5 @@ export const CreateRig = () => {
     </div>
   );
 };
+
+export default CreateRig;

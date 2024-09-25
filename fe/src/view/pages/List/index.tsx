@@ -5,17 +5,13 @@ import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
 
-export const List = () => {
-  const { efficiencies, handleApplyFilters, isFetchingEfficiencies } =
-    useListController();
+const List = () => {
+  const { efficiencies, handleApplyFilters, isFetchingEfficiencies } = useListController();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header title="LISTAGEM" displayRig>
-        <CustomFilterSheet
-          isLoading={isFetchingEfficiencies}
-          onApplyFilters={handleApplyFilters}
-        />
+        <CustomFilterSheet isLoading={isFetchingEfficiencies} onApplyFilters={handleApplyFilters} />
       </Header>
 
       <div className="w-full h-full lg:mx-5 mt-5 max-w-[1400px] flex justify-center  ">
@@ -30,11 +26,7 @@ export const List = () => {
             <Card className="w-full h-full overflow-y-auto">
               <CardHeader></CardHeader>
               <CardContent className="">
-                <ListEfficienciesDataGrid
-                  data={efficiencies}
-                  isDashboard={false}
-                  limitPagination={false}
-                />
+                <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} limitPagination={false} />
               </CardContent>
             </Card>
           </div>
@@ -43,3 +35,5 @@ export const List = () => {
     </div>
   );
 };
+
+export default List;

@@ -1,37 +1,18 @@
-import {
-  DetailsContext,
-  DetailsContextProvider,
-} from "./components/DetailsContext";
+import { DetailsContext, DetailsContextProvider } from "./components/DetailsContext";
 import { Header } from "../../components/Header";
 import { DetailsModal } from "./components/DetailsModal";
 import { DeleteModal } from "../../components/DeleteModal";
 import { PeriodsDataGridCard } from "./components/PeriodsDataGridCard";
 
-export const Details = () => {
+const Details = () => {
   return (
     <DetailsContextProvider>
       <DetailsContext.Consumer>
-        {({
-          isDetailModalOpen,
-          closeDetailModal,
-          modalDescription,
-          closeDeleteModal,
-          isDeleteModalOpen,
-          isLoadingRemoveEfficiency,
-          handleDeleteEfficiency,
-        }) => (
+        {({ isDetailModalOpen, closeDetailModal, modalDescription, closeDeleteModal, isDeleteModalOpen, isLoadingRemoveEfficiency, handleDeleteEfficiency }) => (
           <div className="w-full h-full overflow-y-auto">
-            <Header
-              title="Detalhes da Operação"
-              displayRig={false}
-              displayPeriodRange={false}
-            />
+            <Header title="Detalhes da Operação" displayRig={false} displayPeriodRange={false} />
 
-            <DetailsModal
-              onClose={closeDetailModal}
-              open={isDetailModalOpen}
-              description={modalDescription}
-            />
+            <DetailsModal onClose={closeDetailModal} open={isDetailModalOpen} description={modalDescription} />
 
             <DeleteModal
               title=" Tem certeza que deseja excluir esse registro?"
@@ -53,3 +34,5 @@ export const Details = () => {
     </DetailsContextProvider>
   );
 };
+
+export default Details;

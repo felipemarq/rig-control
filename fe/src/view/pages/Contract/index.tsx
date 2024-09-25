@@ -1,16 +1,9 @@
 import { Header } from "../../components/Header";
 import { Spinner } from "../../components/Spinner";
 import { useContract } from "./useContract";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 
-export const Contract = () => {
+const Contract = () => {
   const { contracts, isFetchingContracts } = useContract();
   return (
     <div className="w-full h-full overflow-y-scroll">
@@ -34,34 +27,20 @@ export const Contract = () => {
                       <span className=" ">Empresa</span>
                     </TableHead>
 
-                    <TableHead className="table-cell text-center ">
-                      Total de Sondas
-                    </TableHead>
-                    <TableHead className="hidden md:table-cell text-center">
-                      Sondas
-                    </TableHead>
+                    <TableHead className="table-cell text-center ">Total de Sondas</TableHead>
+                    <TableHead className="hidden md:table-cell text-center">Sondas</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {contracts.map(({ id, logoImagePath, rigs, name }) => (
                     <TableRow key={id}>
                       <TableCell className="table-cell">
-                        {logoImagePath && (
-                          <img
-                            alt="Product image"
-                            className="aspect-square rounded-md object-contain"
-                            height="64"
-                            src={logoImagePath}
-                            width="64"
-                          />
-                        )}
+                        {logoImagePath && <img alt="Product image" className="aspect-square rounded-md object-contain" height="64" src={logoImagePath} width="64" />}
 
                         {!logoImagePath && name}
                       </TableCell>
 
-                      <TableCell className="table-cell text-center">
-                        {rigs.length}
-                      </TableCell>
+                      <TableCell className="table-cell text-center">{rigs.length}</TableCell>
                       <TableCell className="hidden md:table-cell text-center gap-x-4">
                         {rigs.map(({ name }) => (
                           <span className="ml-2">{name}</span>
@@ -78,3 +57,4 @@ export const Contract = () => {
     </div>
   );
 };
+export default Contract;

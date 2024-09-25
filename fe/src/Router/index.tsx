@@ -1,119 +1,115 @@
 // Importando bibliotecas e componentes necessários
-import { Routes, Route, BrowserRouter } from "react-router-dom";
+import { Routes, Route, BrowserRouter, Outlet } from "react-router-dom";
 import { AuthGuard } from "./AuthGuard";
 import { Login } from "../view/pages/Login";
-import { Dashboard } from "../view/pages/Dashboard";
 import { Register } from "../view/pages/Register";
 import { AuthLayout } from "../view/Layouts/AuthLayout";
-import { Form } from "../view/pages/Form";
-import { List } from "../view/pages/List";
-import { BillingDashboard } from "../view/pages/BillingDashboard";
-import { Details } from "../view/pages/Details";
-import { CreateRig } from "../view/pages/CreateRig";
-import { CreateContract } from "../view/pages/CreateContract";
-import { Contract } from "../view/pages/Contract";
-import { ListUsers } from "../view/pages/ListUsers";
-import { CreateUser } from "../view/pages/CreateUser";
-import { UpdateUser } from "../view/pages/UpdateUser";
-import { UpdateUserRigs } from "../view/pages/UpdateUserRigs";
-import { ListRigs } from "../view/pages/ListRigs";
-import { BillingRigDetailDashboard } from "../view/pages/BillingRigDetailDashboard";
-//import { InDevelopmentPage } from "../view/pages/InDevelopmentPage";
-import { UpdateForm } from "../view/pages/UpdateForm";
-import { Report } from "../view/pages/Report";
-import { InvoicingMenu } from "../view/pages/InvoicingMenu";
-import { GlobalDashboard } from "../view/pages/GlobalDashboard";
 import { useAuth } from "../app/hooks/useAuth";
-import { FormMenu } from "../view/pages/FormMenu";
-import { PendingForm } from "../view/pages/PendingForm";
-import { Occurrences } from "@/view/pages/Occurrences";
-import { ManHours } from "@/view/pages/ManHours";
-import { ManHoursDashboard } from "@/view/pages/ManHoursDashboard";
 import { InDevelopmentPage } from "@/view/pages/InDevelopmentPage";
-import { TotalManHoursDashboard } from "@/view/pages/TotalManHoursDashboard";
-import { CreateBillingConfiguration } from "@/view/pages/CreateBillingConfiguration";
-import { BillingConfiguration } from "@/view/pages/BillingConfiguration";
 import { ShadcnLayout } from "@/view/Layouts/ShadcnLayout";
+import { lazy, Suspense } from "react";
+import { PageLoader } from "@/view/components/PageLoader";
+import { ErrorBoundary } from "@/view/components/ErrorBoundary";
+import { ErrorBoundaryFallback } from "@/view/components/ErrorBoundaryFallback";
+
+const Dashboard = lazy(() => import("@/view/pages/Dashboard/index"));
+const GlobalDashboard = lazy(() => import("@/view/pages/GlobalDashboard/index"));
+const Form = lazy(() => import("@/view/pages/Form/index"));
+const UpdateForm = lazy(() => import("@/view/pages/UpdateForm/index"));
+const PendingForm = lazy(() => import("@/view/pages/PendingForm/index"));
+const FormMenu = lazy(() => import("@/view/pages/FormMenu/index"));
+const List = lazy(() => import("@/view/pages/List/index"));
+const BillingDashboard = lazy(() => import("@/view/pages/BillingDashboard/index"));
+const InvoicingMenu = lazy(() => import("@/view/pages/InvoicingMenu/index"));
+const BillingRigDetailDashboard = lazy(() => import("@/view/pages/BillingRigDetailDashboard/index"));
+const Details = lazy(() => import("@/view/pages/Details/index"));
+const CreateRig = lazy(() => import("@/view/pages/CreateRig/index"));
+const ListRigs = lazy(() => import("@/view/pages/ListRigs/index"));
+const CreateContract = lazy(() => import("@/view/pages/CreateContract/index"));
+const Contract = lazy(() => import("@/view/pages/Contract/index"));
+const ListUsers = lazy(() => import("@/view/pages/ListUsers/index"));
+const CreateUser = lazy(() => import("@/view/pages/CreateUser/index"));
+const UpdateUser = lazy(() => import("@/view/pages/UpdateUser/index"));
+const UpdateUserRigs = lazy(() => import("@/view/pages/UpdateUserRigs/index"));
+const Report = lazy(() => import("@/view/pages/Report/index"));
+const Occurrences = lazy(() => import("@/view/pages/Occurrences/index"));
+const ManHours = lazy(() => import("@/view/pages/ManHours/index"));
+const TotalManHoursDashboard = lazy(() => import("@/view/pages/TotalManHoursDashboard/index"));
+const CreateBillingConfiguration = lazy(() => import("@/view/pages/CreateBillingConfiguration/index"));
+const BillingConfiguration = lazy(() => import("@/view/pages/BillingConfiguration/index"));
+const ManHoursDashboard = lazy(() => import("@/view/pages/ManHoursDashboard/index"));
+
+function RouterErrorBoundary() {
+  return (
+    <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
+      <Outlet />
+    </ErrorBoundary>
+  );
+}
 
 export const Router = () => {
   const { isUserAdm } = useAuth();
   return (
     <BrowserRouter>
-      <Routes>
-        {/* Rota para páginas não autenticadas */}
-        <Route element={<AuthGuard isPrivate={false} />}>
-          <Route element={<AuthLayout />}>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-          </Route>
-        </Route>
-
-        {/* Rota para páginas autenticadas */}
-        <Route element={<AuthGuard isPrivate={true} />}>
-          {/* Define o layout baseado na largura da janela */}
-          <Route element={<ShadcnLayout />}>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/in-development" element={<InDevelopmentPage />} />
-
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route
-              path="/global-dashboard"
-              element={isUserAdm ? <GlobalDashboard /> : <Dashboard />}
-            />
-
-            <Route path="/form" element={<Form />} />
-            <Route path="/form/:efficiencyId" element={<UpdateForm />} />
-            <Route
-              path="/pending-form/:efficiencyId"
-              element={<PendingForm />}
-            />
-            <Route path="/form/menu" element={<FormMenu />} />
-
-            <Route path="/list" element={<List />} />
-            <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
-            <Route
-              path="/invoicing-rig-dashboard"
-              element={<BillingRigDetailDashboard />}
-            />
-            <Route path="/invoicing" element={<InvoicingMenu />} />
-
-            <Route path="/details/:efficiencyId" element={<Details />} />
-            <Route path="/create-rig" element={<CreateRig />} />
-            <Route path="/list-rigs" element={<ListRigs />} />
-            <Route path="/create-contract" element={<CreateContract />} />
-            <Route path="/contracts" element={<Contract />} />
-            <Route path="/users" element={<ListUsers />} />
-            <Route path="/create-user" element={<CreateUser />} />
-            <Route path="/users/:id" element={<UpdateUser />} />
-            <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
-            <Route path="/reports" element={<Report />} />
-            <Route path="/occurrences" element={<Occurrences />} />
-            <Route path="/man-hours" element={<ManHours />} />
-            <Route path="/occurrences/man-hours" element={<ManHours />} />
-            <Route
-              path="/dashboard/total-man-hours"
-              element={<TotalManHoursDashboard />}
-            />
-            <Route
-              path="/create-billing-configuration"
-              element={<CreateBillingConfiguration />}
-            />
-            <Route
-              path="/billing-configuration/:rigId"
-              element={<BillingConfiguration />}
-            />
-
-            <Route
-              path="/dashboard/man-hours"
-              element={<ManHoursDashboard />}
-            />
+      <Suspense fallback={<PageLoader isLoading />}>
+        <Routes>
+          {/* Rota para páginas não autenticadas */}
+          <Route element={<AuthGuard isPrivate={false} />}>
+            <Route element={<AuthLayout />}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+            </Route>
           </Route>
 
-          <Route element={<ShadcnLayout />}>
-            <Route path="/dashboard-test" element={<Dashboard />} />
+          {/* Rota para páginas autenticadas */}
+          <Route element={<AuthGuard isPrivate={true} />}>
+            {/* Define o layout baseado na largura da janela */}
+            <Route element={<ShadcnLayout />}>
+              <Route element={<RouterErrorBoundary />}>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/in-development" element={<InDevelopmentPage />} />
+
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/global-dashboard" element={isUserAdm ? <GlobalDashboard /> : <Dashboard />} />
+
+                <Route path="/form" element={<Form />} />
+                <Route path="/form/:efficiencyId" element={<UpdateForm />} />
+                <Route path="/pending-form/:efficiencyId" element={<PendingForm />} />
+                <Route path="/form/menu" element={<FormMenu />} />
+
+                <Route path="/list" element={<List />} />
+                <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
+
+                <Route path="/invoicing-rig-dashboard" element={<BillingRigDetailDashboard />} />
+                <Route path="/invoicing" element={<InvoicingMenu />} />
+
+                <Route path="/details/:efficiencyId" element={<Details />} />
+                <Route path="/create-rig" element={<CreateRig />} />
+                <Route path="/list-rigs" element={<ListRigs />} />
+                <Route path="/create-contract" element={<CreateContract />} />
+                <Route path="/contracts" element={<Contract />} />
+                <Route path="/users" element={<ListUsers />} />
+                <Route path="/create-user" element={<CreateUser />} />
+                <Route path="/users/:id" element={<UpdateUser />} />
+                <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
+                <Route path="/reports" element={<Report />} />
+                <Route path="/occurrences" element={<Occurrences />} />
+                <Route path="/man-hours" element={<ManHours />} />
+                <Route path="/occurrences/man-hours" element={<ManHours />} />
+                <Route path="/dashboard/total-man-hours" element={<TotalManHoursDashboard />} />
+                <Route path="/create-billing-configuration" element={<CreateBillingConfiguration />} />
+                <Route path="/billing-configuration/:rigId" element={<BillingConfiguration />} />
+
+                <Route path="/dashboard/man-hours" element={<ManHoursDashboard />} />
+              </Route>
+            </Route>
+
+            <Route element={<ShadcnLayout />}>
+              <Route path="/dashboard-test" element={<Dashboard />} />
+            </Route>
           </Route>
-        </Route>
-      </Routes>
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   );
 };

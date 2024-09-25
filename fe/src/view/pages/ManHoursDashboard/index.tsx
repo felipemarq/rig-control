@@ -2,10 +2,7 @@ import { Select } from "@/view/components/Select";
 import { Header } from "@/view/components/Header";
 import { StatboxContainer } from "./components/StatboxContainer";
 import { TorOccurrencesBarChartCard } from "./components/TorOccurrencesBarChartCard";
-import {
-  ManHourDashboardContext,
-  ManHourDashboardProvider,
-} from "./ManHourDashboardContext";
+import { ManHourDashboardContext, ManHourDashboardProvider } from "./ManHourDashboardContext";
 import { Button } from "@/view/components/Button";
 
 import { TarOccurrencesBarChartCard } from "./components/TarOccurrencesBarChartCard";
@@ -15,7 +12,7 @@ import { NotFound } from "@/view/components/NotFound";
 import { Card } from "@/components/ui/card";
 import { Spinner } from "@/view/components/Spinner";
 
-export const ManHoursDashboard = () => {
+const ManHoursDashboard = () => {
   return (
     <ManHourDashboardProvider>
       <ManHourDashboardContext.Consumer>
@@ -33,11 +30,7 @@ export const ManHoursDashboard = () => {
           isFetchingOccurrencesTaxes,
         }) => (
           <div className="overflow-y-auto w-full">
-            <Header
-              displayRig
-              displayPeriodRange={false}
-              title="Dashboard por Base"
-            >
+            <Header displayRig displayPeriodRange={false} title="Dashboard por Base">
               <div className="flex justify-center items-start gap-3">
                 <div className="w-52">
                   <Select
@@ -52,10 +45,7 @@ export const ManHoursDashboard = () => {
                   />
                 </div>
                 <div>
-                  <Button
-                    onClick={applyFilters}
-                    disabled={selectedBaseId === ""}
-                  >
+                  <Button onClick={applyFilters} disabled={selectedBaseId === ""}>
                     Aplicar Filtro
                   </Button>
                 </div>
@@ -71,12 +61,8 @@ export const ManHoursDashboard = () => {
                       <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[60px]">
                         {hasTorOccurrence && <TorOccurrencesBarChartCard />}
                         {hasTarOccurrence && <TarOccurrencesBarChartCard />}
-                        {hasNotAbsentOccurrence && (
-                          <TfsaOccurrencesBarChartCard />
-                        )}
-                        {hasAbsentOccurrencesOccurrence && (
-                          <TfcaOccurrencesBarChartCard />
-                        )}
+                        {hasNotAbsentOccurrence && <TfsaOccurrencesBarChartCard />}
+                        {hasAbsentOccurrencesOccurrence && <TfcaOccurrencesBarChartCard />}
                       </div>
                     )}
                     {isEmpty && (
@@ -84,8 +70,7 @@ export const ManHoursDashboard = () => {
                         <NotFound>
                           {
                             <p>
-                              Sem dados para o <strong>período</strong>{" "}
-                              selecionado
+                              Sem dados para o <strong>período</strong> selecionado
                             </p>
                           }
                         </NotFound>
@@ -107,3 +92,5 @@ export const ManHoursDashboard = () => {
     </ManHourDashboardProvider>
   );
 };
+
+export default ManHoursDashboard;
