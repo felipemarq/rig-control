@@ -6,6 +6,7 @@ export enum QueryKeys {
   CLIENTS = "clients",
   AVERAGE = "average",
   OCCURRENCES = "occurrences",
+  OCCURRENCES_ACTIONS = "occurrences-actions",
   OCCURRENCES_TAXES = "occurrences-taxes",
   TOTAL_OCCURRENCES_TAXES = "total-occurrences-taxes",
   MAN_HOURS = "man-hours",

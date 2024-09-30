@@ -2,8 +2,11 @@ import { Occurrence, OccurrenceType } from "@/app/entities/Occurrence";
 import {
   Cross,
   DownloadIcon,
+  Eye,
   HardHat,
+  List,
   Paperclip,
+  PlusCircle,
   TreePine,
   Waypoints,
 } from "lucide-react";
@@ -22,7 +25,8 @@ interface OccurrenceItemProps {
 }
 
 export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
-  const { openEditOccurrenceModal } = useOccurrencesContext();
+  const { openEditOccurrenceModal, openNewOccurrenceActionModal } =
+    useOccurrencesContext();
   const hasFile = occurrence.files.length > 0;
   return (
     <div
@@ -45,27 +49,70 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
           )}
         </div>
         <div className=" flex flex-col gap-2 ">
-          <span className="text-lg text-primary font-bold">
-            {occurrence.title}
-          </span>
-          <span className="text-primary">
-            {formatDate(new Date(occurrence.date))}
-          </span>
+          <span className="text-lg text-primary font-bold">{occurrence.title}</span>
+          <span className="text-primary">{formatDate(new Date(occurrence.date))}</span>
           <span className="text-primary">{occurrence.base.name}</span>
         </div>
       </div>
       <div className="flex gap-3 w-auto justify-end ">
-        <Button
-          className="border-primary text-primary border-2 rounded-md px-4 flex-1"
-          variant="ghost"
-          onClick={() => openEditOccurrenceModal(occurrence)}
-        >
-          Ver Detalhes
-        </Button>
+        {!occurrence.occurrenceActions[0] && (
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger>
+                {" "}
+                <div
+                  onClick={() => openNewOccurrenceActionModal(occurrence.id)}
+                  className="text-white bg-primary w-12 h-12 flex justify-center items-center rounded-md hover:bg-primaryAccent-400 duration-250 active:bg-primaryAccent-700 transition-all "
+                >
+                  <PlusCircle className="text-white" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Criar Plano de Ação</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+
+        {occurrence.occurrenceActions[0] && (
+          <TooltipProvider>
+            <Tooltip delayDuration={200}>
+              <TooltipTrigger>
+                {" "}
+                <div
+                  onClick={() => openNewOccurrenceActionModal(occurrence.id)}
+                  className="text-white bg-primary w-12 h-12 flex justify-center items-center rounded-md hover:bg-primaryAccent-400 duration-250 active:bg-primaryAccent-700 transition-all "
+                >
+                  <Eye className="text-white" />
+                </div>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Visualizar plano de ação</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        )}
+
+        <TooltipProvider>
+          <Tooltip delayDuration={100}>
+            <TooltipTrigger>
+              {" "}
+              <div
+                className="text-white bg-primary w-12 h-12 flex justify-center items-center rounded-md hover:bg-primaryAccent-400 duration-250 active:bg-primaryAccent-700 transition-all "
+                onClick={() => openEditOccurrenceModal(occurrence)}
+              >
+                <List className="text-white" />
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Ver Detalhes</p>
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
 
         {hasFile && (
           <TooltipProvider>
-            <Tooltip delayDuration={200}>
+            <Tooltip delayDuration={100}>
               <TooltipTrigger>
                 {" "}
                 <a

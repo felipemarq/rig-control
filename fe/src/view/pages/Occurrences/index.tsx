@@ -4,6 +4,7 @@ import { NewOccurrenceModal } from "./components/modals/NewOccurrenceModal";
 import { Header } from "@/view/components/Header";
 import { OccurrencesContainer } from "./components/OccurrencesContainer";
 import { EditOccurrenceModal } from "./components/modals/EditOccurrenceModal";
+import { NewOccurrenceActionModal } from "./components/modals/NewOccurrenceActionModal";
 
 const Occurrences = () => {
   return (
@@ -11,7 +12,12 @@ const Occurrences = () => {
       <OccurrencesContext.Consumer>
         {({ openNewOccurrenceModal, occurrenceBeingSeen }) => (
           <div className="w-full h-full overflow-y-auto">
-            <Header className="mt-4" title="Segurança" displayRig={false} displayPeriodRange={false}>
+            <Header
+              className="mt-4"
+              title="Segurança"
+              displayRig={false}
+              displayPeriodRange={false}
+            >
               <Button onClick={openNewOccurrenceModal} className="rounded-md  w-56">
                 Nova ocorrência
               </Button>
@@ -20,6 +26,8 @@ const Occurrences = () => {
             <OccurrencesContainer />
 
             <NewOccurrenceModal />
+
+            <NewOccurrenceActionModal />
 
             {occurrenceBeingSeen && <EditOccurrenceModal />}
           </div>

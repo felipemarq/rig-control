@@ -18,6 +18,11 @@ interface OccurrencesContextValue {
   closeNewOccurrenceModal(): void;
   openNewOccurrenceModal(): void;
 
+  isNewOccurrenceActionModalOpen: boolean;
+  closeNewOccurrenceActionModal(): void;
+  openNewOccurrenceActionModal(occurenceId: string): void;
+  occurenceIdActionPlanBeingSeen: string | null;
+
   isEditOccurrenceModalOpen: boolean;
   closeEditOccurrenceModal(): void;
   openEditOccurrenceModal(occurrence: Occurrence): void;
@@ -41,27 +46,20 @@ interface OccurrencesContextValue {
 // Criação do contexto
 export const OccurrencesContext = createContext({} as OccurrencesContextValue);
 
-export const OccurrencesProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const OccurrencesProvider = ({ children }: { children: React.ReactNode }) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
   const currentDate = new Date();
   const firstDayOfYear = startOfYear(currentDate);
   const lastDayOfYear = endOfYear(currentDate);
-  const formattedFirstDay = format(
-    firstDayOfYear,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfYear,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
+  const formattedFirstDay = format(firstDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  const formattedLastDay = format(lastDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
   const [selectedStartDate] = useState<string>(formattedFirstDay);
   const [selectedEndDate] = useState<string>(formattedLastDay);
+  const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] = useState<
+    string | null
+  >(null);
 
   const { bases, isFetchingBases } = useBases();
 
@@ -75,16 +73,10 @@ export const OccurrencesProvider = ({
     startDate: selectedStartDate,
     endDate: selectedEndDate,
   });
-  const {
-    isFetchingOccurrences,
-    occurrences,
-    isInitialLoading,
-    refetchOccurrences,
-  } = useOccurrences(filters);
+  const { isFetchingOccurrences, occurrences, isInitialLoading, refetchOccurrences } =
+    useOccurrences(filters);
 
-  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(
-    filter: TFilter
-  ) {
+  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(filter: TFilter) {
     return (value: OccurrenceFilters[TFilter]) => {
       if (value === filters[filter]) return;
 
@@ -112,14 +104,14 @@ export const OccurrencesProvider = ({
     });
   };
 
-  const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] =
+  const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] = useState(false);
+
+  const [isNewOccurrenceActionModalOpen, setIsNewOccurrenceActionModalOpen] =
     useState(false);
 
-  const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] =
-    useState(false);
+  const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] = useState(false);
 
-  const [occurrenceBeingSeen, setOccurrenceBeingSeen] =
-    useState<null | Occurrence>(null);
+  const [occurrenceBeingSeen, setOccurrenceBeingSeen] = useState<null | Occurrence>(null);
 
   const closeNewOccurrenceModal = useCallback(() => {
     setIsNewOccurrenceModalOpen(false);
@@ -127,6 +119,16 @@ export const OccurrencesProvider = ({
 
   const openNewOccurrenceModal = useCallback(() => {
     setIsNewOccurrenceModalOpen(true);
+  }, []);
+
+  const openNewOccurrenceActionModal = useCallback((occurenceId: string) => {
+    setIsNewOccurrenceActionModalOpen(true);
+    setOccurenceIdActionPlanBeingSeen(occurenceId);
+  }, []);
+
+  const closeNewOccurrenceActionModal = useCallback(() => {
+    setIsNewOccurrenceActionModalOpen(false);
+    setOccurenceIdActionPlanBeingSeen(null);
   }, []);
 
   const closeEditOccurrenceModal = useCallback(() => {
@@ -146,7 +148,10 @@ export const OccurrencesProvider = ({
         isFetchingOccurrences,
         isInitialLoading,
         occurrences,
-
+        closeNewOccurrenceActionModal,
+        isNewOccurrenceActionModalOpen,
+        occurenceIdActionPlanBeingSeen,
+        openNewOccurrenceActionModal,
         isNewOccurrenceModalOpen,
         closeNewOccurrenceModal,
         openNewOccurrenceModal,

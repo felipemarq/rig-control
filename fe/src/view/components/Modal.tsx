@@ -10,6 +10,7 @@ interface ModalProps {
   onClose?(): void;
   maxWidth?: string;
   overflow?: boolean;
+  className?: string;
 }
 
 export const Modal = ({
@@ -19,6 +20,7 @@ export const Modal = ({
   onClose,
   maxWidth,
   overflow,
+  className,
 }: ModalProps) => {
   return (
     <Dialog.Root open={open} onOpenChange={onClose}>
@@ -35,7 +37,8 @@ export const Modal = ({
             "p-6 space-y-10 bg-white rounded-2xl",
             "shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full",
             maxWidth ? `max-w-[${maxWidth}]` : "max-w-[800px]",
-            overflow && "max-h-[90vh] overflow-y-auto scrollbar-hide"
+            overflow && "max-h-[90vh] overflow-y-auto scrollbar-hide",
+            className
           )}
         >
           <header className="relative h-12 flex items-center justify-center text-gray-800 ">

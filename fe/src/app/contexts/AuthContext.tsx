@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
 
-  const isUserSms = data?.email === ("rommelcaldas@conterp.com.br" || "bianca@conterp.com.br");
+  const isUserSms = data?.email === "rommelcaldas@conterp.com.br" || data?.email === "bianca@conterp.com.br";
 
   const userAccessLevel = data?.accessLevel!;
 

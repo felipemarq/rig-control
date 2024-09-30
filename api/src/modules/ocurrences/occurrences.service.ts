@@ -162,6 +162,18 @@ export class OccurrencesService {
             path: true,
           },
         },
+        occurrenceActions: {
+          select: {
+            id: true,
+            occurrenceId: true,
+            title: true,
+            dueDate: true,
+            responsible: true,
+            description: true,
+            isFinished: true,
+            createdAt: true,
+          },
+        },
       },
       orderBy: {
         date: 'desc',
