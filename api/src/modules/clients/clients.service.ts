@@ -19,7 +19,6 @@ export class ClientsService {
   }
 
   async findAll() {
-    console.log('Caiu aqui');
     return await this.clientsRepo.findMany({});
   }
 

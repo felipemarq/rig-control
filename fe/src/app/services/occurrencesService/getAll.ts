@@ -27,7 +27,6 @@ export type OccurrenceFilters = {
 export type OccurrencesResponse = Array<Occurrence>;
 
 export const getAll = async (filters: OccurrenceFilters) => {
-  console.log("OccurenceFilters", filters)
   const { data } = await httpClient.get<OccurrencesResponse>(`/occurrences/`, {
     params: filters,
   });

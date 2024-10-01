@@ -288,8 +288,6 @@ export class EfficienciesService {
         // Find the corresponding well ID in the wells array
         const { id: wellIdFound } = wells.find(({ name }) => wellId === name);
 
-        console.log(wellId);
-
         // Update wellId for the current period
         periods[index].wellId = wellIdFound;
 

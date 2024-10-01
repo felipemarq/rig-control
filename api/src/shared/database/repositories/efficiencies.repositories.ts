@@ -70,7 +70,6 @@ export class EfficienciesRepository {
   }
 
   async getWellsCountByRig(rigId: string, year: number) {
-    console.log(year);
     const results: any = await this.prisma.$queryRaw`
     SELECT
       r.name as rig_name,

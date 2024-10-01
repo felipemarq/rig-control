@@ -5,10 +5,7 @@ interface GrouppedRepairPieChartProps {
   data: EquipmentData[];
 }
 
-export const GrouppedRepairPieChart = ({
-  data,
-}: GrouppedRepairPieChartProps) => {
-  console.log("data in chart", data);
+export const GrouppedRepairPieChart = ({ data }: GrouppedRepairPieChartProps) => {
   return (
     <ResponsivePie
       data={data}
@@ -64,9 +61,7 @@ export const GrouppedRepairPieChart = ({
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      arcLabel={(value) =>
-        value.data.percentage < 15 ? "" : `${value.data.label}`
-      }
+      arcLabel={(value) => (value.data.percentage < 15 ? "" : `${value.data.label}`)}
       /* onClick={(event) =>
         handleFilterPeriods("REPAIR", event.data.classification)
       }

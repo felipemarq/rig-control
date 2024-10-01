@@ -1,5 +1,14 @@
 import { useAuth } from "@/app/hooks/useAuth";
-import { History, LifeBuoy, Send, Settings2, Star, Workflow, CircleDollarSign, Shield } from "lucide-react";
+import {
+  History,
+  LifeBuoy,
+  Send,
+  Settings2,
+  Star,
+  Workflow,
+  CircleDollarSign,
+  Shield,
+} from "lucide-react";
 
 import whiteIcon from "@/assets/images/white-icon.png";
 import { useMemo } from "react";
@@ -9,7 +18,7 @@ const Image = () => {
 };
 
 export const useAppsidebar = () => {
-  const { user, signout, isUserAdm, isUserSms } = useAuth();
+  const { user, signout, isUserAdm, isUserSms, isUserViewer } = useAuth();
   const admData = {
     teams: [
       {
@@ -211,6 +220,58 @@ export const useAppsidebar = () => {
     searchResults: [],
   };
 
+  const viewerData = {
+    teams: [
+      {
+        name: "Conterp",
+        logo: Image,
+        plan: "Enterprise",
+      },
+    ],
+    navMain: [
+      {
+        title: "Operação",
+        url: "#",
+        icon: Workflow,
+        isActive: true,
+        items: [
+          {
+            title: "Dashboard por Sonda",
+            url: "/dashboard",
+            icon: Star,
+            description: "Browse your starred prompts",
+          },
+          {
+            title: "Listar Ocorrências",
+            url: "/list",
+            icon: Settings2,
+            description: "Configure your playground",
+          },
+          {
+            title: "Relatório de Períodos",
+            url: "/reports",
+            icon: Settings2,
+            description: "Configure your playground",
+          },
+        ],
+      },
+    ],
+    navSecondary: [
+      {
+        title: "Support",
+        url: "#",
+        icon: LifeBuoy,
+      },
+      {
+        title: "Feedback",
+        url: "#",
+        icon: Send,
+      },
+    ],
+    projects: [],
+    searchResults: [],
+  };
+
   const smsData = {
     teams: [
       {
@@ -302,6 +363,10 @@ export const useAppsidebar = () => {
 
     if (isUserSms) {
       return smsData;
+    }
+
+    if (isUserViewer) {
+      return viewerData;
     }
 
     return userData;

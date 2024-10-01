@@ -102,17 +102,16 @@ export const useNewOccurrenceActionModal = () => {
       mutationFn: occurrencesActionsService.create,
     });
 
-  const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
-    useMutation({
-      mutationFn: filesService.create,
-    });
+  const { isPending: isLoadingUploadFile } = useMutation({
+    mutationFn: filesService.create,
+  });
 
   //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("data", data);
     try {
-      const occurrence = await mutateNewOccurrenceAsync({
+      await mutateNewOccurrenceAsync({
         dueDate: data.dueDate?.toISOString(),
         description: data.description,
         isFinished: data.isFinished,
@@ -121,12 +120,12 @@ export const useNewOccurrenceActionModal = () => {
         title: data.title,
       });
 
-      if (file) {
+      /* if (file) {
         await mutateUploadFileAsync({
           occurrenceId: occurrence.id,
           file: file,
         });
-      }
+      } */
 
       setFile(null);
 

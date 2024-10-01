@@ -23,7 +23,11 @@ export class BillingsConfigurationController {
   @Post()
   create(
     @Body() createBillingsConfigurationDto: CreateBillingsConfigurationDto,
+    @IsUserAdm() isUserAdm: boolean,
   ) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
     return this.billingsConfigurationService.create(
       createBillingsConfigurationDto,
     );

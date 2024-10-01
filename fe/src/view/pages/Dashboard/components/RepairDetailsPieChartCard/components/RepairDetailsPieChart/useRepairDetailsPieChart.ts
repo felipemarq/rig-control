@@ -14,8 +14,7 @@ export type PieChartData = {
 }[];
 
 export const useRepairDetailsPieChart = () => {
-  const { repairPeriods, selectedEquipment, handleFilterPeriods } =
-    useDashboard();
+  const { repairPeriods, selectedEquipment, handleFilterPeriods } = useDashboard();
 
   const pieChartColors = [
     "#1c7b7b", // primary 500
@@ -47,8 +46,7 @@ export const useRepairDetailsPieChart = () => {
 
       const parsedStartHour = parseHour(current.startHour);
       const parsedEndHour = parseHour(current.endHour);
-      const diffInHours =
-        differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+      const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
       totalHours += Number(diffInHours.toFixed(2));
 
@@ -78,8 +76,6 @@ export const useRepairDetailsPieChart = () => {
       ...data,
       percentage: Number(((data.value / totalHours) * 100).toFixed(2)),
     }));
-
-  console.log("chartDataDetails", chartData);
 
   return {
     chartData,

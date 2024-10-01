@@ -4,7 +4,6 @@ import { QueryKeys } from "@/app/config/QueryKeys";
 import { OccurrenceFilters } from "@/app/services/occurrencesService/getAll";
 
 export const useOccurrences = (filters: OccurrenceFilters) => {
-  console.log("Filters", filters);
   const { data, isFetching, refetch, isLoading } = useQuery({
     queryKey: [QueryKeys.OCCURRENCES],
     queryFn: () => occurrencesService.getAll(filters),

@@ -219,9 +219,10 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     mutationFn: efficienciesService.create,
   });
 
-  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } = useMutation({
-    mutationFn: temporaryEfficienciesServices.create,
-  });
+  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } =
+    useMutation({
+      mutationFn: temporaryEfficienciesServices.create,
+    });
 
   const queryClient = useQueryClient();
 
@@ -254,8 +255,6 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       mobilizationPlace,
       isSuckingTruckSelected,
     });
-
-    console.log("To Persistance Obj :", toPersistenceObj);
 
     try {
       await mutateAsync(toPersistenceObj);
@@ -456,7 +455,9 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleRepairClassification = (id: string, repairClassification: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, repairClassification: repairClassification } : period;
+      return period.id === id
+        ? { ...period, repairClassification: repairClassification }
+        : period;
     });
 
     setPeriods(newPeriods);
@@ -480,7 +481,9 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
 
   const updatePeriodState = (id: string, state: boolean) => {
     const newStates = periodsState.map(({ periodId, isCollapsed }) => {
-      return periodId === id ? { periodId, isCollapsed: state } : { periodId, isCollapsed };
+      return periodId === id
+        ? { periodId, isCollapsed: state }
+        : { periodId, isCollapsed };
     });
 
     setPeriodsState(newStates);
@@ -540,7 +543,9 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     return intDays;
   };
 
-  const isDateValid = date ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date()) : false;
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())
+    : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
@@ -618,8 +623,10 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
   const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
   const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
-  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] = useState(false);
-  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] = useState(false);
+  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
+    useState(false);
+  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
+    useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
   const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
@@ -633,7 +640,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
   const [mobilizationPlace, setMobilizationPlace] = useState("");
   const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(false);
-  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] = useState<string>("");
+  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] =
+    useState<string>("");
   const [bobRentHours, setBobRentHours] = useState<string>("");
 
   const handleMixTankCheckBox = () => {
@@ -677,9 +685,12 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     setIsTankMixMobilizationSelected((prevState) => !prevState);
   }, []);
 
-  const handleChristmasTreeDisassemblyHours = useCallback((_time: Dayjs | null, timeString: string) => {
-    setChristmasTreeDisassemblyHours(timeString);
-  }, []);
+  const handleChristmasTreeDisassemblyHours = useCallback(
+    (_time: Dayjs | null, timeString: string) => {
+      setChristmasTreeDisassemblyHours(timeString);
+    },
+    []
+  );
 
   //===========================================
 

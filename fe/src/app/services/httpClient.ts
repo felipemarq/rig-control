@@ -4,7 +4,7 @@ import { localStorageKeys } from "../config/localStorageKeys";
 //import { timeout } from "../utils/timeout";
 
 export const httpClient = axios.create({
-  baseURL: "http://localhost:3000/",
+  baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
 httpClient.interceptors.request.use(async (config) => {

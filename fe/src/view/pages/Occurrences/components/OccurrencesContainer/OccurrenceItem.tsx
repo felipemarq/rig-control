@@ -11,7 +11,6 @@ import {
   Waypoints,
 } from "lucide-react";
 import { formatDate } from "@/app/utils/formatDate";
-import { Button } from "@/view/components/Button";
 import { useOccurrencesContext } from "../OccurrencesContext/useOccurencesContext";
 import {
   Tooltip,

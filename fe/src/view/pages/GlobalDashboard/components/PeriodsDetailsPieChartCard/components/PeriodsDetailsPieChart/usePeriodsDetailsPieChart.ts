@@ -16,7 +16,6 @@ export const usePeriodsDetailsPieChart = () => {
     selectedPieChartView,
     handleCloseDetailsGraph,
     handleSelectedDetailPieChartViewChange,
-    selectedDetailPieChartView,
   } = useGlobalDashboard();
 
   const pieChartColors = [
@@ -46,8 +45,7 @@ export const usePeriodsDetailsPieChart = () => {
       const parsedStartHour = parseHour(current.startHour);
       const parsedEndHour = parseHour(current.endHour);
 
-      const diffInHours =
-        differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+      const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
       if (!foundItem) {
         acc.push({
@@ -69,9 +67,6 @@ export const usePeriodsDetailsPieChart = () => {
 
       return acc;
     }, []);
-
-  console.log("ChartData", chartData);
-  console.log("selectedDetailPieChartView", selectedDetailPieChartView);
 
   return {
     chartData,
