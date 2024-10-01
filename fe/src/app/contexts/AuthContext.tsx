@@ -17,6 +17,7 @@ interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
   isUserSms: boolean;
+  isUserViewer: boolean;
   userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
@@ -57,7 +58,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
 
-  const isUserSms = data?.email === ("rommelcaldas@conterp.com.br" || "bianca@conterp.com.br");
+  const isUserSms =
+    data?.email === "rommelcaldas@conterp.com.br" ||
+    data?.email === "bianca@conterp.com.br";
+
+  const isUserViewer = data?.accessLevel === "VIEWER";
 
   const userAccessLevel = data?.accessLevel!;
 
@@ -101,6 +106,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user: data,
         isUserAdm,
         isUserSms,
+        isUserViewer,
         userAccessLevel,
         isWrongVersion,
       }}

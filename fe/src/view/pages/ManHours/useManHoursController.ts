@@ -51,11 +51,7 @@ export const useManHoursController = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAN_HOURS] });
 
-      customColorToast(
-        "Registro atualizado com Sucesso!",
-        "#1c7b7b",
-        "success"
-      );
+      customColorToast("Registro atualizado com Sucesso!", "#1c7b7b", "success");
 
       refetchManHours();
     } catch (error: any | typeof AxiosError) {
@@ -65,12 +61,7 @@ export const useManHoursController = () => {
     }
   };
 
-  console.log(manHours);
-
-  const dataGridData: TransformedManHoursData[] =
-    transformManHoursData(manHours);
-
-  console.log(dataGridData);
+  const dataGridData: TransformedManHoursData[] = transformManHoursData(manHours);
 
   return {
     dataGridData,

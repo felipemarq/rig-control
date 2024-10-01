@@ -1,3 +1,4 @@
+import { OccurrenceAction } from "./OccurrenceAction";
 import { OccurrenceSeverity } from "./OccurrenceSeverity";
 import { UF } from "./Rig";
 
@@ -42,4 +43,5 @@ export type Occurrence = {
     name: string;
     state: UF;
   };
+  occurrenceActions: Array<OccurrenceAction>;
 };

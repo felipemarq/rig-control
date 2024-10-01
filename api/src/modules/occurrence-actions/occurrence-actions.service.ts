@@ -13,24 +13,42 @@ export class OccurrenceActionsService {
   async create(createOccurrenceActionDto: CreateOccurrenceActionDto) {
     const occurrence = await this.occurrenceRepo.findUnique({
       where: { id: createOccurrenceActionDto.occurrenceId },
+      include: { occurrenceActions: true },
     });
 
     if (!occurrence) {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
+    //@ts-ignore
+    if (occurrence.occurrenceActions[0]) {
+      throw new NotFoundException(
+        'Ocorrência já tem um plano de ação vinculado!',
+      );
+    }
+
     return await this.occurrenceActionsRepo.create({
       data: createOccurrenceActionDto,
+      include: {
+        files: true,
+      },
     });
   }
 
   async findAll() {
-    return await this.occurrenceActionsRepo.findMany({});
+    return await this.occurrenceActionsRepo.findMany({
+      include: {
+        files: true,
+      },
+    });
   }
 
   async findOne(occurrenceId: string) {
     const occurrenceAction = await this.occurrenceActionsRepo.findUnique({
       where: { id: occurrenceId },
+      include: {
+        files: true,
+      },
     });
 
     if (!occurrenceAction) {

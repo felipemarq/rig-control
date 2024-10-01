@@ -42,28 +42,22 @@ export const useUpdateUserRigs = (id: string) => {
   }, [id]);
 
   useEffect(() => {
-    const userRigs = userBeingEdited?.rigs.map(
-      ({ rig: { id, name, isAtive } }) => ({
-        id,
-        name,
-        isActive: isAtive,
-      })
-    )!;
+    const userRigs = userBeingEdited?.rigs.map(({ rig: { id, name, isAtive } }) => ({
+      id,
+      name,
+      isActive: isAtive,
+    }))!;
 
     const contractRigs = rigs;
 
     const availableRigs = contractRigs
-      ? contractRigs.filter(
-          (rig) => !userRigs.some((userRig) => userRig.id === rig.id)
-        )
+      ? contractRigs.filter((rig) => !userRigs.some((userRig) => userRig.id === rig.id))
       : [];
 
     setAvailableRigs(availableRigs);
 
     setUserRigs(userRigs);
   }, [userBeingEdited, rigs]);
-
-  console.log(userRigs);
 
   const handleLinkRig = (rigId: string) => {
     const rig = availableRigs.find((rig) => rig.id === rigId)!;
