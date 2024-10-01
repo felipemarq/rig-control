@@ -11,7 +11,7 @@ const List = () => {
     useListController();
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full ">
       <Header title="LISTAGEM" displayRig>
         <CustomFilterSheet
           isLoading={isFetchingEfficiencies}
@@ -19,7 +19,7 @@ const List = () => {
         />
       </Header>
 
-      <div className="w-full h-full  mt-5 max-w-[1400px] flex justify-center  ">
+      <div className="w-full h-full  mt-5 max-w-[1400px] flex justify-center ">
         {isFetchingEfficiencies && (
           <div className="lg:w-[70vw] lg:h-[70vh] bg-card p-2 rounded-md flex justify-center items-center">
             <Spinner className="h-12 w-12" />
@@ -28,7 +28,7 @@ const List = () => {
 
         {!isFetchingEfficiencies && (
           <div className="h-full  p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[80vh]">
-            <Card className="w-full h-full ">
+            <Card className="w-full h-full  overflow-y-auto ">
               <CardHeader></CardHeader>
 
               {efficiencies.length > 0 && (
