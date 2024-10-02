@@ -172,6 +172,11 @@ export class OccurrencesService {
             description: true,
             isFinished: true,
             createdAt: true,
+            files: {
+              select: {
+                path: true,
+              },
+            },
           },
         },
       },

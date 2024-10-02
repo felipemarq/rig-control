@@ -21,11 +21,11 @@ const schema = z.object({
 
 export type FormData = z.infer<typeof schema>;
 
-export const useNewOccurrenceActionModal = () => {
+export const useEditOccurrenceActionModal = () => {
   const {
-    closeNewOccurrenceActionModal,
-    isNewOccurrenceActionModalOpen,
-    occurenceIdActionPlanBeingSeen,
+    closeEditOccurrenceActionModal,
+    isEditOccurrenceActionModalOpen,
+    occurrenceActionBeingSeen,
   } = useOccurrencesContext();
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -76,6 +76,13 @@ export const useNewOccurrenceActionModal = () => {
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      description: occurrenceActionBeingSeen?.description,
+      dueDate: new Date(occurrenceActionBeingSeen?.dueDate!),
+      isFinished: occurrenceActionBeingSeen?.isFinished,
+      responsible: occurrenceActionBeingSeen?.responsible,
+      title: occurrenceActionBeingSeen?.title,
+    },
   });
 
   /*  console.log("selectedSeverity", selectedSeverity);
@@ -88,10 +95,9 @@ export const useNewOccurrenceActionModal = () => {
 
   const queryClient = useQueryClient();
 
-  const { isPending: isLoadingNewOccurrence, mutateAsync: mutateNewOccurrenceAsync } =
-    useMutation({
-      mutationFn: occurrencesActionsService.create,
-    });
+  const { isPending: isLoadingUpdateOccurrenceAction, mutateAsync } = useMutation({
+    mutationFn: occurrencesActionsService.update,
+  });
 
   const { isPending: isLoadingUploadFile, mutateAsync: mutateUploadFileAsync } =
     useMutation({
@@ -103,11 +109,12 @@ export const useNewOccurrenceActionModal = () => {
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("data", data);
     try {
-      const occurrenceAction = await mutateNewOccurrenceAsync({
+      const occurrenceAction = await mutateAsync({
+        id: occurrenceActionBeingSeen?.id!,
         dueDate: data.dueDate?.toISOString(),
         description: data.description,
         isFinished: data.isFinished,
-        occurrenceId: occurenceIdActionPlanBeingSeen!,
+        occurrenceId: occurrenceActionBeingSeen?.occurrenceId!,
         responsible: data.responsible,
         title: data.title,
       });
@@ -126,7 +133,7 @@ export const useNewOccurrenceActionModal = () => {
       }
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
-      closeNewOccurrenceActionModal();
+      closeEditOccurrenceActionModal();
       customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
@@ -135,12 +142,17 @@ export const useNewOccurrenceActionModal = () => {
     }
   });
 
+  console.log("Occurrence Being Seen", occurrenceActionBeingSeen);
+
+  const hasFile = true;
+
   return {
-    closeNewOccurrenceActionModal,
-    isNewOccurrenceActionModalOpen,
+    closeEditOccurrenceActionModal,
+    isEditOccurrenceActionModalOpen,
+    occurrenceActionBeingSeen,
     control,
     handleSubmit,
-    isLoadingNewOccurrence: isLoadingUploadFile || isLoadingNewOccurrence,
+    isLoadingNewOccurrence: isLoadingUploadFile || isLoadingUpdateOccurrenceAction,
     errors,
     handleFileSelected,
     handleDrop,
@@ -148,5 +160,6 @@ export const useNewOccurrenceActionModal = () => {
     file,
     isDragging,
     handleDragLeave,
+    hasFile,
   };
 };

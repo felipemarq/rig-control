@@ -5,12 +5,13 @@ import { Header } from "@/view/components/Header";
 import { OccurrencesContainer } from "./components/OccurrencesContainer";
 import { EditOccurrenceModal } from "./components/modals/EditOccurrenceModal";
 import { NewOccurrenceActionModal } from "./components/modals/NewOccurrenceActionModal";
+import { EditOccurrenceActionModal } from "./components/modals/EditOccurrenceActionModal";
 
 const Occurrences = () => {
   return (
     <OccurrencesProvider>
       <OccurrencesContext.Consumer>
-        {({ openNewOccurrenceModal, occurrenceBeingSeen }) => (
+        {({ openNewOccurrenceModal, occurrenceBeingSeen, occurrenceActionBeingSeen }) => (
           <div className="w-full h-full overflow-y-auto">
             <Header
               className="mt-4"
@@ -30,6 +31,8 @@ const Occurrences = () => {
             <NewOccurrenceActionModal />
 
             {occurrenceBeingSeen && <EditOccurrenceModal />}
+
+            {occurrenceActionBeingSeen && <EditOccurrenceActionModal />}
           </div>
         )}
       </OccurrencesContext.Consumer>

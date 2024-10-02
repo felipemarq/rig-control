@@ -42,12 +42,8 @@ const schema = z.object({
 export type FormData = z.infer<typeof schema>;
 
 export const useNewOccurrenceModal = () => {
-  const {
-    closeNewOccurrenceModal,
-    isNewOccurrenceModalOpen,
-    bases,
-    isFetchingBases,
-  } = useOccurrencesContext();
+  const { closeNewOccurrenceModal, isNewOccurrenceModalOpen, bases, isFetchingBases } =
+    useOccurrencesContext();
 
   const [selectedHour, setSelectHour] = useState<string>("00:00");
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -140,16 +136,14 @@ export const useNewOccurrenceModal = () => {
     label: name,
   }));
 
-  const {
-    isPending: isLoadingNewOccurrence,
-    mutateAsync: mutateNewOccurrenceAsync,
-  } = useMutation({
-    mutationFn: occurrencesService.create,
-  });
+  const { isPending: isLoadingNewOccurrence, mutateAsync: mutateNewOccurrenceAsync } =
+    useMutation({
+      mutationFn: occurrencesService.create,
+    });
 
   const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
     useMutation({
-      mutationFn: filesService.create,
+      mutationFn: filesService.uploadOccurrenceFile,
     });
 
   //console.log("errors", errors);

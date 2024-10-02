@@ -36,10 +36,11 @@ export const Modal = ({
             "fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 z-[99]",
             "p-6 space-y-10 bg-white rounded-2xl",
             "shadow-[0px_11px_20px_0px_rgba(0,0,0,0.10)] w-full",
-            maxWidth ? `max-w-[${maxWidth}]` : "max-w-[800px]",
+
             overflow && "max-h-[90vh] overflow-y-auto scrollbar-hide",
             className
           )}
+          style={{ maxWidth: maxWidth || "800px" }}
         >
           <header className="relative h-12 flex items-center justify-center text-gray-800 ">
             <span className="absolute left-1/2 transform -translate-x-1/2 text-lg tracking-[-1px] font-bold">

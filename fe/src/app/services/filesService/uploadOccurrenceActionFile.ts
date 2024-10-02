@@ -1,18 +1,18 @@
 import { httpClient } from "../httpClient";
 
-export interface occurenceUploadFileParams {
-  occurrenceId: string;
+export interface occurenceActionUploadFileParams {
+  occurrenceActionId: string;
   file: File;
 }
 
 const formData = new FormData();
-export const create = async ({
-  occurrenceId,
+export const uploadOccurrenceActionFile = async ({
+  occurrenceActionId,
   file,
-}: occurenceUploadFileParams) => {
+}: occurenceActionUploadFileParams) => {
   formData.append("file", file);
   const { data } = await httpClient.post(
-    `file/occurrence/${occurrenceId}`,
+    `file/occurrence-action/${occurrenceActionId}`,
     formData,
     {
       headers: {

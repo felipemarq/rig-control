@@ -8,6 +8,7 @@ import {
 import { randomUUID } from 'crypto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { FilesRepository } from 'src/shared/database/repositories/files.repositories';
+import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
 
 interface OccurrenceWithFiles {
   id: string;
@@ -29,6 +30,7 @@ export class FileService {
   constructor(
     private readonly configService: ConfigService,
     private readonly occurrencesRepo: OccurrenceRepository,
+    private readonly occurrencesActionsRepo: OccurrenceActionsRepository,
     private readonly filesRepo: FilesRepository,
   ) {}
 
@@ -70,9 +72,66 @@ export class FileService {
     });
   }
 
+  async uploadOccurenceActionFile(
+    file: Express.Multer.File,
+    userId: string,
+    occurrenceActionId: string,
+  ) {
+    const occurrenceAction = (await this.occurrencesActionsRepo.findUnique({
+      where: { id: occurrenceActionId },
+      select: { id: true, files: true },
+    })) as unknown as OccurrenceWithFiles;
+
+    if (!occurrenceAction) {
+      throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    if (occurrenceAction.files.length > 0) {
+      await this.deleteOccurenceActionFile(occurrenceActionId);
+      await this.filesRepo.deleteMany({ where: { occurrenceActionId } });
+    }
+
+    const awsKey = `${occurrenceActionId}-${file.originalname}`;
+
+    await this.s3Client.send(
+      new PutObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+        Body: file.buffer,
+      }),
+    );
+
+    await this.filesRepo.create({
+      data: {
+        path: `https://conterp-file-uploader.s3.amazonaws.com/${awsKey}`,
+        userId,
+        occurrenceActionId: occurrenceAction.id,
+      },
+    });
+  }
   async deleteOccurenceFile(occurrenceId: string) {
     const file = await this.filesRepo.findFirst({
       where: { occurrenceId: occurrenceId },
+    });
+
+    if (!file) {
+      return;
+      // throw new NotFoundException('Arquivo não encontrado!');
+    }
+
+    const awsKey = file.path.split('/')[3];
+
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+      }),
+    );
+  }
+
+  async deleteOccurenceActionFile(occurrenceActionId: string) {
+    const file = await this.filesRepo.findFirst({
+      where: { occurrenceActionId: occurrenceActionId },
     });
 
     if (!file) {
