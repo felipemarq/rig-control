@@ -24,8 +24,11 @@ interface OccurrenceItemProps {
 }
 
 export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
-  const { openEditOccurrenceModal, openNewOccurrenceActionModal } =
-    useOccurrencesContext();
+  const {
+    openEditOccurrenceModal,
+    openNewOccurrenceActionModal,
+    openEditOccurrenceActionModal,
+  } = useOccurrencesContext();
   const hasFile = occurrence.files.length > 0;
   return (
     <div
@@ -79,7 +82,9 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
               <TooltipTrigger>
                 {" "}
                 <div
-                  onClick={() => openNewOccurrenceActionModal(occurrence.id)}
+                  onClick={() =>
+                    openEditOccurrenceActionModal(occurrence.occurrenceActions[0])
+                  }
                   className="text-white bg-primary w-12 h-12 flex justify-center items-center rounded-md hover:bg-primaryAccent-400 duration-250 active:bg-primaryAccent-700 transition-all "
                 >
                   <Eye className="text-white" />

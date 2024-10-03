@@ -106,9 +106,7 @@ export const EditOccurrenceModal = () => {
                   placeholder="Hora do ocorrido"
                   className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
                   defaultValue={dayjs(selectedHour, "HH:mm")}
-                  onChange={(_time, timeString) =>
-                    handleHourChange(timeString as string)
-                  }
+                  onChange={(_time, timeString) => handleHourChange(timeString as string)}
                   format={"HH:mm"}
                 />
               </div>
@@ -337,9 +335,7 @@ export const EditOccurrenceModal = () => {
 
                     <span className="text-black">
                       {!isDragging && !hasFile && "Anexar arquivo"}
-                      {!isDragging && hasFile && (
-                        <span>{fileName?.substring(84)}</span>
-                      )}
+                      {!isDragging && hasFile && <span>{fileName?.substring(84)}</span>}
 
                       {isDragging && " Solte o arquivo para fazer o upload"}
                     </span>

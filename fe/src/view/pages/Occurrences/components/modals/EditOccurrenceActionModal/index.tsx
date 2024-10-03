@@ -1,19 +1,19 @@
 import { Modal } from "@/view/components/Modal";
-import { useNewOccurrenceActionModal } from "./useNewOccurrenceActionModal";
 import { Button } from "@/view/components/Button";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
 import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
-import { FileUp, Hand } from "lucide-react";
+import { DownloadIcon, FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Input } from "@/view/components/Input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { useEditOccurrenceActionModal } from "./useEditOccurrenceActionModal";
 
-export const NewOccurrenceActionModal = () => {
+export const EditOccurrenceActionModal = () => {
   const {
-    closeNewOccurrenceActionModal,
-    isNewOccurrenceActionModalOpen,
+    closeEditOccurrenceActionModal,
+    isEditOccurrenceActionModalOpen,
     handleSubmit,
     control,
     errors,
@@ -24,14 +24,17 @@ export const NewOccurrenceActionModal = () => {
     isDragging,
     file,
     handleDragLeave,
-  } = useNewOccurrenceActionModal();
+    occurrenceActionBeingSeen,
+    hasFile,
+  } = useEditOccurrenceActionModal();
 
   return (
     <Modal
-      title="Novo Plano de Ação"
-      open={isNewOccurrenceActionModalOpen}
-      onClose={closeNewOccurrenceActionModal}
+      title="Plano de Ação"
+      open={isEditOccurrenceActionModalOpen}
+      onClose={closeEditOccurrenceActionModal}
       overflow
+      maxWidth="600px"
     >
       <form onSubmit={handleSubmit}>
         <div className="mt-10 flex flex-col gap-4 ">
@@ -113,7 +116,7 @@ export const NewOccurrenceActionModal = () => {
               <TextArea
                 maxLength={5000}
                 style={{
-                  height: 200,
+                  height: 100,
                   resize: "vertical",
                   // border: "none",
                 }}
@@ -126,55 +129,82 @@ export const NewOccurrenceActionModal = () => {
             )}
           />
           <div className="flex flex-col gap-4">
-            <div className="xs:w-full lg:col-span-4 h-32  ">
-              <label
-                htmlFor="file"
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
-                onDragLeave={handleDragLeave}
-                className={cn(
-                  "border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200",
-                  isDragging && "bg-gray-200"
-                )}
+            {hasFile && (
+              <a
+                href={occurrenceActionBeingSeen?.files[0]?.path}
+                className="h-32 border relative flex rounded-md  cursor-pointer bg-white  w-full  border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200 "
               >
-                {file && (
-                  <div className="flex flex-col gap-4 items-center justify-center">
-                    <FileUp className="w-8 h-8 text-clack" />
-                    <div>{file.name}</div>
-                  </div>
-                )}
-                {!file && (
-                  <div className="flex flex-col gap-4 items-center">
-                    {!isDragging && <FileUp className="w-8 h-8 text-clack" />}
-                    {isDragging && <Hand className="w-8 h-8 text-clack" />}
+                <DownloadIcon className="w-8 h-8 text-clack" />
+                <p>Baixar arquivo anexado</p>
+              </a>
+            )}
 
-                    <span className="text-black">
-                      {!isDragging && " Anexar arquivo"}
-                      {isDragging && " Solte o arquivo para fazer o upload"}
-                    </span>
-                    <span className="text-gray-600">
-                      {
-                        "Clique ou arraste para fazer o upload do arquivo (tamanho máximo 10MB)"
-                      }
-                    </span>
-                  </div>
-                )}
-              </label>
+            {!hasFile && (
+              <div className="xs:w-full lg:col-span-4 h-32 ">
+                <label
+                  htmlFor="file"
+                  onDrop={handleDrop}
+                  onDragOver={handleDragOver}
+                  onDragLeave={handleDragLeave}
+                  className={cn(
+                    "border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200",
+                    isDragging && "bg-gray-200"
+                  )}
+                >
+                  {file && (
+                    <div className="flex flex-col gap-4 items-center justify-center">
+                      <FileUp className="w-8 h-8 text-clack" />
+                      <div>{file.name}</div>
+                    </div>
+                  )}
+                  {!file && (
+                    <div className="flex flex-col gap-4 items-center">
+                      {!isDragging && <FileUp className="w-8 h-8 text-clack" />}
+                      {isDragging && <Hand className="w-8 h-8 text-clack" />}
 
-              <input
-                type="file"
-                id="file"
-                className="sr-only"
-                onChange={handleFileSelected}
-                // onDrop={handleFileSelected}
-              ></input>
-            </div>
+                      <span className="text-black">
+                        {!isDragging && " Anexar arquivo"}
+                        {isDragging && " Solte o arquivo para fazer o upload"}
+                      </span>
+                      <span className="text-gray-600">
+                        {
+                          "Clique ou arraste para fazer o upload do arquivo (tamanho máximo 10MB)"
+                        }
+                      </span>
+                    </div>
+                  )}
+                </label>
+
+                <input
+                  type="file"
+                  id="file"
+                  className="sr-only"
+                  onChange={handleFileSelected}
+                  // onDrop={handleFileSelected}
+                ></input>
+              </div>
+            )}
           </div>
         </div>
 
-        <Button type="submit" className="w-full mt-6" isLoading={isLoadingNewOccurrence}>
-          Criar
-        </Button>
+        <div className="flex gap-4">
+          <Button
+            onClick={() => alert("Em Breve")}
+            className="w-full mt-6"
+            variant="danger"
+            disabled
+          >
+            Deletar
+          </Button>
+
+          <Button
+            type="submit"
+            className="w-full mt-6"
+            isLoading={isLoadingNewOccurrence}
+          >
+            Editar
+          </Button>
+        </div>
       </form>
     </Modal>
   );

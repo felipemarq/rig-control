@@ -44,11 +44,8 @@ const schema = z.object({
 export type FormData = z.infer<typeof schema>;
 
 export const useEditOccurrenceModal = () => {
-  const {
-    closeEditOccurrenceModal,
-    isEditOccurrenceModalOpen,
-    occurrenceBeingSeen,
-  } = useOccurrencesContext();
+  const { closeEditOccurrenceModal, isEditOccurrenceModalOpen, occurrenceBeingSeen } =
+    useOccurrencesContext();
 
   const [selectedHour, setSelectHour] = useState<string>(
     formatIsoStringToHours(occurrenceBeingSeen?.hour!)
@@ -179,7 +176,7 @@ export const useEditOccurrenceModal = () => {
 
   const { mutateAsync: mutateUploadFileAsync, isPending: isLoadingUploadFile } =
     useMutation({
-      mutationFn: filesService.create,
+      mutationFn: filesService.uploadOccurrenceFile,
     });
 
   const {
@@ -196,11 +193,7 @@ export const useEditOccurrenceModal = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       handleCloseDeleteModal();
       closeEditOccurrenceModal();
-      customColorToast(
-        "Ocorrência deletada com sucesso!",
-        "#1c7b7b",
-        "success"
-      );
+      customColorToast("Ocorrência deletada com sucesso!", "#1c7b7b", "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -270,11 +263,7 @@ export const useEditOccurrenceModal = () => {
       setFile(null);
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeEditOccurrenceModal();
-      customColorToast(
-        "Registro atualizado com Sucesso!",
-        "#1c7b7b",
-        "success"
-      );
+      customColorToast("Registro atualizado com Sucesso!", "#1c7b7b", "success");
 
       if (file) {
         window.location.reload();

@@ -30,10 +30,35 @@ export class FileController {
     await this.fileService.uploadOccurenceFile(file, userId, occurrenceId);
   }
 
+  @Post('/occurrence-action/:occurrenceActionId')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadOccurrenceActionFile(
+    @ActiveUserId() userId: string,
+    @Param('occurrenceActionId', ParseUUIDPipe) occurrenceActionId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Arquivo inválido!');
+    }
+
+    await this.fileService.uploadOccurenceActionFile(
+      file,
+      userId,
+      occurrenceActionId,
+    );
+  }
+
   @Delete('/occurrence/:occurrenceId')
   async deleteOccurenceFile(
     @Param('occurrenceId', ParseUUIDPipe) occurrenceId: string,
   ) {
     await this.fileService.deleteOccurenceFile(occurrenceId);
+  }
+
+  @Delete('/occurrence-action/:occurrenceActionId')
+  async deleteOccurenceActionFile(
+    @Param('occurrenceActionId', ParseUUIDPipe) occurrenceActionId: string,
+  ) {
+    await this.fileService.deleteOccurenceActionFile(occurrenceActionId);
   }
 }

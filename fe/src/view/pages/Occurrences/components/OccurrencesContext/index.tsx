@@ -1,4 +1,5 @@
 import { Occurrence } from "@/app/entities/Occurrence";
+import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 import { useBases } from "@/app/hooks/useBases";
@@ -22,6 +23,11 @@ interface OccurrencesContextValue {
   closeNewOccurrenceActionModal(): void;
   openNewOccurrenceActionModal(occurenceId: string): void;
   occurenceIdActionPlanBeingSeen: string | null;
+
+  isEditOccurrenceActionModalOpen: boolean;
+  occurrenceActionBeingSeen: OccurrenceAction | null;
+  closeEditOccurrenceActionModal: () => void;
+  openEditOccurrenceActionModal: (occurrenceAction: OccurrenceAction) => void;
 
   isEditOccurrenceModalOpen: boolean;
   closeEditOccurrenceModal(): void;
@@ -109,9 +115,15 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
   const [isNewOccurrenceActionModalOpen, setIsNewOccurrenceActionModalOpen] =
     useState(false);
 
+  const [isEditOccurrenceActionModalOpen, setIsEditOccurrenceActionModalOpen] =
+    useState(false);
+
   const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] = useState(false);
 
   const [occurrenceBeingSeen, setOccurrenceBeingSeen] = useState<null | Occurrence>(null);
+
+  const [occurrenceActionBeingSeen, setOccurrenceActionBeingSeen] =
+    useState<null | OccurrenceAction>(null);
 
   const closeNewOccurrenceModal = useCallback(() => {
     setIsNewOccurrenceModalOpen(false);
@@ -131,6 +143,21 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
     setOccurenceIdActionPlanBeingSeen(null);
   }, []);
 
+  const closeEditOccurrenceActionModal = useCallback(() => {
+    setOccurrenceActionBeingSeen(null);
+    setIsEditOccurrenceActionModalOpen(false);
+  }, []);
+
+  console.log("clic", occurrenceActionBeingSeen);
+
+  const openEditOccurrenceActionModal = useCallback(
+    (occurrenceAction: OccurrenceAction) => {
+      setIsEditOccurrenceActionModalOpen(true);
+      setOccurrenceActionBeingSeen(occurrenceAction);
+    },
+    []
+  );
+
   const closeEditOccurrenceModal = useCallback(() => {
     setOccurrenceBeingSeen(null);
     setIsEditOccurrenceModalOpen(false);
@@ -140,6 +167,7 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
     setIsEditOccurrenceModalOpen(true);
     setOccurrenceBeingSeen(occurrence);
   }, []);
+
   return (
     <OccurrencesContext.Provider
       value={{
@@ -165,6 +193,10 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
         filters,
         handleClearFilters,
         handleApplyFilters,
+        closeEditOccurrenceActionModal,
+        isEditOccurrenceActionModalOpen,
+        occurrenceActionBeingSeen,
+        openEditOccurrenceActionModal,
       }}
     >
       {children}

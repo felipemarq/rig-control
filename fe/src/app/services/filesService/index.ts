@@ -1,5 +1,7 @@
-import { create } from "./create";
+import { uploadOccurrenceActionFile } from "./uploadOccurrenceActionFile";
+import { uploadOccurrenceFile } from "./uploadOccurrenceFile";
 
 export const filesService = {
-  create: create,
+  uploadOccurrenceFile: uploadOccurrenceFile,
+  uploadOccurrenceActionFile: uploadOccurrenceActionFile,
 };
