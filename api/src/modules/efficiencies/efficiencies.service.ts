@@ -17,6 +17,8 @@ import { WellsRepository } from 'src/shared/database/repositories/well.repositor
 import { PeriodDto } from './dto/create-period-dto';
 import { TemporaryEfficienciesRepository } from 'src/shared/database/repositories/temporaryEfficienciesRepositories';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
+import { Response } from 'express';
+import * as XLSX from 'xlsx';
 
 @Injectable()
 export class EfficienciesService {
@@ -704,6 +706,114 @@ export class EfficienciesService {
     });
 
     return efficiencies;
+  }
+
+  async excelReport(efficiencyId: string, response: Response) {
+    const efficiency = await this.efficiencyRepo.findUnique({
+      where: {
+        id: efficiencyId,
+      },
+      select: {
+        id: true,
+        date: true,
+        availableHours: true,
+        rigId: true,
+        userId: true,
+        christmasTreeDisassemblyHours: true,
+        bobRentHours: true,
+        hasDemobilization: true,
+        hasExtraTrailer: true,
+        hasGeneratorFuel: true,
+        hasMixTankDemobilization: true,
+        hasMixTankDtm: true,
+        hasMixTankHourRent: true,
+        hasMixTankMobilization: true,
+        hasMixTankMonthRent: true,
+        hasMixTankOperator: true,
+        hasMunck: true,
+        hasPowerSwivel: true,
+        hasSuckingTruck: true,
+        hasTransportation: true,
+        hasTruckCartRent: true,
+        truckKmHours: true,
+        well: true,
+        hasTruckTank: true,
+        repairHours: true,
+        isEditable: true,
+        rig: true,
+        standByHours: true,
+        user: {
+          select: {
+            name: true,
+          },
+        },
+        periods: {
+          select: {
+            efficiencyId: true,
+            id: true,
+            startHour: true,
+            endHour: true,
+            classification: true,
+            description: true,
+            type: true,
+            repairClassification: true,
+            well: true,
+          },
+          orderBy: { startHour: 'asc' },
+        },
+        equipmentRatio: { select: { ratio: true } },
+        fluidRatio: { select: { ratio: true } },
+      },
+    });
+    //@ts-ignore
+    const headers = [
+      'Efficiency ID',
+      'ID',
+      'Start Hour',
+      'End Hour',
+      'Classification',
+      'Description',
+      'Type',
+      'Repair Classification',
+      'Well ID',
+      'Well Name',
+    ];
+
+    //@ts-ignore
+    const rows = efficiency.periods.map((period) => [
+      period.efficiencyId,
+      period.id,
+      period.startHour,
+      period.endHour,
+      period.classification,
+      period.description,
+      period.type,
+      period.repairClassification || 'N/A', // Se for null, preenche com 'N/A'
+      period.well.id,
+      period.well.name,
+    ]);
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Relatório');
+
+    // Escreva o arquivo para o buffer
+    const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    // Envie o arquivo para o cliente
+    response.setHeader(
+      'Content-Disposition',
+      'attachment; filename=relatorio.xlsx',
+    );
+    response.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    if (!efficiency) {
+      throw new NotFoundException('Efficiencia não encontrada!');
+    }
+
+    response.send(buffer);
   }
 
   async findById(efficiencyId: string) {

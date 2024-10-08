@@ -11,11 +11,13 @@ import {
   HttpStatus,
   Query,
   MiddlewareConsumer,
+  Res,
 } from '@nestjs/common';
 import { EfficienciesService } from './efficiencies.service';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { Response } from 'express';
 
 @Controller('efficiencies')
 export class EfficienciesController {
@@ -35,6 +37,14 @@ export class EfficienciesController {
   @Get('/well-count/:rigId')
   getWellsCountByRig(@Param('rigId') rigId: string) {
     return this.efficienciesService.getWellsCountByRig(rigId);
+  }
+
+  @Get('/excel/:efficiencyId')
+  excelReport(
+    @Res() response: Response,
+    @Param('efficiencyId', ParseUUIDPipe) efficiencyId: string,
+  ) {
+    return this.efficienciesService.excelReport(efficiencyId, response);
   }
 
   // Rotas com parâmetros de caminho (mais específicas)
