@@ -7,7 +7,7 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { Pencil, Trash } from "lucide-react";
+import { DownloadCloud, FileDown, Pencil, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Spinner } from "@/view/components/Spinner";
 import { usePeriodsDataGrid } from "./usePeriodsDataGrid";
@@ -25,6 +25,7 @@ export const PeriodsDataGridCard = () => {
     windowWidth,
     efficiencyId,
     openDetailModal,
+    handleExcelDownload,
   } = usePeriodsDataGrid();
 
   return (
@@ -52,6 +53,13 @@ export const PeriodsDataGridCard = () => {
                 </Button>
               )}
 
+              {canUserEdit && (
+                <Button size="sm" className="gap-1" onClick={handleExcelDownload}>
+                  <span className="hidden sm:inline"> Baixar Excel</span>
+                  <FileDown className="h-4 w-4" />
+                </Button>
+              )}
+
               {efficiency.isEditable && (
                 <Button
                   asChild
@@ -72,10 +80,7 @@ export const PeriodsDataGridCard = () => {
                   disabled={isLoadingUpdateEfficiency}
                   onClick={() => handleUpdateEfficiency()}
                 >
-                  <span className="hidden sm:inline">
-                    {" "}
-                    Tornar Registro Editável
-                  </span>
+                  <span className="hidden sm:inline"> Tornar Registro Editável</span>
                   <Pencil className="h-4 w-4" />
                 </Button>
               )}

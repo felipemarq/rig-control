@@ -825,12 +825,6 @@ export class EfficienciesService {
       return acc;
     }, {});
 
-    const resumo = [
-      ['Resumo de Tipos de Ocorrências'],
-      ...Object.entries(resumoTipos).map(([tipo, count]) => [tipo, count]),
-      [],
-    ];
-
     const rows = formattedPeriods.map((period) => [
       period.startHour,
       period.endHour,
@@ -843,7 +837,7 @@ export class EfficienciesService {
       period.well.name,
     ]);
     // Concatenação da Introdução, Resumo e Dados
-    const dadosCompletos = [...introducao, ...resumo, headers, ...rows];
+    const dadosCompletos = [...introducao, headers, ...rows];
 
     // Criação da Planilha
     const ws = XLSX.utils.aoa_to_sheet(dadosCompletos);
