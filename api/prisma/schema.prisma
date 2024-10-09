@@ -141,6 +141,7 @@ model Efficiency {
   unbilledScheduledStopHours    Float?            @map("unbilled_scheduled_stop_hours")
   billedScheduledStopHours      Float?            @map("billed_scheduled_stop_hours")
   repairHours                   Float?            @map("repair_hours")
+  glossHours                    Float?            @map("gloss_hours")
   dtmHours                      Float             @map("dtm_hours")
   isEditable                    Boolean?          @default(false) @map("is_editable")
   hasDemobilization             Boolean           @map("has_demobilization")

@@ -25,6 +25,7 @@ import { translateType } from 'src/shared/utils/translateType';
 import { translateRepairClassification } from 'src/shared/utils/translateRepairClassification';
 import { RepairClassification } from './entities/RepairClassification';
 import { translateClassification } from 'src/shared/utils/translateClassifications';
+import * as PDFDocument from 'pdfkit';
 
 @Injectable()
 export class EfficienciesService {
@@ -567,6 +568,7 @@ export class EfficienciesService {
     const efficiency = await this.efficiencyRepo.create({
       data: {
         ...efficiencyData,
+        glossHours: totalGlossHours,
         repairHours: totalRepairHours,
         standByHours: standByTotalHours,
         unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
@@ -714,6 +716,131 @@ export class EfficienciesService {
     return efficiencies;
   }
 
+  async pdfReport(
+    response: Response,
+    filters: {
+      rigId: string;
+      startDate: string;
+      endDate: string;
+    },
+  ) {
+    const rigExists = await this.rigsRepo.findUnique({
+      where: {
+        id: filters.rigId,
+      },
+    });
+
+    if (!rigExists) {
+      throw new NotFoundException('Sonda não encontrada');
+    }
+
+    const efficiencies = await this.efficiencyRepo.findMany({
+      where: {
+        rigId: filters.rigId,
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+      select: {
+        id: true,
+        well: true,
+        date: true,
+        availableHours: true,
+        standByHours: true,
+        repairHours: true,
+        glossHours: true,
+      },
+    });
+
+    // Criação do documento PDF com tamanho de página A4
+    const doc = new PDFDocument({
+      size: 'A4', // Definimos o tamanho da página como A4
+      margin: 30,
+    });
+
+    // Configurações de resposta para o navegador fazer o download
+    response.setHeader(
+      'Content-Disposition',
+      'attachment; filename=relatorio.pdf',
+    );
+    response.setHeader('Content-Type', 'application/pdf');
+
+    // Definir o fluxo de resposta do documento para o cliente
+    doc.pipe(response);
+
+    // Adicionar título ao PDF
+    doc
+      .fontSize(14)
+      .text('Relatório de Operação', { align: 'center', underline: true });
+    doc.moveDown(1.5);
+
+    // Função para desenhar uma linha da tabela
+    const drawRow = (columns: string[], y: number) => {
+      let x = doc.page.margins.left;
+      columns.forEach((text, i) => {
+        const colWidth = [90, 120, 100, 100, 100, 100][i]; // Defina as larguras das colunas
+        doc.text(text, x, y, { width: colWidth, align: 'left' });
+        x += colWidth; // Avança para a próxima coluna
+      });
+    };
+
+    // Função para verificar se precisa de nova página
+    const checkPageEnd = (yPosition: number) => {
+      const pageHeight = doc.page.height;
+      const bottomMargin = 50; // Definir margem inferior
+      if (yPosition > pageHeight - bottomMargin) {
+        doc.addPage(); // Adiciona nova página se passar do limite
+        return doc.page.margins.top; // Retorna a nova posição de Y no topo da nova página
+      }
+      return yPosition;
+    };
+
+    // Definir tamanhos de fonte menores para cabeçalhos e dados
+    const headerFontSize = 10;
+    const dataFontSize = 9;
+
+    // Cabeçalhos da tabela
+    const headers = [
+      'Dia',
+      'Poço',
+      'Hrs. Operando',
+      'Hrs. StandBy',
+      'Hrs. Glosa',
+      'Hrs. Reparo',
+    ];
+
+    // Desenhar cabeçalhos
+    doc.fontSize(headerFontSize).font('Helvetica-Bold');
+    let currentY = doc.y; // Posição atual no eixo Y
+    drawRow(headers, currentY);
+    currentY = doc.y + 15; // Incrementa o Y após os cabeçalhos
+
+    // Desenhar os dados da tabela
+    doc.fontSize(dataFontSize).font('Helvetica');
+    efficiencies.forEach((efficiency) => {
+      currentY = checkPageEnd(currentY); // Verifica se precisa de nova página antes de desenhar a linha
+
+      const row = [
+        efficiency.date.toISOString().split('T')[0], // Formata a data
+        efficiency.well || 'N/A',
+        efficiency.availableHours?.toFixed() ?? '0',
+        efficiency.standByHours?.toFixed() ?? '0',
+        efficiency.glossHours?.toFixed() ?? '0',
+        efficiency.repairHours?.toFixed() ?? '0',
+      ];
+
+      drawRow(row, currentY);
+      currentY += 15; // Incrementa a posição Y para a próxima linha
+    });
+
+    // Finalizar o documento
+    doc.end();
+  }
+
   async excelReport(efficiencyId: string, response: Response) {
     const efficiency = await this.efficiencyRepo.findUnique({
       where: {
@@ -797,8 +924,6 @@ export class EfficienciesService {
       };
     });
 
-    console.log(formattedPeriods);
-
     const introducao = [
       ['Relatório de Operações de Poços'],
       [
@@ -818,12 +943,6 @@ export class EfficienciesService {
       'Classificação do Reparo',
       'Nome do Poço',
     ];
-
-    // Resumo de Tipos (Exemplo de agregação de dados)
-    const resumoTipos = formattedPeriods.reduce((acc, period) => {
-      acc[period.type] = (acc[period.type] || 0) + 1;
-      return acc;
-    }, {});
 
     const rows = formattedPeriods.map((period) => [
       period.startHour,
