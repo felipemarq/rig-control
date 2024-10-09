@@ -303,9 +303,7 @@ const REPAIR = [
   {
     id: "SCHEDULED_STOP",
     classification: "Parada de Manutenção",
-    repairClassification: [
-      { value: "SCHEDULED_STOP", label: "Parada de Manutenção" },
-    ],
+    repairClassification: [{ value: "SCHEDULED_STOP", label: "Parada de Manutenção" }],
   },
   {
     id: "OTHERS",
@@ -444,14 +442,12 @@ export const getPeriodClassification = (parameter: string) => {
   }
 
   if (parameter === "SCHEDULED_STOP") {
-    return periodClassifications.SCHEDULED_STOP.map(
-      ({ id, classification }) => {
-        return {
-          value: id,
-          label: classification,
-        };
-      }
-    );
+    return periodClassifications.SCHEDULED_STOP.map(({ id, classification }) => {
+      return {
+        value: id,
+        label: classification,
+      };
+    });
   }
 
   if (parameter === "STAND_BY") {

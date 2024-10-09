@@ -19,6 +19,12 @@ import { TemporaryEfficienciesRepository } from 'src/shared/database/repositorie
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { Response } from 'express';
 import * as XLSX from 'xlsx';
+import { PeriodType } from './entities/PeriodType';
+import { PeriodClassification } from './entities/PeriodClassification';
+import { translateType } from 'src/shared/utils/translateType';
+import { translateRepairClassification } from 'src/shared/utils/translateRepairClassification';
+import { RepairClassification } from './entities/RepairClassification';
+import { translateClassification } from 'src/shared/utils/translateClassifications';
 
 @Injectable()
 export class EfficienciesService {
@@ -765,36 +771,90 @@ export class EfficienciesService {
         fluidRatio: { select: { ratio: true } },
       },
     });
-    //@ts-ignore
-    const headers = [
-      'Efficiency ID',
-      'ID',
-      'Start Hour',
-      'End Hour',
-      'Classification',
-      'Description',
-      'Type',
-      'Repair Classification',
-      'Well ID',
-      'Well Name',
+
+    const periods: {
+      efficiencyId: string;
+      id: string;
+      startHour: Date;
+      endHour: Date;
+      classification: PeriodClassification;
+      description: string;
+      type: PeriodType;
+      repairClassification?: string;
+      well: {
+        id: string;
+        name: string;
+        contractId: string | null;
+      } | null;
+      //@ts-ignore
+    }[] = efficiency.periods;
+    //console.log(periods[1].startHour.toString());
+    const formattedPeriods = periods.map((period) => {
+      return {
+        ...period,
+        startHour: period.startHour.toISOString().split('T')[1].slice(0, 5),
+        endHour: period.endHour.toISOString().split('T')[1].slice(0, 5),
+      };
+    });
+
+    console.log(formattedPeriods);
+
+    const introducao = [
+      ['Relatório de Operações de Poços'],
+      [
+        'Este relatório apresenta as informações relacionadas às operações de poços, incluindo horários de início e fim, tipos de atividades, classificações de reparos e nomes dos poços.',
+      ],
+      ['Gerado em: ', new Date().toLocaleDateString()],
+      [],
     ];
 
-    //@ts-ignore
-    const rows = efficiency.periods.map((period) => [
-      period.efficiencyId,
-      period.id,
+    // Cabeçalhos
+    const headers = [
+      'Hora de Início',
+      'Hora de Fim',
+      'Tipo',
+      'Classificação',
+      'Descrição',
+      'Classificação do Reparo',
+      'Nome do Poço',
+    ];
+
+    // Resumo de Tipos (Exemplo de agregação de dados)
+    const resumoTipos = formattedPeriods.reduce((acc, period) => {
+      acc[period.type] = (acc[period.type] || 0) + 1;
+      return acc;
+    }, {});
+
+    const resumo = [
+      ['Resumo de Tipos de Ocorrências'],
+      ...Object.entries(resumoTipos).map(([tipo, count]) => [tipo, count]),
+      [],
+    ];
+
+    const rows = formattedPeriods.map((period) => [
       period.startHour,
       period.endHour,
-      period.classification,
+      translateType(period.type),
+      translateClassification(period.classification),
       period.description,
-      period.type,
-      period.repairClassification || 'N/A', // Se for null, preenche com 'N/A'
-      period.well.id,
+      translateRepairClassification(
+        period.repairClassification as RepairClassification,
+      ),
       period.well.name,
     ]);
-    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    // Concatenação da Introdução, Resumo e Dados
+    const dadosCompletos = [...introducao, ...resumo, headers, ...rows];
+
+    // Criação da Planilha
+    const ws = XLSX.utils.aoa_to_sheet(dadosCompletos);
     const wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, 'Relatório');
+
+    // Formatação Condicional (Exemplo básico de destaque de cabeçalhos)
+    ws['A5'].s = {
+      font: { bold: true },
+      fill: { fgColor: { rgb: '#FFFF00' } },
+    }; // Exemplo de destaque no cabeçalho
 
     // Escreva o arquivo para o buffer
     const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
