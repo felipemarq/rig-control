@@ -89,12 +89,22 @@ enum AccessLevel {
   @@map("access_level")
 }
 
+model Enterprise {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @unique
+  logoImagePath String? @map("logo_image_path")
+  mainColor     String  @default("#1c7b7b")
+
+  User User[]
+}
+
 model User {
-  id          String      @id @default(uuid()) @db.Uuid
-  name        String
-  email       String      @unique
-  password    String
-  accessLevel AccessLevel @map("access_level")
+  id           String      @id @default(uuid()) @db.Uuid
+  name         String
+  email        String      @unique
+  password     String
+  enterpriseId String?     @map("enterprise_id") @db.Uuid
+  accessLevel  AccessLevel @map("access_level")
 
   rigs                UserRig[]
   contracts           UserContract[]
@@ -105,6 +115,8 @@ model User {
   occurrences         Occurrence[]
   manHours            ManHour[]
   files               File[]
+
+  enterprise Enterprise? @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
 
   @@map("users")
 }
