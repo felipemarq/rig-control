@@ -10,19 +10,19 @@ import {
   Shield,
 } from "lucide-react";
 
-import whiteIcon from "@/assets/images/white-icon.png";
+//import whiteIcon from "@/assets/images/white-icon.png";
 import { useMemo } from "react";
-
-const Image = () => {
-  return <img src={whiteIcon} />;
-};
 
 export const useAppsidebar = () => {
   const { user, signout, isUserAdm, isUserSms, isUserViewer } = useAuth();
+
+  const Image = () => {
+    return <img src={user?.enterprise?.logoImagePath} alt="logo" />;
+  };
   const admData = {
     teams: [
       {
-        name: "Conterp",
+        name: user?.enterprise?.name ?? "",
         logo: Image,
         plan: "Enterprise",
       },
@@ -165,7 +165,7 @@ export const useAppsidebar = () => {
   const userData = {
     teams: [
       {
-        name: "Conterp",
+        name: user?.enterprise?.name ?? "",
         logo: Image,
         plan: "Enterprise",
       },
@@ -223,7 +223,7 @@ export const useAppsidebar = () => {
   const viewerData = {
     teams: [
       {
-        name: "Conterp",
+        name: user?.enterprise?.name ?? "",
         logo: Image,
         plan: "Enterprise",
       },
@@ -275,7 +275,7 @@ export const useAppsidebar = () => {
   const smsData = {
     teams: [
       {
-        name: "Conterp",
+        name: user?.enterprise?.name ?? "",
         logo: Image,
         plan: "Enterprise",
       },

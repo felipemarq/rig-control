@@ -1,4 +1,4 @@
-import {useDetails} from "../DetailsContext/useDetailsContext";
+import { useDetails } from "../DetailsContext/useDetailsContext";
 
 export const usePeriodsDataGrid = () => {
   const {
@@ -11,6 +11,7 @@ export const usePeriodsDataGrid = () => {
     efficiencyId,
     windowWidth,
     openDetailModal,
+    handleExcelDownload,
   } = useDetails();
   return {
     isFetchingEfficiency,
@@ -22,5 +23,6 @@ export const usePeriodsDataGrid = () => {
     efficiencyId,
     windowWidth,
     openDetailModal,
+    handleExcelDownload,
   };
 };

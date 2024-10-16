@@ -9,6 +9,7 @@ import { Input } from "@/view/components/Input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useEditOccurrenceActionModal } from "./useEditOccurrenceActionModal";
+import { DeleteModal } from "@/view/components/DeleteModal";
 
 export const EditOccurrenceActionModal = () => {
   const {
@@ -26,7 +27,25 @@ export const EditOccurrenceActionModal = () => {
     handleDragLeave,
     occurrenceActionBeingSeen,
     hasFile,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    handleDeleteOccurrence,
+    isLoadingDeleteOccurrenceAction,
   } = useEditOccurrenceActionModal();
+
+  if (isDeleteModalOpen) {
+    return (
+      <DeleteModal
+        open={isDeleteModalOpen}
+        title="Tem certeza que deseja excluir essa ocorrência?"
+        description=" Ao excluir a ocorrência, também serão excluídos todos os  planos de ação e arquivos relacionadas."
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteOccurrence}
+        isLoading={isLoadingDeleteOccurrenceAction}
+      />
+    );
+  }
 
   return (
     <Modal
@@ -189,10 +208,10 @@ export const EditOccurrenceActionModal = () => {
 
         <div className="flex gap-4">
           <Button
-            onClick={() => alert("Em Breve")}
+            onClick={handleOpenDeleteModal}
             className="w-full mt-6"
             variant="danger"
-            disabled
+            disabled={isLoadingDeleteOccurrenceAction}
           >
             Deletar
           </Button>

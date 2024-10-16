@@ -44,6 +44,7 @@ export class UsersService {
             },
           },
         },
+        enterprise: true,
       },
     });
 

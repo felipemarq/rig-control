@@ -26,4 +26,5 @@ export interface User {
       };
     };
   }[];
+  enterprise?: { id: string; logoImagePath: string; mainColor: string; name: string };
 }

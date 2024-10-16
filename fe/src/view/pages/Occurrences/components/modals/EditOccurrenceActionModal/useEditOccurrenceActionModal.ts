@@ -30,6 +30,15 @@ export const useEditOccurrenceActionModal = () => {
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
 
   const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.currentTarget;
@@ -104,6 +113,28 @@ export const useEditOccurrenceActionModal = () => {
       mutationFn: filesService.uploadOccurrenceActionFile,
     });
 
+  const {
+    mutateAsync: mutateAsyncRemoveOccurrenceAction,
+    isPending: isLoadingDeleteOccurrenceAction,
+  } = useMutation({
+    mutationFn: occurrencesActionsService.remove,
+  });
+
+  const handleDeleteOccurrence = async () => {
+    try {
+      await mutateAsyncRemoveOccurrenceAction(occurrenceActionBeingSeen!.id);
+
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
+      handleCloseDeleteModal();
+      closeEditOccurrenceActionModal();
+      customColorToast("Ocorrência deletada com sucesso!", "#1c7b7b", "success");
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+      console.log(error);
+      //navigate("/dashboard");
+    }
+  };
+
   //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
@@ -161,5 +192,10 @@ export const useEditOccurrenceActionModal = () => {
     isDragging,
     handleDragLeave,
     hasFile,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    isDeleteModalOpen,
+    handleDeleteOccurrence,
+    isLoadingDeleteOccurrenceAction,
   };
 };

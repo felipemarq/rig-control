@@ -18,6 +18,5 @@ export const IsUserAdm = createParamDecorator<undefined>(
     }
 
     throw new UnauthorizedException('Acesso restrito!');
-    return false;
   },
 );

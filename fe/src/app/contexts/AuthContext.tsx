@@ -97,6 +97,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   isWrongVersion = systemVersion?.version !== currentVersion.version;
 
+  console.log("user", data);
+
   return (
     <AuthContext.Provider
       value={{
@@ -111,7 +113,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isWrongVersion,
       }}
     >
-      {isFetching && <PageLoader isLoading={isFetching} />}
+      {isFetching && (
+        <PageLoader isLoading={isFetching} logoPath={data?.enterprise?.logoImagePath} />
+      )}
 
       {!isFetching && children}
     </AuthContext.Provider>

@@ -3,12 +3,14 @@ import { CreateOccurrenceActionDto } from './dto/create-occurrence-action.dto';
 import { UpdateOccurrenceActionDto } from './dto/update-occurrence-action.dto';
 import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class OccurrenceActionsService {
   constructor(
     private readonly occurrenceActionsRepo: OccurrenceActionsRepository,
     private readonly occurrenceRepo: OccurrenceRepository,
+    private readonly filesService: FileService,
   ) {}
   async create(createOccurrenceActionDto: CreateOccurrenceActionDto) {
     const occurrence = await this.occurrenceRepo.findUnique({
@@ -68,6 +70,7 @@ export class OccurrenceActionsService {
   }
 
   async remove(occurrenceActionId: string) {
+    await this.filesService.deleteOccurenceActionFile(occurrenceActionId);
     return await this.occurrenceActionsRepo.delete({
       where: { id: occurrenceActionId },
     });

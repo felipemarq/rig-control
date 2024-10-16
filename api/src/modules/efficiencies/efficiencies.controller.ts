@@ -11,11 +11,14 @@ import {
   HttpStatus,
   Query,
   MiddlewareConsumer,
+  Res,
 } from '@nestjs/common';
 import { EfficienciesService } from './efficiencies.service';
 import { CreateEfficiencyDto } from './dto/create-efficiency.dto';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { Response } from 'express';
+import { DebugEndpoint } from 'src/shared/decorators/DebugEndpoint';
 
 @Controller('efficiencies')
 export class EfficienciesController {
@@ -37,6 +40,28 @@ export class EfficienciesController {
     return this.efficienciesService.getWellsCountByRig(rigId);
   }
 
+  @Get('/excel/:efficiencyId')
+  excelReport(
+    @Res() response: Response,
+    @Param('efficiencyId', ParseUUIDPipe) efficiencyId: string,
+  ) {
+    return this.efficienciesService.excelReport(efficiencyId, response);
+  }
+
+  @Get('/pdf/')
+  pdfReport(
+    @Res() response: Response,
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.efficienciesService.pdfReport(response, {
+      rigId,
+      startDate,
+      endDate,
+    });
+  }
+
   // Rotas com parâmetros de caminho (mais específicas)
   @Get(':efficiencyId')
   findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
@@ -56,6 +81,7 @@ export class EfficienciesController {
   // Rotas com parâmetros de consulta (menos específicas)
   @Get()
   findAll(
+    @DebugEndpoint() userId: string,
     @Query('rigId', ParseUUIDPipe) rigId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
