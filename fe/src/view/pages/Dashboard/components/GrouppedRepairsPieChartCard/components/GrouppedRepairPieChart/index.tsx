@@ -1,11 +1,13 @@
 import { ResponsivePie } from "@nivo/pie";
 import { EquipmentData } from "../../useGrouppedRepairsPieChartCard";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface GrouppedRepairPieChartProps {
   data: EquipmentData[];
 }
 
 export const GrouppedRepairPieChart = ({ data }: GrouppedRepairPieChartProps) => {
+  const { primaryColor } = useTheme();
   return (
     <ResponsivePie
       data={data}
@@ -47,7 +49,7 @@ export const GrouppedRepairPieChart = ({ data }: GrouppedRepairPieChartProps) =>
         },
         tooltip: {
           container: {
-            color: "#1c7b7b",
+            color: primaryColor,
           },
         },
       }}
@@ -69,7 +71,7 @@ export const GrouppedRepairPieChart = ({ data }: GrouppedRepairPieChartProps) =>
         value.data.percentage < 15 ? "" : `${value.data.label}`
       } */
       enableArcLinkLabels={false}
-      arcLinkLabelsTextColor={"#1c7b7b"}
+      arcLinkLabelsTextColor={primaryColor}
       arcLinkLabelsThickness={1}
       arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={1}

@@ -1,4 +1,5 @@
-import {createContext, useContext, useEffect, useState} from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { getCssVariable } from "../utils/getCssVariable";
 
 type Theme = "dark" | "light" | "system";
 
@@ -11,11 +12,13 @@ type ThemeProviderProps = {
 type ThemeProviderState = {
   theme: Theme;
   setTheme: (theme: Theme) => void;
+  primaryColor: string;
 };
 
 const initialState: ThemeProviderState = {
   theme: "light",
   setTheme: () => null,
+  primaryColor: getCssVariable("--primary"),
 };
 
 const ThemeProviderContext = createContext<ThemeProviderState>(initialState);
@@ -30,14 +33,15 @@ export function ThemeProvider({
     () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
   );
 
+  const [primaryColor, setPrimaryColor] = useState(getCssVariable("--primary"));
+
   useEffect(() => {
     const root = window.document.documentElement;
 
     root.classList.remove("light", "dark");
 
     if (theme === "system") {
-      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)")
-        .matches
+      const systemTheme = window.matchMedia("(prefers-color-scheme: dark)").matches
         ? "dark"
         : "light";
 
@@ -46,6 +50,8 @@ export function ThemeProvider({
     }
 
     root.classList.add(theme);
+
+    setPrimaryColor(getCssVariable("--primary"));
   }, [theme]);
 
   const value = {
@@ -54,6 +60,7 @@ export function ThemeProvider({
       localStorage.setItem(storageKey, theme);
       setTheme(theme);
     },
+    primaryColor,
   };
 
   return (

@@ -7,7 +7,7 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { DownloadCloud, FileDown, Pencil, Trash } from "lucide-react";
+import { FileDown, Pencil, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Spinner } from "@/view/components/Spinner";
 import { usePeriodsDataGrid } from "./usePeriodsDataGrid";

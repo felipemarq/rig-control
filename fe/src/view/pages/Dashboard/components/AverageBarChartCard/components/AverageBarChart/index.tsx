@@ -1,16 +1,17 @@
-import {ResponsiveBar} from "@nivo/bar";
-import {useAverageBarChart} from "./useAverageBarChart";
+import { ResponsiveBar } from "@nivo/bar";
+import { useAverageBarChart } from "./useAverageBarChart";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const AverageBarChart = () => {
-  const {data, selectedRig} = useAverageBarChart();
-
+  const { data, selectedRig } = useAverageBarChart();
+  const { primaryColor } = useTheme();
   return (
     <ResponsiveBar
       data={data}
       keys={["avg"]}
       indexBy="month"
       layout="vertical"
-      margin={{top: 0, right: 10, bottom: 150, left: 10}}
+      margin={{ top: 0, right: 10, bottom: 150, left: 10 }}
       padding={0.3}
       layers={[
         "grid",
@@ -20,10 +21,10 @@ export const AverageBarChart = () => {
         "legends",
         "annotations", // Adiciona uma camada de rótulos
       ]}
-      valueScale={{type: "linear"}}
-      indexScale={{type: "band", round: true}}
+      valueScale={{ type: "linear" }}
+      indexScale={{ type: "band", round: true }}
       colors={(params) => {
-        return params.data.rigId === selectedRig ? "#38bcb2" : "#1c7b7b";
+        return params.data.rigId === selectedRig ? "#38bcb2" : primaryColor;
       }}
       borderRadius={5}
       enableGridX={false}
@@ -95,21 +96,21 @@ export const AverageBarChart = () => {
         axis: {
           domain: {
             line: {
-              stroke: "#1c7b7b",
+              stroke: primaryColor,
             },
           },
           legend: {
             text: {
-              fill: "#1c7b7b",
+              fill: primaryColor,
             },
           },
           ticks: {
             line: {
-              stroke: "#1c7b7b",
+              stroke: primaryColor,
               strokeWidth: 1,
             },
             text: {
-              fill: "#1c7b7b",
+              fill: primaryColor,
             },
           },
         },
@@ -122,12 +123,12 @@ export const AverageBarChart = () => {
         },
         legends: {
           text: {
-            fill: "#1c7b7b",
+            fill: primaryColor,
           },
         },
         tooltip: {
           container: {
-            color: "#1c7b7b",
+            color: primaryColor,
           },
         },
         labels: {

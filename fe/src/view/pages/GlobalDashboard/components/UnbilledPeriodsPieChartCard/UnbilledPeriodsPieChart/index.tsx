@@ -1,10 +1,11 @@
 import { ResponsivePie } from "@nivo/pie";
 import { useUnbilledPeriodsPieChart } from "./useUnbilledPeriodsPieChart";
 import { PeriodType } from "../../../../../../app/entities/PeriodType";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const UnbilledPeriodsPieChart = () => {
-  const { chartData, handleSelectedPieChartViewChange } =
-    useUnbilledPeriodsPieChart();
+  const { chartData, handleSelectedPieChartViewChange } = useUnbilledPeriodsPieChart();
+  const { primaryColor } = useTheme();
   return (
     <div className="w-full h-full relative">
       <ResponsivePie
@@ -48,7 +49,7 @@ export const UnbilledPeriodsPieChart = () => {
           },
           tooltip: {
             container: {
-              color: "#1c7b7b",
+              color: primaryColor,
             },
           },
         }}
@@ -62,9 +63,7 @@ export const UnbilledPeriodsPieChart = () => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
-        onClick={(event) =>
-          handleSelectedPieChartViewChange(event.id as PeriodType)
-        }
+        onClick={(event) => handleSelectedPieChartViewChange(event.id as PeriodType)}
         valueFormat={(value) => `${value} Hrs`}
         enableArcLinkLabels={false}
         arcLinkLabelsTextColor={"#679d4d"}
@@ -91,7 +90,7 @@ export const UnbilledPeriodsPieChart = () => {
               {
                 on: "hover",
                 style: {
-                  itemTextColor: "#1c7b7b",
+                  itemTextColor: primaryColor,
                 },
               },
             ],

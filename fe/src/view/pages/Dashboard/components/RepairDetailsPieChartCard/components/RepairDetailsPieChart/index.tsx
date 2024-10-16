@@ -1,10 +1,11 @@
 import { ResponsivePie } from "@nivo/pie";
 import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const RepairDetailsPieChart = () => {
   const { chartData /* handleCloseDetailsGraph */, handleFilterPeriods } =
     useRepairDetailsPieChart();
-
+  const { primaryColor } = useTheme();
   return (
     <ResponsivePie
       data={chartData}
@@ -46,7 +47,7 @@ export const RepairDetailsPieChart = () => {
         },
         tooltip: {
           container: {
-            color: "#1c7b7b",
+            color: primaryColor,
           },
         },
       }}
@@ -60,18 +61,14 @@ export const RepairDetailsPieChart = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      onClick={(event) =>
-        handleFilterPeriods("REPAIR", event.data.classification)
-      }
-      arcLabel={(value) =>
-        value.data.percentage < 15 ? "" : `${value.data.label}`
-      }
+      onClick={(event) => handleFilterPeriods("REPAIR", event.data.classification)}
+      arcLabel={(value) => (value.data.percentage < 15 ? "" : `${value.data.label}`)}
       /* tooltip={(value) => {
         console.log(value);
         return <div>{value.datum.data.value}</div>;
       }} */
       enableArcLinkLabels={false}
-      arcLinkLabelsTextColor={"#1c7b7b"}
+      arcLinkLabelsTextColor={primaryColor}
       arcLinkLabelsThickness={1}
       arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={1}
@@ -96,7 +93,7 @@ export const RepairDetailsPieChart = () => {
               {
                 on: "hover",
                 style: {
-                  itemTextColor: "#1c7b7b",
+                  itemTextColor: primaryColor,
                 },
               },
             ],

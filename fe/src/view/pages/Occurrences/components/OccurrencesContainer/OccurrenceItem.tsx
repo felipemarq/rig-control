@@ -86,7 +86,7 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
             )}
           </div>
           <div>
-            <h2 className="font-semibold text-teal-600">{occurrence.title}</h2>
+            <h2 className="font-semibold text-primary-600">{occurrence.title}</h2>
             <p className="text-sm text-gray-600">
               {formatDate(new Date(occurrence.date))}
             </p>

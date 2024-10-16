@@ -12,6 +12,7 @@ import { PieChartData } from "../components/UnbilledPeriodsPieChartCard/Unbilled
 import { getDiffInMinutes } from "../../../../app/utils/getDiffInMinutes";
 import { formatNumberWithFixedDecimals } from "../../../../app/utils/formatNumberWithFixedDecimals";
 import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
@@ -51,25 +52,17 @@ interface GlobalDashboardContextValue {
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
 
 // Criação do contexto
-export const GlobalDashboardContext = createContext(
-  {} as GlobalDashboardContextValue
-);
+export const GlobalDashboardContext = createContext({} as GlobalDashboardContextValue);
 
-export const GlobalDashboardProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const GlobalDashboardProvider = ({ children }: { children: React.ReactNode }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const { user, signout } = useAuth();
 
   // Estados iniciais para as datas (primeiro e último dia do mês atual)
   const { filters } = useFiltersContext();
-
+  const { primaryColor } = useTheme();
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
-  const [selectedPieChartView, setSelectedPieChartView] = useState(
-    PeriodType.REPAIR
-  );
+  const [selectedPieChartView, setSelectedPieChartView] = useState(PeriodType.REPAIR);
 
   const [selectedDetailPieChartView, setSelectedDetailPieChartView] = useState<
     null | string
@@ -108,9 +101,7 @@ export const GlobalDashboardProvider = ({
       return rigsAverage;
     }
 
-    return rigsAverage.filter(
-      ({ state }) => (state as string) === selectedDashboardView
-    );
+    return rigsAverage.filter(({ state }) => (state as string) === selectedDashboardView);
   }, [selectedDashboardView, rigsAverage]);
 
   const handleChangeDashboardView = (view: DashboardView) => {
@@ -166,53 +157,48 @@ export const GlobalDashboardProvider = ({
     })
     .sort((a, b) => b.daysNotRegistered - a.daysNotRegistered);
 
-  const chartData: PieChartData = unbilledPeriods.reduce(
-    (acc: PieChartData, current) => {
-      const parsedStartHour = parse(
-        current.startHour.split("T")[1].slice(0, 5),
-        "HH:mm",
-        new Date()
+  const chartData: PieChartData = unbilledPeriods.reduce((acc: PieChartData, current) => {
+    const parsedStartHour = parse(
+      current.startHour.split("T")[1].slice(0, 5),
+      "HH:mm",
+      new Date()
+    );
+    const parsedEndHour = parse(
+      current.endHour.split("T")[1].slice(0, 5),
+      "HH:mm",
+      new Date()
+    );
+
+    const foundIndex = acc.findIndex((item) => item.id === current.type);
+
+    const diffInHours = getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+    if (foundIndex === -1) {
+      acc.push({
+        id: current.type,
+        label: current.type,
+        value: Number(diffInHours.toFixed(2)),
+        color: current.type === "REPAIR" ? primaryColor : "#81c460",
+      });
+    } else {
+      acc = acc.map((accItem) =>
+        accItem.id === current.type
+          ? {
+              ...accItem,
+              value: Number((accItem.value + diffInHours).toFixed(2)),
+            }
+          : accItem
       );
-      const parsedEndHour = parse(
-        current.endHour.split("T")[1].slice(0, 5),
-        "HH:mm",
-        new Date()
-      );
+    }
 
-      const foundIndex = acc.findIndex((item) => item.id === current.type);
-
-      const diffInHours = getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
-
-      if (foundIndex === -1) {
-        acc.push({
-          id: current.type,
-          label: current.type,
-          value: Number(diffInHours.toFixed(2)),
-          color: current.type === "REPAIR" ? "#1c7b7b" : "#81c460",
-        });
-      } else {
-        acc = acc.map((accItem) =>
-          accItem.id === current.type
-            ? {
-                ...accItem,
-                value: Number((accItem.value + diffInHours).toFixed(2)),
-              }
-            : accItem
-        );
-      }
-
-      return acc;
-    },
-    []
-  );
+    return acc;
+  }, []);
 
   const isChartDataEmpty = chartData.every((data) => data.value === 0);
 
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
-    setTotalDaysSelected(
-      differenceInDays(filters.endDate, filters.startDate) + 1
-    );
+    setTotalDaysSelected(differenceInDays(filters.endDate, filters.startDate) + 1);
     refetchRigsAverage();
     refetchUnbilledPeriods();
   };

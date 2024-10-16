@@ -9,6 +9,7 @@ import { treatAxiosError } from "../../../app/utils/treatAxiosError";
 import { AxiosError } from "axios";
 import { useRigs } from "../../../app/hooks/rigs/useRigs";
 import { useSidebarContext } from "../../../app/contexts/SidebarContext";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface Rig {
   id: string;
@@ -21,7 +22,7 @@ export const useUpdateUserRigs = (id: string) => {
   const navigate = useNavigate();
   const [filters] = useState({ contractId: "" });
   const { handleToggleNavItem } = useSidebarContext();
-
+  const { primaryColor } = useTheme();
   const [userRigs, setUserRigs] = useState<Array<Rig>>([]);
   const [availableRigs, setAvailableRigs] = useState<Array<Rig>>([]);
 
@@ -80,7 +81,7 @@ export const useUpdateUserRigs = (id: string) => {
       await mutateAsync(body);
       navigate("/users");
       handleToggleNavItem("Usuários");
-      customColorToast("Sondas editadas com sucesso!", "#1c7b7b", "success");
+      customColorToast("Sondas editadas com sucesso!", primaryColor, "success");
       queryClient.invalidateQueries({ queryKey: ["users"] });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
