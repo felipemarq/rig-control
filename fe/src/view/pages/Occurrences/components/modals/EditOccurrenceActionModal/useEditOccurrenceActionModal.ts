@@ -175,7 +175,7 @@ export const useEditOccurrenceActionModal = () => {
 
   console.log("Occurrence Being Seen", occurrenceActionBeingSeen);
 
-  const hasFile = true;
+  const hasFile = occurrenceActionBeingSeen?.files.length! > 0;
 
   return {
     closeEditOccurrenceActionModal,

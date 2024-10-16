@@ -9,11 +9,7 @@ import {
 } from "@/components/ui/collapsible";
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
 import { Input } from "@/components/ui/input";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { cn } from "@/app/utils/cn";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -38,7 +34,7 @@ export function NavMain({
   searchResults: React.ComponentProps<typeof SidebarSearch>["results"];
 } & React.ComponentProps<"ul">) {
   return (
-    <ul className={cn("grid gap-0.5 text-white", className)}>
+    <ul className={cn("grid gap-0.5 ", className)}>
       <li>{/*   <SidebarSearch results={searchResults} /> */}</li>
       {items.map((item) => (
         <Collapsible key={item.title} asChild defaultOpen={item.isActive}>
@@ -70,12 +66,10 @@ export function NavMain({
                   <li key={subItem.title}>
                     <Link
                       to={subItem.url}
-                      className="min-w-8 flex h-8 items-center gap-2 overflow-hidden rounded-md px-2 text-sm font-medium text-white ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
+                      className="min-w-8 flex h-8 items-center gap-2 overflow-hidden rounded-md px-2 text-sm font-medium ring-ring transition-all hover:bg-accent hover:text-accent-foreground focus-visible:ring-2"
                     >
                       <div className="line-clamp-1">{subItem.title}</div>{" "}
-                      {subItem.hasNews && (
-                        <Badge className="bg-[#72a514]">Novo</Badge>
-                      )}
+                      {subItem.hasNews && <Badge className="bg-[#72a514]">Novo</Badge>}
                     </Link>
                   </li>
                 ))}
@@ -150,12 +144,7 @@ function SidebarSearch({
           <div className="line-clamp-1 pr-6">Search</div>
         </div>
       </PopoverTrigger>
-      <PopoverContent
-        side="right"
-        align="start"
-        sideOffset={4}
-        className="w-96 p-0"
-      >
+      <PopoverContent side="right" align="start" sideOffset={4} className="w-96 p-0">
         <form>
           <div className="border-b p-2.5">
             <Input

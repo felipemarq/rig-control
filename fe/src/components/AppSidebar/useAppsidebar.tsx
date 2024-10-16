@@ -132,7 +132,7 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Registros",
+            title: "Listar Ocorrências",
             url: "/occurrences",
             icon: Settings2,
             description: "Configure your playground",

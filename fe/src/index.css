@@ -25,15 +25,15 @@ body,
 }
 
 ::-webkit-scrollbar-track {
-  background: #77b0b0;
+  background: hsl(var(--secondary));
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1c7b7b;
+  background: hsl(var(--primary));
 }
 
 ::-webkit-scrollbar-track:hover {
-  background: #1c7b7b;
+  background: hsl(var(--primary));
 }
 
 .sticky-nav {

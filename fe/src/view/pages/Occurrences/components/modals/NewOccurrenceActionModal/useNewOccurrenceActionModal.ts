@@ -15,7 +15,7 @@ const schema = z.object({
   dueDate: z.date(),
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
-  isFinished: z.boolean(),
+  isFinished: z.boolean().default(false),
   description: z.string().min(1, "Descrição é obrigatório."),
 });
 
@@ -72,11 +72,18 @@ export const useNewOccurrenceActionModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
-
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      isFinished: false,
+    },
   });
+
+  const isFinished = watch("isFinished");
+
+  console.log("isFinished", isFinished);
 
   /*  console.log("selectedSeverity", selectedSeverity);
   console.log("errors", errors);

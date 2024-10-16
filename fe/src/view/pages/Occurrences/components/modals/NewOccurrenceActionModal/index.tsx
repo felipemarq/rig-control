@@ -32,6 +32,7 @@ export const NewOccurrenceActionModal = () => {
       open={isNewOccurrenceActionModalOpen}
       onClose={closeNewOccurrenceActionModal}
       overflow
+      maxWidth="600px"
     >
       <form onSubmit={handleSubmit}>
         <div className="mt-10 flex flex-col gap-4 ">
@@ -81,6 +82,7 @@ export const NewOccurrenceActionModal = () => {
               <Controller
                 control={control}
                 name="isFinished"
+                defaultValue={false}
                 render={({ field: { onChange, value } }) => (
                   <Switch checked={value} onCheckedChange={onChange} />
                 )}
