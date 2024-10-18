@@ -1,11 +1,12 @@
 import { ResponsiveBar } from "@nivo/bar";
 import { useAverageBarChart } from "./useAverageBarChart";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const AverageBarChart = () => {
   const { data, getBarColor, handleChangeRig, navigate, windowWidth } =
     useAverageBarChart();
   const isSmallMobileScreen = windowWidth <= 768;
-
+  const { primaryColor } = useTheme();
   return (
     <div className="w-full h-[80%] relative">
       <ResponsiveBar
@@ -99,21 +100,21 @@ export const AverageBarChart = () => {
           axis: {
             domain: {
               line: {
-                stroke: "#1c7b7b",
+                stroke: primaryColor,
               },
             },
             legend: {
               text: {
-                fill: "#1c7b7b",
+                fill: primaryColor,
               },
             },
             ticks: {
               line: {
-                stroke: "#1c7b7b",
+                stroke: primaryColor,
                 strokeWidth: 1,
               },
               text: {
-                fill: "#1c7b7b",
+                fill: primaryColor,
               },
             },
           },
@@ -126,12 +127,12 @@ export const AverageBarChart = () => {
           },
           legends: {
             text: {
-              fill: "#1c7b7b",
+              fill: primaryColor,
             },
           },
           tooltip: {
             container: {
-              color: "#1c7b7b",
+              color: primaryColor,
             },
           },
           labels: {

@@ -3,6 +3,7 @@ import { translateClassification } from "../../../../../app/utils/translateClass
 import { getDiffInMinutes } from "../../../../../app/utils/getDiffInMinutes";
 import { parse } from "date-fns";
 import { formatNumberWithFixedDecimals } from "../../../../../app/utils/formatNumberWithFixedDecimals";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export interface EquipmentData {
   id: string;
@@ -21,9 +22,9 @@ export interface GrouppedEquipmentData {
 
 export const useGrouppedRepairsPieChartCard = () => {
   const { repairPeriods, selectedEquipment } = useDashboard();
-
+  const { primaryColor } = useTheme();
   const pieChartColors = [
-    "#1c7b7b", // primary 500
+    primaryColor, // primary 500
     "#81c460",
     "#ffda79", // Amarelo
     "#564787", // Roxo
@@ -40,8 +41,7 @@ export const useGrouppedRepairsPieChartCard = () => {
   const repairGroupedData: GrouppedEquipmentData = repairPeriods.reduce(
     (acc: GrouppedEquipmentData, current) => {
       const foundIndex = acc.groupedData.findIndex(
-        (item) =>
-          item.equipment === translateClassification(current.classification)
+        (item) => item.equipment === translateClassification(current.classification)
       );
 
       const parsedStartHour = parse(

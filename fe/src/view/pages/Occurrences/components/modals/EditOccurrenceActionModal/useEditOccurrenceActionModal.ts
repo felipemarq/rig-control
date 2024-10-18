@@ -10,6 +10,7 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { filesService } from "@/app/services/filesService";
 import { occurrencesActionsService } from "@/app/services/occurrencesActionsService";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
@@ -31,6 +32,7 @@ export const useEditOccurrenceActionModal = () => {
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { primaryColor } = useTheme();
 
   const handleCloseDeleteModal = () => {
     setIsDeleteModalOpen(false);
@@ -127,7 +129,7 @@ export const useEditOccurrenceActionModal = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       handleCloseDeleteModal();
       closeEditOccurrenceActionModal();
-      customColorToast("Ocorrência deletada com sucesso!", "#1c7b7b", "success");
+      customColorToast("Ocorrência deletada com sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -165,7 +167,7 @@ export const useEditOccurrenceActionModal = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
       closeEditOccurrenceActionModal();
-      customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro feito com Sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

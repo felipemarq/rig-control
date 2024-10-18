@@ -10,26 +10,25 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-
-const chartConfig = {
-  total: {
-    label: "Total Faturado",
-    color: "#1c7b7b",
-  },
-  totalLost: {
-    label: " Faturamento Perdido",
-    color: "#fc5050",
-  },
-} satisfies ChartConfig;
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const BarChart = () => {
   const { data } = useBarChart();
+  const { primaryColor } = useTheme();
+
+  const chartConfig = {
+    total: {
+      label: "Total Faturado",
+      color: primaryColor,
+    },
+    totalLost: {
+      label: " Faturamento Perdido",
+      color: "#fc5050",
+    },
+  } satisfies ChartConfig;
 
   return (
-    <ChartContainer
-      config={chartConfig}
-      className="aspect-auto h-[400px] w-full"
-    >
+    <ChartContainer config={chartConfig} className="aspect-auto h-[400px] w-full">
       <RechartBarChart accessibilityLayer data={data}>
         <XAxis
           dataKey="rig"

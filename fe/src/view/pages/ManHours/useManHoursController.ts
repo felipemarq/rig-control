@@ -1,4 +1,5 @@
 import { QueryKeys } from "@/app/config/QueryKeys";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import { useManHours } from "@/app/hooks/manHours/useManHours";
 import { manHoursService } from "@/app/services/manHoursService";
 import { customColorToast } from "@/app/utils/customColorToast";
@@ -13,6 +14,7 @@ import { AxiosError } from "axios";
 export const useManHoursController = () => {
   const { manHours, isFetchingManHours, refetchManHours } = useManHours();
   const queryClient = useQueryClient();
+  const { primaryColor } = useTheme();
 
   const monthNames = {
     Janeiro: 1,
@@ -51,7 +53,7 @@ export const useManHoursController = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.MAN_HOURS] });
 
-      customColorToast("Registro atualizado com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro atualizado com Sucesso!", primaryColor, "success");
 
       refetchManHours();
     } catch (error: any | typeof AxiosError) {

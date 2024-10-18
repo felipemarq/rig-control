@@ -17,6 +17,7 @@ import { tankMixTaxesStepSchema } from "@/view/components/Stepper/steps/TankMixT
 import { truckTaxesStepSchema } from "@/view/components/Stepper/steps/TruckTaxesStep/schema";
 import { useEffect } from "react";
 import { safeSessionStorageGetItem } from "@/app/utils/safeSessionStorageGetItem";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   name: z.string().min(1),
@@ -34,6 +35,7 @@ type FormData = z.infer<typeof schema>;
 export const useCreateRig = () => {
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { primaryColor } = useTheme();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
@@ -136,9 +138,8 @@ export const useCreateRig = () => {
           currencyStringToNumber(formData.dtmLt20Tax as string) ??
           (formData.dtmLt20Tax as number),
         equipmentRatioBt20And50Tax:
-          currencyStringToNumber(
-            formData.equipmentRatioBt20And50Tax as string
-          ) ?? (formData.equipmentRatioBt20And50Tax as number),
+          currencyStringToNumber(formData.equipmentRatioBt20And50Tax as string) ??
+          (formData.equipmentRatioBt20And50Tax as number),
         equipmentRatioGt50Tax:
           currencyStringToNumber(formData.equipmentRatioGt50Tax as string) ??
           (formData.equipmentRatioGt50Tax as number),
@@ -216,12 +217,11 @@ export const useCreateRig = () => {
           currencyStringToNumber(formData.truckTankTax as string) ??
           (formData.truckTankTax as number),
         christmasTreeDisassemblyTax:
-          currencyStringToNumber(
-            formData.christmasTreeDisassemblyTax as string
-          ) ?? (formData.christmasTreeDisassemblyTax as number),
+          currencyStringToNumber(formData.christmasTreeDisassemblyTax as string) ??
+          (formData.christmasTreeDisassemblyTax as number),
       });
       queryClient.invalidateQueries({ queryKey: ["contracts", "rigs"] });
-      customColorToast("Sonda cadastrada com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Sonda cadastrada com Sucesso!", primaryColor, "success");
       form.reset();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

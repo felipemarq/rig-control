@@ -1,6 +1,7 @@
 // Importações necessárias - useDashboard e Efficiency
-import {useBillingRigDetailDashboard} from "@/view/pages/BillingRigDetailDashboard/BillingRigDetailDashboardContext/useBillingDashboard";
-import {Efficiency} from "@/view/pages/Dashboard/entities/Efficiency";
+import { useTheme } from "@/app/contexts/ThemeContext";
+import { useBillingRigDetailDashboard } from "@/view/pages/BillingRigDetailDashboard/BillingRigDetailDashboardContext/useBillingDashboard";
+import { Efficiency } from "@/view/pages/Dashboard/entities/Efficiency";
 
 //import {Efficiency} from "../../../../entities/Efficiency";
 
@@ -14,7 +15,8 @@ interface OutputData {
 // Hook responsável por formatar dados para o gráfico de linha
 export const useLineChart = () => {
   // Obtém as eficiências e o usuário do contexto do Dashboard
-  const {efficiencies} = useBillingRigDetailDashboard();
+  const { efficiencies } = useBillingRigDetailDashboard();
+  const { primaryColor } = useTheme();
 
   // Inicializa a estrutura de dados para o gráfico de linha
   let data: [
@@ -26,7 +28,7 @@ export const useLineChart = () => {
   ] = [
     {
       id: "SPT", // Usando o nome da sonda como ID inicial
-      color: "#1c7b7b",
+      color: primaryColor,
       data: [],
     },
   ];
@@ -36,12 +38,11 @@ export const useLineChart = () => {
     //Coloca o nome da sonda no ID para aparecer no Hover do gráfico
     data[0]["id"] = efficiencies[0].rig.name;
     // Itera sobre as eficiências para formatar os dados
-    efficiencies.forEach(({availableHours, id, date}) => {
+    efficiencies.forEach(({ availableHours, id, date }) => {
       // Formata a data no formato desejado para o gráfico de linha (dia/mês)
-      const formattedDate = `${new Date(date)
-        .getDate()
-        .toString()
-        .padStart(2, "0")}/${(new Date(date).getMonth() + 1)
+      const formattedDate = `${new Date(date).getDate().toString().padStart(2, "0")}/${(
+        new Date(date).getMonth() + 1
+      )
         .toString()
         .padStart(2, "0")}`;
 
@@ -61,5 +62,5 @@ export const useLineChart = () => {
   formatEfficiencyToLineChart(efficiencies);
 
   // Retorna os dados formatados para o gráfico de linha
-  return {data};
+  return { data };
 };

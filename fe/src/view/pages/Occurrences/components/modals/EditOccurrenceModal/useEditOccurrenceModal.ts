@@ -26,6 +26,7 @@ import { useClients } from "@/app/hooks/clients/useClients";
 import { SelectOptions } from "@/app/entities/SelectOptions";
 import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
 import { occurrenceSeveritySelectOptions } from "../../../utils/occurrenceSeveritySelectOptions";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   date: z.date(),
@@ -46,6 +47,8 @@ export type FormData = z.infer<typeof schema>;
 export const useEditOccurrenceModal = () => {
   const { closeEditOccurrenceModal, isEditOccurrenceModalOpen, occurrenceBeingSeen } =
     useOccurrencesContext();
+
+  const { primaryColor } = useTheme();
 
   const [selectedHour, setSelectHour] = useState<string>(
     formatIsoStringToHours(occurrenceBeingSeen?.hour!)
@@ -193,7 +196,7 @@ export const useEditOccurrenceModal = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       handleCloseDeleteModal();
       closeEditOccurrenceModal();
-      customColorToast("Ocorrência deletada com sucesso!", "#1c7b7b", "success");
+      customColorToast("Ocorrência deletada com sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -263,7 +266,7 @@ export const useEditOccurrenceModal = () => {
       setFile(null);
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeEditOccurrenceModal();
-      customColorToast("Registro atualizado com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro atualizado com Sucesso!", primaryColor, "success");
 
       if (file) {
         window.location.reload();

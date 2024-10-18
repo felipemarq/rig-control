@@ -1,8 +1,10 @@
-import {ResponsivePie} from "@nivo/pie";
-import {useGlossDetailsPieChart} from "./useGlossDetailsPieChart";
+import { ResponsivePie } from "@nivo/pie";
+import { useGlossDetailsPieChart } from "./useGlossDetailsPieChart";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const GlossDetailsPieChart = () => {
-  const {chartData /* handleCloseDetailsGraph */} = useGlossDetailsPieChart();
+  const { chartData /* handleCloseDetailsGraph */ } = useGlossDetailsPieChart();
+  const { primaryColor } = useTheme();
   return (
     <ResponsivePie
       data={chartData}
@@ -44,12 +46,12 @@ export const GlossDetailsPieChart = () => {
         },
         tooltip: {
           container: {
-            color: "#1c7b7b",
+            color: primaryColor,
           },
         },
       }}
-      colors={{datum: "data.color"}}
-      margin={{top: 10, right: 80, bottom: 100, left: 80}}
+      colors={{ datum: "data.color" }}
+      margin={{ top: 10, right: 80, bottom: 100, left: 80 }}
       sortByValue={true}
       innerRadius={0}
       activeOuterRadiusOffset={8}
@@ -60,9 +62,9 @@ export const GlossDetailsPieChart = () => {
       }}
       //onClick={(event) => handleChartClick(event.id as string)}
       enableArcLinkLabels={true}
-      arcLinkLabelsTextColor={"#1c7b7b"}
+      arcLinkLabelsTextColor={primaryColor}
       arcLinkLabelsThickness={1}
-      arcLinkLabelsColor={{from: "color"}}
+      arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
       valueFormat={(value) => `${value} Hrs`}
@@ -85,7 +87,7 @@ export const GlossDetailsPieChart = () => {
               {
                 on: "hover",
                 style: {
-                  itemTextColor: "#1c7b7b",
+                  itemTextColor: primaryColor,
                 },
               },
             ],

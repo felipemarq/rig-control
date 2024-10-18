@@ -1,9 +1,10 @@
 import { ResponsiveBar } from "@nivo/bar";
 import { useTorOccurrencesBarChart } from "./useTorOccurrencesBarChart";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const TorOccurrencesBarChart = () => {
   const { data } = useTorOccurrencesBarChart();
-
+  const { primaryColor } = useTheme();
   return (
     <ResponsiveBar
       data={data}
@@ -22,7 +23,7 @@ export const TorOccurrencesBarChart = () => {
       ]}
       valueScale={{ type: "linear" }}
       indexScale={{ type: "band", round: true }}
-      colors={"#1c7b7b"}
+      colors={primaryColor}
       borderRadius={5}
       enableGridX={false}
       enableGridY={false}
@@ -93,21 +94,21 @@ export const TorOccurrencesBarChart = () => {
         axis: {
           domain: {
             line: {
-              stroke: "#1c7b7b",
+              stroke: primaryColor,
             },
           },
           legend: {
             text: {
-              fill: "#1c7b7b",
+              fill: primaryColor,
             },
           },
           ticks: {
             line: {
-              stroke: "#1c7b7b",
+              stroke: primaryColor,
               strokeWidth: 1,
             },
             text: {
-              fill: "#1c7b7b",
+              fill: primaryColor,
             },
           },
         },
@@ -120,12 +121,12 @@ export const TorOccurrencesBarChart = () => {
         },
         legends: {
           text: {
-            fill: "#1c7b7b",
+            fill: primaryColor,
           },
         },
         tooltip: {
           container: {
-            color: "#1c7b7b",
+            color: primaryColor,
           },
         },
         labels: {

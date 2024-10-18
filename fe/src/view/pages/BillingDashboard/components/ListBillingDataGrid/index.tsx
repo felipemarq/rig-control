@@ -1,10 +1,11 @@
-import {DataGrid, GridToolbar} from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 
-import {NotFound} from "../../../../components/NotFound";
-import {useDataGrid} from "./useDataGrid";
+import { NotFound } from "../../../../components/NotFound";
+import { useDataGrid } from "./useDataGrid";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const ListBillingDataGrid = () => {
-  const {columns, data} = useDataGrid();
+  const { columns, data } = useDataGrid();
 
   const NotFoundDataGrid = () => {
     return (
@@ -16,6 +17,7 @@ export const ListBillingDataGrid = () => {
       </NotFound>
     );
   };
+  const { primaryColor } = useTheme();
 
   return (
     <DataGrid
@@ -96,7 +98,7 @@ export const ListBillingDataGrid = () => {
           borderRightColor: "black",
         },
         "& .MuiDataGrid-columnHeaders": {
-          backgroundColor: "#1c7b7b",
+          backgroundColor: primaryColor,
           color: "#fff",
           borderBottom: "none",
         },
@@ -104,12 +106,12 @@ export const ListBillingDataGrid = () => {
           backgroundColor: "#499595",
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#1c7b7b",
+          backgroundColor: primaryColor,
           color: "#fff",
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: "#1c7b7b !important",
+          color: `${primaryColor} !important`,
         },
       }}
     />

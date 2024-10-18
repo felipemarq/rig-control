@@ -10,6 +10,7 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { filesService } from "@/app/services/filesService";
 import { occurrencesActionsService } from "@/app/services/occurrencesActionsService";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
@@ -30,6 +31,7 @@ export const useNewOccurrenceActionModal = () => {
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const { primaryColor } = useTheme();
 
   const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.currentTarget;
@@ -134,7 +136,7 @@ export const useNewOccurrenceActionModal = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
       closeNewOccurrenceActionModal();
-      customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro feito com Sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

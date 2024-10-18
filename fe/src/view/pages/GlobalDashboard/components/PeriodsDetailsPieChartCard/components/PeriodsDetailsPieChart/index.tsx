@@ -1,9 +1,11 @@
 import { ResponsivePie } from "@nivo/pie";
 import { usePeriodsDetailsPieChart } from "./usePeriodsDetailsPieChart";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const PeriodsDetailsPieChart = () => {
   const { chartData, handleSelectedDetailPieChartViewChange } =
     usePeriodsDetailsPieChart();
+  const { primaryColor } = useTheme();
   return (
     <div className="w-full h-full relative">
       <ResponsivePie
@@ -46,7 +48,7 @@ export const PeriodsDetailsPieChart = () => {
           },
           tooltip: {
             container: {
-              color: "#1c7b7b",
+              color: primaryColor,
             },
           },
         }}
@@ -60,11 +62,9 @@ export const PeriodsDetailsPieChart = () => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
-        onClick={(event) =>
-          handleSelectedDetailPieChartViewChange(event.id as string)
-        }
+        onClick={(event) => handleSelectedDetailPieChartViewChange(event.id as string)}
         enableArcLinkLabels={false}
-        arcLinkLabelsTextColor={"#1c7b7b"}
+        arcLinkLabelsTextColor={primaryColor}
         arcLinkLabelsThickness={3}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
@@ -89,7 +89,7 @@ export const PeriodsDetailsPieChart = () => {
               {
                 on: "hover",
                 style: {
-                  itemTextColor: "#1c7b7b",
+                  itemTextColor: primaryColor,
                 },
               },
             ],

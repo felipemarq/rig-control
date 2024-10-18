@@ -18,6 +18,7 @@ import { temporaryEfficienciesServices } from "../../../../../app/services/tempo
 import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
 import { useTemporaryEfficiencyByUserId } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
 import * as Sentry from "@sentry/react";
+import { useTheme } from "@/app/contexts/ThemeContext";
 type ErrorArgs = { fieldName: string; message: string };
 
 interface UpdateFormContextValue {
@@ -156,7 +157,7 @@ export const UpdateFormContext = createContext({} as UpdateFormContextValue);
 export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
   const { handleToggleNavItem } = useSidebarContext();
-
+  const { primaryColor } = useTheme();
   const { efficiencyId } = useParams<{ efficiencyId: string }>();
 
   if (typeof efficiencyId === "undefined") {
@@ -170,20 +171,30 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
   const initialPeriods = useMemo(() => {
-    const initialPeriods = responseEfficiency?.periods?.map(({ startHour, endHour, description, type, classification, repairClassification, well }) => {
-      return {
-        id: uuidv4(),
-        startHour: formatIsoStringToHours(startHour),
-        endHour: formatIsoStringToHours(endHour),
-        type: type,
-        classification: classification,
-        repairClassification: repairClassification,
-        description: description,
-        equipmentRatio: "",
-        fluidRatio: "",
-        well: well?.name ?? "",
-      };
-    });
+    const initialPeriods = responseEfficiency?.periods?.map(
+      ({
+        startHour,
+        endHour,
+        description,
+        type,
+        classification,
+        repairClassification,
+        well,
+      }) => {
+        return {
+          id: uuidv4(),
+          startHour: formatIsoStringToHours(startHour),
+          endHour: formatIsoStringToHours(endHour),
+          type: type,
+          classification: classification,
+          repairClassification: repairClassification,
+          description: description,
+          equipmentRatio: "",
+          fluidRatio: "",
+          well: well?.name ?? "",
+        };
+      }
+    );
 
     for (let index = 0; index < responseEfficiency?.equipmentRatio?.length; index++) {
       initialPeriods[index] = {
@@ -284,11 +295,15 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
     setConfigsConfirmed(true);
   };
 
-  const { isPending: isLoadingRemoveEfficiency, mutateAsync: mutateAsyncRemoveEfficiency } = useMutation({ mutationFn: efficienciesService.remove });
+  const {
+    isPending: isLoadingRemoveEfficiency,
+    mutateAsync: mutateAsyncRemoveEfficiency,
+  } = useMutation({ mutationFn: efficienciesService.remove });
 
-  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } = useMutation({
-    mutationFn: temporaryEfficienciesServices.create,
-  });
+  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } =
+    useMutation({
+      mutationFn: temporaryEfficienciesServices.create,
+    });
 
   const handleSubmit = async (periods: Periods) => {
     try {
@@ -328,7 +343,7 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
 
     try {
       await mutateAsync(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
@@ -406,7 +421,7 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
 
     try {
       await mutateAsyncTemporaryEfficiency(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
@@ -504,7 +519,9 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
 
   const handleRepairClassification = (id: string, repairClassification: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? { ...period, repairClassification: repairClassification } : period;
+      return period.id === id
+        ? { ...period, repairClassification: repairClassification }
+        : period;
     });
 
     setPeriods(newPeriods);
@@ -551,7 +568,9 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
 
   const updatePeriodState = (id: string, state: boolean) => {
     const newStates = periodsState.map(({ periodId, isCollapsed }) => {
-      return periodId === id ? { periodId, isCollapsed: state } : { periodId, isCollapsed };
+      return periodId === id
+        ? { periodId, isCollapsed: state }
+        : { periodId, isCollapsed };
     });
 
     setPeriodsState(newStates);
@@ -611,7 +630,9 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
     return intDays;
   };
 
-  const isDateValid = date ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date()) : false;
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())
+    : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
@@ -688,8 +709,10 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
   const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
   const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
-  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] = useState(false);
-  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] = useState(false);
+  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
+    useState(false);
+  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
+    useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
   const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
@@ -703,7 +726,8 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
   const [mobilizationPlace, setMobilizationPlace] = useState("");
   const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(false);
-  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] = useState<string>("");
+  const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] =
+    useState<string>("");
   const [bobRentHours, setBobRentHours] = useState<string>("");
 
   const handleMixTankCheckBox = () => {
@@ -747,9 +771,12 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
     setIsTankMixMobilizationSelected((prevState) => !prevState);
   }, []);
 
-  const handleChristmasTreeDisassemblyHours = useCallback((_time: Dayjs | null, timeString: string) => {
-    setChristmasTreeDisassemblyHours(timeString);
-  }, []);
+  const handleChristmasTreeDisassemblyHours = useCallback(
+    (_time: Dayjs | null, timeString: string) => {
+      setChristmasTreeDisassemblyHours(timeString);
+    },
+    []
+  );
 
   //===========================================
 
@@ -794,7 +821,11 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   return (
     <UpdateFormContext.Provider
       value={{
-        isFetching: isLoadingRemoveEfficiency || isFetchingEfficiency || isLoadingEfficiency || isLoadingTemporary,
+        isFetching:
+          isLoadingRemoveEfficiency ||
+          isFetchingEfficiency ||
+          isLoadingEfficiency ||
+          isLoadingTemporary,
         date,
         handleChangeRig,
         handleDateChange,

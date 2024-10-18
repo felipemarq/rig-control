@@ -16,6 +16,7 @@ import { temporaryEfficienciesServices } from "../../../../../app/services/tempo
 import { useTemporaryEfficiencyByUserId } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
 import { TemporaryEfficiencyResponse } from "../../../../../app/services/temporaryEfficienciesServices/getById";
 import * as Sentry from "@sentry/react";
+import { useTheme } from "@/app/contexts/ThemeContext";
 interface FormContextValue {
   date: Date | undefined;
   remainingMinutes: number | undefined;
@@ -159,7 +160,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
-
+  const { primaryColor } = useTheme();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const { temporaryEfficiency } = useTemporaryEfficiencyByUserId(user?.id!);
 
@@ -258,7 +259,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await mutateAsync(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
@@ -316,7 +317,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
 
     try {
       await mutateAsyncTemporaryEfficiency(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
