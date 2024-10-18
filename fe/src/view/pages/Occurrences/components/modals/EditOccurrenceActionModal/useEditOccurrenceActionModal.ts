@@ -17,7 +17,7 @@ const schema = z.object({
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean(),
-  description: z.string().min(1, "Descrição é obrigatório."),
+  description: z.string().optional(),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -27,6 +27,7 @@ export const useEditOccurrenceActionModal = () => {
     closeEditOccurrenceActionModal,
     isEditOccurrenceActionModalOpen,
     occurrenceActionBeingSeen,
+    handleRefetchOccurrences,
   } = useOccurrencesContext();
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
@@ -83,7 +84,6 @@ export const useEditOccurrenceActionModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
-
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -129,6 +129,7 @@ export const useEditOccurrenceActionModal = () => {
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       handleCloseDeleteModal();
       closeEditOccurrenceActionModal();
+      handleRefetchOccurrences();
       customColorToast("Ocorrência deletada com sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

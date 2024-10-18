@@ -1,7 +1,6 @@
 import { Modal } from "@/view/components/Modal";
 import { Button } from "@/view/components/Button";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
-import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
 import { DownloadIcon, FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -82,6 +81,7 @@ export const EditOccurrenceActionModal = () => {
                 render={({ field: { onChange } }) => (
                   <DatePickerInput
                     //value={value}
+                    placeholder="Prazo da ação"
                     onChange={(value) => onChange(value)}
                     error={errors.dueDate?.message}
                   />
@@ -127,26 +127,18 @@ export const EditOccurrenceActionModal = () => {
             />
           </div>
 
-          <Controller
-            control={control}
-            name="description"
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-              <TextArea
-                maxLength={5000}
-                style={{
-                  height: 100,
-                  resize: "vertical",
-                  // border: "none",
-                }}
-                onChange={onChange}
-                className="bg-white borderpx-3  rounded-lg  border-gray-500  text-black w-full h-[52px] hover:border-primary placeholder:text-gray-800"
-                value={value}
-                //onChange={(e) => handleDescription(id, e.target.value)}
-                placeholder="Descrição do plano de ação"
-              />
-            )}
-          />
+          <div>
+            <Input
+              error={errors.responsible?.message}
+              placeholder="E-mail do Responsável"
+              maxLength={60}
+              variant="modal"
+              name="responsible"
+              disabled
+              className="cursor-not-allowed"
+            />
+          </div>
+
           <div className="flex flex-col gap-4">
             {hasFile && (
               <a

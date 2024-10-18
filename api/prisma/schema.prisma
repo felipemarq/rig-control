@@ -683,7 +683,7 @@ model OccurrenceAction {
   title        String
   dueDate      DateTime
   responsible  String
-  description  String
+  description  String?
   isFinished   Boolean    @default(false)
   createdAt    DateTime   @default(now()) @map("created_at")
   files        File[]

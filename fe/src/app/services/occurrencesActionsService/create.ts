@@ -7,7 +7,7 @@ export interface CreateOccurrenceActionParams {
   dueDate: string;
   responsible: string;
   isFinished: boolean;
-  description: string;
+  description?: string;
 }
 
 export type CreateOccurrenceActionResponse = OccurrenceAction;

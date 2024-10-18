@@ -22,13 +22,6 @@ export class OccurrenceActionsService {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
-    //@ts-ignore
-    if (occurrence.occurrenceActions[0]) {
-      throw new NotFoundException(
-        'Ocorrência já tem um plano de ação vinculado!',
-      );
-    }
-
     return await this.occurrenceActionsRepo.create({
       data: createOccurrenceActionDto,
       include: {

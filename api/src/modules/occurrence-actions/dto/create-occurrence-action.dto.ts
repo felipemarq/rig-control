@@ -26,7 +26,7 @@ export class CreateOccurrenceActionDto {
   responsible: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   description: string;
 
   @IsBoolean()

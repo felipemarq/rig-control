@@ -178,6 +178,9 @@ export class OccurrencesService {
               },
             },
           },
+          orderBy: {
+            createdAt: 'desc',
+          },
         },
       },
       orderBy: {

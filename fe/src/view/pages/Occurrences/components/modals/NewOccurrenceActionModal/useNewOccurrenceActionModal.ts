@@ -17,7 +17,7 @@ const schema = z.object({
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean().default(false),
-  description: z.string().min(1, "Descrição é obrigatório."),
+  description: z.string().optional(),
 });
 
 export type FormData = z.infer<typeof schema>;
