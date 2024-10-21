@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { OccurrenceActionsService } from './occurrence-actions.service';
 import { CreateOccurrenceActionDto } from './dto/create-occurrence-action.dto';
@@ -19,8 +20,14 @@ export class OccurrenceActionsController {
   ) {}
 
   @Post()
-  create(@Body() createOccurrenceActionDto: CreateOccurrenceActionDto) {
-    return this.occurrenceActionsService.create(createOccurrenceActionDto);
+  create(
+    @Body() createOccurrenceActionDto: CreateOccurrenceActionDto,
+    @Query() email: string,
+  ) {
+    return this.occurrenceActionsService.create(
+      createOccurrenceActionDto,
+      email,
+    );
   }
 
   @Get()

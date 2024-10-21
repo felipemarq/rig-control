@@ -7,6 +7,7 @@ import { ContractRepository } from 'src/shared/database/repositories/contract.re
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hash } from 'bcryptjs';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
