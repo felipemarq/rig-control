@@ -4,6 +4,7 @@ import { UpdateOccurrenceActionDto } from './dto/update-occurrence-action.dto';
 import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { FileService } from '../file/file.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OccurrenceActionsService {
@@ -11,8 +12,12 @@ export class OccurrenceActionsService {
     private readonly occurrenceActionsRepo: OccurrenceActionsRepository,
     private readonly occurrenceRepo: OccurrenceRepository,
     private readonly filesService: FileService,
+    private readonly mailsService: MailService,
   ) {}
-  async create(createOccurrenceActionDto: CreateOccurrenceActionDto) {
+  async create(
+    createOccurrenceActionDto: CreateOccurrenceActionDto,
+    email: string,
+  ) {
     const occurrence = await this.occurrenceRepo.findUnique({
       where: { id: createOccurrenceActionDto.occurrenceId },
       include: { occurrenceActions: true },
@@ -22,12 +27,19 @@ export class OccurrenceActionsService {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
-    return await this.occurrenceActionsRepo.create({
+    const occurrenceAction = await this.occurrenceActionsRepo.create({
       data: createOccurrenceActionDto,
       include: {
         files: true,
       },
     });
+
+    await this.mailsService.sendOccurrenceActionEmail(
+      createOccurrenceActionDto,
+      email,
+    );
+
+    return occurrenceAction;
   }
 
   async findAll() {
