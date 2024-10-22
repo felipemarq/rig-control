@@ -128,14 +128,20 @@ export const EditOccurrenceActionModal = () => {
           </div>
 
           <div>
-            <Input
-              error={errors.responsible?.message}
-              placeholder="E-mail do Responsável"
-              maxLength={60}
-              variant="modal"
-              name="responsible"
-              disabled
-              className="cursor-not-allowed"
+            <Controller
+              control={control}
+              name="responsibleEmail"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  error={errors.responsibleEmail?.message}
+                  placeholder="E-mail do Responsável"
+                  maxLength={60}
+                  variant="modal"
+                  value={value}
+                  name="responsibleEmail"
+                  onChange={(value) => onChange(value)}
+                />
+              )}
             />
           </div>
 

@@ -8,14 +8,15 @@ export interface CreateOccurrenceActionParams {
   responsible: string;
   isFinished: boolean;
   description?: string;
+  responsibleEmail: string;
 }
 
 export type CreateOccurrenceActionResponse = OccurrenceAction;
 
-export const create = async (params: CreateOccurrenceActionParams) => {
+export const create = async (body: CreateOccurrenceActionParams) => {
   const { data } = await httpClient.post<CreateOccurrenceActionResponse>(
     "/occurrence-actions",
-    params
+    body
   );
   return data;
 };

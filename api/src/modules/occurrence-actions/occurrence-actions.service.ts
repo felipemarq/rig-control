@@ -14,13 +14,9 @@ export class OccurrenceActionsService {
     private readonly filesService: FileService,
     private readonly mailsService: MailService,
   ) {}
-  async create(
-    createOccurrenceActionDto: CreateOccurrenceActionDto,
-    email: string,
-  ) {
+  async create(createOccurrenceActionDto: CreateOccurrenceActionDto) {
     const occurrence = await this.occurrenceRepo.findUnique({
       where: { id: createOccurrenceActionDto.occurrenceId },
-      include: { occurrenceActions: true },
     });
 
     if (!occurrence) {
@@ -36,7 +32,7 @@ export class OccurrenceActionsService {
 
     await this.mailsService.sendOccurrenceActionEmail(
       createOccurrenceActionDto,
-      email,
+      occurrence,
     );
 
     return occurrenceAction;
@@ -68,6 +64,19 @@ export class OccurrenceActionsService {
     occurrenceActionId: string,
     updateOccurrenceActionDto: UpdateOccurrenceActionDto,
   ) {
+    const occurrence = await this.occurrenceRepo.findUnique({
+      where: { id: updateOccurrenceActionDto.occurrenceId },
+    });
+
+    if (!occurrence) {
+      throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    await this.mailsService.sendOccurrenceActionEmail(
+      updateOccurrenceActionDto,
+      occurrence,
+    );
+
     return await this.occurrenceActionsRepo.update({
       where: { id: occurrenceActionId },
       data: updateOccurrenceActionDto,

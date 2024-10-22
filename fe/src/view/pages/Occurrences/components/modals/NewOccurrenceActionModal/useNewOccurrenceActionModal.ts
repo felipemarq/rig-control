@@ -18,6 +18,7 @@ const schema = z.object({
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean().default(false),
   description: z.string().optional(),
+  responsibleEmail: z.string().email().min(1, "Obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -119,6 +120,7 @@ export const useNewOccurrenceActionModal = () => {
         occurrenceId: occurenceIdActionPlanBeingSeen!,
         responsible: data.responsible,
         title: data.title,
+        responsibleEmail: data.responsibleEmail,
       });
 
       if (file) {

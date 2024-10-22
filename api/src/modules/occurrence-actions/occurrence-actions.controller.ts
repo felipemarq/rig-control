@@ -20,14 +20,8 @@ export class OccurrenceActionsController {
   ) {}
 
   @Post()
-  create(
-    @Body() createOccurrenceActionDto: CreateOccurrenceActionDto,
-    @Query() email: string,
-  ) {
-    return this.occurrenceActionsService.create(
-      createOccurrenceActionDto,
-      email,
-    );
+  create(@Body() createOccurrenceActionDto: CreateOccurrenceActionDto) {
+    return this.occurrenceActionsService.create(createOccurrenceActionDto);
   }
 
   @Get()
