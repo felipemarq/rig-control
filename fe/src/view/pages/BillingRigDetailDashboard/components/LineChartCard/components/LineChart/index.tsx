@@ -1,15 +1,17 @@
-import {ResponsiveLine} from "@nivo/line";
-import {useLineChart} from "./useLineChart";
-import {useNavigate} from "react-router-dom";
+import { ResponsiveLine } from "@nivo/line";
+import { useLineChart } from "./useLineChart";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const LineChart = () => {
-  const {data} = useLineChart();
+  const { data } = useLineChart();
   const navigate = useNavigate();
+  const { primaryColor } = useTheme();
   return (
     <div className="w-full h-full">
       <ResponsiveLine
         data={data}
-        margin={{top: 50, right: 50, bottom: 40, left: 50}}
+        margin={{ top: 50, right: 50, bottom: 40, left: 50 }}
         animate={true}
         enableSlices={"x"}
         yScale={{
@@ -28,13 +30,13 @@ export const LineChart = () => {
         lineWidth={3}
         curve="cardinal"
         enablePointLabel={true}
-        colors={["#1c7b7b", "#774dd7"]}
+        colors={[primaryColor, "#774dd7"]}
         enableGridX={true}
         enableGridY={false}
         pointSize={10}
         pointColor="white"
         pointBorderWidth={2}
-        pointBorderColor={{from: "serieColor"}}
+        pointBorderColor={{ from: "serieColor" }}
         yFormat=" >-.2f"
         layers={[
           "grid",
@@ -52,21 +54,21 @@ export const LineChart = () => {
           axis: {
             domain: {
               line: {
-                stroke: "#1c7b7b",
+                stroke: primaryColor,
               },
             },
             legend: {
               text: {
-                fill: "#1c7b7b",
+                fill: primaryColor,
               },
             },
             ticks: {
               line: {
-                stroke: "#1c7b7b",
+                stroke: primaryColor,
                 strokeWidth: 1,
               },
               text: {
-                fill: "#1c7b7b",
+                fill: primaryColor,
               },
             },
           },
@@ -79,12 +81,12 @@ export const LineChart = () => {
           },
           legends: {
             text: {
-              fill: "#1c7b7b",
+              fill: primaryColor,
             },
           },
           tooltip: {
             container: {
-              color: "#1c7b7b",
+              color: primaryColor,
             },
           },
         }}

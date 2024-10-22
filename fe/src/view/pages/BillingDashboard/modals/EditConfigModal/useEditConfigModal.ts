@@ -9,6 +9,7 @@ import { customColorToast } from "../../../../../app/utils/customColorToast";
 import { AxiosError } from "axios";
 import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
 import { QueryKeys } from "../../../../../app/config/QueryKeys";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   availableHourTax: z.union([z.string().nonempty("Obrigatório"), z.number()]),
@@ -32,70 +33,25 @@ const schema = z.object({
     z.string().nonempty("Saldo é obrigatório"),
     z.number(),
   ]),
-  fluidRatioGt50Tax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  fluidRatioLt20Tax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  glossHourTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
+  fluidRatioGt50Tax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  fluidRatioLt20Tax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  glossHourTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
 
-  mobilization: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
+  mobilization: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
 
-  demobilization: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
+  demobilization: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
   bobRentTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
-  generatorFuelTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  extraTrailerTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  powerSwivelTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  transportationTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  readjustment: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  suckingTruckTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  truckCartRentTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  truckTankTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
+  generatorFuelTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  extraTrailerTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  powerSwivelTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  transportationTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  readjustment: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  suckingTruckTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  truckCartRentTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  truckTankTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
   truckKmTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
-  mixTankMonthRentTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  mixTankHourRentTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
+  mixTankMonthRentTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  mixTankHourRentTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
   mixTankMobilizationTax: z.union([
     z.string().nonempty("Saldo é obrigatório"),
     z.number(),
@@ -104,14 +60,8 @@ const schema = z.object({
     z.string().nonempty("Saldo é obrigatório"),
     z.number(),
   ]),
-  mixTankDtmTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
-  mixTankOperatorTax: z.union([
-    z.string().nonempty("Saldo é obrigatório"),
-    z.number(),
-  ]),
+  mixTankDtmTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
+  mixTankOperatorTax: z.union([z.string().nonempty("Saldo é obrigatório"), z.number()]),
   christmasTreeDisassemblyTax: z.union([
     z.string().nonempty("Saldo é obrigatório"),
     z.number(),
@@ -122,14 +72,13 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export const useEditConfigModal = () => {
-  const {
-    isEditConfigModalOpen,
-    handleCloseEditConfigModal,
-    configBeingEdited,
-  } = useBillingDashboard();
+  const { isEditConfigModalOpen, handleCloseEditConfigModal, configBeingEdited } =
+    useBillingDashboard();
+  const { primaryColor } = useTheme();
 
-  const { isPending: isLoading, mutateAsync: mutateAsyncUpdateConfig } =
-    useMutation({ mutationFn: billingConfigService.update });
+  const { isPending: isLoading, mutateAsync: mutateAsyncUpdateConfig } = useMutation({
+    mutationFn: billingConfigService.update,
+  });
 
   const queryClient = useQueryClient();
 
@@ -170,8 +119,7 @@ export const useEditConfigModal = () => {
       truckCartRentTax: configBeingEdited?.truckCartRentTax,
       truckKmTax: configBeingEdited?.truckKmTax,
       truckTankTax: configBeingEdited?.truckTankTax,
-      christmasTreeDisassemblyTax:
-        configBeingEdited?.christmasTreeDisassemblyTax,
+      christmasTreeDisassemblyTax: configBeingEdited?.christmasTreeDisassemblyTax,
       demobilization: configBeingEdited?.demobilization,
       readjustment: configBeingEdited?.readjustment,
     },
@@ -252,8 +200,7 @@ export const useEditConfigModal = () => {
           currencyStringToNumber(data.mixTankOperatorTax as string) ??
           (data.mixTankOperatorTax as number),
         munckTax:
-          currencyStringToNumber(data.munckTax as string) ??
-          (data.munckTax as number),
+          currencyStringToNumber(data.munckTax as string) ?? (data.munckTax as number),
         powerSwivelTax:
           currencyStringToNumber(data.powerSwivelTax as string) ??
           (data.powerSwivelTax as number),
@@ -280,11 +227,7 @@ export const useEditConfigModal = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.CONFIG_BILLINGS] });
 
-      customColorToast(
-        "Configuração editada com sucesso!",
-        "#1c7b7b",
-        "success"
-      );
+      customColorToast("Configuração editada com sucesso!", primaryColor, "success");
       handleCloseEditConfigModal();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

@@ -15,7 +15,7 @@ const Occurrences = () => {
           <div className="w-full h-full overflow-y-auto">
             <Header
               className="mt-4"
-              title="Segurança"
+              title="Ocorrências"
               displayRig={false}
               displayPeriodRange={false}
             >

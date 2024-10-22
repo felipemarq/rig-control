@@ -16,6 +16,7 @@ import { TemporaryEfficiencyResponse } from "../../../../../app/services/tempora
 import { PeriodType } from "../../../../../app/entities/PeriodType";
 import { temporaryEfficienciesServices } from "../../../../../app/services/temporaryEfficienciesServices";
 import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 type ErrorArgs = { fieldName: string; message: string };
 
@@ -37,11 +38,7 @@ interface PendingFormContextValue {
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
-  handleStartHourChange(
-    time: Dayjs | null,
-    timeString: string,
-    id: string
-  ): void;
+  handleStartHourChange(time: Dayjs | null, timeString: string, id: string): void;
   handleDeletePeriod(id: string): void;
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
@@ -116,10 +113,7 @@ interface PendingFormContextValue {
     isCollapsed: boolean;
   }[];
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
-  handleChristmasTreeDisassemblyHours(
-    time: Dayjs | null,
-    timeString: string
-  ): void;
+  handleChristmasTreeDisassemblyHours(time: Dayjs | null, timeString: string): void;
   handleSave(): void;
   isModalOpen: boolean;
   closeModal(): void;
@@ -159,13 +153,9 @@ type Periods = {
 
 export const PendingFormContext = createContext({} as PendingFormContextValue);
 
-export const PendingFormProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const PendingFormProvider = ({ children }: { children: React.ReactNode }) => {
   const { user } = useAuth();
-
+  const { primaryColor } = useTheme();
   const { efficiencyId } = useParams<{ efficiencyId: string }>();
 
   if (typeof efficiencyId === "undefined") {
@@ -221,11 +211,7 @@ export const PendingFormProvider = ({
         }
       );
 
-      for (
-        let index = 0;
-        index < responseEfficiency?.equipmentRatio?.length;
-        index++
-      ) {
+      for (let index = 0; index < responseEfficiency?.equipmentRatio?.length; index++) {
         initialPeriods[index] = {
           id: initialPeriods[index].id,
           startHour: initialPeriods[index].startHour,
@@ -240,11 +226,7 @@ export const PendingFormProvider = ({
         };
       }
 
-      for (
-        let index = 0;
-        index < responseEfficiency?.fluidRatio?.length;
-        index++
-      ) {
+      for (let index = 0; index < responseEfficiency?.fluidRatio?.length; index++) {
         initialPeriods[index] = {
           id: initialPeriods[index].id,
           startHour: initialPeriods[index].startHour,
@@ -272,9 +254,7 @@ export const PendingFormProvider = ({
 
   const navigate = useNavigate();
   const [date, setDate] = useState<Date>(new Date(responseEfficiency.date));
-  const [selectedRig, setSelectedRig] = useState<string>(
-    responseEfficiency.rigId
-  );
+  const [selectedRig, setSelectedRig] = useState<string>(responseEfficiency.rigId);
   const { handleToggleNavItem } = useSidebarContext();
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
   const [periods, setPeriods] = useState<Periods>([]);
@@ -300,9 +280,7 @@ export const PendingFormProvider = ({
   const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
 
   const setError = ({ fieldName, message }: ErrorArgs) => {
-    const errorAlreadyExists = errors.find(
-      (error) => error.fieldName === fieldName
-    );
+    const errorAlreadyExists = errors.find((error) => error.fieldName === fieldName);
 
     if (errorAlreadyExists) return;
 
@@ -310,15 +288,11 @@ export const PendingFormProvider = ({
   };
 
   const removeError = (fieldName: string) => {
-    setErrors((prevState) =>
-      prevState.filter((error) => error.fieldName !== fieldName)
-    );
+    setErrors((prevState) => prevState.filter((error) => error.fieldName !== fieldName));
   };
 
   const getErrorMessageByFildName = (fieldName: string) => {
-    let findErrorMessage = errors.find(
-      (error) => error.fieldName === fieldName
-    )?.message;
+    let findErrorMessage = errors.find((error) => error.fieldName === fieldName)?.message;
 
     if (!findErrorMessage) {
       findErrorMessage = "";
@@ -340,12 +314,10 @@ export const PendingFormProvider = ({
     setConfigsConfirmed(true);
   };
 
-  const {
-    isPending: isLoadingTemporary,
-    mutateAsync: mutateAsyncTemporaryEfficiency,
-  } = useMutation({
-    mutationFn: temporaryEfficienciesServices.create,
-  });
+  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } =
+    useMutation({
+      mutationFn: temporaryEfficienciesServices.create,
+    });
 
   const handleSubmit = async (periods: Periods) => {
     const { toPersistenceObj } = efficiencyMappers.toPersistance({
@@ -377,7 +349,7 @@ export const PendingFormProvider = ({
 
     try {
       await mutateAsync(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
@@ -455,7 +427,7 @@ export const PendingFormProvider = ({
 
     try {
       await mutateAsyncTemporaryEfficiency(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
@@ -481,11 +453,7 @@ export const PendingFormProvider = ({
   };
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
-  const handleStartHourChange = (
-    _time: Dayjs | null,
-    timeString: string,
-    id: string
-  ) => {
+  const handleStartHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? { ...period, startHour: timeString } : period;
     });
@@ -493,11 +461,7 @@ export const PendingFormProvider = ({
     setPeriods(newPeriods);
   };
 
-  const handleEndHourChange = (
-    _time: Dayjs | null,
-    timeString: string,
-    id: string
-  ) => {
+  const handleEndHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? { ...period, endHour: timeString } : period;
     });
@@ -559,10 +523,7 @@ export const PendingFormProvider = ({
     setPeriods(newPeriods);
   };
 
-  const handleRepairClassification = (
-    id: string,
-    repairClassification: string
-  ) => {
+  const handleRepairClassification = (id: string, repairClassification: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? { ...period, repairClassification: repairClassification }
@@ -607,9 +568,7 @@ export const PendingFormProvider = ({
   };
 
   const getPeriodState = (periodId: string) => {
-    const periodState = periodsState.find(
-      (period) => period.periodId === periodId
-    );
+    const periodState = periodsState.find((period) => period.periodId === periodId);
     return periodState?.isCollapsed ?? false;
   };
 
@@ -754,22 +713,19 @@ export const PendingFormProvider = ({
 
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
   const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
-  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] =
-    useState(false);
+  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
   const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
     useState(false);
   const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
     useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
-  const [isDemobilizationSelected, setIsDemobilizationSelected] =
-    useState(false);
+  const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
   const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
   const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
   const [isTruckCartSelected, setIsTruckCartSelected] = useState(false);
   const [isMunckSelected, setIsMunckSelected] = useState(false);
-  const [isTransportationSelected, setIsTransportationSelected] =
-    useState(false);
+  const [isTransportationSelected, setIsTransportationSelected] = useState(false);
   const [truckKm, setTruckKm] = useState(0);
   const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(false);
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
@@ -812,12 +768,9 @@ export const PendingFormProvider = ({
     setIsTankMixDTMSelected((prevState) => !prevState);
   }, []);
 
-  const handleBobRentHours = useCallback(
-    (_time: Dayjs | null, timeString: string) => {
-      setBobRentHours(timeString);
-    },
-    []
-  );
+  const handleBobRentHours = useCallback((_time: Dayjs | null, timeString: string) => {
+    setBobRentHours(timeString);
+  }, []);
 
   const handleTankMixMobilizationCheckbox = useCallback(() => {
     setIsTankMixMobilizationSelected((prevState) => !prevState);
@@ -895,9 +848,7 @@ export const PendingFormProvider = ({
         cleanFields,
         handlePeriodWell,
         isLoading:
-          isLoadingEfficiency ||
-          isLoadingTemporary ||
-          isFetchingTemporaryEfficiency,
+          isLoadingEfficiency || isLoadingTemporary || isFetchingTemporaryEfficiency,
         userRig,
         usersRigs,
         isPending,

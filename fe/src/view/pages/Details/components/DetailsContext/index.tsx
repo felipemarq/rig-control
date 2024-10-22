@@ -10,6 +10,9 @@ import { AxiosError } from "axios";
 import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
 import { QueryKeys } from "../../../../../app/config/QueryKeys";
 import { useWindowWidth } from "@/app/hooks/useWindowWidth";
+import { excelPeriodsReport } from "@/app/services/efficienciesService/excelPeriodsReport";
+import { saveAs } from "file-saver";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface DetailsContextValues {
   isFetchingEfficiency: boolean;
@@ -29,16 +32,13 @@ interface DetailsContextValues {
   handleUpdateEfficiency: () => void;
   isLoadingUpdateEfficiency: boolean;
   windowWidth: number;
+  handleExcelDownload: () => Promise<void>;
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
-export const DetailsContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const DetailsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { efficiencyId } = useParams<{ efficiencyId: string }>();
-
+  const { primaryColor } = useTheme();
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
     // Pode ser um redirecionamento, um erro lançado, ou até mesmo um log.
@@ -81,6 +81,18 @@ export const DetailsContextProvider = ({
     }
   };
 
+  const handleExcelDownload = async () => {
+    try {
+      const data = await excelPeriodsReport(efficiencyId);
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, "relatorio.xlsx");
+    } catch (error) {
+      console.error("Erro ao baixar o relatório", error);
+    }
+  };
+
   const {
     isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
@@ -90,7 +102,7 @@ export const DetailsContextProvider = ({
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId!);
       queryClient.invalidateQueries({ queryKey: [QueryKeys.EFFICIENCIES] });
-      customColorToast("Dados Deletados com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Dados Deletados com Sucesso!", primaryColor, "success");
       closeDeleteModal();
       navigate("/dashboard");
     } catch (error: any | typeof AxiosError) {
@@ -121,6 +133,7 @@ export const DetailsContextProvider = ({
     <DetailsContext.Provider
       value={{
         windowWidth,
+        handleExcelDownload,
         isFetchingEfficiency,
         efficiency,
         isDetailModalOpen,
@@ -136,7 +149,6 @@ export const DetailsContextProvider = ({
         canUserEdit,
         isLoadingUpdateEfficiency,
         efficiencyId,
-
         handleUpdateEfficiency,
       }}
     >

@@ -6,6 +6,7 @@ import { formatDate } from "../../../../../app/utils/formatDate";
 import { localeTextDataGridConfig } from "../../../../../app/utils/localeTextDataGridConfig";
 
 import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -18,6 +19,7 @@ export const PeriodsDataGrid = ({
 
   isLoading,
 }: ListPeriodsDataGridProps) => {
+  const { primaryColor } = useTheme();
   const columns: GridColDef[] = [
     {
       field: "startHour",
@@ -75,9 +77,7 @@ export const PeriodsDataGrid = ({
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
-          <div className="w-full text-white flex justify-center">
-            {params.value}
-          </div>
+          <div className="w-full text-white flex justify-center">{params.value}</div>
         );
       },
     },
@@ -130,7 +130,7 @@ export const PeriodsDataGrid = ({
           py: "22px",
         },
         "& .MuiDataGrid-columnHeaders": {
-          backgroundColor: "#1c7b7b",
+          backgroundColor: primaryColor,
           color: "#fff",
           borderBottom: "none",
         },
@@ -138,12 +138,12 @@ export const PeriodsDataGrid = ({
           backgroundColor: "#499595",
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: "#1c7b7b",
+          backgroundColor: primaryColor,
           color: "#fff",
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: "#1c7b7b !important",
+          color: `${primaryColor} !important`,
         },
       }}
     />

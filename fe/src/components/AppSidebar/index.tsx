@@ -2,8 +2,16 @@ import { NavMain } from "@/components/nav-main";
 import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
-import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarItem, SidebarLabel } from "@/components/ui/sidebar";
+import {
+  Sidebar,
+  SidebarContent,
+  SidebarFooter,
+  SidebarHeader,
+  SidebarItem,
+  SidebarLabel,
+} from "@/components/ui/sidebar";
 import { useAppsidebar } from "./useAppsidebar";
+import { ModeToggle } from "@/view/components/ModeToggle";
 
 export const AppSidebar = () => {
   const { user, signout, data } = useAppsidebar();
@@ -40,6 +48,7 @@ export const AppSidebar = () => {
             avatar: "",
           }}
         />
+        <ModeToggle />
       </SidebarFooter>
     </Sidebar>
   );

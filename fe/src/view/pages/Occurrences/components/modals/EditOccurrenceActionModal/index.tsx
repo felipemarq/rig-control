@@ -1,7 +1,6 @@
 import { Modal } from "@/view/components/Modal";
 import { Button } from "@/view/components/Button";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
-import TextArea from "antd/es/input/TextArea";
 import { Controller } from "react-hook-form";
 import { DownloadIcon, FileUp, Hand } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -9,6 +8,7 @@ import { Input } from "@/view/components/Input";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
 import { useEditOccurrenceActionModal } from "./useEditOccurrenceActionModal";
+import { DeleteModal } from "@/view/components/DeleteModal";
 
 export const EditOccurrenceActionModal = () => {
   const {
@@ -26,7 +26,25 @@ export const EditOccurrenceActionModal = () => {
     handleDragLeave,
     occurrenceActionBeingSeen,
     hasFile,
+    isDeleteModalOpen,
+    handleCloseDeleteModal,
+    handleOpenDeleteModal,
+    handleDeleteOccurrence,
+    isLoadingDeleteOccurrenceAction,
   } = useEditOccurrenceActionModal();
+
+  if (isDeleteModalOpen) {
+    return (
+      <DeleteModal
+        open={isDeleteModalOpen}
+        title="Tem certeza que deseja excluir essa ocorrência?"
+        description=" Ao excluir a ocorrência, também serão excluídos todos os  planos de ação e arquivos relacionadas."
+        onClose={handleCloseDeleteModal}
+        onConfirm={handleDeleteOccurrence}
+        isLoading={isLoadingDeleteOccurrenceAction}
+      />
+    );
+  }
 
   return (
     <Modal
@@ -63,6 +81,7 @@ export const EditOccurrenceActionModal = () => {
                 render={({ field: { onChange } }) => (
                   <DatePickerInput
                     //value={value}
+                    placeholder="Prazo da ação"
                     onChange={(value) => onChange(value)}
                     error={errors.dueDate?.message}
                   />
@@ -108,26 +127,24 @@ export const EditOccurrenceActionModal = () => {
             />
           </div>
 
-          <Controller
-            control={control}
-            name="description"
-            defaultValue=""
-            render={({ field: { onChange, value } }) => (
-              <TextArea
-                maxLength={5000}
-                style={{
-                  height: 100,
-                  resize: "vertical",
-                  // border: "none",
-                }}
-                onChange={onChange}
-                className="bg-white borderpx-3  rounded-lg  border-gray-500  text-black w-full h-[52px] hover:border-primary placeholder:text-gray-800"
-                value={value}
-                //onChange={(e) => handleDescription(id, e.target.value)}
-                placeholder="Descrição do plano de ação"
-              />
-            )}
-          />
+          <div>
+            <Controller
+              control={control}
+              name="responsibleEmail"
+              render={({ field: { onChange, value } }) => (
+                <Input
+                  error={errors.responsibleEmail?.message}
+                  placeholder="E-mail do Responsável"
+                  maxLength={60}
+                  variant="modal"
+                  value={value}
+                  name="responsibleEmail"
+                  onChange={(value) => onChange(value)}
+                />
+              )}
+            />
+          </div>
+
           <div className="flex flex-col gap-4">
             {hasFile && (
               <a
@@ -189,10 +206,10 @@ export const EditOccurrenceActionModal = () => {
 
         <div className="flex gap-4">
           <Button
-            onClick={() => alert("Em Breve")}
+            onClick={handleOpenDeleteModal}
             className="w-full mt-6"
             variant="danger"
-            disabled
+            disabled={isLoadingDeleteOccurrenceAction}
           >
             Deletar
           </Button>

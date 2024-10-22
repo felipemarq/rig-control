@@ -47,6 +47,8 @@ interface OccurrencesContextValue {
   occurrences: OccurrencesResponse;
   isFetchingOccurrences: boolean;
   isInitialLoading: boolean;
+
+  handleRefetchOccurrences(): void;
 }
 
 // Criação do contexto
@@ -94,6 +96,10 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
   }
 
   const handleApplyFilters = () => {
+    refetchOccurrences();
+  };
+
+  const handleRefetchOccurrences = () => {
     refetchOccurrences();
   };
 
@@ -197,6 +203,7 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
         isEditOccurrenceActionModalOpen,
         occurrenceActionBeingSeen,
         openEditOccurrenceActionModal,
+        handleRefetchOccurrences,
       }}
     >
       {children}

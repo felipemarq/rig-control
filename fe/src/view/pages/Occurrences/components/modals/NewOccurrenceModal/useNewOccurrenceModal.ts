@@ -24,6 +24,7 @@ import { useClients } from "@/app/hooks/clients/useClients";
 import { SelectOptions } from "@/app/entities/SelectOptions";
 import { OccurrenceSeverity } from "@/app/entities/OccurrenceSeverity";
 import { occurrenceSeveritySelectOptions } from "../../../utils/occurrenceSeveritySelectOptions";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   date: z.date(),
@@ -118,7 +119,7 @@ export const useNewOccurrenceModal = () => {
     "occurrenceSeveritySelectOptions",
     occurrenceSeveritySelectOptions
   ); */
-
+  const { primaryColor } = useTheme();
   useEffect(() => {
     if (selectedNature === OccurenceNature.INCIDENT) {
       setValue("category", ""); // Limpa o valor de category
@@ -212,7 +213,7 @@ export const useNewOccurrenceModal = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
       closeNewOccurrenceModal();
-      customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro feito com Sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

@@ -1,12 +1,12 @@
-import {Transition} from "@headlessui/react";
-import whiteLogo from "../../assets/images/white-logo.png";
-import {Spinner} from "./Spinner";
+import { Transition } from "@headlessui/react";
+import { Spinner } from "./Spinner";
 
 interface PageLoaderProps {
   isLoading: boolean;
+  logoPath?: string;
 }
 
-export const PageLoader = ({isLoading}: PageLoaderProps) => {
+export const PageLoader = ({ isLoading, logoPath }: PageLoaderProps) => {
   return (
     <Transition
       show={isLoading}
@@ -20,7 +20,7 @@ export const PageLoader = ({isLoading}: PageLoaderProps) => {
       <div className="bg-primary fixed top-0 left-0 h-full w-full grid place-items-center z-50">
         <div className="flex justify-center items-center gap-4 flex-col">
           <div className="h-52 w-52">
-            <img alt="logo" src={whiteLogo} />
+            <img alt="logo" src={logoPath} />
           </div>
           <Spinner className="text-primary fill-white h-10 w-10" />
         </div>

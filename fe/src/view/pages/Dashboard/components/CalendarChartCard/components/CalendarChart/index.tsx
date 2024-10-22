@@ -4,6 +4,7 @@ import { ResponsiveCalendar } from "@nivo/calendar";
 import { useCalendarChart } from "./useCalendarChart";
 import { cn } from "@/lib/utils";
 import { formatDate } from "@/app/utils/formatDate";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 // make sure parent container have a defined height when using
 // responsive component, otherwise height will be 0 and
@@ -13,7 +14,7 @@ import { formatDate } from "@/app/utils/formatDate";
 
 export const CalendarChart = () => {
   const { calendarRange, data, navigate } = useCalendarChart();
-
+  const { primaryColor } = useTheme();
   return (
     <ResponsiveCalendar
       data={data}
@@ -21,7 +22,7 @@ export const CalendarChart = () => {
       to={calendarRange.to}
       maxValue={1}
       emptyColor="#eeeeee"
-      colors={["#FACC15", "#FACC15", "#FACC15", "#1c7b7b"]}
+      colors={["#FACC15", "#FACC15", "#FACC15", primaryColor]}
       margin={{ top: 0, right: 40, bottom: 0, left: 40 }}
       yearSpacing={40}
       monthBorderColor="#ffffff"

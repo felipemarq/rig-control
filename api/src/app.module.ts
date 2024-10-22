@@ -23,6 +23,7 @@ import { FileModule } from './modules/file/file.module';
 import { ConfigModule } from '@nestjs/config';
 import { OccurrenceActionsModule } from './modules/occurrence-actions/occurrence-actions.module';
 import { ClientsModule } from './modules/clients/clients.module';
+import { MailModule } from './modules/mail/mail.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ClientsModule } from './modules/clients/clients.module';
     ConfigModule.forRoot({ isGlobal: true }),
     OccurrenceActionsModule,
     ClientsModule,
+    MailModule,
   ],
   controllers: [],
   providers: [

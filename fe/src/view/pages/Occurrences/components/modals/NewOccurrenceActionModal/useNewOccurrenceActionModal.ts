@@ -10,13 +10,15 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { filesService } from "@/app/services/filesService";
 import { occurrencesActionsService } from "@/app/services/occurrencesActionsService";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
-  isFinished: z.boolean(),
-  description: z.string().min(1, "Descrição é obrigatório."),
+  isFinished: z.boolean().default(false),
+  description: z.string().optional(),
+  responsibleEmail: z.string().email().min(1, "Obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -30,6 +32,7 @@ export const useNewOccurrenceActionModal = () => {
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const { primaryColor } = useTheme();
 
   const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.currentTarget;
@@ -72,11 +75,18 @@ export const useNewOccurrenceActionModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
-
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
+    defaultValues: {
+      isFinished: false,
+    },
   });
+
+  const isFinished = watch("isFinished");
+
+  console.log("isFinished", isFinished);
 
   /*  console.log("selectedSeverity", selectedSeverity);
   console.log("errors", errors);
@@ -110,6 +120,7 @@ export const useNewOccurrenceActionModal = () => {
         occurrenceId: occurenceIdActionPlanBeingSeen!,
         responsible: data.responsible,
         title: data.title,
+        responsibleEmail: data.responsibleEmail,
       });
 
       if (file) {
@@ -127,7 +138,7 @@ export const useNewOccurrenceActionModal = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
       closeNewOccurrenceActionModal();
-      customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro feito com Sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

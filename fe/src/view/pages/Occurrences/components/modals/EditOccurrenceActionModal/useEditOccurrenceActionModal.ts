@@ -10,13 +10,15 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { QueryKeys } from "@/app/config/QueryKeys";
 import { filesService } from "@/app/services/filesService";
 import { occurrencesActionsService } from "@/app/services/occurrencesActionsService";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean(),
-  description: z.string().min(1, "Descrição é obrigatório."),
+  description: z.string().optional(),
+  responsibleEmail: z.string().email().min(1, "Obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -26,10 +28,21 @@ export const useEditOccurrenceActionModal = () => {
     closeEditOccurrenceActionModal,
     isEditOccurrenceActionModalOpen,
     occurrenceActionBeingSeen,
+    handleRefetchOccurrences,
   } = useOccurrencesContext();
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const { primaryColor } = useTheme();
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+  };
+
+  const handleOpenDeleteModal = () => {
+    setIsDeleteModalOpen(true);
+  };
 
   const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
     const { files } = event.currentTarget;
@@ -72,7 +85,6 @@ export const useEditOccurrenceActionModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
-
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
@@ -104,6 +116,29 @@ export const useEditOccurrenceActionModal = () => {
       mutationFn: filesService.uploadOccurrenceActionFile,
     });
 
+  const {
+    mutateAsync: mutateAsyncRemoveOccurrenceAction,
+    isPending: isLoadingDeleteOccurrenceAction,
+  } = useMutation({
+    mutationFn: occurrencesActionsService.remove,
+  });
+
+  const handleDeleteOccurrence = async () => {
+    try {
+      await mutateAsyncRemoveOccurrenceAction(occurrenceActionBeingSeen!.id);
+
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES] });
+      handleCloseDeleteModal();
+      closeEditOccurrenceActionModal();
+      handleRefetchOccurrences();
+      customColorToast("Ocorrência deletada com sucesso!", primaryColor, "success");
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+      console.log(error);
+      //navigate("/dashboard");
+    }
+  };
+
   //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
@@ -117,6 +152,7 @@ export const useEditOccurrenceActionModal = () => {
         occurrenceId: occurrenceActionBeingSeen?.occurrenceId!,
         responsible: data.responsible,
         title: data.title,
+        responsibleEmail: data.responsibleEmail,
       });
 
       if (file) {
@@ -134,7 +170,7 @@ export const useEditOccurrenceActionModal = () => {
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
       closeEditOccurrenceActionModal();
-      customColorToast("Registro feito com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Registro feito com Sucesso!", primaryColor, "success");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -144,7 +180,7 @@ export const useEditOccurrenceActionModal = () => {
 
   console.log("Occurrence Being Seen", occurrenceActionBeingSeen);
 
-  const hasFile = true;
+  const hasFile = occurrenceActionBeingSeen?.files.length! > 0;
 
   return {
     closeEditOccurrenceActionModal,
@@ -161,5 +197,10 @@ export const useEditOccurrenceActionModal = () => {
     isDragging,
     handleDragLeave,
     hasFile,
+    handleOpenDeleteModal,
+    handleCloseDeleteModal,
+    isDeleteModalOpen,
+    handleDeleteOccurrence,
+    isLoadingDeleteOccurrenceAction,
   };
 };

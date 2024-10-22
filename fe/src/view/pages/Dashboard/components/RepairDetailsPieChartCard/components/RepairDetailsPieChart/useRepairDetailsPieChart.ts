@@ -3,6 +3,7 @@ import { differenceInMinutes, parse } from "date-fns";
 import { useDashboard } from "../../../../DashboardContext/useDashboard";
 import { translateRepairClassification } from "../../../../../../../app/utils/translateRepairClassification";
 import { RepairClassification } from "../../../../../../../app/entities/RepairClassification";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export type PieChartData = {
   id: string;
@@ -15,9 +16,9 @@ export type PieChartData = {
 
 export const useRepairDetailsPieChart = () => {
   const { repairPeriods, selectedEquipment, handleFilterPeriods } = useDashboard();
-
+  const { primaryColor } = useTheme();
   const pieChartColors = [
-    "#1c7b7b", // primary 500
+    primaryColor, // primary 500
     "#81c460",
     "#ffda79", // Amarelo
     "#564787", // Roxo

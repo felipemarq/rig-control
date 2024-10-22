@@ -1,9 +1,9 @@
-import {useDaysNotRegistered} from "./useDaysNotRegistered";
-import {cn} from "../../../../../../../app/utils/cn";
-import {AlertTriangle} from "lucide-react";
+import { useDaysNotRegistered } from "./useDaysNotRegistered";
+import { cn } from "../../../../../../../app/utils/cn";
+import { AlertTriangle } from "lucide-react";
 
 export const DaysNotRegistered = () => {
-  const {mappedRigsAverage} = useDaysNotRegistered();
+  const { mappedRigsAverage } = useDaysNotRegistered();
 
   return (
     <div
@@ -17,7 +17,7 @@ export const DaysNotRegistered = () => {
         </span>
       </header>
       <div className="flex flex-col gap-2  ">
-        {mappedRigsAverage.map(({rig, daysNotRegistered, rigId}) => (
+        {mappedRigsAverage.map(({ rig, daysNotRegistered, rigId }) => (
           <div
             className="p-4 bg-white rounded-sm flex flex-col justify-between border-y-2 gap-4 border-primary-100"
             key={rigId}
@@ -36,8 +36,7 @@ export const DaysNotRegistered = () => {
                   daysNotRegistered > 3 ? "text-redAccent-500" : "text-primary"
                 } font-semibold italic flex justify-center items-center gap-2`}
               >
-                {daysNotRegistered} Dias{" "}
-                {daysNotRegistered > 5 && <AlertTriangle />}
+                {daysNotRegistered} Dias {daysNotRegistered > 5 && <AlertTriangle />}
               </span>
             </div>
           </div>
@@ -62,7 +61,7 @@ export const DaysNotRegistered = () => {
       ]}
       valueScale={{type: "linear"}}
       indexScale={{type: "band", round: true}}
-      colors="#1c7b7b"
+      colors=
       defs={[
         {
           id: "dots",
@@ -149,21 +148,21 @@ export const DaysNotRegistered = () => {
         axis: {
           domain: {
             line: {
-              stroke: "#1c7b7b",
+              stroke: ,
             },
           },
           legend: {
             text: {
-              fill: "#1c7b7b",
+              fill: ,
             },
           },
           ticks: {
             line: {
-              stroke: "#1c7b7b",
+              stroke: ,
               strokeWidth: 1,
             },
             text: {
-              fill: "#1c7b7b",
+              fill: ,
             },
           },
         },
@@ -176,12 +175,12 @@ export const DaysNotRegistered = () => {
         },
         legends: {
           text: {
-            fill: "#1c7b7b",
+            fill: ,
           },
         },
         tooltip: {
           container: {
-            color: "#1c7b7b",
+            color: ,
           },
         },
         labels: {

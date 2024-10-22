@@ -5,21 +5,20 @@ import {
   GridToolbar,
   GridValueGetterParams,
 } from "@mui/x-data-grid";
-import {Efficiency} from "../../entities/Efficiency";
-import {formatDate} from "../../../../../app/utils/formatDate";
-import {Link} from "react-router-dom";
-import {Button} from "../../../../components/Button";
-import {NotFound} from "../../../../components/NotFound";
+import { Efficiency } from "../../entities/Efficiency";
+import { formatDate } from "../../../../../app/utils/formatDate";
+import { Link } from "react-router-dom";
+import { Button } from "../../../../components/Button";
+import { NotFound } from "../../../../components/NotFound";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface ListDataGridProps {
   data: Efficiency[];
   isDashboard: boolean;
 }
 
-export const ListEquipmentRepairs = ({
-  data,
-  isDashboard,
-}: ListDataGridProps) => {
+export const ListEquipmentRepairs = ({ data, isDashboard }: ListDataGridProps) => {
+  const { primaryColor } = useTheme();
   const columns: GridColDef[] = [
     {
       field: "user",
@@ -29,9 +28,7 @@ export const ListEquipmentRepairs = ({
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-primary font-semibold">
-              {params.value.name}
-            </div>
+            <div className="text-primary font-semibold">{params.value.name}</div>
           </div>
         );
       },
@@ -97,9 +94,7 @@ export const ListEquipmentRepairs = ({
               to={`/details/${params.value}`}
               className="w-full flex justify-center items-center"
             >
-              <Button className="bg-primary rounded-md h-[25px]">
-                Ver Mais
-              </Button>
+              <Button className="bg-primary rounded-md h-[25px]">Ver Mais</Button>
             </Link>
           </div>
         );
@@ -191,22 +186,22 @@ export const ListEquipmentRepairs = ({
           border: "none",
         },
         "& .MuiDataGrid-cell": {
-          borderBottomColor: "#1c7b7b",
+          borderBottomColor: primaryColor,
           borderWidth: "1px",
         },
         "& .MuiDataGrid-columnHeaders": {
           fontWeight: "bold",
-          backgroundColor: "#1c7b7b",
+          backgroundColor: primaryColor,
           color: "#fff",
-          // borderBottom: "#1c7b7b",
-          borderBottomColor: "#1c7b7b",
+          // borderBottom: primaryColor,
+          borderBottomColor: primaryColor,
           borderWidth: "1px",
         },
         "& .MuiDataGrid-columnHeaderTitle": {
           fontWeight: "bold",
         },
         "& .MuiTablePagination-root": {
-          color: "#1c7b7b",
+          color: primaryColor,
         },
         "& .MuiDataGrid-virtualScroller": {
           backgroundColor: "#E9ECEF",
@@ -218,7 +213,7 @@ export const ListEquipmentRepairs = ({
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: "#1c7b7b !important",
+          color: `${primaryColor} !important`,
         },
       }}
     />

@@ -3,36 +3,39 @@ import { CreateOccurrenceActionDto } from './dto/create-occurrence-action.dto';
 import { UpdateOccurrenceActionDto } from './dto/update-occurrence-action.dto';
 import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
+import { FileService } from '../file/file.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OccurrenceActionsService {
   constructor(
     private readonly occurrenceActionsRepo: OccurrenceActionsRepository,
     private readonly occurrenceRepo: OccurrenceRepository,
+    private readonly filesService: FileService,
+    private readonly mailsService: MailService,
   ) {}
   async create(createOccurrenceActionDto: CreateOccurrenceActionDto) {
     const occurrence = await this.occurrenceRepo.findUnique({
       where: { id: createOccurrenceActionDto.occurrenceId },
-      include: { occurrenceActions: true },
     });
 
     if (!occurrence) {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
-    //@ts-ignore
-    if (occurrence.occurrenceActions[0]) {
-      throw new NotFoundException(
-        'Ocorrência já tem um plano de ação vinculado!',
-      );
-    }
-
-    return await this.occurrenceActionsRepo.create({
+    const occurrenceAction = await this.occurrenceActionsRepo.create({
       data: createOccurrenceActionDto,
       include: {
         files: true,
       },
     });
+
+    await this.mailsService.sendOccurrenceActionEmail(
+      createOccurrenceActionDto,
+      occurrence,
+    );
+
+    return occurrenceAction;
   }
 
   async findAll() {
@@ -61,6 +64,19 @@ export class OccurrenceActionsService {
     occurrenceActionId: string,
     updateOccurrenceActionDto: UpdateOccurrenceActionDto,
   ) {
+    const occurrence = await this.occurrenceRepo.findUnique({
+      where: { id: updateOccurrenceActionDto.occurrenceId },
+    });
+
+    if (!occurrence) {
+      throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    await this.mailsService.sendOccurrenceActionEmail(
+      updateOccurrenceActionDto,
+      occurrence,
+    );
+
     return await this.occurrenceActionsRepo.update({
       where: { id: occurrenceActionId },
       data: updateOccurrenceActionDto,
@@ -68,6 +84,7 @@ export class OccurrenceActionsService {
   }
 
   async remove(occurrenceActionId: string) {
+    await this.filesService.deleteOccurenceActionFile(occurrenceActionId);
     return await this.occurrenceActionsRepo.delete({
       where: { id: occurrenceActionId },
     });

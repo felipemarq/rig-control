@@ -1,10 +1,12 @@
-import {cn} from "../../app/utils/cn";
+import { useTheme } from "@/app/contexts/ThemeContext";
+import { cn } from "../../app/utils/cn";
 
 interface AddFilesProps {
   className?: string;
 }
 
-export const AddFiles = ({className}: AddFilesProps) => {
+export const AddFiles = ({ className }: AddFilesProps) => {
+  const { primaryColor } = useTheme();
   return (
     <svg
       className={cn(className)}
@@ -79,7 +81,7 @@ export const AddFiles = ({className}: AddFilesProps) => {
         transform="translate(-208.9778 -99.05999)"
         fill="#fff"
       />
-      <circle cx="694.19401" cy="614.02963" r="87.85039" fill="#1c7b7b" />
+      <circle cx="694.19401" cy="614.02963" r="87.85039" fill={primaryColor} />
       <path
         d="M945.18722,701.63087H914.63056V671.07421a11.45875,11.45875,0,0,0-22.9175,0v30.55666H861.1564a11.45875,11.45875,0,0,0,0,22.9175h30.55666V755.105a11.45875,11.45875,0,1,0,22.9175,0V724.54837h30.55666a11.45875,11.45875,0,0,0,0-22.9175Z"
         transform="translate(-208.9778 -99.05999)"
@@ -128,7 +130,7 @@ export const AddFiles = ({className}: AddFilesProps) => {
       <path
         d="M635.85911,390.6071H506.51316a3.847,3.847,0,0,1-3.84277-3.84277V285.81706a3.847,3.847,0,0,1,3.84277-3.84277H635.85911a3.847,3.847,0,0,1,3.84277,3.84277V386.76433A3.847,3.847,0,0,1,635.85911,390.6071Z"
         transform="translate(-208.9778 -99.05999)"
-        fill="#1c7b7b"
+        fill={primaryColor}
       />
     </svg>
   );

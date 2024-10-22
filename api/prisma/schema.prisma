@@ -89,12 +89,22 @@ enum AccessLevel {
   @@map("access_level")
 }
 
+model Enterprise {
+  id            String  @id @default(uuid()) @db.Uuid
+  name          String  @unique
+  logoImagePath String? @map("logo_image_path")
+  mainColor     String  @default("#1c7b7b")
+
+  User User[]
+}
+
 model User {
-  id          String      @id @default(uuid()) @db.Uuid
-  name        String
-  email       String      @unique
-  password    String
-  accessLevel AccessLevel @map("access_level")
+  id           String      @id @default(uuid()) @db.Uuid
+  name         String
+  email        String      @unique
+  password     String
+  enterpriseId String?     @map("enterprise_id") @db.Uuid
+  accessLevel  AccessLevel @map("access_level")
 
   rigs                UserRig[]
   contracts           UserContract[]
@@ -105,6 +115,8 @@ model User {
   occurrences         Occurrence[]
   manHours            ManHour[]
   files               File[]
+
+  enterprise Enterprise? @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
 
   @@map("users")
 }
@@ -141,6 +153,7 @@ model Efficiency {
   unbilledScheduledStopHours    Float?            @map("unbilled_scheduled_stop_hours")
   billedScheduledStopHours      Float?            @map("billed_scheduled_stop_hours")
   repairHours                   Float?            @map("repair_hours")
+  glossHours                    Float?            @map("gloss_hours")
   dtmHours                      Float             @map("dtm_hours")
   isEditable                    Boolean?          @default(false) @map("is_editable")
   hasDemobilization             Boolean           @map("has_demobilization")
@@ -665,16 +678,17 @@ model Occurrence {
 }
 
 model OccurrenceAction {
-  id           String     @id @default(uuid()) @db.Uuid
-  occurrenceId String     @map("occurrence_id") @db.Uuid
-  title        String
-  dueDate      DateTime
-  responsible  String
-  description  String
-  isFinished   Boolean    @default(false)
-  createdAt    DateTime   @default(now()) @map("created_at")
-  files        File[]
-  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  id               String     @id @default(uuid()) @db.Uuid
+  occurrenceId     String     @map("occurrence_id") @db.Uuid
+  title            String
+  dueDate          DateTime
+  responsible      String
+  responsibleEmail String?
+  description      String?
+  isFinished       Boolean    @default(false)
+  createdAt        DateTime   @default(now()) @map("created_at")
+  files            File[]
+  occurrence       Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 
   @@map("occurrence_action")
 }

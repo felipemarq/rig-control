@@ -2,6 +2,7 @@ import { differenceInMinutes, parse } from "date-fns";
 import { useGlobalDashboard } from "../../../../GlobalDashboardContext/useDashboard";
 
 import { translateClassification } from "../../../../../../../app/utils/translateClassification";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export type PieChartData = {
   id: string;
@@ -17,9 +18,10 @@ export const usePeriodsDetailsPieChart = () => {
     handleCloseDetailsGraph,
     handleSelectedDetailPieChartViewChange,
   } = useGlobalDashboard();
+  const { primaryColor } = useTheme();
 
   const pieChartColors = [
-    "#1c7b7b", // primary 500
+    primaryColor, // primary 500
     "#81c460",
     "#ffda79", // Amarelo
     "#564787", // Roxo

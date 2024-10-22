@@ -1,7 +1,8 @@
-import {differenceInMinutes, parse} from "date-fns";
+import { differenceInMinutes, parse } from "date-fns";
 
-import {useDashboard} from "../../../../DashboardContext/useDashboard";
-import {translateGlossClassification} from "@/app/utils/translateGlossClassification";
+import { useDashboard } from "../../../../DashboardContext/useDashboard";
+import { translateGlossClassification } from "@/app/utils/translateGlossClassification";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 export type PieChartData = {
   id: string;
@@ -11,10 +12,10 @@ export type PieChartData = {
 }[];
 
 export const useGlossDetailsPieChart = () => {
-  const {glossPeriods, selectedGloss} = useDashboard();
-
+  const { glossPeriods, selectedGloss } = useDashboard();
+  const { primaryColor } = useTheme();
   const pieChartColors = [
-    "#1c7b7b", // primary 500
+    primaryColor, // primary 500
     "#81c460",
     "#ffda79", // Amarelo
     "#564787", // Roxo
@@ -34,16 +35,13 @@ export const useGlossDetailsPieChart = () => {
   const chartData = glossPeriods
     .filter((period) => period.classification === selectedGloss)
     .reduce((acc: PieChartData, current) => {
-      const classification = translateGlossClassification(
-        current.classification
-      );
+      const classification = translateGlossClassification(current.classification);
 
       const foundItem = acc.find((accItem) => accItem.id === classification)!;
 
       const parsedStartHour = parseHour(current.startHour);
       const parsedEndHour = parseHour(current.endHour);
-      const diffInHours =
-        differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+      const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
       if (!foundItem) {
         acc.push({
