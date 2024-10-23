@@ -47,6 +47,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     Sentry.setUser(null);
     setSignedIn(false);
     queryClient.invalidateQueries({ queryKey: [QueryKeys.ME] });
+    window.location.reload();
   }, []);
 
   const { data, isError, error, isFetching, isSuccess } = useQuery({

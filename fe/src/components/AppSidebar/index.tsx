@@ -10,8 +10,8 @@ import {
   SidebarItem,
   SidebarLabel,
 } from "@/components/ui/sidebar";
-import { useAppsidebar } from "./useAppsidebar";
-import { ModeToggle } from "@/view/components/ModeToggle";
+import { useAppsidebar } from "./useAppsidebar"; /* 
+import { ModeToggle } from "@/view/components/ModeToggle"; */
 
 export const AppSidebar = () => {
   const { user, signout, data } = useAppsidebar();
@@ -48,7 +48,7 @@ export const AppSidebar = () => {
             avatar: "",
           }}
         />
-        <ModeToggle />
+        {/*        <ModeToggle /> */}
       </SidebarFooter>
     </Sidebar>
   );
