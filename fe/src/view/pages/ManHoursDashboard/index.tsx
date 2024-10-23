@@ -2,7 +2,10 @@ import { Select } from "@/view/components/Select";
 import { Header } from "@/view/components/Header";
 import { StatboxContainer } from "./components/StatboxContainer";
 import { TorOccurrencesBarChartCard } from "./components/TorOccurrencesBarChartCard";
-import { ManHourDashboardContext, ManHourDashboardProvider } from "./ManHourDashboardContext";
+import {
+  ManHourDashboardContext,
+  ManHourDashboardProvider,
+} from "./ManHourDashboardContext";
 import { Button } from "@/view/components/Button";
 
 import { TarOccurrencesBarChartCard } from "./components/TarOccurrencesBarChartCard";
@@ -29,7 +32,7 @@ const ManHoursDashboard = () => {
           hasTorOccurrence,
           isFetchingOccurrencesTaxes,
         }) => (
-          <div className="overflow-y-auto w-full">
+          <div className="w-full">
             <Header displayRig displayPeriodRange={false} title="Dashboard por Base">
               <div className="flex justify-center items-start gap-3">
                 <div className="w-52">
@@ -62,11 +65,13 @@ const ManHoursDashboard = () => {
                         {hasTorOccurrence && <TorOccurrencesBarChartCard />}
                         {hasTarOccurrence && <TarOccurrencesBarChartCard />}
                         {hasNotAbsentOccurrence && <TfsaOccurrencesBarChartCard />}
-                        {hasAbsentOccurrencesOccurrence && <TfcaOccurrencesBarChartCard />}
+                        {hasAbsentOccurrencesOccurrence && (
+                          <TfcaOccurrencesBarChartCard />
+                        )}
                       </div>
                     )}
                     {isEmpty && (
-                      <Card className="h-full flex items-center justify-center">
+                      <Card className="h-[60vh] flex items-center justify-center ">
                         <NotFound>
                           {
                             <p>

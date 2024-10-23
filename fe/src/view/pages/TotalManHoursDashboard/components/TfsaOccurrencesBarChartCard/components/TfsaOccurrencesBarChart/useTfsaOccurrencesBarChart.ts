@@ -5,6 +5,8 @@ import { BarDatum } from "@nivo/bar";
 export const useTfsaOccurrencesBarChart = () => {
   const { occurrencesTaxes } = useTotalManHoursDashboard();
 
+  console.log("occurrencesTaxes", occurrencesTaxes);
+
   const tfsaOccurrences = occurrencesTaxes?.notAbsentOccurrences;
 
   const convertedResul: BarDatum[] = tfsaOccurrences?.map((occurrence) => {
