@@ -24,8 +24,8 @@ export const App = () => {
     // Provedor de QueryClient para gerenciar o estado global dos dados
     <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <ThemeProvider>
             <FiltersProvider>
               <SidebarProvider>
                 {/* Componente de roteamento principal */}
@@ -33,8 +33,8 @@ export const App = () => {
                 <Toaster position="bottom-center" reverseOrder={false} />
               </SidebarProvider>
             </FiltersProvider>
-          </AuthProvider>
-        </ThemeProvider>
+          </ThemeProvider>
+        </AuthProvider>
 
         {/* Ferramenta de desenvolvimento para visualizar o estado dos dados */}
         <ReactQueryDevtools />

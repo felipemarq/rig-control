@@ -1,7 +1,10 @@
 import { Header } from "@/view/components/Header";
 import { StatboxContainer } from "./components/StatboxContainer";
 import { TorOccurrencesBarChartCard } from "./components/TorOccurrencesBarChartCard";
-import { TotalManHoursDashboardContext, TotalManHoursDashboardProvider } from "./TotalManHoursDashboardContext";
+import {
+  TotalManHoursDashboardContext,
+  TotalManHoursDashboardProvider,
+} from "./TotalManHoursDashboardContext";
 import { TarOccurrencesBarChartCard } from "./components/TarOccurrencesBarChartCard";
 import { TfsaOccurrencesBarChartCard } from "./components/TfsaOccurrencesBarChartCard";
 import { TfcaOccurrencesBarChartCard } from "./components/TfcaOccurrencesBarChartCard";
@@ -13,9 +16,20 @@ const TotalManHoursDashboard = () => {
   return (
     <TotalManHoursDashboardProvider>
       <TotalManHoursDashboardContext.Consumer>
-        {({ hasAbsentOccurrencesOccurrence, hasNotAbsentOccurrence, hasTarOccurrence, hasTorOccurrence, isFetchingOccurrencesTaxes, isEmpty }) => (
-          <div className="overflow-y-auto w-full">
-            <Header displayRig displayPeriodRange={false} title="Dashboard Geral"></Header>
+        {({
+          hasAbsentOccurrencesOccurrence,
+          hasNotAbsentOccurrence,
+          hasTarOccurrence,
+          hasTorOccurrence,
+          isFetchingOccurrencesTaxes,
+          isEmpty,
+        }) => (
+          <div className=" w-full">
+            <Header
+              displayRig
+              displayPeriodRange={false}
+              title="Dashboard Geral"
+            ></Header>
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
                 {!isFetchingOccurrencesTaxes && (
@@ -27,7 +41,9 @@ const TotalManHoursDashboard = () => {
                         {hasTorOccurrence && <TorOccurrencesBarChartCard />}
                         {hasTarOccurrence && <TarOccurrencesBarChartCard />}
                         {hasNotAbsentOccurrence && <TfsaOccurrencesBarChartCard />}
-                        {hasAbsentOccurrencesOccurrence && <TfcaOccurrencesBarChartCard />}
+                        {hasAbsentOccurrencesOccurrence && (
+                          <TfcaOccurrencesBarChartCard />
+                        )}
                       </div>
                     )}
                     {isEmpty && (

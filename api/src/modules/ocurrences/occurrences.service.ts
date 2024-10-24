@@ -327,7 +327,18 @@ export class OccurrencesService {
         baseMap[baseName][month] = record.hours;
       });
 
-      return Object.values(baseMap);
+      console.log('Object.values(baseMap)', Object.values(baseMap));
+
+      const [transformedManHours] = Object.values(baseMap);
+
+      for (let index = 2; index < 11; index++) {
+        transformedManHours[index] =
+          transformedManHours[index] + transformedManHours[index - 1];
+      }
+
+      console.log('transformManHoursData', transformedManHours);
+
+      return [transformedManHours];
     }
 
     //@ts-ignore
@@ -360,6 +371,10 @@ export class OccurrencesService {
           countsByMonth[month] = _count.id;
         }
       });
+
+      for (let index = 2; index < 11; index++) {
+        countsByMonth[index] = countsByMonth[index] + countsByMonth[index - 1];
+      }
 
       return Object.keys(countsByMonth).map((month) => {
         const tax =
@@ -475,11 +490,18 @@ export class OccurrencesService {
     };
 
     // Iterando sobre o array e somando as horas para cada mês
-    manHoursAgg.forEach(({ _sum, month }) => {
-      if (aggroupedMenHours.hasOwnProperty(month)) {
-        aggroupedMenHours[month] += _sum?.hours || 0;
-      }
-    });
+    manHoursAgg
+      .sort((a, b) => a.month - b.month)
+      .forEach(({ _sum, month }) => {
+        if (aggroupedMenHours.hasOwnProperty(month) && month == 1) {
+          aggroupedMenHours[month] += _sum?.hours || 0;
+        } else if (aggroupedMenHours.hasOwnProperty(month)) {
+          aggroupedMenHours[month] =
+            _sum?.hours + aggroupedMenHours[month - 1] || 0;
+        }
+      });
+
+    console.log('Aggrouped Man hours', aggroupedMenHours);
 
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
@@ -509,6 +531,10 @@ export class OccurrencesService {
         }
       });
 
+      for (let index = 2; index < 11; index++) {
+        countsByMonth[index] = countsByMonth[index] + countsByMonth[index - 1];
+      }
+
       return Object.keys(countsByMonth).map((month) => {
         const tax =
           (countsByMonth[month] / aggroupedMenHours[Number(month)]) * 1_000_000;
@@ -535,6 +561,11 @@ export class OccurrencesService {
     const totalCommutingOccurrences =
       aggroupOccurrencesByMonth(commutingOccurrences);
 
+    /* console.log('totalTarOccurrences', totalTarOccurrences);
+    console.log('totalTorOccurrences', totalTorOccurrences);
+    console.log('totalNotAbsentOccurrences', totalNotAbsentOccurrences);
+    console.log('totalAbsentOccurrences', totalAbsentOccurrences);
+    console.log('totalCommutingOccurrences', totalCommutingOccurrences); */
     return {
       tarOccurrences: totalTarOccurrences,
       torOccurrences: totalTorOccurrences,
