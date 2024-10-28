@@ -154,8 +154,6 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
     setIsEditOccurrenceActionModalOpen(false);
   }, []);
 
-  console.log("clic", occurrenceActionBeingSeen);
-
   const openEditOccurrenceActionModal = useCallback(
     (occurrenceAction: OccurrenceAction) => {
       setIsEditOccurrenceActionModalOpen(true);

@@ -31,6 +31,8 @@ export const useEditOccurrenceActionModal = () => {
     handleRefetchOccurrences,
   } = useOccurrencesContext();
 
+  console.log(occurrenceActionBeingSeen);
+
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -94,6 +96,7 @@ export const useEditOccurrenceActionModal = () => {
       isFinished: occurrenceActionBeingSeen?.isFinished,
       responsible: occurrenceActionBeingSeen?.responsible,
       title: occurrenceActionBeingSeen?.title,
+      responsibleEmail: occurrenceActionBeingSeen?.responsibleEmail,
     },
   });
 

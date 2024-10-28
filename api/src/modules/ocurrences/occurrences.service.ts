@@ -82,8 +82,6 @@ export class OccurrencesService {
   ) {
     let whereClause: Prisma.OccurrenceWhereInput = {};
 
-    console.log({ startDate, endDate });
-
     whereClause = {
       AND: [
         { date: { gte: new Date(startDate) } },
@@ -172,6 +170,7 @@ export class OccurrencesService {
             description: true,
             isFinished: true,
             createdAt: true,
+            responsibleEmail: true,
             files: {
               select: {
                 path: true,
@@ -336,8 +335,6 @@ export class OccurrencesService {
           transformedManHours[index] + transformedManHours[index - 1];
       }
 
-      console.log('transformManHoursData', transformedManHours);
-
       return [transformedManHours];
     }
 
@@ -500,8 +497,6 @@ export class OccurrencesService {
             _sum?.hours + aggroupedMenHours[month - 1] || 0;
         }
       });
-
-    console.log('Aggrouped Man hours', aggroupedMenHours);
 
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],

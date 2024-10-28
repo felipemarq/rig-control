@@ -132,9 +132,7 @@ export const useNewOccurrenceActionModal = () => {
 
       setFile(null);
 
-      if (file) {
-        window.location.reload();
-      }
+      window.location.reload();
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
       closeNewOccurrenceActionModal();

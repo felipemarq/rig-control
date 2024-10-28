@@ -72,7 +72,7 @@ export class OccurrenceActionsService {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
-    await this.mailsService.sendOccurrenceActionEmail(
+    await this.mailsService.sendUpdateOccurrenceActionEmail(
       updateOccurrenceActionDto,
       occurrence,
     );
