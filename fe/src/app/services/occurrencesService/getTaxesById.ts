@@ -8,6 +8,7 @@ export type aggregatedTaxes = {
   month: number;
   count: number;
   tax: number;
+  accCount: number;
 }[];
 
 export type OccurrencesTaxesResponse = {

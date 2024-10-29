@@ -27,6 +27,11 @@ export const TorOccurrencesBarChart = () => {
       borderRadius={5}
       enableGridX={false}
       enableGridY={false}
+      onClick={(event) => {
+        // handleChangeRig(event.data.rigId as string);
+        // navigate(`/dashboard`);
+        console.log(event);
+      }}
       defs={[
         {
           id: "dots",

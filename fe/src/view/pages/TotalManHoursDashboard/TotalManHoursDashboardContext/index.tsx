@@ -48,7 +48,7 @@ export const TotalManHoursDashboardProvider = ({
     let totalTorOccurrences = 0;
     let totalTfsaOccurrences = 0;
     let totalTfcaOccurrences = 0;
-
+    console.log("Occurences Taxex", occurrencesTaxes);
     occurrencesTaxes?.tarOccurrences.forEach(
       ({ count }) => (totalTarOccurrences += count)
     );
@@ -81,20 +81,17 @@ export const TotalManHoursDashboardProvider = ({
   );
   const isEmpty = allTaxes?.every((tax) => tax.count === 0);
 
-  const hasTorOccurrence = occurrencesTaxes?.torOccurrences.some(
-    (tax) => tax.count > 0
-  );
-  const hasTarOccurrence = occurrencesTaxes?.tarOccurrences.some(
-    (tax) => tax.count > 0
-  );
+  const hasTorOccurrence = occurrencesTaxes?.torOccurrences.some((tax) => tax.count > 0);
+  const hasTarOccurrence = occurrencesTaxes?.tarOccurrences.some((tax) => tax.count > 0);
   const hasNotAbsentOccurrence = occurrencesTaxes?.notAbsentOccurrences.some(
     (tax) => tax.count > 0
   );
   const hasCommutingOccurrence = occurrencesTaxes?.commutingOccurrences.some(
     (tax) => tax.count > 0
   );
-  const hasAbsentOccurrencesOccurrence =
-    occurrencesTaxes?.absentOccurrences.some((tax) => tax.count > 0);
+  const hasAbsentOccurrencesOccurrence = occurrencesTaxes?.absentOccurrences.some(
+    (tax) => tax.count > 0
+  );
 
   return (
     <TotalManHoursDashboardContext.Provider

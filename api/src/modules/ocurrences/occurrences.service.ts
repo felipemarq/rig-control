@@ -189,10 +189,6 @@ export class OccurrencesService {
     });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ocurrence`;
-  }
-
   async update(occurrenceId: string, updateOcurrenceDto: UpdateOcurrenceDto) {
     const { baseId } = updateOcurrenceDto;
 
@@ -326,8 +322,6 @@ export class OccurrencesService {
         baseMap[baseName][month] = record.hours;
       });
 
-      console.log('Object.values(baseMap)', Object.values(baseMap));
-
       const [transformedManHours] = Object.values(baseMap);
 
       for (let index = 2; index < 11; index++) {
@@ -344,6 +338,21 @@ export class OccurrencesService {
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
     ) => {
+      const countsByMonthAccumulated: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+      };
+
       const countsByMonth: { [key: number]: number } = {
         1: 0,
         2: 0,
@@ -362,24 +371,29 @@ export class OccurrencesService {
       occurrences.forEach(({ date, _count }) => {
         const month = date.getMonth() + 1; // Convertendo para mês (1-12)
 
-        if (countsByMonth[month]) {
+        if (countsByMonthAccumulated[month]) {
+          countsByMonthAccumulated[month] += _count.id;
           countsByMonth[month] += _count.id;
         } else {
+          countsByMonthAccumulated[month] = _count.id;
           countsByMonth[month] = _count.id;
         }
       });
 
       for (let index = 2; index < 11; index++) {
-        countsByMonth[index] = countsByMonth[index] + countsByMonth[index - 1];
+        countsByMonthAccumulated[index] =
+          countsByMonthAccumulated[index] + countsByMonthAccumulated[index - 1];
       }
 
-      return Object.keys(countsByMonth).map((month) => {
+      return Object.keys(countsByMonthAccumulated).map((month) => {
         const tax =
-          (countsByMonth[month] / transformedManHours[Number(month)]) *
+          (countsByMonthAccumulated[month] /
+            transformedManHours[Number(month)]) *
           1_000_000;
 
         return {
           month: Number(month),
+          accCount: countsByMonthAccumulated[month],
           count: countsByMonth[month],
           tax: isNaN(tax) ? 0 : tax,
         };
@@ -501,6 +515,21 @@ export class OccurrencesService {
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
     ) => {
+      const countsByMonthAccumulated: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+      };
+
       const countsByMonth: { [key: number]: number } = {
         1: 0,
         2: 0,
@@ -519,24 +548,29 @@ export class OccurrencesService {
       occurrences.forEach(({ date, _count }) => {
         const month = date.getMonth() + 1; // Convertendo para mês (1-12)
 
-        if (countsByMonth[month]) {
+        if (countsByMonthAccumulated[month]) {
           countsByMonth[month] += _count.id;
+          countsByMonthAccumulated[month] += _count.id;
         } else {
           countsByMonth[month] = _count.id;
+          countsByMonthAccumulated[month] = _count.id;
         }
       });
 
       for (let index = 2; index < 11; index++) {
-        countsByMonth[index] = countsByMonth[index] + countsByMonth[index - 1];
+        countsByMonthAccumulated[index] =
+          countsByMonthAccumulated[index] + countsByMonthAccumulated[index - 1];
       }
 
-      return Object.keys(countsByMonth).map((month) => {
+      return Object.keys(countsByMonthAccumulated).map((month) => {
         const tax =
-          (countsByMonth[month] / aggroupedMenHours[Number(month)]) * 1_000_000;
+          (countsByMonthAccumulated[month] / aggroupedMenHours[Number(month)]) *
+          1_000_000;
 
         return {
           month: Number(month),
           count: countsByMonth[month],
+          accCount: countsByMonthAccumulated[month],
           tax: isNaN(tax) ? 0 : tax,
         };
       });

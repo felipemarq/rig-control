@@ -8,6 +8,7 @@ import { FiltersProvider } from "./app/contexts/FiltersContext";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { ErrorBoundary } from "./view/components/ErrorBoundary";
 import { ErrorBoundaryFallback } from "./view/components/ErrorBoundaryFallback";
+import { OccurrenceFiltersProvider } from "./app/contexts/OccurrenceFiltersContex";
 
 // Configurando uma instância do QueryClient com opções padrão
 const queryClient = new QueryClient({
@@ -28,9 +29,11 @@ export const App = () => {
           <ThemeProvider>
             <FiltersProvider>
               <SidebarProvider>
-                {/* Componente de roteamento principal */}
-                <Router />
-                <Toaster position="bottom-center" reverseOrder={false} />
+                <OccurrenceFiltersProvider>
+                  {/* Componente de roteamento principal */}
+                  <Router />
+                  <Toaster position="bottom-center" reverseOrder={false} />
+                </OccurrenceFiltersProvider>
               </SidebarProvider>
             </FiltersProvider>
           </ThemeProvider>

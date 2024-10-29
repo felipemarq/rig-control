@@ -2,6 +2,7 @@ import { useManHoursDashboard } from "../../ManHourDashboardContext/useManHoursD
 
 export const useStatboxContainer = () => {
   const { totalOccurrences } = useManHoursDashboard();
+  console.log("Total Occurrences", totalOccurrences);
 
   return { totalOccurrences };
 };
