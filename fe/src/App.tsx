@@ -9,6 +9,7 @@ import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { ErrorBoundary } from "./view/components/ErrorBoundary";
 import { ErrorBoundaryFallback } from "./view/components/ErrorBoundaryFallback";
 import { OccurrenceFiltersProvider } from "./app/contexts/OccurrenceFiltersContex";
+import { NotificationProvider } from "./app/contexts/NotificationContext";
 
 // Configurando uma instância do QueryClient com opções padrão
 const queryClient = new QueryClient({
@@ -25,19 +26,21 @@ export const App = () => {
     // Provedor de QueryClient para gerenciar o estado global dos dados
     <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
       <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <ThemeProvider>
-            <FiltersProvider>
-              <SidebarProvider>
-                <OccurrenceFiltersProvider>
-                  {/* Componente de roteamento principal */}
-                  <Router />
-                  <Toaster position="bottom-center" reverseOrder={false} />
-                </OccurrenceFiltersProvider>
-              </SidebarProvider>
-            </FiltersProvider>
-          </ThemeProvider>
-        </AuthProvider>
+        <ThemeProvider>
+          <AuthProvider>
+            <NotificationProvider>
+              <FiltersProvider>
+                <SidebarProvider>
+                  <OccurrenceFiltersProvider>
+                    {/* Componente de roteamento principal */}
+                    <Router />
+                    <Toaster position="bottom-center" reverseOrder={false} />
+                  </OccurrenceFiltersProvider>
+                </SidebarProvider>
+              </FiltersProvider>
+            </NotificationProvider>
+          </AuthProvider>
+        </ThemeProvider>
 
         {/* Ferramenta de desenvolvimento para visualizar o estado dos dados */}
         <ReactQueryDevtools />

@@ -48,7 +48,7 @@ export const TotalManHoursDashboardProvider = ({
     let totalTorOccurrences = 0;
     let totalTfsaOccurrences = 0;
     let totalTfcaOccurrences = 0;
-    console.log("Occurences Taxex", occurrencesTaxes);
+
     occurrencesTaxes?.tarOccurrences.forEach(
       ({ count }) => (totalTarOccurrences += count)
     );

@@ -100,14 +100,6 @@ export const useEditOccurrenceActionModal = () => {
     },
   });
 
-  /*  console.log("selectedSeverity", selectedSeverity);
-  console.log("errors", errors);
-  occurrenceSeveritySelectOptions;
-  console.log(
-    "occurrenceSeveritySelectOptions",
-    occurrenceSeveritySelectOptions
-  ); */
-
   const queryClient = useQueryClient();
 
   const { isPending: isLoadingUpdateOccurrenceAction, mutateAsync } = useMutation({

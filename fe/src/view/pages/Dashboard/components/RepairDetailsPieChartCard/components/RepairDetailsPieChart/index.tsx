@@ -63,10 +63,6 @@ export const RepairDetailsPieChart = () => {
       }}
       onClick={(event) => handleFilterPeriods("REPAIR", event.data.classification)}
       arcLabel={(value) => (value.data.percentage < 15 ? "" : `${value.data.label}`)}
-      /* tooltip={(value) => {
-        console.log(value);
-        return <div>{value.datum.data.value}</div>;
-      }} */
       enableArcLinkLabels={false}
       arcLinkLabelsTextColor={primaryColor}
       arcLinkLabelsThickness={1}

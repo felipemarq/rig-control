@@ -24,6 +24,7 @@ import { ConfigModule } from '@nestjs/config';
 import { OccurrenceActionsModule } from './modules/occurrence-actions/occurrence-actions.module';
 import { ClientsModule } from './modules/clients/clients.module';
 import { MailModule } from './modules/mail/mail.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
 
 @Module({
   imports: [
@@ -50,6 +51,7 @@ import { MailModule } from './modules/mail/mail.module';
     OccurrenceActionsModule,
     ClientsModule,
     MailModule,
+    NotificationsModule,
   ],
   controllers: [],
   providers: [

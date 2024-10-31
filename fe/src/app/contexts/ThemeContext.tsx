@@ -65,8 +65,6 @@ export function ThemeProvider({
     primaryColor,
   };
 
-  console.log("Selected theme", theme);
-
   return (
     <ThemeProviderContext.Provider {...props} value={value}>
       {children}
