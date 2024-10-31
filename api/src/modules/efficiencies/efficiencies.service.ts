@@ -725,14 +725,20 @@ export class EfficienciesService {
     },
   ) {
     const rigExists = await this.rigsRepo.findUnique({
-      where: {
-        id: filters.rigId,
-      },
+      where: { id: filters.rigId },
     });
 
     if (!rigExists) {
       throw new NotFoundException('Sonda não encontrada');
     }
+
+    const formatDate = (date: Date) => {
+      if (date.toString() === 'Invalid Date') {
+        return Intl.DateTimeFormat('pt-br').format(new Date());
+      }
+
+      return Intl.DateTimeFormat('pt-br').format(date);
+    };
 
     const efficiencies = await this.efficiencyRepo.findMany({
       where: {
@@ -742,9 +748,7 @@ export class EfficienciesService {
           lte: new Date(filters.endDate),
         },
       },
-      orderBy: {
-        date: 'asc',
-      },
+      orderBy: { date: 'asc' },
       select: {
         id: true,
         well: true,
@@ -753,89 +757,145 @@ export class EfficienciesService {
         standByHours: true,
         repairHours: true,
         glossHours: true,
+        rig: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     // Criação do documento PDF com tamanho de página A4
-    const doc = new PDFDocument({
-      size: 'A4', // Definimos o tamanho da página como A4
-      margin: 30,
-    });
+    const doc = new PDFDocument({ size: 'A4', margin: 30 });
 
-    // Configurações de resposta para o navegador fazer o download
+    // Configurações de resposta para download
     response.setHeader(
       'Content-Disposition',
       'attachment; filename=relatorio.pdf',
     );
     response.setHeader('Content-Type', 'application/pdf');
-
-    // Definir o fluxo de resposta do documento para o cliente
     doc.pipe(response);
 
-    // Adicionar título ao PDF
+    // Cabeçalho do relatório
     doc
-      .fontSize(14)
-      .text('Relatório de Operação', { align: 'center', underline: true });
+      .fontSize(12)
+      .font('Helvetica-Bold')
+      .text('CONTERP', {
+        align: 'center',
+      })
+      .moveDown(0.5);
+    doc
+      .fontSize(10)
+      .font('Helvetica')
+      //@ts-ignore
+      .text(`SPT: ${efficiencies[0].rig.name}`, { align: 'left' })
+      .text(
+        `Período: ${formatDate(new Date(filters.startDate))} à ${formatDate(
+          new Date(filters.endDate),
+        )}`,
+        {
+          align: 'left',
+        },
+      )
+      .moveDown(1);
+
+    // Título
+    doc.fontSize(14).text('RELATÓRIO DE SERVIÇOS EXECUTADOS', {
+      align: 'center',
+      underline: true,
+    });
     doc.moveDown(1.5);
 
-    // Função para desenhar uma linha da tabela
+    // Função para desenhar linhas da tabela
     const drawRow = (columns: string[], y: number) => {
       let x = doc.page.margins.left;
+      const colWidths = [70, 120, 100, 80, 80, 80, 80];
       columns.forEach((text, i) => {
-        const colWidth = [90, 120, 100, 100, 100, 100][i]; // Defina as larguras das colunas
-        doc.text(text, x, y, { width: colWidth, align: 'left' });
-        x += colWidth; // Avança para a próxima coluna
+        const width = colWidths[i] || 80;
+        doc.text(text, x, y, { width, align: 'left' });
+        x += width;
       });
     };
 
-    // Função para verificar se precisa de nova página
+    // Verificar necessidade de nova página
     const checkPageEnd = (yPosition: number) => {
       const pageHeight = doc.page.height;
-      const bottomMargin = 50; // Definir margem inferior
+      const bottomMargin = 50;
       if (yPosition > pageHeight - bottomMargin) {
-        doc.addPage(); // Adiciona nova página se passar do limite
-        return doc.page.margins.top; // Retorna a nova posição de Y no topo da nova página
+        doc.addPage();
+        return doc.page.margins.top;
       }
       return yPosition;
     };
 
-    // Definir tamanhos de fonte menores para cabeçalhos e dados
-    const headerFontSize = 10;
-    const dataFontSize = 9;
-
-    // Cabeçalhos da tabela
+    // Definindo cabeçalho da tabela
     const headers = [
       'Dia',
       'Poço',
-      'Hrs. Operando',
-      'Hrs. StandBy',
-      'Hrs. Glosa',
-      'Hrs. Reparo',
+      'Hrs Operando',
+      'Hrs StandBy',
+      'Hrs Glosa',
+      'Hrs Reparo',
+      'Total',
     ];
 
     // Desenhar cabeçalhos
-    doc.fontSize(headerFontSize).font('Helvetica-Bold');
-    let currentY = doc.y; // Posição atual no eixo Y
+    doc.fontSize(10).font('Helvetica-Bold');
+    let currentY = doc.y;
     drawRow(headers, currentY);
-    currentY = doc.y + 15; // Incrementa o Y após os cabeçalhos
+    currentY += 20;
 
-    // Desenhar os dados da tabela
-    doc.fontSize(dataFontSize).font('Helvetica');
-    efficiencies.forEach((efficiency) => {
-      currentY = checkPageEnd(currentY); // Verifica se precisa de nova página antes de desenhar a linha
+    // Variáveis de totais
+    let totalOperando = 0,
+      totalStandBy = 0,
+      totalGlosa = 0,
+      totalReparo = 0;
 
+    // Desenhar dados da tabela
+    doc.fontSize(9).font('Helvetica');
+    efficiencies.forEach((eff) => {
+      currentY = checkPageEnd(currentY);
       const row = [
-        efficiency.date.toISOString().split('T')[0], // Formata a data
-        efficiency.well || 'N/A',
-        efficiency.availableHours?.toFixed() ?? '0',
-        efficiency.standByHours?.toFixed() ?? '0',
-        efficiency.glossHours?.toFixed() ?? '0',
-        efficiency.repairHours?.toFixed() ?? '0',
+        formatDate(eff.date),
+        eff.well || 'N/A',
+        eff.availableHours?.toFixed(1) || '0',
+        eff.standByHours?.toFixed(1) || '0',
+        eff.glossHours?.toFixed(1) || '0',
+        eff.repairHours?.toFixed(1) || '0',
+        (
+          eff.availableHours +
+          eff.standByHours +
+          eff.glossHours +
+          eff.repairHours
+        ).toFixed(1),
       ];
-
+      totalOperando += eff.availableHours;
+      totalStandBy += eff.standByHours;
+      totalGlosa += eff.glossHours;
+      totalReparo += eff.repairHours;
       drawRow(row, currentY);
-      currentY += 15; // Incrementa a posição Y para a próxima linha
+      currentY += 15;
     });
+
+    // Totais alinhados com as colunas
+    currentY = checkPageEnd(currentY);
+    doc.fontSize(10).font('Helvetica-Bold');
+    drawRow(
+      [
+        'Totais',
+        '', // Espaço em branco para alinhar com as colunas anteriores
+        totalOperando.toFixed(1),
+        totalStandBy.toFixed(1),
+        totalGlosa.toFixed(1),
+        totalReparo.toFixed(1),
+        (totalOperando + totalStandBy + totalGlosa + totalReparo).toFixed(1),
+      ],
+      currentY,
+    );
+
+    // Rodapé com certificação
+
+    // Adicionando espaçamento para a linha de assinatura
 
     // Finalizar o documento
     doc.end();

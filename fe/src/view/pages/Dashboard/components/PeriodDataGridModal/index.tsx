@@ -14,6 +14,7 @@ export const PeriodDataGridModal = () => {
       open={isPeriodDataGridModalOpen}
       title="Períodos"
       onClose={handleClosePeriodDataGridModal}
+      overflow
     >
       <PeriodsDataGrid periods={periodDataGridModalData!} />
     </Modal>

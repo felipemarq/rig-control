@@ -18,6 +18,8 @@ import { AverageResponse } from "@/app/services/efficienciesService/getAverage";
 import { useEfficiencyAverage } from "@/app/hooks/efficiencies/useEfficiencyAverage";
 import { useGetWellsCountByRig } from "@/app/hooks/efficiencies/useGetWellsCountByRig";
 import { RigWellsCountResponse } from "@/app/services/efficienciesService/getWellsCountByRig";
+import { useNotifications } from "@/app/hooks/useNotifications";
+import { Notification } from "@/app/entities/Notification";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -49,23 +51,28 @@ interface DashboardContextValue {
   handleClosePeriodDataGridModal: () => void;
   isPeriodDataGridModalOpen: boolean;
   periodDataGridModalData: Period[] | null;
-  handleFilterPeriods: (
-    type: "REPAIR" | "GLOSS",
-    classification: string
-  ) => void;
+  handleFilterPeriods: (type: "REPAIR" | "GLOSS", classification: string) => void;
   wellsCount: RigWellsCountResponse;
+  showNotifications: boolean;
+  setShowNotifications: (showNotifications: boolean) => void;
+  notifications: Notification[];
+  handleMarkNotificationAsRead: (notificationId: string) => Promise<void>;
+  isPending: boolean;
 }
 
 // Criação do contexto
 export const DashboardContext = createContext({} as DashboardContextValue);
 
-export const DashboardProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const { user, signout, isWrongVersion } = useAuth();
+  const {
+    showNotifications,
+    setShowNotifications,
+    notifications,
+    handleMarkNotificationAsRead,
+    isPending,
+  } = useNotifications();
 
   const windowWidth = useWindowWidth();
 
@@ -75,9 +82,7 @@ export const DashboardProvider = ({
   const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
-  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(
-    filters.rigId
-  );
+  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(filters.rigId);
   const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
 
   const isEmpty: boolean = efficiencies.length === 0;
@@ -94,22 +99,16 @@ export const DashboardProvider = ({
 
   const glossPeriods = getGlossPeriods(efficiencies);
 
-  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
+
+  const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
+  const [isPeriodDataGridModalOpen, setIsPeriodDataGridModalOpen] = useState(false);
+
+  const [periodDataGridModalData, setPeriodDataGridModalData] = useState<null | Period[]>(
     null
   );
 
-  const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
-  const [isPeriodDataGridModalOpen, setIsPeriodDataGridModalOpen] =
-    useState(false);
-
-  const [periodDataGridModalData, setPeriodDataGridModalData] = useState<
-    null | Period[]
-  >(null);
-
-  const handleFilterPeriods = (
-    type: "REPAIR" | "GLOSS",
-    classification: string
-  ) => {
+  const handleFilterPeriods = (type: "REPAIR" | "GLOSS", classification: string) => {
     let periods: Period[] | null = null;
 
     if (type === "REPAIR") {
@@ -220,6 +219,11 @@ export const DashboardProvider = ({
         periodDataGridModalData,
         handleFilterPeriods,
         wellsCount,
+        showNotifications,
+        setShowNotifications,
+        notifications,
+        handleMarkNotificationAsRead,
+        isPending,
       }}
     >
       {children}

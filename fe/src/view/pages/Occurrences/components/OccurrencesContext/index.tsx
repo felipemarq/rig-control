@@ -3,12 +3,12 @@ import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 import { useBases } from "@/app/hooks/useBases";
+import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersContext";
 import { BasesResponse } from "@/app/services/basesService/getAll";
 import {
   OccurrenceFilters,
   OccurrencesResponse,
 } from "@/app/services/occurrencesService/getAll";
-import { endOfYear, format, startOfYear } from "date-fns";
 import React, { createContext, useCallback, useState } from "react";
 
 // Definição do tipo do contexto
@@ -57,43 +57,17 @@ export const OccurrencesContext = createContext({} as OccurrencesContextValue);
 export const OccurrencesProvider = ({ children }: { children: React.ReactNode }) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
-  const currentDate = new Date();
-  const firstDayOfYear = startOfYear(currentDate);
-  const lastDayOfYear = endOfYear(currentDate);
-  const formattedFirstDay = format(firstDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-  const formattedLastDay = format(lastDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-
-  const [selectedStartDate] = useState<string>(formattedFirstDay);
-  const [selectedEndDate] = useState<string>(formattedLastDay);
   const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] = useState<
     string | null
   >(null);
 
   const { bases, isFetchingBases } = useBases();
 
-  const [filters, setFilters] = useState<OccurrenceFilters>({
-    nature: undefined,
-    category: undefined,
-    severity: undefined,
-    type: undefined,
-    uf: undefined,
-    baseId: undefined,
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
-  });
+  const { filters, handleChangeFilters, handleClearFilters } =
+    useOccurrencesFiltersContext();
+
   const { isFetchingOccurrences, occurrences, isInitialLoading, refetchOccurrences } =
     useOccurrences(filters);
-
-  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(filter: TFilter) {
-    return (value: OccurrenceFilters[TFilter]) => {
-      if (value === filters[filter]) return;
-
-      setFilters((prevState) => ({
-        ...prevState,
-        [filter]: value,
-      }));
-    };
-  }
 
   const handleApplyFilters = () => {
     refetchOccurrences();
@@ -101,19 +75,6 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
 
   const handleRefetchOccurrences = () => {
     refetchOccurrences();
-  };
-
-  const handleClearFilters = () => {
-    setFilters({
-      nature: undefined,
-      category: undefined,
-      severity: undefined,
-      type: undefined,
-      uf: undefined,
-      baseId: undefined,
-      startDate: selectedStartDate,
-      endDate: selectedEndDate,
-    });
   };
 
   const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] = useState(false);
@@ -153,8 +114,6 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
     setOccurrenceActionBeingSeen(null);
     setIsEditOccurrenceActionModalOpen(false);
   }, []);
-
-  console.log("clic", occurrenceActionBeingSeen);
 
   const openEditOccurrenceActionModal = useCallback(
     (occurrenceAction: OccurrenceAction) => {

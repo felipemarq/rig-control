@@ -39,13 +39,7 @@ export const BarChart = () => {
         />
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar
-          dataKey="total"
-          stackId="a"
-          fill="var(--color-total)"
-          radius={[0, 0, 4, 4]}
-          onClick={(event) => console.log("Clicou", event)}
-        >
+        <Bar dataKey="total" stackId="a" fill="var(--color-total)" radius={[0, 0, 4, 4]}>
           <LabelList
             position="center"
             offset={12}

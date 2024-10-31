@@ -16,6 +16,7 @@ import { WellDataGridCard } from "./components/WellDataGridCard";
 import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
 import { GrouppedRepairPieChartCard } from "./components/GrouppedRepairsPieChartCard";
 import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
+import { NotificationsPopover } from "@/view/components/NotificationsPopover";
 
 const Dashboard = () => {
   return (
@@ -27,13 +28,27 @@ const Dashboard = () => {
           exceedsEfficiencyThreshold,
           isWrongVersion,
           periodDataGridModalData,
+          notifications,
+          showNotifications,
+          setShowNotifications,
+          handleMarkNotificationAsRead,
+          isPending,
         }) => (
           <div className="">
             <Header displayRig title="Dashboard por Sonda">
-              <CustomFilterSheet
-                isLoading={isFetchingEfficiencies}
-                onApplyFilters={handleApplyFilters}
-              />
+              <div className="flex gap-2 items-center">
+                <NotificationsPopover
+                  handleMarkNotificationAsRead={handleMarkNotificationAsRead}
+                  isPending={isPending}
+                  notifications={notifications}
+                  showNotifications={showNotifications}
+                  setShowNotifications={setShowNotifications}
+                />
+                <CustomFilterSheet
+                  isLoading={isFetchingEfficiencies}
+                  onApplyFilters={handleApplyFilters}
+                />
+              </div>
             </Header>
 
             <div className="flex w-full flex-col">

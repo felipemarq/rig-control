@@ -7,5 +7,6 @@ export type OccurrenceAction = {
   description: string;
   isFinished: boolean;
   createdAt: string;
+  responsibleEmail: string;
   files: [] | { path: string }[];
 };

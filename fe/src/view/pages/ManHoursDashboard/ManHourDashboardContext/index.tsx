@@ -61,6 +61,8 @@ export const ManHourDashboardProvider = ({ children }: { children: React.ReactNo
     let totalTfsaOccurrences = 0;
     let totalTfcaOccurrences = 0;
 
+    console.log("Occurences Taxex", occurrencesTaxes);
+
     occurrencesTaxes?.tarOccurrences.forEach(
       ({ count }) => (totalTarOccurrences += count)
     );

@@ -45,6 +45,19 @@ export class UsersService {
             },
           },
         },
+        userNotifications: {
+          select: {
+            isRead: true,
+            notification: {
+              select: {
+                title: true,
+                createdAt: true,
+                description: true,
+                id: true,
+              },
+            },
+          },
+        },
         enterprise: true,
       },
     });

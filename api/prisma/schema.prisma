@@ -116,9 +116,35 @@ model User {
   manHours            ManHour[]
   files               File[]
 
-  enterprise Enterprise? @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
+  enterprise        Enterprise?        @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
+  userNotifications UserNotification[]
 
   @@map("users")
+}
+
+model Notification {
+  id              String   @id @default(uuid()) @db.Uuid
+  title           String
+  description     String
+  createdAt       DateTime @default(now())
+  systemVersionId String   @map("system_version_id") @db.Uuid
+
+  systemVersion     SystemVersion      @relation(fields: [systemVersionId], references: [id])
+  userNotifications UserNotification[]
+
+  @@map("notifications")
+}
+
+model UserNotification {
+  userId         String  @map("user_id") @db.Uuid
+  notificationId String  @map("notification_id") @db.Uuid
+  isRead         Boolean @default(false) @map("is_read")
+
+  user         User         @relation(fields: [userId], references: [id])
+  notification Notification @relation(fields: [notificationId], references: [id])
+
+  @@id([userId, notificationId])
+  @@map("users_notifications")
 }
 
 model UserRig {
@@ -590,9 +616,10 @@ model UserLog {
 }
 
 model SystemVersion {
-  id        String   @id @default(uuid()) @db.Uuid
-  version   String
-  createdAt DateTime @default(now())
+  id            String         @id @default(uuid()) @db.Uuid
+  version       String
+  createdAt     DateTime       @default(now())
+  notifications Notification[]
 }
 
 enum OccurrenceType {

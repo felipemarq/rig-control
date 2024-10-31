@@ -1,5 +1,6 @@
 import { AccessLevel } from "./AccessLevel";
 import { Contract } from "./Contract";
+import { Notification } from "./Notification";
 
 export interface User {
   id: string;
@@ -27,4 +28,5 @@ export interface User {
     };
   }[];
   enterprise?: { id: string; logoImagePath: string; mainColor: string; name: string };
+  userNotifications: Notification[];
 }

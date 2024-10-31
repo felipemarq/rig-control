@@ -21,7 +21,9 @@ const FormMenu = lazy(() => import("@/view/pages/FormMenu/index"));
 const List = lazy(() => import("@/view/pages/List/index"));
 const BillingDashboard = lazy(() => import("@/view/pages/BillingDashboard/index"));
 const InvoicingMenu = lazy(() => import("@/view/pages/InvoicingMenu/index"));
-const BillingRigDetailDashboard = lazy(() => import("@/view/pages/BillingRigDetailDashboard/index"));
+const BillingRigDetailDashboard = lazy(
+  () => import("@/view/pages/BillingRigDetailDashboard/index")
+);
 const Details = lazy(() => import("@/view/pages/Details/index"));
 const CreateRig = lazy(() => import("@/view/pages/CreateRig/index"));
 const ListRigs = lazy(() => import("@/view/pages/ListRigs/index"));
@@ -34,9 +36,15 @@ const UpdateUserRigs = lazy(() => import("@/view/pages/UpdateUserRigs/index"));
 const Report = lazy(() => import("@/view/pages/Report/index"));
 const Occurrences = lazy(() => import("@/view/pages/Occurrences/index"));
 const ManHours = lazy(() => import("@/view/pages/ManHours/index"));
-const TotalManHoursDashboard = lazy(() => import("@/view/pages/TotalManHoursDashboard/index"));
-const CreateBillingConfiguration = lazy(() => import("@/view/pages/CreateBillingConfiguration/index"));
-const BillingConfiguration = lazy(() => import("@/view/pages/BillingConfiguration/index"));
+const TotalManHoursDashboard = lazy(
+  () => import("@/view/pages/TotalManHoursDashboard/index")
+);
+const CreateBillingConfiguration = lazy(
+  () => import("@/view/pages/CreateBillingConfiguration/index")
+);
+const BillingConfiguration = lazy(
+  () => import("@/view/pages/BillingConfiguration/index")
+);
 const ManHoursDashboard = lazy(() => import("@/view/pages/ManHoursDashboard/index"));
 
 function RouterErrorBoundary() {
@@ -48,7 +56,7 @@ function RouterErrorBoundary() {
 }
 
 export const Router = () => {
-  const { isUserAdm } = useAuth();
+  const { isUserAdm, isUserSms, isUserSupervisor } = useAuth();
   return (
     <BrowserRouter>
       <Suspense fallback={<PageLoader isLoading />}>
@@ -70,7 +78,16 @@ export const Router = () => {
                 <Route path="/in-development" element={<InDevelopmentPage />} />
 
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/global-dashboard" element={isUserAdm ? <GlobalDashboard /> : <Dashboard />} />
+                <Route
+                  path="/global-dashboard"
+                  element={
+                    isUserAdm || isUserSms || isUserSupervisor ? (
+                      <GlobalDashboard />
+                    ) : (
+                      <Dashboard />
+                    )
+                  }
+                />
 
                 <Route path="/form" element={<Form />} />
                 <Route path="/form/:efficiencyId" element={<UpdateForm />} />
@@ -80,7 +97,10 @@ export const Router = () => {
                 <Route path="/list" element={<List />} />
                 <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
 
-                <Route path="/invoicing-rig-dashboard" element={<BillingRigDetailDashboard />} />
+                <Route
+                  path="/invoicing-rig-dashboard"
+                  element={<BillingRigDetailDashboard />}
+                />
                 <Route path="/invoicing" element={<InvoicingMenu />} />
 
                 <Route path="/details/:efficiencyId" element={<Details />} />
@@ -96,9 +116,18 @@ export const Router = () => {
                 <Route path="/occurrences" element={<Occurrences />} />
                 <Route path="/man-hours" element={<ManHours />} />
                 <Route path="/occurrences/man-hours" element={<ManHours />} />
-                <Route path="/dashboard/total-man-hours" element={<TotalManHoursDashboard />} />
-                <Route path="/create-billing-configuration" element={<CreateBillingConfiguration />} />
-                <Route path="/billing-configuration/:rigId" element={<BillingConfiguration />} />
+                <Route
+                  path="/dashboard/total-man-hours"
+                  element={<TotalManHoursDashboard />}
+                />
+                <Route
+                  path="/create-billing-configuration"
+                  element={<CreateBillingConfiguration />}
+                />
+                <Route
+                  path="/billing-configuration/:rigId"
+                  element={<BillingConfiguration />}
+                />
 
                 <Route path="/dashboard/man-hours" element={<ManHoursDashboard />} />
               </Route>
