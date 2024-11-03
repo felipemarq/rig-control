@@ -46,6 +46,7 @@ const BillingConfiguration = lazy(
   () => import("@/view/pages/BillingConfiguration/index")
 );
 const ManHoursDashboard = lazy(() => import("@/view/pages/ManHoursDashboard/index"));
+const SmsDashboard = lazy(() => import("@/view/pages/SmsDashboard/index"));
 
 function RouterErrorBoundary() {
   return (
@@ -130,6 +131,7 @@ export const Router = () => {
                 />
 
                 <Route path="/dashboard/man-hours" element={<ManHoursDashboard />} />
+                <Route path="/dashboard/sms" element={<SmsDashboard />} />
               </Route>
             </Route>
 

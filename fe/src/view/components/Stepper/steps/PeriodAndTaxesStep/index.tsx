@@ -47,11 +47,9 @@ export function PeriodAndTaxesStep() {
               render={({ field: { onChange, value } }) => (
                 <Select
                   isLoading={isFetchingRigs}
-                  error={
-                    form.formState.errors.periodAndTaxesStep?.rigId?.message
-                  }
+                  error={form.formState.errors.periodAndTaxesStep?.rigId?.message}
                   placeholder="Sonda"
-                  value={value}
+                  value={value!}
                   onChange={onChange}
                   options={rigs.map(({ id, name }) => ({
                     value: id,
@@ -71,9 +69,7 @@ export function PeriodAndTaxesStep() {
                   //value={value}
                   placeholder="Data de início"
                   onChange={onChange}
-                  error={
-                    form.formState.errors.periodAndTaxesStep?.startDate?.message
-                  }
+                  error={form.formState.errors.periodAndTaxesStep?.startDate?.message}
                 />
               )}
             />
@@ -88,9 +84,7 @@ export function PeriodAndTaxesStep() {
                   //value={value}
                   placeholder="Data de fim"
                   onChange={onChange}
-                  error={
-                    form.formState.errors.periodAndTaxesStep?.startDate?.message
-                  }
+                  error={form.formState.errors.periodAndTaxesStep?.startDate?.message}
                 />
               )}
             />
@@ -106,8 +100,7 @@ export function PeriodAndTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.periodAndTaxesStep?.availableHourTax
-                    ?.message
+                  form.formState.errors.periodAndTaxesStep?.availableHourTax?.message
                 }
               />
             )}
@@ -122,10 +115,7 @@ export function PeriodAndTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.periodAndTaxesStep?.glossHourTax
-                    ?.message
-                }
+                error={form.formState.errors.periodAndTaxesStep?.glossHourTax?.message}
               />
             )}
           />
