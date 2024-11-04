@@ -1,6 +1,9 @@
 import { endOfYear, format, startOfYear } from "date-fns";
 import { createContext, useState } from "react";
 import { OccurrenceFilters } from "../services/occurrencesService/getAll";
+import { BasesResponse } from "../services/basesService/getAll";
+import { useBases } from "../hooks/useBases";
+import { useOccurrences } from "../hooks/occurrences/useOccurrences";
 
 interface OccurrenceFiltersContexContexValue {
   handleChangeFilters<TFilter extends keyof OccurrenceFilters>(
@@ -8,6 +11,9 @@ interface OccurrenceFiltersContexContexValue {
   ): (value: OccurrenceFilters[TFilter]) => void;
   filters: OccurrenceFilters;
   handleClearFilters(): void;
+  bases: BasesResponse;
+  isFetchingBases: boolean;
+  handleApplyFilters: () => void;
 }
 
 export const OccurrenceFiltersContext = createContext(
@@ -19,11 +25,18 @@ export const OccurrenceFiltersProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
+  const { bases, isFetchingBases } = useBases();
   const currentDate = new Date();
   const firstDayOfYear = startOfYear(currentDate);
   const lastDayOfYear = endOfYear(currentDate);
-  const formattedFirstDay = format(firstDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-  const formattedLastDay = format(lastDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  const formattedFirstDay = format(
+    firstDayOfYear,
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+  );
+  const formattedLastDay = format(
+    lastDayOfYear,
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+  );
 
   const [selectedStartDate] = useState<string>(formattedFirstDay);
   const [selectedEndDate] = useState<string>(formattedLastDay);
@@ -38,7 +51,15 @@ export const OccurrenceFiltersProvider = ({
     startDate: selectedStartDate,
     endDate: selectedEndDate,
   });
-  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(filter: TFilter) {
+
+  const { refetchOccurrences } = useOccurrences(filters);
+
+  const handleApplyFilters = () => {
+    refetchOccurrences();
+  };
+  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(
+    filter: TFilter
+  ) {
     return (value: OccurrenceFilters[TFilter]) => {
       if (value === filters[filter]) return;
 
@@ -68,6 +89,9 @@ export const OccurrenceFiltersProvider = ({
         filters,
         handleClearFilters,
         handleChangeFilters,
+        bases,
+        isFetchingBases,
+        handleApplyFilters,
       }}
     >
       {children}

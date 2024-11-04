@@ -21,11 +21,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { MapPin } from "lucide-react";
-import { SmsDashboardContext, SmsDashboardProvider } from "./SmsDashboardContext";
+import {
+  SmsDashboardContext,
+  SmsDashboardProvider,
+} from "./SmsDashboardContext";
 import { Header } from "@/view/components/Header";
 import { StatboxContainer } from "./Components/StatboxContainer";
 import { BarChartByType } from "./Components/BarChartByType";
 import { PieChartByNature } from "./Components/PieChartByNature";
+import { OccurrenceFiltersSheet } from "@/view/components/OccurrenceFiltersSheet";
+import { AreaChartByMonth } from "./Components/AreaChartByMonth";
 
 const distribuicaoTemporal = [
   { mes: "Jan", ocorrencias: 10 },
@@ -49,7 +54,12 @@ const acoesPendentes = [
     prazo: "2024-04-20",
     status: "No prazo",
   },
-  { id: 3, descricao: "Auditoria ambiental", prazo: "2024-04-25", status: "No prazo" },
+  {
+    id: 3,
+    descricao: "Auditoria ambiental",
+    prazo: "2024-04-25",
+    status: "No prazo",
+  },
 ];
 
 export default function SmsDashboard() {
@@ -60,9 +70,12 @@ export default function SmsDashboard() {
           <div className="container mx-auto p-4">
             <Header
               displayRig
+              displayPeriodRange={false}
               title="Dashboard de Saúde, Meio Ambiente e Segurança (SMS)"
             >
-              <div className="flex gap-2 items-center"></div>
+              <div className="flex gap-2 items-center">
+                <OccurrenceFiltersSheet />
+              </div>
             </Header>
 
             <StatboxContainer />
@@ -72,6 +85,8 @@ export default function SmsDashboard() {
 
               <PieChartByNature />
             </div>
+
+            <AreaChartByMonth />
 
             <Card className="mb-8">
               <CardHeader>
@@ -116,7 +131,9 @@ export default function SmsDashboard() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Índice de Frequência e Gravidade de Acidentes</CardTitle>
+                  <CardTitle>
+                    Índice de Frequência e Gravidade de Acidentes
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
                   <div className="h-[300px]">

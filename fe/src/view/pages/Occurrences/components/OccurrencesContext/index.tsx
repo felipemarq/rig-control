@@ -54,20 +54,30 @@ interface OccurrencesContextValue {
 // Criação do contexto
 export const OccurrencesContext = createContext({} as OccurrencesContextValue);
 
-export const OccurrencesProvider = ({ children }: { children: React.ReactNode }) => {
+export const OccurrencesProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
-  const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] = useState<
-    string | null
-  >(null);
+  const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] =
+    useState<string | null>(null);
 
-  const { bases, isFetchingBases } = useBases();
+  const {
+    filters,
+    handleChangeFilters,
+    handleClearFilters,
+    bases,
+    isFetchingBases,
+  } = useOccurrencesFiltersContext();
 
-  const { filters, handleChangeFilters, handleClearFilters } =
-    useOccurrencesFiltersContext();
-
-  const { isFetchingOccurrences, occurrences, isInitialLoading, refetchOccurrences } =
-    useOccurrences(filters);
+  const {
+    isFetchingOccurrences,
+    occurrences,
+    isInitialLoading,
+    refetchOccurrences,
+  } = useOccurrences(filters);
 
   const handleApplyFilters = () => {
     refetchOccurrences();
@@ -77,7 +87,8 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
     refetchOccurrences();
   };
 
-  const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] = useState(false);
+  const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] =
+    useState(false);
 
   const [isNewOccurrenceActionModalOpen, setIsNewOccurrenceActionModalOpen] =
     useState(false);
@@ -85,9 +96,11 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
   const [isEditOccurrenceActionModalOpen, setIsEditOccurrenceActionModalOpen] =
     useState(false);
 
-  const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] = useState(false);
+  const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] =
+    useState(false);
 
-  const [occurrenceBeingSeen, setOccurrenceBeingSeen] = useState<null | Occurrence>(null);
+  const [occurrenceBeingSeen, setOccurrenceBeingSeen] =
+    useState<null | Occurrence>(null);
 
   const [occurrenceActionBeingSeen, setOccurrenceActionBeingSeen] =
     useState<null | OccurrenceAction>(null);

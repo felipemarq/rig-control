@@ -9,19 +9,20 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/view/components/Button";
 import { Select } from "@/view/components/Select";
-import { useOccurrencesContext } from "../OccurrencesContext/useOccurencesContext";
+
 import { DatePickerInput } from "@/view/components/DatePickerInput";
 import { OccurenceNature, OccurrenceType } from "@/app/entities/Occurrence";
-import { occurrenceTypeSelectOptions } from "../../utils/occurrenceTypeSelectOptions";
-import { natureSelectOptions } from "../../utils/natureSelectOptions";
-export const FilterSheet = () => {
+import { occurrenceTypeSelectOptions } from "../pages/Occurrences/utils/occurrenceTypeSelectOptions";
+import { natureSelectOptions } from "../pages/Occurrences/utils/natureSelectOptions";
+import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersContext";
+export const OccurrenceFiltersSheet = () => {
   const {
     filters,
     bases,
     handleChangeFilters,
     handleClearFilters,
     handleApplyFilters,
-  } = useOccurrencesContext();
+  } = useOccurrencesFiltersContext();
   return (
     <Sheet>
       <SheetTrigger>
