@@ -714,6 +714,7 @@ model OccurrenceAction {
   description      String?
   isFinished       Boolean    @default(false)
   createdAt        DateTime   @default(now()) @map("created_at")
+  finishedAt       DateTime?  @map("finished_at")
   files            File[]
   occurrence       Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 

@@ -24,6 +24,17 @@ export class MailService {
       nature: string;
     },
   ) {
+    const severityFound = occurrenceSeverityTranslation.find(
+      (occurrenceItem) => occurrence.severity === occurrenceItem.value,
+    );
+
+    const typeFound = occurrenceTypeTranslation.find(
+      (occurrenceItem) => occurrence.type === occurrenceItem.value,
+    );
+
+    const natureFound = natureTranslation.find(
+      (occurrenceItem) => occurrence.nature === occurrenceItem.value,
+    );
     await this.mailerService.sendMail({
       to: occurrenceAction.responsibleEmail, // lista de destinatários
       subject: 'Nova Ação Vinculada a Você', // Assunto do e-mail
@@ -62,19 +73,13 @@ export class MailService {
             occurrence.category || 'Sem categoria'
           }</p>
           <p style="margin: 0;"><strong>Gravidade:</strong> ${
-            occurrenceSeverityTranslation.find(
-              (occurrenceItem) => occurrence.severity === occurrenceItem.value,
-            ).label || 'Não especificado'
+            severityFound?.label || 'Não especificado'
           }</p>
           <p style="margin: 0;"><strong>Tipo:</strong> ${
-            occurrenceTypeTranslation.find(
-              (occurrenceItem) => occurrence.type === occurrenceItem.value,
-            ).label || 'Não especificado'
+            typeFound?.label || 'Não especificado'
           }</p>
           <p style="margin: 0;"><strong>Natureza:</strong> ${
-            natureTranslation.find(
-              (occurrenceItem) => occurrence.nature === occurrenceItem.value,
-            ).label || 'Não especificado'
+            natureFound?.label || 'Não especificado'
           }</p>
         </div>
         
@@ -107,6 +112,17 @@ export class MailService {
       nature: string;
     },
   ) {
+    const severityFound = occurrenceSeverityTranslation.find(
+      (occurrenceItem) => occurrence.severity === occurrenceItem.value,
+    );
+
+    const typeFound = occurrenceTypeTranslation.find(
+      (occurrenceItem) => occurrence.type === occurrenceItem.value,
+    );
+
+    const natureFound = natureTranslation.find(
+      (occurrenceItem) => occurrence.nature === occurrenceItem.value,
+    );
     await this.mailerService.sendMail({
       to: occurrenceAction.responsibleEmail, // lista de destinatários
       subject: 'Ação Editada Vinculada a Você', // Assunto do e-mail
@@ -149,20 +165,13 @@ export class MailService {
               occurrence.category || 'Sem categoria'
             }</p>
             <p style="margin: 0;"><strong>Gravidade:</strong> ${
-              occurrenceSeverityTranslation.find(
-                (occurrenceItem) =>
-                  occurrence.severity === occurrenceItem.value,
-              ).label || 'Não especificado'
+              severityFound?.label || 'Não especificado'
             }</p>
             <p style="margin: 0;"><strong>Tipo:</strong> ${
-              occurrenceTypeTranslation.find(
-                (occurrenceItem) => occurrence.type === occurrenceItem.value,
-              ).label || 'Não especificado'
+              typeFound?.label || 'Não especificado'
             }</p>
             <p style="margin: 0;"><strong>Natureza:</strong> ${
-              natureTranslation.find(
-                (occurrenceItem) => occurrence.nature === occurrenceItem.value,
-              ).label || 'Não especificado'
+              natureFound?.label || 'Não especificado'
             }</p>
           </div>
           

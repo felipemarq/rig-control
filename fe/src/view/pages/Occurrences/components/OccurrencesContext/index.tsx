@@ -2,7 +2,7 @@ import { Occurrence } from "@/app/entities/Occurrence";
 import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
-import { useBases } from "@/app/hooks/useBases";
+
 import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersContext";
 import { BasesResponse } from "@/app/services/basesService/getAll";
 import {
@@ -54,30 +54,18 @@ interface OccurrencesContextValue {
 // Criação do contexto
 export const OccurrencesContext = createContext({} as OccurrencesContextValue);
 
-export const OccurrencesProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const OccurrencesProvider = ({ children }: { children: React.ReactNode }) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
-  const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] =
-    useState<string | null>(null);
+  const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] = useState<
+    string | null
+  >(null);
 
-  const {
-    filters,
-    handleChangeFilters,
-    handleClearFilters,
-    bases,
-    isFetchingBases,
-  } = useOccurrencesFiltersContext();
+  const { filters, handleChangeFilters, handleClearFilters, bases, isFetchingBases } =
+    useOccurrencesFiltersContext();
 
-  const {
-    isFetchingOccurrences,
-    occurrences,
-    isInitialLoading,
-    refetchOccurrences,
-  } = useOccurrences(filters);
+  const { isFetchingOccurrences, occurrences, isInitialLoading, refetchOccurrences } =
+    useOccurrences(filters);
 
   const handleApplyFilters = () => {
     refetchOccurrences();
@@ -87,8 +75,7 @@ export const OccurrencesProvider = ({
     refetchOccurrences();
   };
 
-  const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] =
-    useState(false);
+  const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] = useState(false);
 
   const [isNewOccurrenceActionModalOpen, setIsNewOccurrenceActionModalOpen] =
     useState(false);
@@ -96,11 +83,9 @@ export const OccurrencesProvider = ({
   const [isEditOccurrenceActionModalOpen, setIsEditOccurrenceActionModalOpen] =
     useState(false);
 
-  const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] =
-    useState(false);
+  const [isEditOccurrenceModalOpen, setIsEditOccurrenceModalOpen] = useState(false);
 
-  const [occurrenceBeingSeen, setOccurrenceBeingSeen] =
-    useState<null | Occurrence>(null);
+  const [occurrenceBeingSeen, setOccurrenceBeingSeen] = useState<null | Occurrence>(null);
 
   const [occurrenceActionBeingSeen, setOccurrenceActionBeingSeen] =
     useState<null | OccurrenceAction>(null);

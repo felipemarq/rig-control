@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOccurrenceActionDto } from './dto/create-occurrence-action.dto';
 import { UpdateOccurrenceActionDto } from './dto/update-occurrence-action.dto';
 import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
@@ -21,6 +25,13 @@ export class OccurrenceActionsService {
 
     if (!occurrence) {
       throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    if (
+      createOccurrenceActionDto.isFinished &&
+      !createOccurrenceActionDto.finishedAt
+    ) {
+      throw new ConflictException('Data de conclusão é obrigatória!');
     }
 
     const occurrenceAction = await this.occurrenceActionsRepo.create({
@@ -70,6 +81,13 @@ export class OccurrenceActionsService {
 
     if (!occurrence) {
       throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    if (
+      updateOccurrenceActionDto.isFinished &&
+      !updateOccurrenceActionDto.finishedAt
+    ) {
+      throw new Error('Data de conclusão é obrigatória!');
     }
 
     await this.mailsService.sendUpdateOccurrenceActionEmail(

@@ -31,6 +31,7 @@ export const EditOccurrenceActionModal = () => {
     handleOpenDeleteModal,
     handleDeleteOccurrence,
     isLoadingDeleteOccurrenceAction,
+    isFinished,
   } = useEditOccurrenceActionModal();
 
   if (isDeleteModalOpen) {
@@ -73,11 +74,48 @@ export const EditOccurrenceActionModal = () => {
               )}
             />
           </div>
-          <div className="flex gap-4 ">
+
+          <div className="w-full">
+            <Controller
+              control={control}
+              name="dueDate"
+              render={({ field: { onChange } }) => (
+                <DatePickerInput
+                  //value={value}
+                  placeholder="Prazo da ação"
+                  onChange={(value) => onChange(value)}
+                  error={errors.dueDate?.message}
+                />
+              )}
+            />
+          </div>
+
+          <div
+            className={cn(
+              "px-2 flex items-center justify-between  bg-white rounded-lg w-full border border-gray-500 h-[52px]  text-gray-800   placeholder-shown:pt-0 focus:border-gray-800 transition-all outline-none peer hover:bg-white"
+            )}
+          >
+            <div className="flex flex-col">
+              <Label>Finalizado</Label>
+              <Label className="text-xs text-gray-600">
+                Marcar o plano de ação como finalizado.
+              </Label>
+            </div>
+            <Controller
+              control={control}
+              name="isFinished"
+              render={({ field: { onChange, value } }) => (
+                <Switch checked={value} onCheckedChange={onChange} />
+              )}
+            />
+          </div>
+
+          {isFinished && (
             <div className="w-full">
               <Controller
                 control={control}
-                name="dueDate"
+                name="finishedAt"
+                shouldUnregister={true}
                 render={({ field: { onChange } }) => (
                   <DatePickerInput
                     //value={value}
@@ -88,27 +126,8 @@ export const EditOccurrenceActionModal = () => {
                 )}
               />
             </div>
+          )}
 
-            <div
-              className={cn(
-                "px-2 flex items-center justify-between  bg-white rounded-lg w-full border border-gray-500 h-[52px]  text-gray-800   placeholder-shown:pt-0 focus:border-gray-800 transition-all outline-none peer hover:bg-white"
-              )}
-            >
-              <div className="flex flex-col">
-                <Label>Finalizado</Label>
-                <Label className="text-xs text-gray-600">
-                  Marcar o plano de ação como finalizado.
-                </Label>
-              </div>
-              <Controller
-                control={control}
-                name="isFinished"
-                render={({ field: { onChange, value } }) => (
-                  <Switch checked={value} onCheckedChange={onChange} />
-                )}
-              />
-            </div>
-          </div>
           <div>
             <Controller
               control={control}

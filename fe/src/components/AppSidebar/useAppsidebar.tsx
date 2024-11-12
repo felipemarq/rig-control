@@ -53,7 +53,6 @@ export const useAppsidebar = () => {
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
-            hasNews: true,
           },
           {
             title: "Criar Ocorrência",
@@ -194,7 +193,6 @@ export const useAppsidebar = () => {
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
-            hasNews: true,
           },
           {
             title: "Relatório de Períodos",
@@ -279,7 +277,6 @@ export const useAppsidebar = () => {
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
-            hasNews: true,
           },
           {
             title: "Criar Ocorrência",
