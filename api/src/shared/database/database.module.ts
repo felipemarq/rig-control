@@ -23,6 +23,7 @@ import { OccurrenceActionsRepository } from './repositories/occurrence-actions.r
 import { ClientRepository } from './repositories/client.repositories';
 import { NotificationsRepository } from './repositories/notifications.repositories';
 import { UsersNotificationsRepository } from './repositories/usersNotification.repositories';
+import { FeedbackRepository } from './repositories/feedback.repositories';
 
 @Global()
 @Module({
@@ -51,6 +52,7 @@ import { UsersNotificationsRepository } from './repositories/usersNotification.r
     ClientRepository,
     NotificationsRepository,
     UsersNotificationsRepository,
+    FeedbackRepository,
   ],
   exports: [
     PrismaService,
@@ -76,6 +78,7 @@ import { UsersNotificationsRepository } from './repositories/usersNotification.r
     ClientRepository,
     NotificationsRepository,
     UsersNotificationsRepository,
+    FeedbackRepository,
   ],
 })
 export class DatabaseModule {}

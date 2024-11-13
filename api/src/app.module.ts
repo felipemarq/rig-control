@@ -25,6 +25,7 @@ import { OccurrenceActionsModule } from './modules/occurrence-actions/occurrence
 import { ClientsModule } from './modules/clients/clients.module';
 import { MailModule } from './modules/mail/mail.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
+import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
 
 @Module({
   imports: [
@@ -52,6 +53,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
     ClientsModule,
     MailModule,
     NotificationsModule,
+    FeedbacksModule,
   ],
   controllers: [],
   providers: [
