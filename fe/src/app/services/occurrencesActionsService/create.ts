@@ -9,6 +9,7 @@ export interface CreateOccurrenceActionParams {
   isFinished: boolean;
   description?: string;
   responsibleEmail: string;
+  finishedAt?: string;
 }
 
 export type CreateOccurrenceActionResponse = OccurrenceAction;

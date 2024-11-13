@@ -99,9 +99,9 @@ export const NewOccurrenceActionModal = () => {
                 render={({ field: { onChange } }) => (
                   <DatePickerInput
                     //value={value}
-                    placeholder="Prazo da ação"
+                    placeholder="Finalizado em:"
                     onChange={(value) => onChange(value)}
-                    error={errors.dueDate?.message}
+                    error={errors.finishedAt?.message}
                   />
                 )}
               />

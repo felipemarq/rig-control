@@ -117,6 +117,7 @@ export const useNewOccurrenceActionModal = () => {
         dueDate: data.dueDate?.toISOString(),
         description: data.description,
         isFinished: data.isFinished,
+        finishedAt: data.finishedAt?.toISOString(),
         occurrenceId: occurenceIdActionPlanBeingSeen!,
         responsible: data.responsible,
         title: data.title,

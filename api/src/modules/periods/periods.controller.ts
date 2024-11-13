@@ -44,7 +44,7 @@ export class PeriodsController {
   @Get()
   async findByPeriodType(
     @Query('rigId', ParseUUIDPipe) rigId: string,
-    @Query('periodType', PeriodTypeValidationPipe) periodType: PeriodType,
+    @Query('periodType') periodType: PeriodType | null,
     @Query('periodClassification')
     periodClassification: PeriodClassification | null,
     @Query('repairClassification')
@@ -54,6 +54,7 @@ export class PeriodsController {
     @Query('endDate') endDate: string,
     @Query('pageSize') pageSize: string,
     @Query('pageIndex') pageIndex: string,
+    @Query('searchTerm') searchTerm: string,
   ) {
     return await this.periodsService.findByPeriodType(
       rigId,
@@ -65,6 +66,7 @@ export class PeriodsController {
       endDate,
       pageSize,
       pageIndex,
+      searchTerm,
     );
   }
 }
