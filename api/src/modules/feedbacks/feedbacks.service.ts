@@ -13,8 +13,18 @@ export class FeedbacksService {
     });
   }
 
-  findAll() {
-    return `This action returns all feedbacks`;
+  async findAll() {
+    return await this.feedbacksRepo.findMany({
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+          },
+        },
+      },
+    });
   }
 
   findOne(id: number) {
