@@ -17,23 +17,36 @@ export class PeriodsService {
   async findByPeriodType(
     rigId: string,
     periodType: PeriodType,
-    periodClassification: PeriodClassification,
+    periodClassification: PeriodClassification | null,
     repairClassification: RepairClassification | null,
     orderBy: OrderByType,
     startDate: string,
     endDate: string,
     pageSize: string,
     pageIndex: string,
+    searchTerm: string,
   ) {
     let whereClause = {};
 
     whereClause = {
       startHour: { gte: new Date(startDate) },
       endHour: { lte: new Date(endDate) },
-      type: periodType,
-
       efficiency: { rigId: rigId },
     };
+
+    if (searchTerm) {
+      whereClause = {
+        ...whereClause,
+        description: { contains: searchTerm, mode: 'insensitive' },
+      };
+    }
+
+    if (periodType) {
+      whereClause = {
+        ...whereClause,
+        type: periodType,
+      };
+    }
 
     if (periodClassification) {
       whereClause = {

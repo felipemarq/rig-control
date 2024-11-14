@@ -170,6 +170,7 @@ export class OccurrencesService {
             description: true,
             isFinished: true,
             createdAt: true,
+            finishedAt: true,
             responsibleEmail: true,
             files: {
               select: {

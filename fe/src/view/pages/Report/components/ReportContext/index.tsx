@@ -35,12 +35,12 @@ interface ReportContextValues {
   handleTogglePeriodType(type: PeriodType): void;
   handleApplyFilters(): void;
   handleClearFilters(): void;
+  handleChangeSearchTerm(searchTerm: string): void;
   handleChangePageSize(pageSize: number | string): void;
   handleChangePageIndex(pageIndex: number | string): void;
   handlePeriodClassification(classification: PeriodClassification): void;
   handleRepairClassification(repairClassification: RepairClassification): void;
   onPaginationModelChange(model: GridPaginationModel): void;
-
   selectedRig: string;
   selectedPeriod: string;
   handleChangeRig(rigId: string): void;
@@ -69,36 +69,28 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
 
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
+  const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   const { isUserAdm } = useAuth();
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const { rigs } = useRigs(isUserAdm);
 
-  const userRigs =
-    user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
+  const userRigs = user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
 
   const emptyOptions = [{ value: "", label: "" }];
 
   //estado dos filtros
   const [selectedRig, setSelectedRig] = useState<string>("");
-  const [selectedStartDate, setSelectedStartDate] =
-    useState<string>(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] =
-    useState<string>(formattedLastDay);
+  const [selectedStartDate, setSelectedStartDate] = useState<string>(formattedFirstDay);
+  const [selectedEndDate, setSelectedEndDate] = useState<string>(formattedLastDay);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [selectedPeriodType, setSelectedPeriodType] = useState<PeriodType>(
     PeriodType.WORKING
   );
-  const [selectedPeriodClassification, setSelectedPeriodClassification] =
-    useState<PeriodClassification | string>(PeriodClassification.WORKING);
+  const [selectedPeriodClassification, setSelectedPeriodClassification] = useState<
+    PeriodClassification | string
+  >(PeriodClassification.WORKING);
   const [periodClassificationOptions, setPeriodClassificationOptions] =
     useState<null | SelectOptions>([
       {
@@ -116,14 +108,15 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
   );
   const [filters, setFilters] = useState<GetByPeriodTypeFilters>({
     rigId: "",
-    periodType: PeriodType.WORKING,
-    periodClassification: "WORKING",
+    periodType: undefined,
+    periodClassification: undefined,
     repairClassification: null,
     orderBy: OrderByType.ASC,
     startDate: selectedStartDate,
     endDate: selectedEndDate,
     pageSize: "50",
     pageIndex: "1",
+    searchTerm: undefined,
   });
 
   const { periodsResponse, refetchPeriods, isFetchingPeriods } =
@@ -147,13 +140,6 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
     return periodClassifications.REPAIR.find(({ id }) => id === repairType)
       ?.repairClassification;
   };
-  /* 
-  const periodClassificationOptions = allClassifications.map(
-    ({id, classification}) => ({
-      value: id,
-      label: classification,
-    })
-  ); */
 
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
@@ -181,6 +167,10 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
   const handleChangeRig = (rigId: string) => {
     setSelectedRig(rigId);
     setFilters((prevState) => ({ ...prevState, rigId: rigId, pageIndex: "1" }));
+  };
+
+  const handleChangeSearchTerm = (searchTerm: string) => {
+    setFilters((prevState) => ({ ...prevState, searchTerm: searchTerm, pageIndex: "1" }));
   };
 
   const handleStartDateChange = (date: Date) => {
@@ -270,13 +260,10 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
       filters.orderBy &&
       filters.pageIndex &&
       filters.pageSize &&
-      filters.periodType &&
       filters.rigId
   );
 
-  const handleRepairClassification = (
-    repairClassification: RepairClassification
-  ) => {
+  const handleRepairClassification = (repairClassification: RepairClassification) => {
     setFilters((prevState) => ({
       ...prevState,
       repairClassification: repairClassification,
@@ -362,6 +349,7 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
         selectedPeriodType,
         isEmpty,
         isFetchingPeriods,
+        handleChangeSearchTerm,
       }}
     >
       {children}

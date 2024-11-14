@@ -14,6 +14,7 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
+  finishedAt: z.date().optional(),
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean().default(false),
@@ -86,8 +87,6 @@ export const useNewOccurrenceActionModal = () => {
 
   const isFinished = watch("isFinished");
 
-  console.log("isFinished", isFinished);
-
   /*  console.log("selectedSeverity", selectedSeverity);
   console.log("errors", errors);
   occurrenceSeveritySelectOptions;
@@ -112,11 +111,13 @@ export const useNewOccurrenceActionModal = () => {
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     console.log("data", data);
+
     try {
       const occurrenceAction = await mutateNewOccurrenceAsync({
         dueDate: data.dueDate?.toISOString(),
         description: data.description,
         isFinished: data.isFinished,
+        finishedAt: data.finishedAt?.toISOString(),
         occurrenceId: occurenceIdActionPlanBeingSeen!,
         responsible: data.responsible,
         title: data.title,
@@ -157,5 +158,6 @@ export const useNewOccurrenceActionModal = () => {
     file,
     isDragging,
     handleDragLeave,
+    isFinished,
   };
 };

@@ -57,6 +57,11 @@ export class UsersService {
               },
             },
           },
+          orderBy: {
+            notification: {
+              createdAt: 'desc',
+            },
+          },
         },
         enterprise: true,
       },

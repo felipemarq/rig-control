@@ -2,7 +2,7 @@ import { Occurrence } from "@/app/entities/Occurrence";
 import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
-import { useBases } from "@/app/hooks/useBases";
+
 import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersContext";
 import { BasesResponse } from "@/app/services/basesService/getAll";
 import {
@@ -61,9 +61,7 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
     string | null
   >(null);
 
-  const { bases, isFetchingBases } = useBases();
-
-  const { filters, handleChangeFilters, handleClearFilters } =
+  const { filters, handleChangeFilters, handleClearFilters, bases, isFetchingBases } =
     useOccurrencesFiltersContext();
 
   const { isFetchingOccurrences, occurrences, isInitialLoading, refetchOccurrences } =

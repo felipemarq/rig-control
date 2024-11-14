@@ -36,4 +36,9 @@ export class CreateOccurrenceActionDto {
   @IsBoolean()
   @IsOptional()
   isFinished: boolean;
+
+  @IsString()
+  @IsDateString()
+  @IsOptional()
+  finishedAt: string;
 }

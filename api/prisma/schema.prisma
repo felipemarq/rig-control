@@ -118,6 +118,7 @@ model User {
 
   enterprise        Enterprise?        @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
   userNotifications UserNotification[]
+  feedbacks         Feedback[]
 
   @@map("users")
 }
@@ -145,6 +146,34 @@ model UserNotification {
 
   @@id([userId, notificationId])
   @@map("users_notifications")
+}
+
+enum FeedbackType {
+  SUGESTION
+  PROBLEM
+  OTHER
+}
+
+enum FeedbackStatus {
+  RECEIVED
+  IN_REVIEW
+  IN_PROGRESS
+  COMPLETED
+  NO_ACTION_NEEDED
+  PENDING
+}
+
+model Feedback {
+  id          String         @id @default(uuid()) @db.Uuid
+  type        FeedbackType
+  status      FeedbackStatus @default(RECEIVED)
+  description String
+  createdAt   DateTime       @default(now())
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("feedbacks")
 }
 
 model UserRig {
@@ -714,6 +743,7 @@ model OccurrenceAction {
   description      String?
   isFinished       Boolean    @default(false)
   createdAt        DateTime   @default(now()) @map("created_at")
+  finishedAt       DateTime?  @map("finished_at")
   files            File[]
   occurrence       Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 

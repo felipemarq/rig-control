@@ -3,7 +3,7 @@ import { useOccurrencesContainer } from "./useOccurrencesContainer";
 import { Input } from "@/view/components/Input";
 import { OccurrenceItem } from "./OccurrenceItem";
 import { NotFound } from "@/view/components/NotFound";
-import { FilterSheet } from "../FilterSheet";
+import { OccurrenceFiltersSheet } from "@/view/components/OccurrenceFiltersSheet";
 
 export const OccurrencesContainer = () => {
   const {
@@ -31,8 +31,6 @@ export const OccurrencesContainer = () => {
             </div>
           )}
 
-          
-
           <div className="w-full h-full p-4 overflow-y-auto scrollbar-hide">
             <header className="flex gap-3 justify-between">
               <div className="w-3/4">
@@ -45,14 +43,14 @@ export const OccurrencesContainer = () => {
                 />
               </div>
 
-              <FilterSheet />
+              <OccurrenceFiltersSheet />
             </header>
 
             {!isFetchingOccurrences && !hasOccurrences && (
-            <div className="h-full flex justify-center items-center">
-              <NotFound>Não foram encontrados registros</NotFound>
-            </div>
-          )}
+              <div className="h-full flex justify-center items-center">
+                <NotFound>Não foram encontrados registros</NotFound>
+              </div>
+            )}
 
             {!isFetchingOccurrences && hasOccurrences && (
               <div className="flex flex-col gap-3 mt-6 mb-6 ">

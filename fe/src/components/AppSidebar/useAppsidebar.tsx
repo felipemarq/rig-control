@@ -53,7 +53,6 @@ export const useAppsidebar = () => {
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
-            hasNews: true,
           },
           {
             title: "Criar Ocorrência",
@@ -152,11 +151,6 @@ export const useAppsidebar = () => {
         url: "#",
         icon: LifeBuoy,
       },
-      {
-        title: "Sugestões",
-        url: "#",
-        icon: Send,
-      },
     ],
     projects: [],
     searchResults: [],
@@ -194,7 +188,6 @@ export const useAppsidebar = () => {
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
-            hasNews: true,
           },
           {
             title: "Relatório de Períodos",
@@ -243,11 +236,6 @@ export const useAppsidebar = () => {
         url: "#",
         icon: LifeBuoy,
       },
-      {
-        title: "Feedback",
-        url: "#",
-        icon: Send,
-      },
     ],
     projects: [],
     searchResults: [],
@@ -279,7 +267,6 @@ export const useAppsidebar = () => {
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
-            hasNews: true,
           },
           {
             title: "Criar Ocorrência",
@@ -301,11 +288,6 @@ export const useAppsidebar = () => {
         title: "Support",
         url: "#",
         icon: LifeBuoy,
-      },
-      {
-        title: "Feedback",
-        url: "#",
-        icon: Send,
       },
     ],
     projects: [],
@@ -353,11 +335,6 @@ export const useAppsidebar = () => {
         title: "Support",
         url: "#",
         icon: LifeBuoy,
-      },
-      {
-        title: "Feedback",
-        url: "#",
-        icon: Send,
       },
     ],
     projects: [],
