@@ -636,9 +636,31 @@ model TemporaryPeriod {
   @@map("temporary_periods")
 }
 
+enum UserLogType {
+  LOGIN
+  LOGOUT
+  PASSWORD_CHANGE
+  CONFIGURATION_CHANGE
+  DATA_EXPORT
+  BDO_CREATE
+  BDO_EDIT
+  BDO_DELETE
+  EFFICIENCY_VIEW
+  EFFICIENCY_CREATE
+  EFFICIENCY_EDIT
+  OCCURRENCE_CREATE
+  OCCURRENCE_EDIT
+  OCCURRENCE_DELETE
+  REPORT_GENERATION
+  VIEW_CRITICAL_DATA
+  ALERT_ACKNOWLEDGMENT
+  OTHER
+}
+
 model UserLog {
-  id        String   @id @default(uuid()) @db.Uuid
-  loginTime DateTime @map("login_time")
+  id        String      @id @default(uuid()) @db.Uuid
+  loginTime DateTime    @map("login_time")
+  logType   UserLogType @default(LOGIN) @map("log_type")
 
   userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
