@@ -26,6 +26,9 @@ import { translateRepairClassification } from 'src/shared/utils/translateRepairC
 import { RepairClassification } from './entities/RepairClassification';
 import { translateClassification } from 'src/shared/utils/translateClassifications';
 import * as PDFDocument from 'pdfkit';
+import { UserLogService } from '../user-log/user-log.service';
+import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
+import { LogType } from '../user-log/entities/LogType';
 
 @Injectable()
 export class EfficienciesService {
@@ -38,6 +41,7 @@ export class EfficienciesService {
     private readonly wellsRepo: WellsRepository,
     private readonly deletionRequestRepo: DeletionRequestRepository,
     private readonly temporaryEfficiencyRepo: TemporaryEfficienciesRepository,
+    private readonly userLogService: UserLogService,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -620,6 +624,12 @@ export class EfficienciesService {
       },
     });
 
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.EFFICIENCY_CREATE,
+    );
+
     return efficiency;
   }
 
@@ -628,11 +638,14 @@ export class EfficienciesService {
    * @param filters - The filters to apply to the query.
    * @returns The efficiencies that match the specified criteria.
    */
-  async findAllByRigId(filters: {
-    rigId: string;
-    startDate: string;
-    endDate: string;
-  }) {
+  async findAllByRigId(
+    filters: {
+      rigId: string;
+      startDate: string;
+      endDate: string;
+    },
+    userId: string,
+  ) {
     const rigExists = await this.rigsRepo.findUnique({
       where: {
         id: filters.rigId,
@@ -713,6 +726,12 @@ export class EfficienciesService {
       },
     });
 
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.EFFICIENCY_VIEW,
+    );
+
     return efficiencies;
   }
 
@@ -723,6 +742,7 @@ export class EfficienciesService {
       startDate: string;
       endDate: string;
     },
+    userId: string,
   ) {
     const rigExists = await this.rigsRepo.findUnique({
       where: { id: filters.rigId },
@@ -899,6 +919,12 @@ export class EfficienciesService {
 
     // Finalizar o documento
     doc.end();
+
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.REPORT_GENERATION,
+    );
   }
 
   async excelReport(efficiencyId: string, response: Response) {

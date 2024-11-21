@@ -1,8 +1,16 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  UnauthorizedException,
+  Param,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { SignupDto } from './dto/signup.dto';
 import { SigninDto } from './dto/signin.dto';
 import { IsPublic } from 'src/shared/decorators/IsPublic';
+import { env } from 'process';
 
 @Controller('auth')
 @IsPublic()
@@ -17,5 +25,17 @@ export class AuthController {
   @Post('signin')
   authenticate(@Body() signinDto: SigninDto) {
     return this.authService.signin(signinDto);
+  }
+
+  @Get('test-auth/:userId')
+  async testAuth(@Param('userId') userId: string) {
+    /* console.log(env);
+    if (env.nodeEnv !== 'development') {
+      throw new UnauthorizedException(
+        'Este endpoint só pode ser usado em ambiente de desenvolvimento!',
+      );
+    } */
+
+    return this.authService.authenticateWithoutPassword(userId);
   }
 }

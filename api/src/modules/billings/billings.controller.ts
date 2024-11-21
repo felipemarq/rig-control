@@ -14,7 +14,6 @@ export class BillingsController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    console.log({ startDate, endDate });
     const res = await this.billingsService.findByRigId({
       rigId,
       startDate,
@@ -30,7 +29,6 @@ export class BillingsController {
     startDate: string,
     @Query('endDate') endDate: string,
   ) {
-    console.log({ startDate, endDate });
     return await this.billingsService.findAll({ startDate, endDate });
   }
 }
