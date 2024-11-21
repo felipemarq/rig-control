@@ -636,7 +636,7 @@ model TemporaryPeriod {
   @@map("temporary_periods")
 }
 
-enum UserLogType {
+enum LogType {
   LOGIN
   LOGOUT
   PASSWORD_CHANGE
@@ -658,9 +658,9 @@ enum UserLogType {
 }
 
 model UserLog {
-  id        String      @id @default(uuid()) @db.Uuid
-  loginTime DateTime    @map("login_time")
-  logType   UserLogType @default(LOGIN) @map("log_type")
+  id        String   @id @default(uuid()) @db.Uuid
+  loginTime DateTime @map("login_time")
+  logType   LogType  @default(LOGIN) @map("log_type")
 
   userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)

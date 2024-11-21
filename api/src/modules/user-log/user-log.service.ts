@@ -1,15 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { UpdateUserLogDto } from './dto/update-user-log.dto';
 import { UserLogsRepository } from 'src/shared/database/repositories/userLog.repositories';
+import { LogType } from './entities/LogType';
 
 @Injectable()
 export class UserLogService {
   constructor(private readonly userLogRepo: UserLogsRepository) {}
-  async create(loginTime: string, userId: string) {
+  async create(loginTime: string, userId: string, logType?: LogType) {
     return await this.userLogRepo.create({
       data: {
         loginTime,
         userId,
+        logType: logType,
       },
     });
   }

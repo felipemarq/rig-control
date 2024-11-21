@@ -45,8 +45,6 @@ export class AuthService {
 
     await this.userLogService.create(loginTime, user.id);
 
-    console.log('Current ISO String in server', getCurrentISOString());
-
     const accessToken = await this.generateAccessToken(
       user.id,
       user.accessLevel as AccessLevel,
