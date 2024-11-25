@@ -9,6 +9,7 @@ import { MobilizationTaxesStep } from "@/view/components/Stepper/steps/Mobilizat
 import { TruckTaxesStep } from "@/view/components/Stepper/steps/TruckTaxesStep";
 import { EquipmentTaxesStep } from "@/view/components/Stepper/steps/EquipmentTaxesStep";
 import { TankMixTaxesStep } from "@/view/components/Stepper/steps/TankMixTaxesStep";
+import SuspenseFallback from "@/view/components/SuspenseFallback";
 
 const BillingConfiguration = () => {
   const {
@@ -20,6 +21,7 @@ const BillingConfiguration = () => {
     handleSubmit,
     handleChangeIsEditingConfig,
     isEditingConfig,
+    isFetchingbillingConfigs,
   } = useBillingConfiguration();
   return (
     <div className="overflow-y-auto w-full">
@@ -28,57 +30,60 @@ const BillingConfiguration = () => {
         displayPeriodRange={false}
         title={`Cálculo de previsão de faturamento da sonda`}
       ></Header>
-      <div>
-        {!configBeingSeen && (
-          <TaxesContainer
-            billingConfigs={billingConfigs}
-            handleConfigBeingSeen={handleConfigBeingSeen}
-          />
-        )}
-        {configBeingSeen && !isEditingConfig && (
-          <TaxesDetails
-            configBeingSeen={configBeingSeen}
-            onClose={handleCloseConfigBeingSeen}
-            onEdit={handleChangeIsEditingConfig}
-          />
-        )}
+      {isFetchingbillingConfigs && <SuspenseFallback />}
+      {!isFetchingbillingConfigs && (
+        <div>
+          {!configBeingSeen && (
+            <TaxesContainer
+              billingConfigs={billingConfigs}
+              handleConfigBeingSeen={handleConfigBeingSeen}
+            />
+          )}
+          {configBeingSeen && !isEditingConfig && (
+            <TaxesDetails
+              configBeingSeen={configBeingSeen}
+              onClose={handleCloseConfigBeingSeen}
+              onEdit={handleChangeIsEditingConfig}
+            />
+          )}
 
-        {configBeingSeen && isEditingConfig && (
-          <div className="min-h-fit flex justify-center py-10  w-full mb-10 ">
-            <FormProvider {...form}>
-              <form
-                onSubmit={handleSubmit}
-                className="w-1/2  rounded-xl border bg-card text-card-foreground shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-2 pt-10 "
-              >
-                <Stepper
-                  steps={[
-                    {
-                      label: "Taxas de operação",
-                      content: <PeriodAndTaxesStep />,
-                    },
-                    {
-                      label: "Taxas de movimentação",
-                      content: <MobilizationTaxesStep />,
-                    },
-                    {
-                      label: "Taxas de Caminhão",
-                      content: <TruckTaxesStep />,
-                    },
-                    {
-                      label: "Taxas de Equipamento",
-                      content: <EquipmentTaxesStep />,
-                    },
-                    {
-                      label: "Taxas de Tanque Mix",
-                      content: <TankMixTaxesStep />,
-                    },
-                  ]}
-                />
-              </form>
-            </FormProvider>
-          </div>
-        )}
-      </div>
+          {configBeingSeen && isEditingConfig && (
+            <div className="min-h-fit flex justify-center py-10  w-full mb-10 ">
+              <FormProvider {...form}>
+                <form
+                  onSubmit={handleSubmit}
+                  className="w-1/2  rounded-xl border bg-card text-card-foreground shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] p-2 pt-10 "
+                >
+                  <Stepper
+                    steps={[
+                      {
+                        label: "Taxas de operação",
+                        content: <PeriodAndTaxesStep />,
+                      },
+                      {
+                        label: "Taxas de movimentação",
+                        content: <MobilizationTaxesStep />,
+                      },
+                      {
+                        label: "Taxas de Caminhão",
+                        content: <TruckTaxesStep />,
+                      },
+                      {
+                        label: "Taxas de Equipamento",
+                        content: <EquipmentTaxesStep />,
+                      },
+                      {
+                        label: "Taxas de Tanque Mix",
+                        content: <TankMixTaxesStep />,
+                      },
+                    ]}
+                  />
+                </form>
+              </FormProvider>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };
