@@ -272,6 +272,7 @@ export class EfficienciesService {
     let suckingTruckTotalAmount = 0;
     let totalGlossHours = 0;
     let totalRepairHours = 0;
+    let commercialHours = 0;
 
     const wells = await this.wellsRepo.findAll({});
 
@@ -331,6 +332,10 @@ export class EfficienciesService {
           }
         }
         billedScheduledStopTotalHours = 0;
+
+        if (type === 'COMMERCIALLY_STOPPED') {
+          commercialHours += diffInMinutes / 60;
+        }
 
         if (
           type === 'SCHEDULED_STOP' &&
@@ -577,6 +582,7 @@ export class EfficienciesService {
         standByHours: standByTotalHours,
         unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
         billedScheduledStopHours: billedScheduledStopTotalHours,
+        commercialHours: commercialHours,
       },
     });
 
