@@ -20,6 +20,7 @@ import { useGetWellsCountByRig } from "@/app/hooks/efficiencies/useGetWellsCount
 import { RigWellsCountResponse } from "@/app/services/efficienciesService/getWellsCountByRig";
 import { useNotifications } from "@/app/hooks/useNotifications";
 import { Notification } from "@/app/entities/Notification";
+import { useLocation } from "react-router-dom";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -75,6 +76,8 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   } = useNotifications();
 
   const windowWidth = useWindowWidth();
+  const location = useLocation();
+  console.log("location", location.state?.shouldApplyFilters);
 
   const { filters, selectedRig } = useFiltersContext();
 
@@ -156,6 +159,12 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   useEffect(() => {
     mutateAsyncUserLog({ loginTime: getCurrentISOString() });
   }, []);
+
+  useEffect(() => {
+    if (location.state?.shouldApplyFilters) {
+      handleApplyFilters();
+    }
+  }, [location.state?.shouldApplyFilters]);
 
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;

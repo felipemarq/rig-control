@@ -237,7 +237,7 @@ export default function CreateCommercialPeriodModal({
                   Enviando...
                 </>
               ) : (
-                "Enviar feedback"
+                "Enviar"
               )}
             </Button>
           </DialogFooter>

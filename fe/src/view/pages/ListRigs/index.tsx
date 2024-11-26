@@ -35,7 +35,7 @@ const ListRigs = () => {
                   </div>
                 )}
                 {!isFetchingRigs && (
-                  <div className="grid gap-8 md:grid-cols-2 max-w-4xl mx-auto p-6">
+                  <div className="grid gap-8 md:grid-cols-3 mx-auto p-6">
                     {/*  <div
                       onClick={() => navigate("/create-rig")}
                       className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary lg:w-2/5 cursor-pointer"
