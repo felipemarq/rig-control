@@ -93,6 +93,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       true
     );
 
+  console.log("rigsAverage", rigsAverage);
+
   const [selectedDashboardView, setSelectedDashboardView] =
     useState<DashboardView>("ALL");
 
@@ -147,10 +149,10 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   );
 
   const mappedRigsAverage = filteredRigsAverage
-    .map(({ count, rig, rigId, state }) => {
+    .map(({ count, rig, rigId, state, commercialDays }) => {
       return {
         rig,
-        daysNotRegistered: totalDaysSelected - count,
+        daysNotRegistered: totalDaysSelected - (count + commercialDays),
         state,
         rigId,
       };

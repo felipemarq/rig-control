@@ -17,6 +17,8 @@ import { PeriodDataGridModal } from "./components/PeriodDataGridModal";
 import { GrouppedRepairPieChartCard } from "./components/GrouppedRepairsPieChartCard";
 import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
 import { NotificationsPopover } from "@/view/components/NotificationsPopover";
+import { MissingDaysCard } from "./components/MissingDaysCard";
+import { ScheduledStoppedCard } from "./components/ScheduledStoppedCard";
 
 const Dashboard = () => {
   return (
@@ -33,59 +35,76 @@ const Dashboard = () => {
           setShowNotifications,
           handleMarkNotificationAsRead,
           isPending,
-        }) => (
-          <div className="">
-            <Header displayRig title="Dashboard por Sonda">
-              <div className="flex gap-2 items-center">
-                <NotificationsPopover
-                  handleMarkNotificationAsRead={handleMarkNotificationAsRead}
-                  isPending={isPending}
-                  notifications={notifications}
-                  showNotifications={showNotifications}
-                  setShowNotifications={setShowNotifications}
-                />
-                <CustomFilterSheet
-                  isLoading={isFetchingEfficiencies}
-                  onApplyFilters={handleApplyFilters}
-                />
-              </div>
-            </Header>
-
-            <div className="flex w-full flex-col">
-              <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
-                <StatboxContainer />
-
-                <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
-                  {!exceedsEfficiencyThreshold && <LineChartCard />}
-
-                  <CalendarChartCard />
-
-                  <WellDataGridCard />
-
-                  <DataGridCard />
-
-                  <GrouppedRepairsCard />
-
-                  <GrouppedRepairPieChartCard />
-
-                  <RepairDetailsPieChartCard />
-
-                  <GrouppedGlossesCard />
-
-                  <GlossDetailsPieChartCard />
-
-                  <AverageBarChartCard />
-
-                  <WellsCountBarChartCard />
-
-                  {isWrongVersion && <WrongVersionAlertModal />}
-
-                  {periodDataGridModalData && <PeriodDataGridModal />}
+          missingDates,
+          scheduledStoppedDates,
+          efficiencies,
+        }) => {
+          return (
+            <div className="">
+              <Header displayRig title="Dashboard por Sonda">
+                <div className="flex gap-2 items-center">
+                  <NotificationsPopover
+                    handleMarkNotificationAsRead={handleMarkNotificationAsRead}
+                    isPending={isPending}
+                    notifications={notifications}
+                    showNotifications={showNotifications}
+                    setShowNotifications={setShowNotifications}
+                  />
+                  <CustomFilterSheet
+                    isLoading={isFetchingEfficiencies}
+                    onApplyFilters={handleApplyFilters}
+                  />
                 </div>
-              </main>
+              </Header>
+
+              <div className="flex w-full flex-col">
+                <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
+                  <StatboxContainer />
+                  <div className="flex  justify-end gap-4">
+                    {missingDates.length > 0 && efficiencies.length > 0 && (
+                      <div className="">
+                        <MissingDaysCard />
+                      </div>
+                    )}
+
+                    {scheduledStoppedDates.length > 0 && (
+                      <div className="">
+                        <ScheduledStoppedCard />
+                      </div>
+                    )}
+                  </div>
+                  <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
+                    {!exceedsEfficiencyThreshold && <LineChartCard />}
+
+                    <CalendarChartCard />
+
+                    <WellDataGridCard />
+
+                    <DataGridCard />
+
+                    <GrouppedRepairsCard />
+
+                    <GrouppedRepairPieChartCard />
+
+                    <RepairDetailsPieChartCard />
+
+                    <GrouppedGlossesCard />
+
+                    <GlossDetailsPieChartCard />
+
+                    <AverageBarChartCard />
+
+                    <WellsCountBarChartCard />
+
+                    {isWrongVersion && <WrongVersionAlertModal />}
+
+                    {periodDataGridModalData && <PeriodDataGridModal />}
+                  </div>
+                </main>
+              </div>
             </div>
-          </div>
-        )}
+          );
+        }}
       </DashboardContext.Consumer>
     </DashboardProvider>
   );

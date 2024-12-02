@@ -21,6 +21,9 @@ import { RigWellsCountResponse } from "@/app/services/efficienciesService/getWel
 import { useNotifications } from "@/app/hooks/useNotifications";
 import { Notification } from "@/app/entities/Notification";
 import { useLocation } from "react-router-dom";
+import { addDays, differenceInDays, parseISO } from "date-fns";
+import { formatDate } from "@/app/utils/formatDate";
+import { PeriodType } from "@/app/entities/PeriodType";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -59,6 +62,8 @@ interface DashboardContextValue {
   notifications: Notification[];
   handleMarkNotificationAsRead: (notificationId: string) => Promise<void>;
   isPending: boolean;
+  missingDates: string[];
+  scheduledStoppedDates: string[];
 }
 
 // Criação do contexto
@@ -77,13 +82,57 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
 
   const windowWidth = useWindowWidth();
   const location = useLocation();
-  console.log("location", location.state?.shouldApplyFilters);
 
   const { filters, selectedRig } = useFiltersContext();
 
   // Utilização dos hooks para eficiências e médias de eficiência
   const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
+
+  function getScheduledStoppedDates(efficiencies: EfficienciesResponse) {
+    const allDates: string[] = [];
+
+    efficiencies.forEach((efficiency: Efficiency) => {
+      const hasScheduledStopped = efficiency.periods.find(
+        (period) => period.type === "SCHEDULED_STOP"
+      );
+
+      if (hasScheduledStopped) {
+        allDates.push((efficiency.date as string).split("T")[0]);
+      }
+    });
+    return allDates;
+  }
+
+  const scheduledStoppedDates = getScheduledStoppedDates(efficiencies);
+
+  function getMissingDates(
+    startDate: string,
+    endDate: string,
+    efficiencies: EfficienciesResponse
+  ) {
+    // Converte as datas para objetos Date
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+
+    // Cria um conjunto de todas as datas no intervalo
+    const allDates = [];
+    for (let i = 0; i <= differenceInDays(end, start); i++) {
+      allDates.push(addDays(start, i).toISOString().split("T")[0]); // Formata como "YYYY-MM-DD"
+    }
+
+    // Obtem as datas presentes em efficiencies
+    const efficiencyDates = efficiencies.map(
+      (efficiency) => (efficiency.date as string).split("T")[0] // Formata como "YYYY-MM-DD"
+    );
+
+    // Calcula as datas que estão faltando
+    const missingDates = allDates.filter((date) => !efficiencyDates.includes(date));
+
+    return missingDates;
+  }
+
+  const missingDates = getMissingDates(filters.startDate, filters.endDate, efficiencies);
 
   const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(filters.rigId);
   const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
@@ -198,6 +247,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   return (
     <DashboardContext.Provider
       value={{
+        missingDates,
         average,
         windowWidth,
         handleRemoveSelectedEquipment,
@@ -233,6 +283,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
         notifications,
         handleMarkNotificationAsRead,
         isPending,
+        scheduledStoppedDates,
       }}
     >
       {children}
