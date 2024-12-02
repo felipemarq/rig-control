@@ -35,7 +35,7 @@ export const FiltersProvider = ({
 }) => {
   const currentDate = new Date();
   const firstDayOfMonth = startOfMonth(currentDate);
-  const threeDaysBeforeToday = sub(currentDate, { days: 3 });
+  const threeDaysBeforeToday = currentDate;
 
   const formattedFirstDay = format(
     firstDayOfMonth,
