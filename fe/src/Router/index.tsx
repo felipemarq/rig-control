@@ -75,7 +75,16 @@ export const Router = () => {
             {/* Define o layout baseado na largura da janela */}
             <Route element={<ShadcnLayout />}>
               <Route element={<RouterErrorBoundary />}>
-                <Route path="/" element={<Dashboard />} />
+                <Route
+                  path="/"
+                  element={
+                    isUserAdm || isUserSms || isUserSupervisor ? (
+                      <GlobalDashboard />
+                    ) : (
+                      <Dashboard />
+                    )
+                  }
+                />
                 <Route path="/in-development" element={<InDevelopmentPage />} />
 
                 <Route path="/dashboard" element={<Dashboard />} />

@@ -1,16 +1,18 @@
-import {PeriodType} from "./PeriodType";
-import {UF} from "./Rig";
+import { PeriodType } from "./PeriodType";
+import { UF } from "./Rig";
 
 export type PersistanceEfficiency = {
   availableHours: number;
+  commercialHours: number;
+  standByHours: number;
   date: string | Date;
   id: string;
   well: string;
   rigId: string;
   userId: string;
-  user: {name: string};
+  user: { name: string };
   isEditable: boolean | null;
-  rig: {name: string; state: UF};
+  rig: { name: string; state: UF };
   periods: {
     id: string;
     efficiencyId: string;

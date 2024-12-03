@@ -272,6 +272,7 @@ export class EfficienciesService {
     let suckingTruckTotalAmount = 0;
     let totalGlossHours = 0;
     let totalRepairHours = 0;
+    let commercialHours = 0;
 
     const wells = await this.wellsRepo.findAll({});
 
@@ -331,6 +332,10 @@ export class EfficienciesService {
           }
         }
         billedScheduledStopTotalHours = 0;
+
+        if (type === 'COMMERCIALLY_STOPPED') {
+          commercialHours += diffInMinutes / 60;
+        }
 
         if (
           type === 'SCHEDULED_STOP' &&
@@ -577,6 +582,7 @@ export class EfficienciesService {
         standByHours: standByTotalHours,
         unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
         billedScheduledStopHours: billedScheduledStopTotalHours,
+        commercialHours: commercialHours,
       },
     });
 
@@ -673,6 +679,8 @@ export class EfficienciesService {
         userId: true,
         date: true,
         availableHours: true,
+        commercialHours: true,
+        standByHours: true,
         periods: {
           select: {
             id: true,
@@ -1210,20 +1218,52 @@ export class EfficienciesService {
           gte: new Date(filters.startDate),
           lte: new Date(filters.endDate),
         },
+        OR: [
+          {
+            commercialHours: {
+              lte: 0,
+            },
+          },
+          { commercialHours: { equals: null } },
+        ],
       },
       _count: true,
     });
 
+    const commercialDaysGrouppedBy = await this.efficiencyRepo.groupBy({
+      by: ['rigId'],
+      _count: {
+        commercialHours: true, // Conta os dias com commercialHours diferentes de NULL e > 0
+      },
+      where: {
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+        commercialHours: {
+          gt: 0, // Filtra somente os registros com commercialHours maiores que 0
+        },
+      },
+    });
+
     const result = average.map(({ _avg, rigId, _count }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
+      const commercialDays = commercialDaysGrouppedBy.find(
+        (rig) => rig.rigId === rigId,
+      );
+
       return {
         rigId,
         rig: rigFound.name,
         avg: _avg.availableHours,
         count: _count,
         state: rigFound.state,
+        //@ts-ignore
+        commercialDays: commercialDays?._count?.commercialHours ?? 0,
       };
     });
+
+    console.log(result);
 
     return result;
   }

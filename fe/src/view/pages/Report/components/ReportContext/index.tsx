@@ -153,14 +153,15 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
 
     setFilters({
       rigId: "",
-      periodType: PeriodType.WORKING,
-      periodClassification: PeriodClassification.WORKING,
+      periodType: undefined,
+      periodClassification: undefined,
       repairClassification: null,
       orderBy: OrderByType.ASC,
       startDate: selectedStartDate,
       endDate: selectedEndDate,
       pageSize: "50",
       pageIndex: "1",
+      searchTerm: undefined,
     });
   };
 

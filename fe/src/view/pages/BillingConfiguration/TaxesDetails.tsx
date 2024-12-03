@@ -23,13 +23,18 @@ import { formatCurrency } from "@/app/utils/formatCurrency";
 interface TaxesDetailsProps {
   configBeingSeen: BillingConfigResponse;
   onClose: () => void;
+  onEdit: (isEditing: boolean) => void;
 }
 
 // Função para formatar valores monetários
 
 // Função para formatar datas
 
-export default function TaxesDetails({ configBeingSeen, onClose }: TaxesDetailsProps) {
+export default function TaxesDetails({
+  configBeingSeen,
+  onClose,
+  onEdit,
+}: TaxesDetailsProps) {
   const renderBillingsTable = (billingConfig: BillingConfigResponse) => (
     <Table>
       <TableCaption>
@@ -222,9 +227,14 @@ export default function TaxesDetails({ configBeingSeen, onClose }: TaxesDetailsP
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
           <span>Valores para Cálculo do Faturamento da Operação</span>
-          <Button size="sm" variant="destructive" onClick={onClose}>
-            <X />
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button size="sm" variant="secondary" onClick={() => onEdit(true)}>
+              Editar valores
+            </Button>
+            <Button size="sm" variant="destructive" onClick={onClose}>
+              <X />
+            </Button>
+          </div>
         </CardTitle>
         <CardDescription>
           <span> Detalhamento dos valores utilizados para calcular o faturamento</span>

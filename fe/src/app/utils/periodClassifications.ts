@@ -17,6 +17,7 @@ interface PeriodClassifications {
   GLOSS: PeriodClassification[];
   SCHEDULED_STOP: PeriodClassification[];
   STAND_BY: PeriodClassification[];
+  COMMERCIALLY_STOPPED: PeriodClassification[];
 }
 
 const WORKING = [{ id: "WORKING", classification: "Operando" }];
@@ -343,6 +344,17 @@ const STAND_BY = [
   },
 ];
 
+const COMMERCIALLY_STOPPED = [
+  {
+    id: "COMMERCIAL_UNAVAILABILITY",
+    classification: "Indisponibilidade Comercial ",
+  },
+  {
+    id: "OPERATIONAL_ADEQUACY",
+    classification: "Adequação Operacional ",
+  },
+];
+
 export const periodClassifications: PeriodClassifications = {
   WORKING: WORKING,
   REPAIR: REPAIR,
@@ -351,6 +363,7 @@ export const periodClassifications: PeriodClassifications = {
   SCHEDULED_STOP: SCHEDULED_STOP,
   STAND_BY: STAND_BY,
   DTM: INTERVAL,
+  COMMERCIALLY_STOPPED: COMMERCIALLY_STOPPED,
 };
 
 export const allClassifications = WORKING.concat(
@@ -358,7 +371,8 @@ export const allClassifications = WORKING.concat(
   GLOSS,
   INTERVAL,
   SCHEDULED_STOP,
-  STAND_BY
+  STAND_BY,
+  COMMERCIALLY_STOPPED
 );
 
 /* WORKING

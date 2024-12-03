@@ -1,4 +1,4 @@
-import {PeriodType} from "../entities/PeriodType";
+import { PeriodType } from "../entities/PeriodType";
 
 export const translateType = (type: PeriodType) => {
   if (type === "DTM") {
@@ -15,5 +15,9 @@ export const translateType = (type: PeriodType) => {
   }
   if (type === "SCHEDULED_STOP") {
     return "Parada de Manutenção";
+  }
+
+  if (type === "COMMERCIALLY_STOPPED") {
+    return "Comercialmente Parado";
   }
 };
