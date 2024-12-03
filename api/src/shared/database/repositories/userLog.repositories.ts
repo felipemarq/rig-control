@@ -21,4 +21,7 @@ export class UserLogsRepository {
   async findMany(findManyDto: Prisma.UserLogFindManyArgs) {
     return await this.prismaService.userLog.findMany(findManyDto);
   }
+  async count(countDto: Prisma.UserLogCountArgs) {
+    return await this.prismaService.userLog.count(countDto);
+  }
 }

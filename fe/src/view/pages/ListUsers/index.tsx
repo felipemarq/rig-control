@@ -3,19 +3,44 @@ import { Spinner } from "../../components/Spinner";
 import { useListUsers } from "./useListUsers";
 import avatarIcon from "@/assets/icons/avatar.svg";
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Info, ListFilter } from "lucide-react";
 import { formatLastlogin } from "@/app/utils/formatLastLogin";
 import { Input } from "@/view/components/Input";
-import { DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { NotFound } from "@/view/components/NotFound";
-import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card";
 import { useNavigate } from "react-router-dom";
 
 const ListUsers = () => {
-  const { filteredUsers, isFetchingUsers, orderByLastLogin, hasUsers, searchTerm, handleOrderByLastLogin, handleChangeSearchTerm } = useListUsers();
+  const {
+    filteredUsers,
+    isFetchingUsers,
+    orderByLastLogin,
+    hasUsers,
+    searchTerm,
+    handleOrderByLastLogin,
+    handleChangeSearchTerm,
+  } = useListUsers();
 
   const navigate = useNavigate();
   return (
@@ -66,10 +91,16 @@ const ListUsers = () => {
                     <DropdownMenuLabel>Últimos acessos</DropdownMenuLabel>
                     <DropdownMenuSeparator />
 
-                    <DropdownMenuCheckboxItem onSelect={() => handleOrderByLastLogin("DESC")} checked={orderByLastLogin === "DESC"}>
+                    <DropdownMenuCheckboxItem
+                      onSelect={() => handleOrderByLastLogin("DESC")}
+                      checked={orderByLastLogin === "DESC"}
+                    >
                       Mais Recentes
                     </DropdownMenuCheckboxItem>
-                    <DropdownMenuCheckboxItem onSelect={() => handleOrderByLastLogin("ASC")} checked={orderByLastLogin === "ASC"}>
+                    <DropdownMenuCheckboxItem
+                      onSelect={() => handleOrderByLastLogin("ASC")}
+                      checked={orderByLastLogin === "ASC"}
+                    >
                       Menos Recentes
                     </DropdownMenuCheckboxItem>
                   </DropdownMenuContent>
@@ -81,7 +112,10 @@ const ListUsers = () => {
               {hasUsers && (
                 <div className=" grid grid-cols-12 auto-rows-[200px]  p-4 justify-center  gap-4 ">
                   {filteredUsers.map(({ name, id, email, userLog }) => (
-                    <Card className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around" key={id}>
+                    <Card
+                      className=" col-span-12 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] flex flex-col justify-around"
+                      key={id}
+                    >
                       <CardHeader className="flex">
                         <CardTitle className="flex justify-between flex-col gap-2 items-center ">
                           <Avatar>
@@ -101,7 +135,9 @@ const ListUsers = () => {
                       <CardContent className=" flex flex-col justify-center items-center">
                         {Number(new Date(userLog[0].loginTime)) > 0 && (
                           <div className="flex justify-around">
-                            <span className="text-sm">Útimo login: {formatLastlogin(userLog[0].loginTime)}</span>
+                            <span className="text-sm">
+                              Útimo login: {formatLastlogin(userLog[0].loginTime)}
+                            </span>
                           </div>
                         )}
 
@@ -116,16 +152,31 @@ const ListUsers = () => {
                               <HoverCardContent className="w-80">
                                 <div className="flex justify-between space-x-4">
                                   <div className="space-y-1">
-                                    <p className="text-sm">O usuário ainda não fez login no sistema após a atualização de 28/04/2024</p>
+                                    <p className="text-sm">
+                                      O usuário ainda não fez login no sistema após a
+                                      atualização de 28/04/2024
+                                    </p>
                                   </div>
                                 </div>
                               </HoverCardContent>
                             </HoverCard>
-                            <span className="text-sm text-redAccent-500">Útimo login: Não registrado</span>
+                            <span className="text-sm text-redAccent-500">
+                              Útimo login: Não registrado
+                            </span>
                           </div>
                         )}
-                        <span className="text-xs underline cursor-pointer text-primary" onClick={() => navigate(`/users/update-rigs/${id}`)}>
+                        <span
+                          className="text-xs underline cursor-pointer text-primary"
+                          onClick={() => navigate(`/users/update-rigs/${id}`)}
+                        >
                           Editar Sondas
+                        </span>
+
+                        <span
+                          className="text-xs underline cursor-pointer text-primary"
+                          onClick={() => navigate(`/users/user-logs/${id}`)}
+                        >
+                          Ver Atividade
                         </span>
                       </CardContent>
                     </Card>
@@ -137,7 +188,8 @@ const ListUsers = () => {
                 <div className="mt-32 h-full">
                   <NotFound>
                     <span className="text-primary">
-                      <strong>Nenhum usuário</strong> encontrado com o termo de pesquisa <strong>{`"${searchTerm}"`}</strong>!
+                      <strong>Nenhum usuário</strong> encontrado com o termo de pesquisa{" "}
+                      <strong>{`"${searchTerm}"`}</strong>!
                     </span>
                   </NotFound>
                 </div>

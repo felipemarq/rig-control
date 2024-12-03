@@ -11,6 +11,7 @@ import { lazy, Suspense } from "react";
 import { PageLoader } from "@/view/components/PageLoader";
 import { ErrorBoundary } from "@/view/components/ErrorBoundary";
 import { ErrorBoundaryFallback } from "@/view/components/ErrorBoundaryFallback";
+import UserLogs from "@/view/pages/UserLogs";
 
 const Dashboard = lazy(() => import("@/view/pages/Dashboard/index"));
 const GlobalDashboard = lazy(() => import("@/view/pages/GlobalDashboard/index"));
@@ -122,6 +123,7 @@ export const Router = () => {
                 <Route path="/create-user" element={<CreateUser />} />
                 <Route path="/users/:id" element={<UpdateUser />} />
                 <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
+                <Route path="/users/user-logs/:id" element={<UserLogs />} />
                 <Route path="/reports" element={<Report />} />
                 <Route path="/occurrences" element={<Occurrences />} />
                 <Route path="/man-hours" element={<ManHours />} />

@@ -16,8 +16,28 @@ export class UserLogService {
     });
   }
 
-  findAll() {
-    return `This action returns all userLog`;
+  async findAll(pageSize: string, pageIndex: string) {
+    let whereClause = {};
+    const userLogs = await this.userLogRepo.findMany({
+      skip: (Number(pageIndex) - 1) * Number(pageSize),
+      take: Number(pageSize),
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            accessLevel: true,
+          },
+        },
+      },
+    });
+
+    const totalItems = await this.userLogRepo.count({
+      where: whereClause,
+    });
+
+    return { data: userLogs, totalItems };
   }
 
   async findByUserId(userId: string) {
