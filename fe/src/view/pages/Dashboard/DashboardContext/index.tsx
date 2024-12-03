@@ -22,8 +22,6 @@ import { useNotifications } from "@/app/hooks/useNotifications";
 import { Notification } from "@/app/entities/Notification";
 import { useLocation } from "react-router-dom";
 import { addDays, differenceInDays, parseISO } from "date-fns";
-import { formatDate } from "@/app/utils/formatDate";
-import { PeriodType } from "@/app/entities/PeriodType";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {

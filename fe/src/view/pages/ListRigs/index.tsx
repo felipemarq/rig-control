@@ -1,18 +1,9 @@
-import { PlusIcon } from "@radix-ui/react-icons";
 import { Header } from "../../components/Header";
 import { Spinner } from "../../components/Spinner";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 
 import { EditRigModal } from "./modals/EditRigModal";
 import { ListRigsContext, ListRigsProvider } from "./ListRigsContext";
-import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Plus } from "lucide-react";
 import { motion } from "framer-motion";

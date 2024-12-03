@@ -1,4 +1,4 @@
-import { format, startOfMonth, sub } from "date-fns";
+import { format, startOfMonth } from "date-fns";
 import { createContext, useState } from "react";
 import { FilterType } from "../entities/FilterType";
 import { getPeriodRange } from "../utils/getPeriodRange";
@@ -28,29 +28,17 @@ interface FiltersContextValue {
 
 export const FiltersContext = createContext({} as FiltersContextValue);
 
-export const FiltersProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const FiltersProvider = ({ children }: { children: React.ReactNode }) => {
   const currentDate = new Date();
   const firstDayOfMonth = startOfMonth(currentDate);
   const threeDaysBeforeToday = currentDate;
 
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    threeDaysBeforeToday,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
+  const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  const formattedLastDay = format(threeDaysBeforeToday, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
   const [selectedRig, setSelectedRig] = useState<string>("");
-  const [selectedStartDate, setSelectedStartDate] =
-    useState<string>(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] =
-    useState<string>(formattedLastDay);
+  const [selectedStartDate, setSelectedStartDate] = useState<string>(formattedFirstDay);
+  const [selectedEndDate, setSelectedEndDate] = useState<string>(formattedLastDay);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [selectedYear, setSeletectedYear] = useState<string>("2024");
   const [filters, setFilters] = useState({

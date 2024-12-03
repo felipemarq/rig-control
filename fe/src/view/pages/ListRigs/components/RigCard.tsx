@@ -1,18 +1,10 @@
-import {
-  Plus,
-  ChevronRight,
-  CreditCard,
-  DollarSign,
-  Calendar,
-  CircleOff,
-  Pencil,
-} from "lucide-react";
+import { ChevronRight, DollarSign, CircleOff, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { motion } from "framer-motion";
 import { NavigateFunction } from "react-router-dom";
-import { ThemeProvider, useTheme } from "@/app/contexts/ThemeContext";
+import { useTheme } from "@/app/contexts/ThemeContext";
 import CreateCommercialPeriodModal from "./CreateCommercialPeriodModal";
 
 interface RigCardProps {
@@ -24,12 +16,6 @@ interface RigCardProps {
   onSetRigBeignEdited: (rigId: string) => void;
   navigate: NavigateFunction;
 }
-
-const actions = [
-  { name: "Editar Sonda", icon: CreditCard },
-  { name: "Ver Valores para faturamento", icon: DollarSign },
-  { name: "Adicionar período de parada comercial", icon: Calendar },
-];
 
 export default function RigCard({
   id,

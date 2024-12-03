@@ -1252,7 +1252,6 @@ export class EfficienciesService {
         (rig) => rig.rigId === rigId,
       );
 
-      console.log('comercialDaysGrouppedBy', commercialDays);
       return {
         rigId,
         rig: rigFound.name,
