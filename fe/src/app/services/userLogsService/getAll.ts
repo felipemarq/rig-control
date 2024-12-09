@@ -5,6 +5,8 @@ import { User } from "@/app/entities/User";
 export type GetUserLogsFilters = {
   pageSize: string;
   pageIndex: string;
+  userId?: string;
+  logType: LogType | "ALL";
 };
 
 export type UserLog = {

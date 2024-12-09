@@ -22,8 +22,15 @@ export class UserLogController {
   findAll(
     @Query('pageSize') pageSize: string,
     @Query('pageIndex') pageIndex: string,
+    @Query('userId') userId: string,
+    @Query('logType') logType: string,
   ) {
-    return this.userLogService.findAll(pageSize, pageIndex);
+    return this.userLogService.findAll({
+      pageSize,
+      pageIndex,
+      userId,
+      logType,
+    });
   }
 
   @Post()
