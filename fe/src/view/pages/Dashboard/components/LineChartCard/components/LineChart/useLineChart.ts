@@ -30,12 +30,13 @@ export const useLineChart = () => {
     },
   ];
 
+  console.log("efficiencies", efficiencies);
   // Função para formatar as eficiências para o gráfico de linha
   const formatEfficiencyToLineChart = (efficiencies: Efficiency[]) => {
     //Coloca o nome da sonda no ID para aparecer no Hover do gráfico
     data[0]["id"] = efficiencies[0].rig.name;
     // Itera sobre as eficiências para formatar os dados
-    efficiencies.forEach(({ availableHours, id, date }) => {
+    efficiencies.forEach(({ availableHours, id, date, standByHours }) => {
       // Formata a data no formato desejado para o gráfico de linha (dia/mês)
       const formattedDate = `${new Date(date).getDate().toString().padStart(2, "0")}/${(
         new Date(date).getMonth() + 1
@@ -44,7 +45,7 @@ export const useLineChart = () => {
         .padStart(2, "0")}`;
 
       // Calcula a porcentagem de horas disponíveis
-      const availableHoursPercentage = (availableHours * 100) / 24;
+      const availableHoursPercentage = ((availableHours + standByHours) * 100) / 24;
 
       // Adiciona os dados formatados ao array de dados do gráfico
       data[0].data.push({

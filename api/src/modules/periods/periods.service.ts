@@ -75,7 +75,11 @@ export class PeriodsService {
     return { data: periods, totalItems };
   }
 
-  async getUnbilledPeriods(filters: { startDate: string; endDate: string }) {
+  async getUnbilledPeriods(filters: {
+    startDate: string;
+    endDate: string;
+    userId: string;
+  }) {
     if (!filters.startDate || !filters.endDate) {
       throw new BadRequestException('Datas são necessárias');
     }
@@ -92,6 +96,8 @@ export class PeriodsService {
       },
       include: { efficiency: { include: { rig: true } } },
     });
+
+    console.log(res);
 
     return res;
   }

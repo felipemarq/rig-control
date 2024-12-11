@@ -32,7 +32,12 @@ export class EfficienciesRepository {
   async groupBy(
     groupByDto: Prisma.EfficiencyGroupByArgs,
   ): Promise<
-    { _avg: { availableHours: number }; rigId: string; _count: number }[]
+    {
+      _avg: { availableHours: number; standByHours: number };
+      _sum: { availableHours: number; standByHours: number };
+      rigId: string;
+      _count: number;
+    }[]
   > {
     //@ts-ignore
     return await this.prismaService.efficiency.groupBy(groupByDto);

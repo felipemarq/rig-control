@@ -9,10 +9,11 @@ export type PieChartData = {
   label: string;
   value: number;
   color: string;
+  classification: string;
 }[];
 
 export const useGlossDetailsPieChart = () => {
-  const { glossPeriods, selectedGloss } = useDashboard();
+  const { glossPeriods, selectedGloss, handleFilterPeriods } = useDashboard();
   const { primaryColor } = useTheme();
   const pieChartColors = [
     primaryColor, // primary 500
@@ -47,6 +48,7 @@ export const useGlossDetailsPieChart = () => {
         acc.push({
           id: classification!,
           label: classification!,
+          classification: current.classification,
           value: Number(diffInHours.toFixed(2)),
           color: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
         });
@@ -66,5 +68,6 @@ export const useGlossDetailsPieChart = () => {
 
   return {
     chartData,
+    handleFilterPeriods,
   };
 };

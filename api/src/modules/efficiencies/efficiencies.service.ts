@@ -1205,13 +1205,23 @@ export class EfficienciesService {
   async getRigsAvailableHoursAverage(filters: {
     startDate: string;
     endDate: string;
+    userId: string;
   }) {
-    const rigs = await this.rigsRepo.findAll();
+    const rigs = await this.rigsRepo.findAll({});
+
+    const usersRigs = await this.userRigsRepo.findMany({
+      where: { userId: filters.userId },
+    });
 
     const average = await this.efficiencyRepo.groupBy({
       by: ['rigId'],
       _avg: {
         availableHours: true,
+        standByHours: true,
+      },
+      _sum: {
+        availableHours: true,
+        standByHours: true,
       },
       where: {
         date: {
@@ -1230,6 +1240,14 @@ export class EfficienciesService {
       _count: true,
     });
 
+    let filteredAverage = [];
+
+    if (usersRigs.length > 0) {
+      filteredAverage = average.filter(({ rigId }) => {
+        return usersRigs.find(({ rigId: userRigId }) => userRigId === rigId);
+      });
+    }
+
     const commercialDaysGrouppedBy = await this.efficiencyRepo.groupBy({
       by: ['rigId'],
       _count: {
@@ -1246,7 +1264,7 @@ export class EfficienciesService {
       },
     });
 
-    const result = average.map(({ _avg, rigId, _count }) => {
+    const result = filteredAverage.map(({ _avg, rigId, _count, _sum }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
       const commercialDays = commercialDaysGrouppedBy.find(
         (rig) => rig.rigId === rigId,
@@ -1255,15 +1273,13 @@ export class EfficienciesService {
       return {
         rigId,
         rig: rigFound.name,
-        avg: _avg.availableHours,
+        avg: (_sum.availableHours + _sum.standByHours) / _count,
         count: _count,
         state: rigFound.state,
         //@ts-ignore
         commercialDays: commercialDays?._count?.commercialHours ?? 0,
       };
     });
-
-    console.log(result);
 
     return result;
   }

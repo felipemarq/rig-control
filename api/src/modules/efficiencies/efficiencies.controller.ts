@@ -32,12 +32,14 @@ export class EfficienciesController {
 
   @Get('/average')
   getAverageEfficiency(
+    @ActiveUserId() userId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
     return this.efficienciesService.getRigsAvailableHoursAverage({
       startDate,
       endDate,
+      userId,
     });
   }
 
