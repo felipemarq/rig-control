@@ -1,10 +1,6 @@
 import { LogType } from "@/app/entities/LogType";
 import { useUserLogs } from "@/app/hooks/userLogs/useUserLogs";
-import {
-  GetUserLogsFilters,
-  UserLog,
-  UserLogsResponse,
-} from "@/app/services/userLogsService/getAll";
+import { GetUserLogsFilters, UserLog } from "@/app/services/userLogsService/getAll";
 import { createContext, useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 

@@ -19,7 +19,6 @@ import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation } from "@tanstack/react-query";
 import { customColorToast } from "@/app/utils/customColorToast";
-import { useTheme } from "@/app/contexts/ThemeContext";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useState } from "react";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
@@ -44,9 +43,6 @@ export default function CreateCommercialPeriodModal({
   selectedRig: string;
 }) {
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Controla a abertura do dialog
-
-  const { primaryColor } = useTheme();
-
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
@@ -118,11 +114,6 @@ export default function CreateCommercialPeriodModal({
         console.log("toPersistenceObj", toPersistenceObj);
 
         await mutateAsync(toPersistenceObj);
-        customColorToast(
-          `Dados para ${format(currentDate, "yyyy-MM-dd")} enviados com sucesso!`,
-          primaryColor,
-          "success"
-        );
       } catch (error: any) {
         Sentry.captureException(error);
         treatAxiosError(error);
@@ -212,7 +203,7 @@ export default function CreateCommercialPeriodModal({
                       id="COMMERCIAL_UNAVAILABILITY"
                     />
                     <Label htmlFor="COMMERCIAL_UNAVAILABILITY">
-                      Indisponibilidade comercial
+                      Indisponibilidade Comercial
                     </Label>
                   </div>
                   <div className="flex items-center space-x-2 text-gray-800">

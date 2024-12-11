@@ -83,6 +83,7 @@ export const useAppsidebar = () => {
             url: "/users",
             icon: Settings2,
             description: "Configure your playground",
+            hasNews: true,
           },
         ],
       },
