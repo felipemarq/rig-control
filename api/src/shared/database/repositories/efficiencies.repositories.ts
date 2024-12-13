@@ -29,12 +29,18 @@ export class EfficienciesRepository {
     return await this.prismaService.efficiency.delete(deleteDto);
   }
 
-  async groupBy(
-    groupByDto: Prisma.EfficiencyGroupByArgs,
-  ): Promise<
+  async groupBy(groupByDto: Prisma.EfficiencyGroupByArgs): Promise<
     {
-      _avg: { availableHours: number; standByHours: number };
-      _sum: { availableHours: number; standByHours: number };
+      _avg: {
+        availableHours: number;
+        standByHours: number;
+        billedScheduledStopHours: number;
+      };
+      _sum: {
+        availableHours: number;
+        standByHours: number;
+        billedScheduledStopHours: number;
+      };
       rigId: string;
       _count: number;
     }[]

@@ -6,10 +6,15 @@ import { RepairClassification } from '../efficiencies/entities/RepairClassificat
 import { PeriodType } from '../efficiencies/entities/PeriodType';
 import { OrderByType } from './entities/OrderByType';
 import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
+import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 
 @Injectable()
 export class PeriodsService {
-  constructor(private readonly periodsRepo: PeriodsRepository) {}
+  constructor(
+    private readonly periodsRepo: PeriodsRepository,
+    private readonly userRigsRepo: UsersRigRepository,
+  ) {}
+
   create(createPeriodDto: CreatePeriodDto) {
     return 'This action adds a new period';
   }
@@ -84,7 +89,11 @@ export class PeriodsService {
       throw new BadRequestException('Datas são necessárias');
     }
 
-    const res = await this.periodsRepo.findMany({
+    const usersRigs = await this.userRigsRepo.findMany({
+      where: { userId: filters.userId },
+    });
+
+    const unbilledPeriods = await this.periodsRepo.findMany({
       where: {
         efficiency: {
           date: {
@@ -97,9 +106,18 @@ export class PeriodsService {
       include: { efficiency: { include: { rig: true } } },
     });
 
-    console.log(res);
+    let filteredPeriods = [];
 
-    return res;
+    if (usersRigs.length > 0) {
+      //@ts-ignore
+      filteredPeriods = unbilledPeriods.filter(({ efficiency }) => {
+        return usersRigs.find(
+          ({ rigId: userRigId }) => userRigId === efficiency.rig.id,
+        );
+      });
+    }
+
+    return filteredPeriods;
   }
 
   update(id: number, updatePeriodDto: UpdatePeriodDto) {

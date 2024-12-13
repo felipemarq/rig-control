@@ -173,12 +173,10 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
           period.repairClassification === classification
       );
     }
-    console.log("glossPeriods", glossPeriods);
+
     if (type === "GLOSS") {
       periods = glossPeriods.filter((period) => period.classification === classification);
     }
-    console.log("type sent", type);
-    console.log("periods found", periods);
 
     if (periods) {
       handleOpenPeriodDataGridModal(periods);
@@ -187,6 +185,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleOpenPeriodDataGridModal = (periods: Period[]) => {
     setIsPeriodDataGridModalOpen(true);
+    console.log(periods);
     setPeriodDataGridModalData(periods);
   };
 

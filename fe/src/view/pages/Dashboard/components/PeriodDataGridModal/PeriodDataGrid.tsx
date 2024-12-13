@@ -5,6 +5,7 @@ import { Period } from "../../../../../app/entities/Period";
 import { localeTextDataGridConfig } from "../../../../../app/utils/localeTextDataGridConfig";
 import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
 import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
+import { formatDate } from "@/app/utils/formatDate";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -18,6 +19,22 @@ export const PeriodsDataGrid = ({
   isLoading,
 }: ListPeriodsDataGridProps) => {
   const columns: GridColDef[] = [
+    {
+      field: "date",
+      headerName: "Data",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-gray-800 font-medium tracking-tighter">
+              {formatDate(new Date(params.row.efficiency.date)).slice(0, 5)}
+            </div>
+          </div>
+        );
+      },
+    },
     {
       field: "startHour",
       headerName: "Hora Inicial",

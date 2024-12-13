@@ -1218,10 +1218,12 @@ export class EfficienciesService {
       _avg: {
         availableHours: true,
         standByHours: true,
+        billedScheduledStopHours: true,
       },
       _sum: {
         availableHours: true,
         standByHours: true,
+        billedScheduledStopHours: true,
       },
       where: {
         date: {
@@ -1264,7 +1266,7 @@ export class EfficienciesService {
       },
     });
 
-    const result = filteredAverage.map(({ _avg, rigId, _count, _sum }) => {
+    const result = filteredAverage.map(({ rigId, _count, _sum }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
       const commercialDays = commercialDaysGrouppedBy.find(
         (rig) => rig.rigId === rigId,
@@ -1273,7 +1275,11 @@ export class EfficienciesService {
       return {
         rigId,
         rig: rigFound.name,
-        avg: (_sum.availableHours + _sum.standByHours) / _count,
+        avg:
+          (_sum.availableHours +
+            _sum.standByHours +
+            _sum.billedScheduledStopHours) /
+          _count,
         count: _count,
         state: rigFound.state,
         //@ts-ignore
