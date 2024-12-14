@@ -105,7 +105,7 @@ export class RigsService {
   }
 
   async findAll() {
-    return this.rigsRepo.findAll();
+    return this.rigsRepo.findAll({});
   }
 
   async update(rigId: string, updateRigDto: UpdateRigDto) {

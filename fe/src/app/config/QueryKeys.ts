@@ -24,4 +24,5 @@ export enum QueryKeys {
   TEMPORARY_EFFICIENCIES = "temporary-efficiencies",
   RIGS_AVERAGE = "rigs-average",
   WELLS_COUNT = "wells-count",
+  USER_LOGS = "user-logs",
 }

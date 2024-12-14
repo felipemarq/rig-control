@@ -3,7 +3,8 @@ import { useGlossDetailsPieChart } from "./useGlossDetailsPieChart";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const GlossDetailsPieChart = () => {
-  const { chartData /* handleCloseDetailsGraph */ } = useGlossDetailsPieChart();
+  const { chartData /* handleCloseDetailsGraph */, handleFilterPeriods } =
+    useGlossDetailsPieChart();
   const { primaryColor } = useTheme();
   return (
     <ResponsivePie
@@ -60,7 +61,9 @@ export const GlossDetailsPieChart = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      //onClick={(event) => handleChartClick(event.id as string)}
+      onClick={(event) => {
+        handleFilterPeriods("GLOSS", event.data.classification);
+      }}
       enableArcLinkLabels={true}
       arcLinkLabelsTextColor={primaryColor}
       arcLinkLabelsThickness={1}
@@ -68,31 +71,6 @@ export const GlossDetailsPieChart = () => {
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
       valueFormat={(value) => `${value} Hrs`}
-      /*  legends={[
-          {
-            anchor: "bottom",
-            direction: "column",
-            justify: false,
-            translateX: 200,
-            translateY: 56,
-            itemsSpacing: 10,
-            itemWidth: 85,
-            itemHeight: 24,
-            itemTextColor: "#343A40",
-            itemDirection: "left-to-right",
-            itemOpacity: 1,
-            symbolSize: 18,
-            symbolShape: "circle",
-            effects: [
-              {
-                on: "hover",
-                style: {
-                  itemTextColor: primaryColor,
-                },
-              },
-            ],
-          },
-        ]} */
     />
   );
 };

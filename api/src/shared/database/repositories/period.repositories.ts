@@ -18,6 +18,13 @@ export class PeriodsRepository {
     return await this.prismaService.period.count(countDto);
   }
 
+  async groupByTotalInterventions(
+    groupByDto: Prisma.PeriodGroupByArgs,
+  ): Promise<any[]> {
+    //@ts-ignore
+    return await this.prismaService.period.groupBy(groupByDto);
+  }
+
   async update(
     updateBillingsConfigurationDto: Prisma.BillingConfigurationUpdateArgs,
   ) {

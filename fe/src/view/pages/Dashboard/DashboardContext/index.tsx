@@ -158,6 +158,11 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     null
   );
 
+  /*  console.log(
+    "Gloss periods",
+    glossPeriods.filter((period) => period.classification === "LABOR")
+  ); */
+
   const handleFilterPeriods = (type: "REPAIR" | "GLOSS", classification: string) => {
     let periods: Period[] | null = null;
 
@@ -169,6 +174,10 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
       );
     }
 
+    if (type === "GLOSS") {
+      periods = glossPeriods.filter((period) => period.classification === classification);
+    }
+
     if (periods) {
       handleOpenPeriodDataGridModal(periods);
     }
@@ -176,6 +185,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleOpenPeriodDataGridModal = (periods: Period[]) => {
     setIsPeriodDataGridModalOpen(true);
+    console.log(periods);
     setPeriodDataGridModalData(periods);
   };
 
@@ -220,8 +230,16 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   let totalMovimentations: number = 0;
 
   efficiencies.forEach((efficiency: Efficiency) => {
-    totalAvailableHours += efficiency.availableHours;
-    totalUnavailableHours += 24 - efficiency.availableHours;
+    totalAvailableHours +=
+      efficiency.availableHours +
+      efficiency.standByHours +
+      (efficiency.billedScheduledStopHours ?? 0);
+
+    totalUnavailableHours +=
+      24 -
+      (efficiency.availableHours +
+        efficiency.standByHours +
+        (efficiency.billedScheduledStopHours ?? 0));
 
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;

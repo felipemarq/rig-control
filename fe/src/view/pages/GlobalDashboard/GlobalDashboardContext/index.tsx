@@ -1,17 +1,17 @@
 import React, { createContext, useMemo, useState } from "react";
 import { useAuth } from "../../../../app/hooks/useAuth";
+import { useEfficienciesRigsAverage } from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
+import { useGetUnbilledPeriods } from "../../../../app/hooks/periods/useGetUnbilledPeriods";
+import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 import { User } from "../../../../app/entities/User";
 import { differenceInDays, parse } from "date-fns";
-import { useEfficienciesRigsAverage } from "../../../../app/hooks/efficiencies/useEfficienciesRigsAverage";
 import { RigsAverageResponse } from "../../../../app/services/efficienciesService/getRigsAverage";
-import { useGetUnbilledPeriods } from "../../../../app/hooks/periods/useGetUnbilledPeriods";
 import { GetUnbilledPeriodsResponse } from "../../../../app/services/periodsService/getUnbilledPeriods";
 import { PeriodType } from "../../../../app/entities/PeriodType";
 import { UF } from "../../../../app/entities/Rig";
 import { PieChartData } from "../components/UnbilledPeriodsPieChartCard/UnbilledPeriodsPieChart/useUnbilledPeriodsPieChart";
 import { getDiffInMinutes } from "../../../../app/utils/getDiffInMinutes";
 import { formatNumberWithFixedDecimals } from "../../../../app/utils/formatNumberWithFixedDecimals";
-import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
 // Definição do tipo do contexto
@@ -92,8 +92,6 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       },
       true
     );
-
-  console.log("rigsAverage", rigsAverage);
 
   const [selectedDashboardView, setSelectedDashboardView] =
     useState<DashboardView>("ALL");

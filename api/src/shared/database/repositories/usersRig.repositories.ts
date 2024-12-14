@@ -14,6 +14,10 @@ export class UsersRigRepository {
     return await this.prismaService.userRig.findFirst(findFirstDto);
   }
 
+  async findMany(findManyDto: Prisma.UserRigFindManyArgs) {
+    return await this.prismaService.userRig.findMany(findManyDto);
+  }
+
   async createMany(createManyDto: Prisma.UserRigCreateManyArgs) {
     return await this.prismaService.userRig.createMany(createManyDto);
   }

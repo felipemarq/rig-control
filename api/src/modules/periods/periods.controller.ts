@@ -20,6 +20,7 @@ import { OrderByValidationPipe } from 'src/shared/pipes/OrderByValidationPipe';
 import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
 import { PeriodClassificationValidationPipe } from 'src/shared/pipes/PeriodClassificationValidationPipe';
 import { RepairClassification } from '../efficiencies/entities/RepairClassification';
+import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 
 @Controller('periods')
 export class PeriodsController {
@@ -31,11 +32,25 @@ export class PeriodsController {
   }
 
   @Get('/unbilled')
-  async getAverageEfficiency(
+  async getUnbilledPeriods(
+    @ActiveUserId() userId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
     return await this.periodsService.getUnbilledPeriods({
+      startDate,
+      endDate,
+      userId,
+    });
+  }
+
+  @Get('/interventions')
+  async getInterventions(
+    @ActiveUserId() userId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return await this.periodsService.getTotalInterventions({
       startDate,
       endDate,
     });

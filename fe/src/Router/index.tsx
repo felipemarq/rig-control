@@ -33,7 +33,7 @@ const ListUsers = lazy(() => import("@/view/pages/ListUsers/index"));
 const CreateUser = lazy(() => import("@/view/pages/CreateUser/index"));
 const UpdateUser = lazy(() => import("@/view/pages/UpdateUser/index"));
 const UpdateUserRigs = lazy(() => import("@/view/pages/UpdateUserRigs/index"));
-const Report = lazy(() => import("@/view/pages/Report/index"));
+/* const Report = lazy(() => import("@/view/pages/Report/index")); */
 const Occurrences = lazy(() => import("@/view/pages/Occurrences/index"));
 const ManHours = lazy(() => import("@/view/pages/ManHours/index"));
 const TotalManHoursDashboard = lazy(
@@ -47,6 +47,7 @@ const BillingConfiguration = lazy(
 );
 const ManHoursDashboard = lazy(() => import("@/view/pages/ManHoursDashboard/index"));
 const SmsDashboard = lazy(() => import("@/view/pages/SmsDashboard/index"));
+const UserLogs = lazy(() => import("@/view/pages/UserLogs/index"));
 
 function RouterErrorBoundary() {
   return (
@@ -122,7 +123,10 @@ export const Router = () => {
                 <Route path="/create-user" element={<CreateUser />} />
                 <Route path="/users/:id" element={<UpdateUser />} />
                 <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
-                <Route path="/reports" element={<Report />} />
+                <Route path="/users/user-logs" element={<UserLogs />} />
+
+                <Route path="/users/user-logs/:userId" element={<UserLogs />} />
+                <Route path="/reports" element={<InDevelopmentPage />} />
                 <Route path="/occurrences" element={<Occurrences />} />
                 <Route path="/man-hours" element={<ManHours />} />
                 <Route path="/occurrences/man-hours" element={<ManHours />} />

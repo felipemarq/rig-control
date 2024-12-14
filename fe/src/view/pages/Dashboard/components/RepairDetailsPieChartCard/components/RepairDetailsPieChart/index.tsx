@@ -61,7 +61,9 @@ export const RepairDetailsPieChart = () => {
         from: "color",
         modifiers: [["darker", 0.2]],
       }}
-      onClick={(event) => handleFilterPeriods("REPAIR", event.data.classification)}
+      onClick={(event) => {
+        handleFilterPeriods("REPAIR", event.data.classification);
+      }}
       arcLabel={(value) => (value.data.percentage < 15 ? "" : `${value.data.label}`)}
       enableArcLinkLabels={false}
       arcLinkLabelsTextColor={primaryColor}

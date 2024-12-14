@@ -16,8 +16,48 @@ export class UserLogService {
     });
   }
 
-  findAll() {
-    return `This action returns all userLog`;
+  async findAll({
+    pageSize,
+    pageIndex,
+    userId,
+    logType,
+  }: {
+    pageSize: string;
+    pageIndex: string;
+    userId?: string;
+    logType: string;
+  }) {
+    let whereClause = {};
+
+    if (logType !== 'ALL') {
+      whereClause = { ...whereClause, logType: logType };
+    }
+
+    if (userId) {
+      whereClause = { ...whereClause, userId: userId };
+    }
+    const userLogs = await this.userLogRepo.findMany({
+      where: whereClause,
+      skip: (Number(pageIndex) - 1) * Number(pageSize),
+      take: Number(pageSize),
+      orderBy: { loginTime: 'desc' },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            accessLevel: true,
+          },
+        },
+      },
+    });
+
+    const totalItems = await this.userLogRepo.count({
+      where: whereClause,
+    });
+
+    return { data: userLogs, totalItems };
   }
 
   async findByUserId(userId: string) {
