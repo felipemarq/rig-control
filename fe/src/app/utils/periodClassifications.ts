@@ -302,6 +302,11 @@ const REPAIR = [
     ],
   },
   {
+    id: "SCHEDULED_STOP",
+    classification: "Parada de Manutenção",
+    repairClassification: [{ value: "SCHEDULED_STOP", label: "Parada de Manutenção" }],
+  },
+  {
     id: "OTHERS",
     classification: "Outros",
     repairClassification: [{ value: "OTHERS", label: "Outros" }],
