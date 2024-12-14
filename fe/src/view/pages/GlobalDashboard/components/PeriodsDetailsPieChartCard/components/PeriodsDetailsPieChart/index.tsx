@@ -3,13 +3,15 @@ import { usePeriodsDetailsPieChart } from "./usePeriodsDetailsPieChart";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const PeriodsDetailsPieChart = () => {
-  const { chartData, handleSelectedDetailPieChartViewChange } =
+  const { chartData, handleSelectedDetailPieChartViewChange, mappedChartData } =
     usePeriodsDetailsPieChart();
+
+  console.log(chartData);
   const { primaryColor } = useTheme();
   return (
-    <div className="w-full h-full relative">
+    <div className="w-full h-full relativ">
       <ResponsivePie
-        data={chartData}
+        data={mappedChartData}
         theme={{
           axis: {
             domain: {
@@ -69,7 +71,7 @@ export const PeriodsDetailsPieChart = () => {
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor="#fff"
-        valueFormat={(value) => `${value} Hrs`}
+        valueFormat={(value) => `${value} %`}
         /* legends={[
           {
             anchor: "bottom",

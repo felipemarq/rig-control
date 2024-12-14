@@ -44,6 +44,18 @@ export class PeriodsController {
     });
   }
 
+  @Get('/interventions')
+  async getInterventions(
+    @ActiveUserId() userId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return await this.periodsService.getTotalInterventions({
+      startDate,
+      endDate,
+    });
+  }
+
   @Get()
   async findByPeriodType(
     @Query('rigId', ParseUUIDPipe) rigId: string,

@@ -54,24 +54,48 @@ export class EfficienciesRepository {
   }
 
   async getAverage(rigId: string, year: number) {
-    /*    const efficiencyAverageByRig = await this.prisma.$queryRaw`
-    SELECT
-      e.rig_id AS rigId,
-      r.name AS rigName,
-      AVG(e.available_Hours) AS averageAvailableHours,
-      AVG(e.dtm_hours) AS averageDtmHours
-    FROM
-      efficiencies e
-    JOIN
-      rigs r ON e.rig_id = r.id 
-    GROUP BY
-      e.rig_id, r.name;
-  `; */
+    /*    // Buscar os dados diários
+    const dailyTotals = await this.prisma.$queryRaw`
+   SELECT
+     DATE(date) AS day,
+     SUM(available_hours + COALESCE(standby_hours, 0) + COALESCE(billed_scheduled_stop_hours, 0)) AS daily_total
+   FROM efficiencies
+   WHERE rig_id = ${rigId}::UUID
+     AND EXTRACT(YEAR FROM date) = ${year}
+   GROUP BY DATE(date)
+   ORDER BY DATE(date);
+ `;
+
+    // Objeto para armazenar as somas e contagens por mês
+    const monthlyData: Record<string, { total: number; count: number }> = {};
+
+    // Processar cada dia
+    //@ts-ignore
+    dailyTotals.forEach(
+      ({ day, daily_total }: { day: Date; daily_total: number }) => {
+        const month = day.toISOString().slice(0, 7); // Formato YYYY-MM
+
+        if (!monthlyData[month]) {
+          monthlyData[month] = { total: 0, count: 0 };
+        }
+
+        monthlyData[month].total += daily_total;
+        monthlyData[month].count += 1;
+      },
+    );
+
+    // Calcular médias mensais
+    const monthlyAverages = Object.entries(monthlyData).map(
+      ([month, { total, count }]) => ({
+        month,
+        avg: total / count,
+      }),
+    ); */
 
     return await this.prisma.$queryRaw`
     SELECT
       TO_CHAR(date, 'YYYY-MM') AS month,
-      AVG(available_hours) AS avg
+      SUM(available_hours + COALESCE(standby_hours, 0) + COALESCE(billed_scheduled_stop_hours, 0)) / COUNT(DISTINCT date) AS avg
     FROM efficiencies
     WHERE rig_id = ${rigId}::UUID
       AND EXTRACT(YEAR FROM date) = ${year}

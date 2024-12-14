@@ -681,6 +681,8 @@ export class EfficienciesService {
         availableHours: true,
         commercialHours: true,
         standByHours: true,
+        billedScheduledStopHours: true,
+        unbilledScheduledStopHours: true,
         periods: {
           select: {
             id: true,
@@ -1192,7 +1194,9 @@ export class EfficienciesService {
     //Mudar para params depois
     const year = new Date().getFullYear();
 
-    return await this.efficiencyRepo.getAverage(rigId, year);
+    const test = await this.efficiencyRepo.getAverage(rigId, year);
+
+    return test;
   }
 
   async getWellsCountByRig(rigId: string) {

@@ -230,8 +230,16 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   let totalMovimentations: number = 0;
 
   efficiencies.forEach((efficiency: Efficiency) => {
-    totalAvailableHours += efficiency.availableHours + efficiency.standByHours;
-    totalUnavailableHours += 24 - efficiency.availableHours - efficiency.standByHours;
+    totalAvailableHours +=
+      efficiency.availableHours +
+      efficiency.standByHours +
+      (efficiency.billedScheduledStopHours ?? 0);
+
+    totalUnavailableHours +=
+      24 -
+      (efficiency.availableHours +
+        efficiency.standByHours +
+        (efficiency.billedScheduledStopHours ?? 0));
 
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;

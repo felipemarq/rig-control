@@ -4,6 +4,8 @@ import { UF } from "./Rig";
 export type PersistanceEfficiency = {
   availableHours: number;
   commercialHours: number;
+  billedScheduledStopHours?: number;
+  unbilledScheduledStopHours?: number;
   standByHours: number;
   date: string | Date;
   id: string;

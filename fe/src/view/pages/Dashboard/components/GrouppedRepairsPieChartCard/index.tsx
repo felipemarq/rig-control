@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 export const GrouppedRepairPieChartCard = () => {
   const { hasRepairData, chartData, selectedEquipment } =
     useGrouppedRepairsPieChartCard();
+
   return (
     <Card
       className={cn(

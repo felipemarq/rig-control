@@ -7,11 +7,13 @@ import { PeriodType } from '../efficiencies/entities/PeriodType';
 import { OrderByType } from './entities/OrderByType';
 import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
+import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 
 @Injectable()
 export class PeriodsService {
   constructor(
     private readonly periodsRepo: PeriodsRepository,
+    private readonly efficienciesRepo: EfficienciesRepository,
     private readonly userRigsRepo: UsersRigRepository,
   ) {}
 
@@ -118,6 +120,83 @@ export class PeriodsService {
     }
 
     return filteredPeriods;
+  }
+
+  async getTotalInterventions(filters: { startDate: string; endDate: string }) {
+    const efficiencies = await this.efficienciesRepo.findMany({
+      where: {
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
+      include: {
+        periods: {
+          where: {
+            type: 'DTM',
+          },
+        },
+        rig: true, // Incluímos a informação da sonda associada
+      },
+    });
+
+    // Objeto para armazenar os resultados agrupados por sonda
+    const dtmDaysByRig: Record<string, Set<string>> = {};
+
+    efficiencies.forEach((efficiency) => {
+      // Verificar se há ao menos um período com tipo DTM
+      //@ts-ignore
+      if (efficiency.periods.length > 0) {
+        //@ts-ignore
+        const rigName = efficiency.rig.name; // Nome da sonda
+        const efficiencyDate = efficiency.date.toISOString().split('T')[0]; // Data da eficiência (sem horário)
+
+        // Inicializar o conjunto para a sonda, caso ainda não exista
+        if (!dtmDaysByRig[rigName]) {
+          dtmDaysByRig[rigName] = new Set();
+        }
+
+        // Adicionar a data ao conjunto da sonda
+        dtmDaysByRig[rigName].add(efficiencyDate);
+      }
+    });
+
+    // Transformar o resultado em um formato mais legível
+    const result = Object.entries(dtmDaysByRig).map(([rig, dates]) => ({
+      rig,
+      dtmDays: dates.size, // Quantidade de dias únicos
+    }));
+
+    console.log(`Resumo de dias com DTM por sonda:`, result);
+
+    result.forEach(({ rig, dtmDays }) => {
+      console.log(
+        `A sonda "${rig}" teve ${dtmDays} ${
+          dtmDays === 1 ? 'dia' : 'dias'
+        } com pelo menos um período do tipo DTM.`,
+      );
+    });
+
+    // Array para salvar as datas das eficiências que atendem ao critério
+    const daysWithDTM = new Set<string>();
+
+    efficiencies.forEach((efficiency) => {
+      // Verificar se há ao menos um período com tipo DTM
+      //@ts-ignore
+      if (efficiency.periods.length > 0) {
+        // Extrair a data da eficiência (ignorando o horário)
+        const efficiencyDate = efficiency.date.toISOString().split('T')[0];
+        daysWithDTM.add(efficiencyDate); // Adicionar ao conjunto de dias únicos
+      }
+    });
+
+    /* console.log(
+      `Datas com pelo menos um período do tipo DTM:`,
+      Array.from(daysWithDTM),
+    ); */
+    console.log(
+      `Quantidade de dias  com pelo menos um período do tipo DTM: ${daysWithDTM.size}`,
+    );
   }
 
   update(id: number, updatePeriodDto: UpdatePeriodDto) {

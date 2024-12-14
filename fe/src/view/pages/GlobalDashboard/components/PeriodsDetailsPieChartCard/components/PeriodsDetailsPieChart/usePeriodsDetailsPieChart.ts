@@ -70,8 +70,26 @@ export const usePeriodsDetailsPieChart = () => {
       return acc;
     }, []);
 
+  let totalHours = 0;
+
+  chartData.forEach((item) => (totalHours += item.value));
+
+  console.log("O resultado total é", totalHours);
+
+  chartData.forEach((item) =>
+    console.log(
+      `A porcentagem de ${item.label} é ${((item.value / totalHours) * 100).toFixed(2)}%`
+    )
+  );
+
+  const mappedChartData = chartData.map((item) => ({
+    ...item,
+    value: Number(((item.value / totalHours) * 100).toFixed(2)),
+  }));
+
   return {
     chartData,
+    mappedChartData,
     selectedPieChartView,
     handleCloseDetailsGraph,
     handleSelectedDetailPieChartViewChange,

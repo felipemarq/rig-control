@@ -36,24 +36,29 @@ export const useLineChart = () => {
     //Coloca o nome da sonda no ID para aparecer no Hover do gráfico
     data[0]["id"] = efficiencies[0].rig.name;
     // Itera sobre as eficiências para formatar os dados
-    efficiencies.forEach(({ availableHours, id, date, standByHours }) => {
-      // Formata a data no formato desejado para o gráfico de linha (dia/mês)
-      const formattedDate = `${new Date(date).getDate().toString().padStart(2, "0")}/${(
-        new Date(date).getMonth() + 1
-      )
-        .toString()
-        .padStart(2, "0")}`;
+    efficiencies.forEach(
+      ({ availableHours, id, date, standByHours, billedScheduledStopHours }) => {
+        // Formata a data no formato desejado para o gráfico de linha (dia/mês)
+        const formattedDate = `${new Date(date).getDate().toString().padStart(2, "0")}/${(
+          new Date(date).getMonth() + 1
+        )
+          .toString()
+          .padStart(2, "0")}`;
 
-      // Calcula a porcentagem de horas disponíveis
-      const availableHoursPercentage = ((availableHours + standByHours) * 100) / 24;
+        const billedScheduledStopHoursNumber = billedScheduledStopHours ?? 0;
 
-      // Adiciona os dados formatados ao array de dados do gráfico
-      data[0].data.push({
-        id: id,
-        x: formattedDate,
-        y: Number(availableHoursPercentage.toFixed(2)), // Ajusta para duas casas decimais
-      });
-    });
+        // Calcula a porcentagem de horas disponíveis
+        const availableHoursPercentage =
+          ((availableHours + standByHours + billedScheduledStopHoursNumber) * 100) / 24;
+
+        // Adiciona os dados formatados ao array de dados do gráfico
+        data[0].data.push({
+          id: id,
+          x: formattedDate,
+          y: Number(availableHoursPercentage.toFixed(2)), // Ajusta para duas casas decimais
+        });
+      }
+    );
   };
 
   // Chama a função para formatar eficiências para o gráfico de linha
