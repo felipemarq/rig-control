@@ -114,14 +114,23 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     rigsAverageTotalHours += Math.round(rigAverage.avg);
   });
 
-  const { unbilledPeriods, refetchUnbilledPeriods, isFetchingUnbilledPeriods } =
-    useGetUnbilledPeriods(
-      {
-        startDate: filters.startDate,
-        endDate: filters.endDate,
-      },
-      true
-    );
+  const {
+    unbilledPeriods: notFilteredUnbilledPeriods,
+    refetchUnbilledPeriods,
+    isFetchingUnbilledPeriods,
+  } = useGetUnbilledPeriods(
+    {
+      startDate: filters.startDate,
+      endDate: filters.endDate,
+    },
+    true
+  );
+
+  console.log(notFilteredUnbilledPeriods.filter((period) => period.type === "REPAIR"));
+
+  let unbilledPeriods = notFilteredUnbilledPeriods.filter(
+    (period) => period.classification !== "SCHEDULED_STOP"
+  );
 
   const averageHours = formatNumberWithFixedDecimals(
     rigsAverageTotalHours / filteredRigsAverage.length,
