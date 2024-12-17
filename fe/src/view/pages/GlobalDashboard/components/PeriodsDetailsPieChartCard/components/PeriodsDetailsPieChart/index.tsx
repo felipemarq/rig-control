@@ -2,16 +2,22 @@ import { ResponsivePie } from "@nivo/pie";
 import { usePeriodsDetailsPieChart } from "./usePeriodsDetailsPieChart";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
-export const PeriodsDetailsPieChart = () => {
+export const PeriodsDetailsPieChart = ({
+  isExpanded,
+  selectedView,
+}: {
+  isExpanded: boolean;
+  selectedView: "HOURS" | "PERCENTAGE";
+}) => {
   const { chartData, handleSelectedDetailPieChartViewChange, mappedChartData } =
     usePeriodsDetailsPieChart();
 
-  console.log(chartData);
+  const selectedChartData = selectedView === "HOURS" ? chartData : mappedChartData;
   const { primaryColor } = useTheme();
   return (
     <div className="w-full h-full relativ">
       <ResponsivePie
-        data={mappedChartData}
+        data={selectedChartData}
         theme={{
           axis: {
             domain: {
@@ -65,13 +71,13 @@ export const PeriodsDetailsPieChart = () => {
           modifiers: [["darker", 0.2]],
         }}
         onClick={(event) => handleSelectedDetailPieChartViewChange(event.id as string)}
-        enableArcLinkLabels={false}
+        enableArcLinkLabels={isExpanded}
         arcLinkLabelsTextColor={primaryColor}
         arcLinkLabelsThickness={3}
         arcLinkLabelsColor={{ from: "color" }}
         arcLabelsSkipAngle={10}
         arcLabelsTextColor="#fff"
-        valueFormat={(value) => `${value} %`}
+        valueFormat={(value) => `${value} ${selectedView === "HOURS" ? "hrs" : "%"}`}
         /* legends={[
           {
             anchor: "bottom",

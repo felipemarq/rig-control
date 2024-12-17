@@ -5,10 +5,10 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {Progress} from "@/components/ui/progress";
-import {FileClock, TimerIcon, TimerOff, Wrench} from "lucide-react";
-import {useStatboxContainer} from "./useStatboxContainer";
-import {Spinner} from "@/view/components/Spinner";
+import { Progress } from "@/components/ui/progress";
+import { FileClock, TimerIcon, TimerOff, Wrench } from "lucide-react";
+import { useStatboxContainer } from "./useStatboxContainer";
+import { Spinner } from "@/view/components/Spinner";
 
 export const StatboxContainer = () => {
   const {
@@ -27,7 +27,7 @@ export const StatboxContainer = () => {
         className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Disp. Diária</CardTitle>
+          <CardTitle className="text-sm font-medium">Eficiência Operacional</CardTitle>
           <TimerIcon className="h-8 w-8 text-muted-foreground" />
         </CardHeader>
         {isFetchingRigsAverage && (
@@ -39,9 +39,9 @@ export const StatboxContainer = () => {
           <>
             {" "}
             <CardContent>
-              <div className="text-2xl font-bold">{`${averageHours} Horas`}</div>
+              <div className="text-2xl font-bold">{`${averageHoursPercentage} %`}</div>
               <p className="text-xs text-muted-foreground">
-                Média de disponibilidade diária
+                {` Média de disp. diária ${averageHours} Hrs`}
               </p>
             </CardContent>
             <CardFooter>
@@ -92,9 +92,7 @@ export const StatboxContainer = () => {
         className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-redAccent-500">
-            Reparo
-          </CardTitle>
+          <CardTitle className="text-sm font-medium text-redAccent-500">Reparo</CardTitle>
           <Wrench className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
 
@@ -127,9 +125,7 @@ export const StatboxContainer = () => {
         className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-redAccent-500">
-            Glosa
-          </CardTitle>
+          <CardTitle className="text-sm font-medium text-redAccent-500">Glosa</CardTitle>
           <FileClock className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
 
