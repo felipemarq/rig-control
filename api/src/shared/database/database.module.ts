@@ -24,6 +24,7 @@ import { ClientRepository } from './repositories/client.repositories';
 import { NotificationsRepository } from './repositories/notifications.repositories';
 import { UsersNotificationsRepository } from './repositories/usersNotification.repositories';
 import { FeedbackRepository } from './repositories/feedback.repositories';
+import { PeriodActionPlansRepository } from './repositories/periodActionPlans.repositories';
 
 @Global()
 @Module({
@@ -53,6 +54,7 @@ import { FeedbackRepository } from './repositories/feedback.repositories';
     NotificationsRepository,
     UsersNotificationsRepository,
     FeedbackRepository,
+    PeriodActionPlansRepository,
   ],
   exports: [
     PrismaService,
@@ -79,6 +81,7 @@ import { FeedbackRepository } from './repositories/feedback.repositories';
     NotificationsRepository,
     UsersNotificationsRepository,
     FeedbackRepository,
+    PeriodActionPlansRepository,
   ],
 })
 export class DatabaseModule {}

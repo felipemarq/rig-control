@@ -420,7 +420,7 @@ model PeriodActionPlan {
   userId                String                 @map("user_id") @db.Uuid
   periodId              String                 @map("period_id") @db.Uuid
   user                  User                   @relation(fields: [userId], references: [id])
-  period                Period                 @relation(fields: [periodId], references: [id])
+  period                Period                 @relation(fields: [periodId], references: [id], onDelete: Cascade)
   periodActionPlanItems PeriodActionPlanItem[]
 
   @@map("period_action_plans")
@@ -438,8 +438,8 @@ model PeriodActionPlanItem {
   createdAt      DateTime @default(now()) // Creation timestamp
   updatedAt      DateTime @updatedAt // Automatic update timestamp
 
-  actionPlan   PeriodActionPlan @relation(fields: [actionPlanId], references: [id]) // Relation to PeriodActionPlan
-  actionPlanId String // Foreign key to PeriodActionPlan
+  actionPlan   PeriodActionPlan @relation(fields: [actionPlanId], references: [id], onDelete: Cascade) // Relation to PeriodActionPlan
+  actionPlanId String           @map("action_plan_id") @db.Uuid // Foreign key to PeriodActionPlan
 
   @@map("period_action_plan_items")
 }
