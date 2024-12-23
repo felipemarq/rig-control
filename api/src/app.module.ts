@@ -26,6 +26,7 @@ import { ClientsModule } from './modules/clients/clients.module';
 import { MailModule } from './modules/mail/mail.module';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
+import { PeriodActionPlansModule } from './modules/period-action-plans/period-action-plans.module';
 
 @Module({
   imports: [
@@ -54,6 +55,7 @@ import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
     MailModule,
     NotificationsModule,
     FeedbacksModule,
+    PeriodActionPlansModule,
   ],
   controllers: [],
   providers: [
