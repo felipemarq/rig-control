@@ -30,8 +30,17 @@ export class PeriodActionPlansService {
     return `This action returns a #${id} periodActionPlan`;
   }
 
-  update(id: string, updatePeriodActionPlanDto: UpdatePeriodActionPlanDto) {
-    return `This action updates a #${id} periodActionPlan`;
+  async update(
+    periodActionPlanId: string,
+    updatePeriodActionPlanDto: UpdatePeriodActionPlanDto,
+  ) {
+    return await this.periodActionPlansRepo.update({
+      where: { id: periodActionPlanId },
+      data: {
+        title: updatePeriodActionPlanDto.title,
+        periodId: updatePeriodActionPlanDto.periodId,
+      },
+    });
   }
 
   remove(id: number) {
