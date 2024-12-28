@@ -26,6 +26,7 @@ export const PeriodsDataGridCard = () => {
     efficiencyId,
     openDetailModal,
     handleExcelDownload,
+    state,
   } = usePeriodsDataGrid();
 
   return (
@@ -101,6 +102,7 @@ export const PeriodsDataGridCard = () => {
               data={efficiency}
               windowWidth={windowWidth}
               openDetailModal={openDetailModal}
+              state={state}
             />
           </div>
         )}

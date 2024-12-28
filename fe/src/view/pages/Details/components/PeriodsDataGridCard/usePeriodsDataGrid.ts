@@ -12,6 +12,7 @@ export const usePeriodsDataGrid = () => {
     windowWidth,
     openDetailModal,
     handleExcelDownload,
+    state,
   } = useDetails();
   return {
     isFetchingEfficiency,
@@ -24,5 +25,6 @@ export const usePeriodsDataGrid = () => {
     windowWidth,
     openDetailModal,
     handleExcelDownload,
+    state,
   };
 };
