@@ -13,4 +13,16 @@ export class PeriodActionPlansRepository {
   async update(updateDto: Prisma.PeriodActionPlanUpdateArgs) {
     return await this.prismaService.periodActionPlan.update(updateDto);
   }
+
+  async findUnique(findUniqueDto: Prisma.PeriodActionPlanFindUniqueArgs) {
+    return await this.prismaService.periodActionPlan.findUnique(findUniqueDto);
+  }
+
+  async findMany(findManyDto: Prisma.PeriodActionPlanFindManyArgs) {
+    return await this.prismaService.periodActionPlan.findMany(findManyDto);
+  }
+
+  async remove(deleteDto: Prisma.PeriodActionPlanDeleteArgs) {
+    return await this.prismaService.periodActionPlan.delete(deleteDto);
+  }
 }

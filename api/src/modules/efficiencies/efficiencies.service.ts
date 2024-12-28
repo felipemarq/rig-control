@@ -29,6 +29,8 @@ import * as PDFDocument from 'pdfkit';
 import { UserLogService } from '../user-log/user-log.service';
 import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
 import { LogType } from '../user-log/entities/LogType';
+import { MailService } from '../mail/mail.service';
+import { formatDate } from 'src/shared/utils/formatDate';
 
 @Injectable()
 export class EfficienciesService {
@@ -42,6 +44,7 @@ export class EfficienciesService {
     private readonly deletionRequestRepo: DeletionRequestRepository,
     private readonly temporaryEfficiencyRepo: TemporaryEfficienciesRepository,
     private readonly userLogService: UserLogService,
+    private readonly mailService: MailService,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -177,8 +180,6 @@ export class EfficienciesService {
      */
     this.validatePeriodsTime(periods);
 
-    console.log(periods);
-
     /**
      * Constructs the efficiency data object with the provided information.
      * @param createEfficiencyDto The DTO containing the information to construct the efficiency data object.
@@ -276,6 +277,12 @@ export class EfficienciesService {
 
     const wells = await this.wellsRepo.findAll({});
 
+    const rig = await this.rigsRepo.findUnique({
+      where: {
+        id: rigId,
+      },
+    });
+
     /**
      * Iterates through each period, updating wellId based on the name found in wells array.
      * Calculates the difference in minutes between start and end hour for each period.
@@ -298,7 +305,17 @@ export class EfficienciesService {
       return differenceInMinutes(endDate, initialHour);
     };
     periods.forEach(
-      ({ type, startHour, endHour, classification, wellId }, index) => {
+      async (
+        {
+          type,
+          startHour,
+          endHour,
+          classification,
+          wellId,
+          repairClassification,
+        },
+        index,
+      ) => {
         // Find the corresponding well ID in the wells array
         const { id: wellIdFound } = wells.find(({ name }) => wellId === name);
 
@@ -356,6 +373,95 @@ export class EfficienciesService {
         }
 
         if (type === 'REPAIR') {
+          if (diffInMinutes >= 180) {
+            await this.mailService.sendEmail(
+              'felipemarques@conterp.com.br',
+              'Reparo de equipamento requer plano de ação',
+              `<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Reparo de Equipamento</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f9;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .email-container {
+                            max-width: 600px;
+                            margin: auto;
+                            padding: 20px;
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                        }
+                        .header {
+                            background-color: #1c7b7b;
+                            color: #ffffff;
+                            text-align: center;
+                            padding: 20px;
+                            font-size: 20px;
+                            font-weight: bold;
+                        }
+                        .content {
+                            padding: 20px;
+                            line-height: 1.6;
+                        }
+                        .content p {
+                            margin: 10px 0;
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            text-align: center;
+                            font-size: 12px;
+                            color: #888;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="email-container">
+                        <div class="header">
+                            Alerta: Reparo de Equipamento Prolongado
+                        </div>
+                        <div class="content">
+                            <p>Prezado(a),</p>
+                            <p>Foi identificado um reparo prolongado em um dos equipamentos. Seguem os detalhes:</p>
+                            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                                <h3 style="margin-top: 0; color: #333;">Detalhes do Reparo</h3>
+                                <p style="margin: 0;"><strong>Sonda:</strong> ${
+                                  rig.name
+                                }</p>
+                                <p style="margin: 0;"><strong>Dia:</strong> ${formatDate(
+                                  new Date(date),
+                                )}</p>
+                                <p style="margin: 0;"><strong>Parte do Equipamento:</strong> ${translateClassification(
+                                  classification,
+                                )}</p>
+                                <p style="margin: 0;"><strong>Parte Quebrada:</strong> ${translateRepairClassification(
+                                  repairClassification,
+                                )}</p>
+                                <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${
+                                  diffInMinutes / 60
+                                } Hrs</p>
+                            </div>
+                            <p style="color: #555;">
+                                Por favor, elabore um plano de ação para resolver o problema o mais breve possível.
+                                Se precisar de mais informações, entre em contato conosco.
+                            </p>
+                        </div>
+                        <div class="footer">
+                            <p>Este é um e-mail automático. Por favor, não responda.</p>
+                            <p>&copy; ${new Date().getFullYear()} Info Conterp. Todos os direitos reservados.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+`,
+            );
+          }
+
           totalRepairHours += diffInMinutes / 60;
         }
 
@@ -1011,7 +1117,7 @@ export class EfficienciesService {
       } | null;
       //@ts-ignore
     }[] = efficiency.periods;
-    //console.log(periods[1].startHour.toString());
+
     const formattedPeriods = periods.map((period) => {
       return {
         ...period,

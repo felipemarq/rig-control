@@ -13,37 +13,96 @@ export class PeriodActionPlansService {
     userId: string,
     createPeriodActionPlanDto: CreatePeriodActionPlanDto,
   ) {
+    const periodActionPlanItems =
+      createPeriodActionPlanDto.periodActionPlanItems.map(
+        ({
+          assignee,
+          dueDate,
+          instructions,
+          notes,
+          reason,
+          sequenceNumber,
+          task,
+        }) => ({
+          assignee,
+          task,
+          dueDate,
+          instructions,
+          notes,
+          reason,
+          sequenceNumber,
+        }),
+      );
+
     return await this.periodActionPlansRepo.create({
       data: {
         title: createPeriodActionPlanDto.title,
         periodId: createPeriodActionPlanDto.periodId,
         userId,
+        periodActionPlanItems: {
+          createMany: {
+            data: periodActionPlanItems,
+          },
+        },
       },
     });
   }
 
-  findAll() {
-    return `This action returns all periodActionPlans`;
+  async findMany() {
+    return await this.periodActionPlansRepo.findMany({
+      include: {
+        periodActionPlanItems: {
+          orderBy: {
+            sequenceNumber: 'asc',
+          },
+        },
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} periodActionPlan`;
+  async findOne(periodActionPlanId: string) {
+    return await this.periodActionPlansRepo.findUnique({
+      where: {
+        id: periodActionPlanId,
+      },
+      include: {
+        periodActionPlanItems: {
+          orderBy: {
+            sequenceNumber: 'asc',
+          },
+        },
+      },
+    });
   }
 
   async update(
     periodActionPlanId: string,
     updatePeriodActionPlanDto: UpdatePeriodActionPlanDto,
   ) {
+    const { periodActionPlanItems, periodId, title, finishedAt, isFinished } =
+      updatePeriodActionPlanDto;
     return await this.periodActionPlansRepo.update({
       where: { id: periodActionPlanId },
       data: {
-        title: updatePeriodActionPlanDto.title,
-        periodId: updatePeriodActionPlanDto.periodId,
+        title: title,
+        periodId: periodId,
+        finishedAt: finishedAt,
+        isFinished: isFinished,
+        periodActionPlanItems: {
+          updateMany: {
+            where: {
+              actionPlanId: periodActionPlanId,
+            },
+            data: periodActionPlanItems,
+          },
+        },
       },
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} periodActionPlan`;
+  async remove(periodActionPlanId: string) {
+    return await this.periodActionPlansRepo.remove({
+      where: { id: periodActionPlanId },
+    });
   }
 }

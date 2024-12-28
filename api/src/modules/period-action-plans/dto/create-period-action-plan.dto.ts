@@ -1,4 +1,14 @@
-import { IsNotEmpty, IsString, IsUUID } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsBoolean,
+  IsDateString,
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  ValidateNested,
+} from 'class-validator';
+import { CreatePeriodActionPlanItemDto } from 'src/modules/period-action-plan-items/dto/create-period-action-plan-item.dto';
 
 export class CreatePeriodActionPlanDto {
   @IsNotEmpty()
@@ -9,4 +19,16 @@ export class CreatePeriodActionPlanDto {
   @IsNotEmpty()
   @IsString()
   periodId: string;
+
+  @IsOptional()
+  @IsDateString()
+  finishedAt?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isFinished?: boolean;
+
+  @ValidateNested({ each: true })
+  @Type(() => CreatePeriodActionPlanItemDto)
+  periodActionPlanItems: CreatePeriodActionPlanItemDto[];
 }

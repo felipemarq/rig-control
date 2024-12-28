@@ -3,9 +3,11 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  HttpCode,
+  HttpStatus,
+  Put,
 } from '@nestjs/common';
 import { PeriodActionPlansService } from './period-action-plans.service';
 import { CreatePeriodActionPlanDto } from './dto/create-period-action-plan.dto';
@@ -31,15 +33,15 @@ export class PeriodActionPlansController {
 
   @Get()
   findAll() {
-    return this.periodActionPlansService.findAll();
+    return this.periodActionPlansService.findMany();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.periodActionPlansService.findOne(+id);
+  @Get(':periodActionPlanId')
+  findOne(@Param('periodActionPlanId') periodActionPlanId: string) {
+    return this.periodActionPlansService.findOne(periodActionPlanId);
   }
 
-  @Patch(':periodActionPlanId')
+  @Put(':periodActionPlanId')
   update(
     @Param('periodActionPlanId') periodActionPlanId: string,
     @Body() updatePeriodActionPlanDto: UpdatePeriodActionPlanDto,
@@ -50,8 +52,9 @@ export class PeriodActionPlansController {
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.periodActionPlansService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @Delete(':periodActionPlanId')
+  remove(@Param('periodActionPlanId') periodActionPlanId: string) {
+    return this.periodActionPlansService.remove(periodActionPlanId);
   }
 }
