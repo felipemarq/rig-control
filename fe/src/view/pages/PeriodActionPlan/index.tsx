@@ -1,137 +1,33 @@
-import React, { useState } from "react";
+import React from "react";
+import { Controller } from "react-hook-form";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-
-import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Switch } from "@/components/ui/switch";
 import { PlusCircle, XCircle } from "lucide-react";
-
 import { Input } from "@/view/components/Input";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
 import TextArea from "antd/es/input/TextArea";
-import { useLocation } from "react-router-dom";
 import { translateClassification } from "@/app/utils/translateClassification";
 import { translateRepairClassification } from "@/app/utils/translateRepairClassification";
 import { RepairClassification } from "@/app/entities/RepairClassification";
 import { formatDate } from "@/app/utils/formatDate";
-
-interface HeaderInfo {
-  equipment: string;
-  repairClassification: string;
-  date: string;
-  well: string;
-  rigName: string;
-}
-
-interface ActionPlanItem {
-  sequenceNumber: number;
-  task: string;
-  assignee: string;
-  dueDate: Date | null;
-  reason: string;
-  instructions: string;
-  notes: string;
-  isFinished: boolean;
-}
-
-interface ActionPlan {
-  title: string;
-  periodId: string;
-  finishedAt: Date | null;
-  isFinished: boolean;
-  periodActionPlanItems: ActionPlanItem[];
-}
-
-// This would typically come from your app's state or route parameters
+import { Button } from "@/view/components/Button";
+import { Button as ShadcnButton } from "@/components/ui/button";
+import { usePeriodActionPlan } from "./usePeriodActionPlan";
 
 export default function PeriodActionPlan(): React.ReactElement {
-  const [actionPlan, setActionPlan] = useState<ActionPlan>({
-    title: "",
-    periodId: "", // This would typically be set based on the pre-selected info
-    finishedAt: null,
-    isFinished: false,
-    periodActionPlanItems: [
-      {
-        sequenceNumber: 1,
-        task: "",
-        assignee: "",
-        dueDate: null,
-        reason: "",
-        instructions: "",
-        notes: "",
-        isFinished: false,
-      },
-    ],
-  });
-
-  const { state } = useLocation();
-
-  const { equipment, repairClassification, date, well, rigName }: HeaderInfo = state;
-
-  const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
-    index: number | null = null
-  ) => {
-    const { name, value } = e.target;
-    if (index !== null) {
-      const newItems = [...actionPlan.periodActionPlanItems];
-      newItems[index] = { ...newItems[index], [name]: value };
-      setActionPlan({ ...actionPlan, periodActionPlanItems: newItems });
-    } else {
-      setActionPlan({ ...actionPlan, [name]: value });
-    }
-  };
-
-  const handleDateChange = (date: Date | null, index: number | null = null) => {
-    if (index !== null) {
-      const newItems = [...actionPlan.periodActionPlanItems];
-      newItems[index] = { ...newItems[index], dueDate: date };
-      setActionPlan({ ...actionPlan, periodActionPlanItems: newItems });
-    } else {
-      setActionPlan({ ...actionPlan, finishedAt: date });
-    }
-  };
-
-  const handleSwitchChange = (checked: boolean, index: number | null = null) => {
-    if (index !== null) {
-      const newItems = [...actionPlan.periodActionPlanItems];
-      newItems[index] = { ...newItems[index], isFinished: checked };
-      setActionPlan({ ...actionPlan, periodActionPlanItems: newItems });
-    } else {
-      setActionPlan({ ...actionPlan, isFinished: checked });
-    }
-  };
-
-  const addActionItem = () => {
-    setActionPlan({
-      ...actionPlan,
-      periodActionPlanItems: [
-        ...actionPlan.periodActionPlanItems,
-        {
-          sequenceNumber: actionPlan.periodActionPlanItems.length + 1,
-          task: "",
-          assignee: "",
-          dueDate: null,
-          reason: "",
-          instructions: "",
-          notes: "",
-          isFinished: false,
-        },
-      ],
-    });
-  };
-
-  const removeActionItem = (index: number) => {
-    const newItems = actionPlan.periodActionPlanItems.filter((_, i) => i !== index);
-    setActionPlan({ ...actionPlan, periodActionPlanItems: newItems });
-  };
-
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    // Here you would typically send the data to your backend
-    console.log(actionPlan);
-  };
-
+  const {
+    append,
+    control,
+    errors,
+    fields,
+    handleSubmit,
+    isPending,
+    remove,
+    date,
+    equipment,
+    repairClassification,
+    rigName,
+  } = usePeriodActionPlan();
   return (
     <div className="container mx-auto p-6 space-y-8">
       <Card className="overflow-hidden">
@@ -152,43 +48,40 @@ export default function PeriodActionPlan(): React.ReactElement {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="space-y-2">
               <Label htmlFor="title">Título do Plano de Ação</Label>
-              <Input
-                variant="modal"
-                id="title"
+              <Controller
+                control={control}
                 name="title"
-                value={actionPlan.title}
-                onChange={handleInputChange}
-                required
+                render={({ field: { onChange, value } }) => (
+                  <Input
+                    error={errors.title?.message}
+                    placeholder="Título do Plano de Ação"
+                    maxLength={60}
+                    variant="modal"
+                    name="title"
+                    value={value}
+                    onChange={(value) => onChange(value)}
+                  />
+                )}
               />
+              {errors.title && <p className="text-red-500">{errors.title.message}</p>}
             </div>
-
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="isFinished"
-                checked={actionPlan.isFinished}
-                onCheckedChange={(checked) => handleSwitchChange(checked)}
-              />
-              <Label htmlFor="isFinished">Plano Finalizado</Label>
-            </div>
-
-            {actionPlan.isFinished && (
-              <div className="space-y-2">
-                <Label htmlFor="finishedAt">Data de Finalização</Label>
-                <DatePickerInput
-                  //value={value}
-                  placeholder="Prazo da ação"
-                  //onChange={(value) => onChange(value)}
-                  //error={errors.dueDate?.message}
-                />
-              </div>
-            )}
 
             <div className="space-y-4">
               <div className="flex justify-between items-center">
                 <h3 className="text-lg font-semibold">Itens do Plano de Ação</h3>
                 <Button
                   type="button"
-                  onClick={addActionItem}
+                  onClick={() =>
+                    append({
+                      sequenceNumber: fields.length + 1,
+                      task: "",
+                      assignee: "",
+                      dueDate: new Date(),
+                      reason: "",
+                      instructions: "",
+                      notes: "",
+                    })
+                  }
                   className="flex items-center"
                 >
                   <PlusCircle className="mr-2 h-4 w-4" />
@@ -196,100 +89,153 @@ export default function PeriodActionPlan(): React.ReactElement {
                 </Button>
               </div>
 
-              {actionPlan.periodActionPlanItems.map((item, index) => (
-                <Card key={index} className="p-4 space-y-4 bg-gray-300">
+              {fields.map((field, index) => (
+                <Card key={field.id} className="p-4 space-y-4 bg-gray-300">
                   <div className="flex justify-between items-center">
-                    <h4 className="font-semibold">Item {item.sequenceNumber}</h4>
-                    {actionPlan.periodActionPlanItems.length - 1 === index && (
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        onClick={() => removeActionItem(index)}
-                      >
-                        <XCircle className="h-4 w-4" />
-                      </Button>
+                    <h4 className="font-semibold">Item {field.sequenceNumber}</h4>
+                    <ShadcnButton
+                      type="button"
+                      variant="destructive"
+                      size="icon"
+                      onClick={() => remove(index)}
+                    >
+                      <XCircle className="h-4 w-4" />
+                    </ShadcnButton>
+                  </div>
+                  {/*  <Controller
+                    control={control}
+                    name="title"
+                    render={({ field: { onChange, value } }) => (
+                      <Input
+                        error={errors.title?.message}
+                        placeholder="Título do Plano de Ação"
+                        maxLength={60}
+                        variant="modal"
+                        name="title"
+                        value={value}
+                        onChange={(value) => onChange(value)}
+                      />
+                    )}
+                  /> */}
+
+                  <div className="space-y-2">
+                    <Label htmlFor={`task-${index}`}>O que fazer?</Label>
+                    <Controller
+                      name={`periodActionPlanItems.${index}.task`}
+                      control={control}
+                      render={({ field: { onChange, value } }) => (
+                        <Input
+                          variant="modal"
+                          required
+                          name={`periodActionPlanItems.${index}.task`}
+                          error={errors.periodActionPlanItems?.[index]?.task?.message}
+                          placeholder=""
+                          maxLength={60}
+                          value={value}
+                          onChange={(value) => onChange(value)}
+                        />
+                      )}
+                    />
+                    {errors.periodActionPlanItems?.[index]?.task && (
+                      <p className="text-red-500">
+                        {errors.periodActionPlanItems[index].task?.message}
+                      </p>
                     )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor={`task-${index}`}>O que fazer?</Label>
-                    <Input
-                      variant="modal"
-                      id={`task-${index}`}
-                      name="task"
-                      value={item.task}
-                      onChange={(e) => handleInputChange(e, index)}
-                      required
-                    />
-                  </div>
-
-                  <div className="space-y-2">
                     <Label htmlFor={`assignee-${index}`}>Quem?</Label>
-                    <Input
-                      variant="modal"
-                      id={`assignee-${index}`}
-                      name="assignee"
-                      value={item.assignee}
-                      onChange={(e) => handleInputChange(e, index)}
-                      required
+                    <Controller
+                      name={`periodActionPlanItems.${index}.assignee`}
+                      control={control}
+                      render={({ field }) => (
+                        <Input
+                          variant="modal"
+                          id={`assignee-${index}`}
+                          {...field}
+                          required
+                        />
+                      )}
                     />
+                    {errors.periodActionPlanItems?.[index]?.assignee && (
+                      <p className="text-red-500">
+                        {errors.periodActionPlanItems[index].assignee?.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor={`dueDate-${index}`}>Quando?</Label>
-                    <DatePickerInput
-                      //value={value}
-                      onChange={(value) => handleDateChange(value, index)}
-                      placeholder="Prazo da ação"
+                    <Label htmlFor={`date-${index}`}>Quando?</Label>
+                    <Controller
+                      name={`periodActionPlanItems.${index}.dueDate`}
+                      control={control}
+                      render={({ field }) => (
+                        <DatePickerInput
+                          value={field.value}
+                          onChange={(value) => field.onChange(value)}
+                          placeholder="Prazo da ação"
+                        />
+                      )}
                     />
+                    {errors.periodActionPlanItems?.[index]?.dueDate && (
+                      <p className="text-red-500">
+                        {errors.periodActionPlanItems[index].dueDate?.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor={`reason-${index}`}>Porquê?</Label>
-                    <TextArea
-                      id={`reason-${index}`}
-                      name="reason"
-                      value={item.reason}
-                      onChange={(e) => handleInputChange(e, index)}
-                      required
+                    <Controller
+                      name={`periodActionPlanItems.${index}.reason`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextArea id={`reason-${index}`} {...field} required />
+                      )}
                     />
+                    {errors.periodActionPlanItems?.[index]?.reason && (
+                      <p className="text-red-500">
+                        {errors.periodActionPlanItems[index].reason?.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor={`instructions-${index}`}>Como fazer?</Label>
-                    <TextArea
-                      id={`instructions-${index}`}
-                      name="instructions"
-                      value={item.instructions}
-                      onChange={(e) => handleInputChange(e, index)}
-                      required
+                    <Controller
+                      name={`periodActionPlanItems.${index}.instructions`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextArea id={`instructions-${index}`} {...field} required />
+                      )}
                     />
+                    {errors.periodActionPlanItems?.[index]?.instructions && (
+                      <p className="text-red-500">
+                        {errors.periodActionPlanItems[index].instructions?.message}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
                     <Label htmlFor={`notes-${index}`}>Observações</Label>
-                    <TextArea
-                      id={`notes-${index}`}
-                      name="notes"
-                      value={item.notes}
-                      onChange={(e) => handleInputChange(e, index)}
+                    <Controller
+                      name={`periodActionPlanItems.${index}.notes`}
+                      control={control}
+                      render={({ field }) => (
+                        <TextArea id={`notes-${index}`} {...field} />
+                      )}
                     />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id={`isFinished-${index}`}
-                      checked={item.isFinished}
-                      onCheckedChange={(checked) => handleSwitchChange(checked, index)}
-                    />
-                    <Label htmlFor={`isFinished-${index}`}>Item Finalizado</Label>
                   </div>
                 </Card>
               ))}
             </div>
 
-            <Button type="submit" className="w-full">
+            <Button
+              type="submit"
+              className="w-full"
+              disabled={isPending}
+              isLoading={isPending}
+            >
               Salvar Plano de Ação
             </Button>
           </form>

@@ -126,8 +126,6 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     true
   );
 
-  console.log(notFilteredUnbilledPeriods.filter((period) => period.type === "REPAIR"));
-
   let unbilledPeriods = notFilteredUnbilledPeriods.filter(
     (period) => period.classification !== "SCHEDULED_STOP"
   );
