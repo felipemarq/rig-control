@@ -36,9 +36,10 @@ export class PeriodsService {
     let whereClause = {};
 
     whereClause = {
-      startHour: { gte: new Date(startDate) },
-      endHour: { lte: new Date(endDate) },
-      efficiency: { rigId: rigId },
+      efficiency: {
+        date: { gte: new Date(startDate), lte: new Date(endDate) },
+        rigId: rigId,
+      },
     };
 
     if (searchTerm) {
@@ -74,9 +75,10 @@ export class PeriodsService {
 
     const periods = await this.periodsRepo.findMany({
       where: whereClause,
-      orderBy: { startHour: orderBy },
+      orderBy: { efficiency: { date: orderBy } },
       skip: (Number(pageIndex) - 1) * Number(pageSize),
       take: Number(pageSize),
+      include: { efficiency: {} },
     });
 
     return { data: periods, totalItems };

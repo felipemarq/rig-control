@@ -170,6 +170,8 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
 
   const responseEfficiency = efficiency as PersistanceEfficiency;
 
+  console.log("responseEfficiency", efficiency);
+
   const initialPeriods = useMemo(() => {
     const initialPeriods = responseEfficiency?.periods?.map(
       ({

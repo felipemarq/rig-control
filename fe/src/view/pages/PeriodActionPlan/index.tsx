@@ -40,9 +40,9 @@ export default function PeriodActionPlan() {
 
   return (
     <div className="container mx-auto p-6 space-y-8">
-      <Card className="overflow-hidden">
+      <Card className="overflow-hidden bg-white">
         <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-green-500/90 to-primary mix-blend-multiply" />
+          <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary mix-blend-multiply" />
           <CardHeader className="relative z-10 text-white">
             <CardTitle className="text-2xl font-bold">Planos de Ação</CardTitle>
           </CardHeader>
@@ -114,7 +114,7 @@ export default function PeriodActionPlan() {
                   >
                     <Card className="overflow-hidden">
                       <div className="relative">
-                        <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-primary mix-blend-multiply" />
+                        <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary mix-blend-multiply" />
                         <CardHeader className="relative z-10">
                           <CardTitle className="text-lg font-semibold truncate text-white">
                             {plan.title}

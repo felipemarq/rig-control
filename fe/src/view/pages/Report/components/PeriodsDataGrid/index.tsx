@@ -43,7 +43,7 @@ export const PeriodsDataGrid = ({
         return (
           <div className="w-full flex justify-center items-center">
             <div className="text-gray-800 font-medium tracking-tighter ">
-              {formatDate(new Date(params.value))}
+              {formatDate(new Date(params.row.efficiency.date))}
             </div>
           </div>
         );
