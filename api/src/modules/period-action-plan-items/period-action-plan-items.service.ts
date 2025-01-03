@@ -24,6 +24,15 @@ export class PeriodActionPlanItemsService {
     });
   }
 
+  async createMany(
+    createPeriodActionPlanItemDto: CreatePeriodActionPlanItemDto[],
+  ) {
+    console.log('createMany', createPeriodActionPlanItemDto);
+    return await this.periodActionPlanItemsRepo.createMany({
+      data: createPeriodActionPlanItemDto,
+    });
+  }
+
   async update(
     periodActionPlanItemId: string,
     updatePeriodActionPlanItemDto: UpdatePeriodActionPlanItemDto,
@@ -60,6 +69,14 @@ export class PeriodActionPlanItemsService {
   async remove(periodActionPlanItemId: string) {
     return await this.periodActionPlanItemsRepo.remove({
       where: { id: periodActionPlanItemId },
+    });
+  }
+
+  async deleteManyByActionPlanId(periodActionPlanId: string) {
+    return await this.periodActionPlanItemsRepo.deleteMany({
+      where: {
+        actionPlanId: periodActionPlanId,
+      },
     });
   }
 }

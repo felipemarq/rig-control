@@ -119,6 +119,7 @@ export const PeriodsDataGrid = ({
             filterable: false,
             sortable: false,
             renderCell(params: GridRenderCellParams) {
+              console.log("params", params);
               return (
                 <div className="w-full flex justify-center items-center">
                   <DropdownMenu>

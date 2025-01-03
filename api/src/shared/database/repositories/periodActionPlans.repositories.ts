@@ -18,6 +18,10 @@ export class PeriodActionPlansRepository {
     return await this.prismaService.periodActionPlan.findUnique(findUniqueDto);
   }
 
+  async findFirst(findFirstDto: Prisma.PeriodActionPlanFindFirstArgs) {
+    return await this.prismaService.periodActionPlan.findFirst(findFirstDto);
+  }
+
   async findMany(findManyDto: Prisma.PeriodActionPlanFindManyArgs) {
     return await this.prismaService.periodActionPlan.findMany(findManyDto);
   }

@@ -1,4 +1,4 @@
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import { periodActionPlanServices } from "@/app/services/periodActionPlanServices";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
@@ -11,6 +11,8 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 
 const actionPlanSchema = z.object({
   title: z.string().min(1, "O título é obrigatório"),
+  finishedAt: z.date().optional(),
+  isFinished: z.boolean().default(false),
   periodActionPlanItems: z
     .array(
       z.object({
@@ -21,6 +23,8 @@ const actionPlanSchema = z.object({
         reason: z.string().min(1, "O motivo é obrigatório"),
         instructions: z.string().min(1, "As instruções são obrigatórias"),
         notes: z.string().optional(),
+        finishedAt: z.date().optional(),
+        isFinished: z.boolean().default(false),
       })
     )
     .min(1, "Adicione pelo menos um item ao plano de ação"),
@@ -28,12 +32,13 @@ const actionPlanSchema = z.object({
 
 type ActionPlanFormValues = z.infer<typeof actionPlanSchema>;
 
-export const usePeriodActionPlan = () => {
+export const useCreatePeriodActionPlan = () => {
   const { state } = useLocation();
   const { periodId } = useParams();
   const { primaryColor } = useTheme();
+  const navigate = useNavigate();
 
-  const { equipment, repairClassification, date, rigName } = state;
+  const { equipment, repairClassification, date, rigName, rigId } = state;
 
   const { isPending, mutateAsync: mutateNewPeriodActionPlanAsync } = useMutation({
     mutationFn: periodActionPlanServices.create,
@@ -43,6 +48,7 @@ export const usePeriodActionPlan = () => {
     control,
     handleSubmit: hookFormhandleSubmit,
     formState: { errors },
+    watch,
   } = useForm<ActionPlanFormValues>({
     defaultValues: {
       title: "",
@@ -71,12 +77,17 @@ export const usePeriodActionPlan = () => {
       await mutateNewPeriodActionPlanAsync({
         periodId: periodId!,
         title: data.title,
+        rigId: rigId,
+        finishedAt: data.finishedAt,
+        isFinished: data.isFinished,
         periodActionPlanItems: data.periodActionPlanItems.map((periodActionPlanItem) => ({
           ...periodActionPlanItem,
           dueDate: periodActionPlanItem.dueDate.toISOString(),
+          finishedAt: periodActionPlanItem.finishedAt?.toISOString(),
         })),
       });
       customColorToast("Registro feito com Sucesso!", primaryColor, "success");
+      navigate("/period-action-plan");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
@@ -96,5 +107,6 @@ export const usePeriodActionPlan = () => {
     append,
     remove,
     handleSubmit,
+    watch,
   };
 };

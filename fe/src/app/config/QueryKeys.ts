@@ -11,6 +11,8 @@ export enum QueryKeys {
   TOTAL_OCCURRENCES_TAXES = "total-occurrences-taxes",
   MAN_HOURS = "man-hours",
   PERIODS = "periods",
+  PERIOD_ACTION_PLANS = "period-action-plans",
+  PERIOD_ACTION_PLAN = "period-action-plan",
   EFFICIENCY = "efficiency",
   EFFICIENCIES = "efficiencies",
   BILLING = "billing",

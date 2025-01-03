@@ -53,6 +53,7 @@ model Rig {
   BillingConfiguration  BillingConfiguration[]
   Billing               Billing[]
   contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  periodActionPlans     PeriodActionPlan[]
 
   @@map("rigs")
 }
@@ -418,10 +419,12 @@ model PeriodActionPlan {
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   userId                String                 @map("user_id") @db.Uuid
+  rigId                 String                 @map("rig_id") @db.Uuid
   periodId              String                 @map("period_id") @db.Uuid
   isFinished            Boolean                @default(false)
   finishedAt            DateTime?              @map("finished_at")
   user                  User                   @relation(fields: [userId], references: [id])
+  rig                   Rig                    @relation(fields: [rigId], references: [id], onDelete: Cascade)
   period                Period                 @relation(fields: [periodId], references: [id], onDelete: Cascade)
   periodActionPlanItems PeriodActionPlanItem[]
 

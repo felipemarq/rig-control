@@ -48,6 +48,10 @@ const BillingConfiguration = lazy(
 const ManHoursDashboard = lazy(() => import("@/view/pages/ManHoursDashboard/index"));
 const SmsDashboard = lazy(() => import("@/view/pages/SmsDashboard/index"));
 const UserLogs = lazy(() => import("@/view/pages/UserLogs/index"));
+const CreatePeriodActionPlan = lazy(
+  () => import("@/view/pages/CreatePeriodActionPlan/index")
+);
+const EditPeriodActionPlan = lazy(() => import("@/view/pages/EditPeriodActionPlan"));
 const PeriodActionPlan = lazy(() => import("@/view/pages/PeriodActionPlan/index"));
 
 function RouterErrorBoundary() {
@@ -146,9 +150,14 @@ export const Router = () => {
 
                 <Route path="/dashboard/man-hours" element={<ManHoursDashboard />} />
                 <Route path="/dashboard/sms" element={<SmsDashboard />} />
+                <Route path="/period-action-plan/" element={<PeriodActionPlan />} />
                 <Route
                   path="/period-action-plan/create/:periodId"
-                  element={<PeriodActionPlan />}
+                  element={<CreatePeriodActionPlan />}
+                />
+                <Route
+                  path="/period-action-plan/:periodActionPlanId"
+                  element={<EditPeriodActionPlan />}
                 />
               </Route>
             </Route>

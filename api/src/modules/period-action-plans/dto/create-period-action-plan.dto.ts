@@ -20,6 +20,11 @@ export class CreatePeriodActionPlanDto {
   @IsString()
   periodId: string;
 
+  @IsUUID()
+  @IsNotEmpty()
+  @IsString()
+  rigId: string;
+
   @IsOptional()
   @IsDateString()
   finishedAt?: string;

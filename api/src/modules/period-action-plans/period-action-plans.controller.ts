@@ -31,14 +31,14 @@ export class PeriodActionPlansController {
     );
   }
 
-  @Get()
-  findAll() {
-    return this.periodActionPlansService.findMany();
-  }
-
   @Get(':periodActionPlanId')
   findOne(@Param('periodActionPlanId') periodActionPlanId: string) {
     return this.periodActionPlansService.findOne(periodActionPlanId);
+  }
+
+  @Get()
+  findAll() {
+    return this.periodActionPlansService.findMany();
   }
 
   @Put(':periodActionPlanId')

@@ -33,16 +33,14 @@ interface DetailsContextValues {
   isLoadingUpdateEfficiency: boolean;
   windowWidth: number;
   handleExcelDownload: () => Promise<void>;
-  state: { date: string; rigName: string; well: string };
+  state: { date: string; rigName: string; well: string; rigId: string };
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
 export const DetailsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { efficiencyId } = useParams<{ efficiencyId: string }>();
   const { primaryColor } = useTheme();
-  const { state } = useLocation();
-
-  console.log(state);
+  const { state: originalState } = useLocation();
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -51,6 +49,8 @@ export const DetailsContextProvider = ({ children }: { children: React.ReactNode
   }
 
   const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId);
+
+  const state = { ...originalState, rigId: efficiency?.rigId };
 
   const windowWidth = useWindowWidth();
 

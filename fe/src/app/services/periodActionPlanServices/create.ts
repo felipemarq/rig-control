@@ -4,6 +4,9 @@ import { PeriodActionPlan } from "@/app/entities/PeriodActionPlan";
 export interface CreatePeriodActionPlanParams {
   periodId: string;
   title: string;
+  rigId: string;
+  finishedAt?: string | Date;
+  isFinished?: boolean;
   periodActionPlanItems: {
     sequenceNumber: number;
     task: string;
@@ -12,6 +15,8 @@ export interface CreatePeriodActionPlanParams {
     reason: string;
     instructions: string;
     notes?: string;
+    finishedAt?: string | Date;
+    isFinished?: boolean;
   }[];
 }
 

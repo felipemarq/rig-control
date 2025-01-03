@@ -55,6 +55,12 @@ export const useAppsidebar = () => {
             description: "Configure your playground",
           },
           {
+            title: "Planos de Ação",
+            url: "/period-action-plan",
+            icon: Settings2,
+            description: "Configure your playground",
+          },
+          {
             title: "Criar Ocorrência",
             url: "/form/menu",
             icon: Settings2,
@@ -187,6 +193,12 @@ export const useAppsidebar = () => {
           {
             title: "Listar Ocorrências",
             url: "/list",
+            icon: Settings2,
+            description: "Configure your playground",
+          },
+          {
+            title: "Planos de Ação",
+            url: "/period-action-plan",
             icon: Settings2,
             description: "Configure your playground",
           },
@@ -372,6 +384,12 @@ export const useAppsidebar = () => {
           {
             title: "Listar Ocorrências",
             url: "/list",
+            icon: Settings2,
+            description: "Configure your playground",
+          },
+          {
+            title: "Planos de Ação",
+            url: "/period-action-plan",
             icon: Settings2,
             description: "Configure your playground",
           },
