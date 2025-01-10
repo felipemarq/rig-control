@@ -15,4 +15,15 @@ export type PeriodActionPlan = {
   periodActionPlanItems: PeriodActionPlanItems[];
   period: Period;
   rig: Rig;
+  files:
+    | []
+    | {
+        id: string;
+        path: string;
+        userId: string;
+        occurrenceId: null;
+        occurrenceActionId: null;
+        periodActionPlanId: string;
+        createdAt: string;
+      }[];
 };

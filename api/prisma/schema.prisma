@@ -427,6 +427,7 @@ model PeriodActionPlan {
   rig                   Rig                    @relation(fields: [rigId], references: [id], onDelete: Cascade)
   period                Period                 @relation(fields: [periodId], references: [id], onDelete: Cascade)
   periodActionPlanItems PeriodActionPlanItem[]
+  files                 File[]
 
   @@map("period_action_plans")
 }
@@ -823,10 +824,12 @@ model File {
   userId             String            @map("user_id") @db.Uuid
   occurrenceId       String?           @map("occurrence_id") @db.Uuid
   occurrenceActionId String?           @map("occurrence_action_id") @db.Uuid
+  periodActionPlanId String?           @map("period_action_plan_id") @db.Uuid
   createdAt          DateTime          @default(now()) @map("created_at")
   user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrence         Occurrence?       @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
   occurrenceAction   OccurrenceAction? @relation(fields: [occurrenceActionId], references: [id], onDelete: Cascade)
+  periodActionPlan   PeriodActionPlan? @relation(fields: [periodActionPlanId], references: [id], onDelete: Cascade)
 
   @@map("files")
 }

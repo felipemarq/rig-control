@@ -13,6 +13,7 @@ import { Spinner } from "@/view/components/Spinner";
 import { usePeriodsDataGrid } from "./usePeriodsDataGrid";
 import { PeriodsDataGrid } from "./components/PeriodsDataGrid";
 import { NotFound } from "@/view/components/NotFound";
+import { formatDate } from "@/app/utils/formatDate";
 
 export const PeriodsDataGridCard = () => {
   const {
@@ -35,8 +36,11 @@ export const PeriodsDataGridCard = () => {
         <div className="grid gap-2">
           <CardTitle>Ocorrências</CardTitle>
           <CardDescription>
-            <span> Lista de Ocorrências</span>{" "}
-            <span className="hidden sm:inline"> do período selecionado</span>
+            <span>
+              {" "}
+              Lista de ocorrências da operação da sonda {efficiency?.rig.name} no dia{" "}
+              {formatDate(new Date(efficiency?.date!))}
+            </span>{" "}
           </CardDescription>
         </div>
         {efficiency && (

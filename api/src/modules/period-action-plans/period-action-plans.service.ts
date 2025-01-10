@@ -3,12 +3,14 @@ import { CreatePeriodActionPlanDto } from './dto/create-period-action-plan.dto';
 import { UpdatePeriodActionPlanDto } from './dto/update-period-action-plan.dto';
 import { PeriodActionPlansRepository } from 'src/shared/database/repositories/periodActionPlans.repositories';
 import { PeriodActionPlanItemsService } from '../period-action-plan-items/period-action-plan-items.service';
+import { FileService } from '../file/file.service';
 
 @Injectable()
 export class PeriodActionPlansService {
   constructor(
     private readonly periodActionPlansRepo: PeriodActionPlansRepository,
     private readonly periodActionPlanItemsService: PeriodActionPlanItemsService,
+    private readonly fileService: FileService,
   ) {}
 
   async create(
@@ -72,6 +74,7 @@ export class PeriodActionPlansService {
           },
         },
         rig: {},
+        files: {},
         period: {
           include: {
             well: {},
@@ -93,6 +96,7 @@ export class PeriodActionPlansService {
           },
         },
         rig: {},
+        files: {},
         period: {
           include: {
             well: {},
@@ -154,6 +158,8 @@ export class PeriodActionPlansService {
   }
 
   async remove(periodActionPlanId: string) {
+    await this.fileService.deleteFileByPeriodActionPlanId(periodActionPlanId);
+
     return await this.periodActionPlansRepo.remove({
       where: { id: periodActionPlanId },
     });

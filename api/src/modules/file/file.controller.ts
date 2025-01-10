@@ -48,6 +48,29 @@ export class FileController {
     );
   }
 
+  @Post('/periodActionPlan/:periodActionPlanId')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadPeriodActionPlanFile(
+    @ActiveUserId() userId: string,
+    @Param('periodActionPlanId', ParseUUIDPipe) periodActionPlanId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Arquivo inválido!');
+    }
+
+    await this.fileService.uploadPeriodActionPlanFile(
+      file,
+      userId,
+      periodActionPlanId,
+    );
+  }
+
+  @Delete('/periodActionPlan/:fileId')
+  async deletePeriodActionPlanFile(@Param('fileId') fileId: string) {
+    await this.fileService.deletePeriodActionPlanFile(fileId);
+  }
+
   @Delete('/occurrence/:occurrenceId')
   async deleteOccurenceFile(
     @Param('occurrenceId', ParseUUIDPipe) occurrenceId: string,

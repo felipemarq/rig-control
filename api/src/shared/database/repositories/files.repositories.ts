@@ -14,6 +14,10 @@ export class FilesRepository {
     return await this.prismaService.file.findFirst(findFirstDto);
   }
 
+  async findMany(findManyDto: Prisma.FileFindManyArgs) {
+    return await this.prismaService.file.findMany(findManyDto);
+  }
+
   async findUnique(findUniqueDto: Prisma.FileFindUniqueArgs) {
     return await this.prismaService.file.findUnique(findUniqueDto);
   }

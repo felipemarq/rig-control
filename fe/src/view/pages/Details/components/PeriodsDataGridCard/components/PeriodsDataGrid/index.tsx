@@ -25,7 +25,6 @@ export const PeriodsDataGrid = ({
   data,
   windowWidth = 1920,
   openDetailModal,
-  state,
 }: ListPeriodsDataGridProps) => {
   const columns: GridColDef[] =
     windowWidth >= 768
@@ -119,7 +118,6 @@ export const PeriodsDataGrid = ({
             filterable: false,
             sortable: false,
             renderCell(params: GridRenderCellParams) {
-              console.log("params", params);
               return (
                 <div className="w-full flex justify-center items-center">
                   <DropdownMenu>
@@ -133,12 +131,8 @@ export const PeriodsDataGrid = ({
                       <DropdownMenuItem>
                         {" "}
                         <Link
-                          to={`/period-action-plan/create/${params.value}`}
-                          state={{
-                            equipment: params.row.classification,
-                            repairClassification: params.row.repairClassification,
-                            ...state,
-                          }}
+                          to={`/period-action-plan/${params.value}`}
+                          state={data}
                           className="w-full flex justify-center items-center"
                         >
                           <Button variant="ghost">Criar plano de ação</Button>
