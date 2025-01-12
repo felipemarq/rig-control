@@ -8,6 +8,7 @@ import { OrderByType } from './entities/OrderByType';
 import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
+import { differenceInMinutes } from 'date-fns';
 
 @Injectable()
 export class PeriodsService {
@@ -19,6 +20,15 @@ export class PeriodsService {
 
   create(createPeriodDto: CreatePeriodDto) {
     return 'This action adds a new period';
+  }
+
+  async findOne(periodId: string) {
+    const period = await this.periodsRepo.findUnique({
+      where: {
+        id: periodId,
+      },
+    });
+    return period;
   }
 
   async findByPeriodType(
@@ -36,9 +46,10 @@ export class PeriodsService {
     let whereClause = {};
 
     whereClause = {
-      startHour: { gte: new Date(startDate) },
-      endHour: { lte: new Date(endDate) },
-      efficiency: { rigId: rigId },
+      efficiency: {
+        date: { gte: new Date(startDate), lte: new Date(endDate) },
+        rigId: rigId,
+      },
     };
 
     if (searchTerm) {
@@ -74,9 +85,10 @@ export class PeriodsService {
 
     const periods = await this.periodsRepo.findMany({
       where: whereClause,
-      orderBy: { startHour: orderBy },
+      orderBy: { efficiency: { date: orderBy } },
       skip: (Number(pageIndex) - 1) * Number(pageSize),
       take: Number(pageSize),
+      include: { efficiency: {} },
     });
 
     return { data: periods, totalItems };

@@ -122,6 +122,11 @@ export const ListEfficienciesDataGrid = ({
                         <Link
                           to={`/details/${params.value}`}
                           className="w-full flex justify-center items-center"
+                          state={{
+                            date: params.row.date,
+                            rigName: params.row.rig.name,
+                            well: params.row.well,
+                          }}
                         >
                           <Button variant="ghost">Ver Mais</Button>
                         </Link>

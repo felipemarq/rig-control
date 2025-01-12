@@ -53,6 +53,7 @@ model Rig {
   BillingConfiguration  BillingConfiguration[]
   Billing               Billing[]
   contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  periodActionPlans     PeriodActionPlan[]
 
   @@map("rigs")
 }
@@ -119,6 +120,7 @@ model User {
   enterprise        Enterprise?        @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
   userNotifications UserNotification[]
   feedbacks         Feedback[]
+  periodActionPlans PeriodActionPlan[]
 
   @@map("users")
 }
@@ -403,10 +405,51 @@ model Period {
   efficiencyId         String                @map("efficiency_id") @db.Uuid
   wellId               String?               @map("user_id") @db.Uuid
 
-  well       Well?      @relation(fields: [wellId], references: [id])
-  efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  well              Well?              @relation(fields: [wellId], references: [id])
+  efficiency        Efficiency         @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  periodActionPlans PeriodActionPlan[]
 
   @@map("periods")
+}
+
+model PeriodActionPlan {
+  id    String @id @default(uuid()) @db.Uuid
+  title String
+
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  userId                String                 @map("user_id") @db.Uuid
+  rigId                 String                 @map("rig_id") @db.Uuid
+  periodId              String                 @map("period_id") @db.Uuid
+  isFinished            Boolean                @default(false)
+  finishedAt            DateTime?              @map("finished_at")
+  user                  User                   @relation(fields: [userId], references: [id])
+  rig                   Rig                    @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  period                Period                 @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  periodActionPlanItems PeriodActionPlanItem[]
+  files                 File[]
+
+  @@map("period_action_plans")
+}
+
+model PeriodActionPlanItem {
+  id             String    @id @default(uuid()) @db.Uuid // Unique identifier
+  sequenceNumber Int // Sequential number for the item
+  task           String // "O que fazer?" - Task description
+  assignee       String // "Quem?" - Responsible person or team
+  dueDate        DateTime // "Quando?" - Deadline or planned date
+  reason         String // "Por que?" - Reason for the task
+  instructions   String // "Como fazer?" - Detailed instructions
+  notes          String? // "Observação" - Optional field for extra notes or comments
+  isFinished     Boolean   @default(false)
+  finishedAt     DateTime? @map("finished_at")
+  createdAt      DateTime  @default(now()) // Creation timestamp
+  updatedAt      DateTime  @updatedAt // Automatic update timestamp
+
+  actionPlan   PeriodActionPlan @relation(fields: [actionPlanId], references: [id], onDelete: Cascade) // Relation to PeriodActionPlan
+  actionPlanId String           @map("action_plan_id") @db.Uuid // Foreign key to PeriodActionPlan
+
+  @@map("period_action_plan_items")
 }
 
 model Well {
@@ -781,10 +824,12 @@ model File {
   userId             String            @map("user_id") @db.Uuid
   occurrenceId       String?           @map("occurrence_id") @db.Uuid
   occurrenceActionId String?           @map("occurrence_action_id") @db.Uuid
+  periodActionPlanId String?           @map("period_action_plan_id") @db.Uuid
   createdAt          DateTime          @default(now()) @map("created_at")
   user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrence         Occurrence?       @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
   occurrenceAction   OccurrenceAction? @relation(fields: [occurrenceActionId], references: [id], onDelete: Cascade)
+  periodActionPlan   PeriodActionPlan? @relation(fields: [periodActionPlanId], references: [id], onDelete: Cascade)
 
   @@map("files")
 }

@@ -47,8 +47,6 @@ export const useBillingConfiguration = () => {
     throw new Error("rigId is undefined");
   }
 
-  console.log("configBeingSeen", configBeingSeen);
-
   const { billingConfigs, isFetchingbillingConfigs } = useBillingConfigByRigId(rigId);
 
   const handleConfigBeingSeen = (billingConfig: BillingConfigResponse) => {

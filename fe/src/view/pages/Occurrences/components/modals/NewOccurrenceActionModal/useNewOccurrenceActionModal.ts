@@ -110,8 +110,6 @@ export const useNewOccurrenceActionModal = () => {
   //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
-    console.log("data", data);
-
     try {
       const occurrenceAction = await mutateNewOccurrenceAsync({
         dueDate: data.dueDate?.toISOString(),
