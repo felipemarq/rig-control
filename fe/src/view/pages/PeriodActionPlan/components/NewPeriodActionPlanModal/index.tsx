@@ -38,6 +38,7 @@ export const NewPeriodActionPlanModal = () => {
     closeUploadFilesModal,
     handleAddFile,
     filesArray,
+    canUserFinishPeriodActionPlan,
   } = useNewPeriodActionPlanModal();
 
   if (isUploadingFile) {
@@ -138,6 +139,7 @@ export const NewPeriodActionPlanModal = () => {
               <Controller
                 control={control}
                 name={`isFinished`}
+                disabled={!canUserFinishPeriodActionPlan}
                 defaultValue={false}
                 render={({ field: { onChange, value } }) => (
                   <Switch checked={value} onCheckedChange={onChange} />
@@ -341,6 +343,7 @@ export const NewPeriodActionPlanModal = () => {
                       control={control}
                       name={`periodActionPlanItems.${index}.isFinished`}
                       defaultValue={false}
+                      disabled={!canUserFinishPeriodActionPlan}
                       render={({ field: { onChange, value } }) => (
                         <Switch checked={value} onCheckedChange={onChange} />
                       )}

@@ -53,6 +53,7 @@ export const EditPeriodActionPlanModal = () => {
     handleDeleteFile,
     isLoadingDeleteFile,
     openFileDeleteModal,
+    canUserFinishPeriodActionPlan,
   } = useEditPeriodActionPlanModal();
 
   if (isUploadingFile) {
@@ -194,6 +195,7 @@ export const EditPeriodActionPlanModal = () => {
                 control={control}
                 name={`isFinished`}
                 defaultValue={false}
+                disabled={!canUserFinishPeriodActionPlan}
                 render={({ field: { onChange, value } }) => (
                   <Switch checked={value} onCheckedChange={onChange} />
                 )}
@@ -396,6 +398,7 @@ export const EditPeriodActionPlanModal = () => {
                       control={control}
                       name={`periodActionPlanItems.${index}.isFinished`}
                       defaultValue={false}
+                      disabled={!canUserFinishPeriodActionPlan}
                       render={({ field: { onChange, value } }) => (
                         <Switch checked={value} onCheckedChange={onChange} />
                       )}

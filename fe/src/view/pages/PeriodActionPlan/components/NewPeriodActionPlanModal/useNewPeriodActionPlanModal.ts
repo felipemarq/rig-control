@@ -11,7 +11,6 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 import { AxiosError } from "axios";
 import { ChangeEvent, DragEvent, useState } from "react";
 import { filesService } from "@/app/services/filesService";
-import { se } from "date-fns/locale";
 
 const actionPlanSchema = z.object({
   title: z.string().min(1, "O título é obrigatório"),
@@ -40,9 +39,10 @@ export const useNewPeriodActionPlanModal = () => {
   const {
     isNewPeriodActionPlanModalOpen,
     closeNewPeriodActionPlanModal,
-
+    handleRefechPeriodsActionPlans,
     periodId,
     efficiency,
+    canUserFinishPeriodActionPlan,
   } = usePeriodActionPlansContext();
 
   const {
@@ -64,9 +64,6 @@ export const useNewPeriodActionPlanModal = () => {
   const [isUploadingFile, setIsUploadingFile] = useState<boolean>(false);
   const [filesArray, setFilesArray] = useState<File[]>([]);
   const [isPendingUploadingFile, setIsPendingUploadingFile] = useState<boolean>(false);
-
-  console.log("file", file);
-  console.log("filesArray", filesArray);
 
   const handleAddFile = (file: File) => {
     setFilesArray((prev) => [...prev, file]);
@@ -185,6 +182,7 @@ export const useNewPeriodActionPlanModal = () => {
       setIsPendingUploadingFile(false);
 
       customColorToast("Registro feito com Sucesso!", primaryColor, "success");
+      handleRefechPeriodsActionPlans();
       navigate("/period-action-plan");
       closeNewPeriodActionPlanModal();
     } catch (error: any | typeof AxiosError) {
@@ -217,5 +215,6 @@ export const useNewPeriodActionPlanModal = () => {
     closeUploadFilesModal,
     handleAddFile,
     filesArray,
+    canUserFinishPeriodActionPlan,
   };
 };

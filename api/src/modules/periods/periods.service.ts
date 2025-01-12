@@ -8,6 +8,7 @@ import { OrderByType } from './entities/OrderByType';
 import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
+import { differenceInMinutes } from 'date-fns';
 
 @Injectable()
 export class PeriodsService {
@@ -19,6 +20,15 @@ export class PeriodsService {
 
   create(createPeriodDto: CreatePeriodDto) {
     return 'This action adds a new period';
+  }
+
+  async findOne(periodId: string) {
+    const period = await this.periodsRepo.findUnique({
+      where: {
+        id: periodId,
+      },
+    });
+    return period;
   }
 
   async findByPeriodType(

@@ -4,6 +4,8 @@ import { UpdatePeriodActionPlanDto } from './dto/update-period-action-plan.dto';
 import { PeriodActionPlansRepository } from 'src/shared/database/repositories/periodActionPlans.repositories';
 import { PeriodActionPlanItemsService } from '../period-action-plan-items/period-action-plan-items.service';
 import { FileService } from '../file/file.service';
+import { PeriodsService } from '../periods/periods.service';
+import { getDiffInMinutes } from 'src/shared/utils/getDiffInMinutes';
 
 @Injectable()
 export class PeriodActionPlansService {
@@ -11,12 +13,34 @@ export class PeriodActionPlansService {
     private readonly periodActionPlansRepo: PeriodActionPlansRepository,
     private readonly periodActionPlanItemsService: PeriodActionPlanItemsService,
     private readonly fileService: FileService,
+    private readonly periodsService: PeriodsService,
   ) {}
 
   async create(
     userId: string,
     createPeriodActionPlanDto: CreatePeriodActionPlanDto,
   ) {
+    const period = await this.periodsService.findOne(
+      createPeriodActionPlanDto.periodId,
+    );
+
+    if (period.type !== 'REPAIR') {
+      throw new ConflictException(
+        'O período selecionado não é um período de reparo!',
+      );
+    }
+
+    const diffInMinutes = getDiffInMinutes(
+      new Date(period.endHour),
+      new Date(period.startHour),
+    );
+
+    if (diffInMinutes < 180) {
+      throw new ConflictException(
+        'O período selecionado não é suficientemente longo!',
+      );
+    }
+
     const periodActionPlanExists = await this.periodActionPlansRepo.findFirst({
       where: {
         periodId: createPeriodActionPlanDto.periodId,

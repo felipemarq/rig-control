@@ -1,6 +1,8 @@
 import { PeriodActionPlan } from "@/app/entities/PeriodActionPlan";
 import { PersistanceEfficiency } from "@/app/entities/PersistanceEfficiency";
+import { User } from "@/app/entities/User";
 import { usePeriodActionPlans } from "@/app/hooks/periodActionPlans/usePeriodActionPlans";
+import { useAuth } from "@/app/hooks/useAuth";
 import { PeriodActionPlansResponse } from "@/app/services/periodActionPlanServices/getAll";
 import React, { createContext, useCallback, useState } from "react";
 import { NavigateFunction, useLocation, useNavigate, useParams } from "react-router-dom";
@@ -19,6 +21,9 @@ interface PeriodActionPlansContextValue {
   openEditPeriodActionPlanModal(periodActionPlan: PeriodActionPlan): void;
   closeEditPeriodActionPlanModal(): void;
   actionPlanBeingSeen: PeriodActionPlan | null;
+  handleRefechPeriodsActionPlans: () => void;
+  user: User | undefined;
+  canUserFinishPeriodActionPlan: boolean;
 }
 
 // Criação do contexto
@@ -33,10 +38,18 @@ export const PeriodActionPlansProvider = ({
 }) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
-  const { isFetchingPeriodsActionPlans, periodActionPlans } = usePeriodActionPlans();
+  const { isFetchingPeriodsActionPlans, periodActionPlans, refetchPeriodsActionPlans } =
+    usePeriodActionPlans();
   const navigate = useNavigate();
   const { state } = useLocation();
   const { periodId } = useParams();
+  const { user } = useAuth();
+
+  const canUserFinishPeriodActionPlan =
+    user?.email === "luizrangel@conterp.com.br" ||
+    user?.email === "uilliamsena@conterp.com.br" ||
+    user?.email === "alanfelipe@conterp.com.br" ||
+    user?.email === "felipemarques@conterp.com.br";
 
   const efficiency = state as PersistanceEfficiency;
 
@@ -49,6 +62,10 @@ export const PeriodActionPlansProvider = ({
   const [actionPlanBeingSeen, setActionPlanBeingSeen] = useState<PeriodActionPlan | null>(
     null
   );
+
+  const handleRefechPeriodsActionPlans = useCallback(() => {
+    refetchPeriodsActionPlans();
+  }, []);
 
   const closeNewPeriodActionPlanModal = useCallback(() => {
     setIsNewPeriodActionPlanModalOpen(false);
@@ -85,6 +102,9 @@ export const PeriodActionPlansProvider = ({
         isEditPeriodActionPlanModalOpen,
         closeEditPeriodActionPlanModal,
         openEditPeriodActionPlanModal,
+        handleRefechPeriodsActionPlans,
+        user,
+        canUserFinishPeriodActionPlan,
       }}
     >
       {children}

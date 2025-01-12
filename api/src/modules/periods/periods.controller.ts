@@ -84,4 +84,9 @@ export class PeriodsController {
       searchTerm,
     );
   }
+
+  @Get('/:periodId')
+  async findOne(@Param('periodId', ParseUUIDPipe) periodId: string) {
+    return await this.periodsService.findOne(periodId);
+  }
 }

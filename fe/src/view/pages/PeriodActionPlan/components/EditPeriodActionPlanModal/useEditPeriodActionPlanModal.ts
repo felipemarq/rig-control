@@ -41,8 +41,9 @@ export const useEditPeriodActionPlanModal = () => {
     isEditPeriodActionPlanModalOpen,
     closeEditPeriodActionPlanModal,
     openEditPeriodActionPlanModal,
-
+    handleRefechPeriodsActionPlans,
     actionPlanBeingSeen,
+    canUserFinishPeriodActionPlan,
   } = usePeriodActionPlansContext();
 
   const queryClient = useQueryClient();
@@ -244,6 +245,7 @@ export const useEditPeriodActionPlanModal = () => {
 
       closeEditPeriodActionPlanModal();
       customColorToast("Registro editado com Sucesso!", primaryColor, "success");
+      handleRefechPeriodsActionPlans();
       navigate("/period-action-plan");
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.PERIOD_ACTION_PLAN, QueryKeys.PERIOD_ACTION_PLANS],
@@ -284,6 +286,7 @@ export const useEditPeriodActionPlanModal = () => {
     isDeleteFileModalOpen,
     fileIdToDelete,
     closeFileDeleteModal,
+    canUserFinishPeriodActionPlan,
     handleDeleteFile,
   };
 };

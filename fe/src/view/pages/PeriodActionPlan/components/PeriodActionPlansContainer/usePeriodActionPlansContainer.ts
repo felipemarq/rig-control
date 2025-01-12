@@ -12,6 +12,7 @@ export const usePeriodActionPlansContainer = () => {
     periodActionPlans,
     navigate,
     openEditPeriodActionPlanModal,
+    handleRefechPeriodsActionPlans,
   } = usePeriodActionPlansContext();
 
   const queryClient = useQueryClient();
@@ -46,6 +47,7 @@ export const usePeriodActionPlansContainer = () => {
       queryClient.invalidateQueries({
         queryKey: [QueryKeys.PERIOD_ACTION_PLAN, QueryKeys.PERIOD_ACTION_PLANS],
       });
+      handleRefechPeriodsActionPlans();
       navigate("/period-action-plan");
     } catch (error: any | typeof AxiosError) {
       console.log(error);

@@ -107,7 +107,6 @@ export const ListEfficienciesDataGrid = ({
             filterable: false,
             sortable: false,
             renderCell(params: GridRenderCellParams) {
-              console.log(params);
               return (
                 <div className="w-full flex justify-center items-center">
                   <DropdownMenu>
