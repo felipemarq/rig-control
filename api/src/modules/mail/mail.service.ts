@@ -189,7 +189,7 @@ export class MailService {
     });
   }
 
-  async sendEmail(email: string, subject: string, html: string) {
+  async sendEmail(email: string[], subject: string, html: string) {
     await this.mailerService.sendMail({
       to: email,
       subject: subject,
