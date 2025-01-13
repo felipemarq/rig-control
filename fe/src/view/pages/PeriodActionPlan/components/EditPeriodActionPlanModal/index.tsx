@@ -5,14 +5,7 @@ import { Card } from "@/components/ui/card";
 import { Controller } from "react-hook-form";
 import { Input } from "@/view/components/Input";
 import { Button as ShadcnButton } from "@/components/ui/button";
-import {
-  Download,
-  DownloadCloud,
-  Paperclip,
-  PlusCircle,
-  Trash,
-  XCircle,
-} from "lucide-react";
+import { Download, Paperclip, PlusCircle, Trash, XCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
@@ -272,7 +265,7 @@ export const EditPeriodActionPlanModal = () => {
                           variant="modal"
                           required
                           name={`periodActionPlanItems.${index}.task`}
-                          error={errors.periodActionPlanItems?.[index]?.task?.message}
+                          error={errors.periodActionPlanItems?.[index]?.task?.message!}
                           placeholder="O que fazer?"
                           maxLength={60}
                           value={value}
@@ -282,7 +275,7 @@ export const EditPeriodActionPlanModal = () => {
                     />
                     {errors.periodActionPlanItems?.[index]?.task && (
                       <p className="text-red-500">
-                        {errors.periodActionPlanItems[index].task?.message}
+                        {errors.periodActionPlanItems[index]?.task?.message!}
                       </p>
                     )}
                   </div>
@@ -302,7 +295,7 @@ export const EditPeriodActionPlanModal = () => {
                     />
                     {errors.periodActionPlanItems?.[index]?.assignee && (
                       <p className="text-red-500">
-                        {errors.periodActionPlanItems[index].assignee?.message}
+                        {errors.periodActionPlanItems[index]?.assignee?.message!}
                       </p>
                     )}
                   </div>
@@ -324,7 +317,7 @@ export const EditPeriodActionPlanModal = () => {
                     />
                     {errors.periodActionPlanItems?.[index]?.dueDate && (
                       <p className="text-red-500">
-                        {errors.periodActionPlanItems[index].dueDate?.message}
+                        {errors.periodActionPlanItems[index]?.dueDate?.message!}
                       </p>
                     )}
                   </div>
@@ -336,7 +329,7 @@ export const EditPeriodActionPlanModal = () => {
                         <Input
                           variant="modal"
                           required
-                          error={errors.periodActionPlanItems?.[index]?.reason?.message}
+                          error={errors.periodActionPlanItems?.[index]?.reason?.message!}
                           placeholder="Porquê?"
                           maxLength={60}
                           {...field}
@@ -345,7 +338,7 @@ export const EditPeriodActionPlanModal = () => {
                     />
                     {errors.periodActionPlanItems?.[index]?.reason && (
                       <p className="text-red-500">
-                        {errors.periodActionPlanItems[index].reason?.message}
+                        {errors.periodActionPlanItems[index]?.reason?.message!}
                       </p>
                     )}
                   </div>
@@ -367,7 +360,7 @@ export const EditPeriodActionPlanModal = () => {
                   />
                   {errors.periodActionPlanItems?.[index]?.instructions && (
                     <p className="text-red-500">
-                      {errors.periodActionPlanItems[index].instructions?.message}
+                      {errors.periodActionPlanItems[index]?.instructions?.message}
                     </p>
                   )}
                 </div>

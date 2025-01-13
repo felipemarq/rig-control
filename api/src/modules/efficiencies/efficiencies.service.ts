@@ -375,7 +375,12 @@ export class EfficienciesService {
         if (type === 'REPAIR') {
           if (diffInMinutes >= 180) {
             await this.mailService.sendEmail(
-              'felipemarques@conterp.com.br',
+              [
+                'alanfelipe@conterp.com.br',
+                'luizrangel@conterp.com.br',
+                'felipemarques@conterp.com.br',
+                'bianca@conterp.com.br',
+              ],
               'Reparo de equipamento requer plano de ação',
               `<!DOCTYPE html>
                 <html lang="en">
