@@ -23,6 +23,11 @@ import { FileModule } from './modules/file/file.module';
 import { ConfigModule } from '@nestjs/config';
 import { OccurrenceActionsModule } from './modules/occurrence-actions/occurrence-actions.module';
 import { ClientsModule } from './modules/clients/clients.module';
+import { MailModule } from './modules/mail/mail.module';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
+import { PeriodActionPlansModule } from './modules/period-action-plans/period-action-plans.module';
+import { PeriodActionPlanItemsModule } from './modules/period-action-plan-items/period-action-plan-items.module';
 
 @Module({
   imports: [
@@ -48,6 +53,11 @@ import { ClientsModule } from './modules/clients/clients.module';
     ConfigModule.forRoot({ isGlobal: true }),
     OccurrenceActionsModule,
     ClientsModule,
+    MailModule,
+    NotificationsModule,
+    FeedbacksModule,
+    PeriodActionPlansModule,
+    PeriodActionPlanItemsModule,
   ],
   controllers: [],
   providers: [

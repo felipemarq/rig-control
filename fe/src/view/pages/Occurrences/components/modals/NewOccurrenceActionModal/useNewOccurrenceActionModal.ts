@@ -14,10 +14,12 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
+  finishedAt: z.date().optional(),
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean().default(false),
   description: z.string().optional(),
+  responsibleEmail: z.string().email().min(1, "Obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -85,8 +87,6 @@ export const useNewOccurrenceActionModal = () => {
 
   const isFinished = watch("isFinished");
 
-  console.log("isFinished", isFinished);
-
   /*  console.log("selectedSeverity", selectedSeverity);
   console.log("errors", errors);
   occurrenceSeveritySelectOptions;
@@ -110,15 +110,16 @@ export const useNewOccurrenceActionModal = () => {
   //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
-    console.log("data", data);
     try {
       const occurrenceAction = await mutateNewOccurrenceAsync({
         dueDate: data.dueDate?.toISOString(),
         description: data.description,
         isFinished: data.isFinished,
+        finishedAt: data.finishedAt?.toISOString(),
         occurrenceId: occurenceIdActionPlanBeingSeen!,
         responsible: data.responsible,
         title: data.title,
+        responsibleEmail: data.responsibleEmail,
       });
 
       if (file) {
@@ -130,9 +131,7 @@ export const useNewOccurrenceActionModal = () => {
 
       setFile(null);
 
-      if (file) {
-        window.location.reload();
-      }
+      window.location.reload();
 
       queryClient.invalidateQueries({ queryKey: [QueryKeys.OCCURRENCES_ACTIONS] });
       closeNewOccurrenceActionModal();
@@ -157,5 +156,6 @@ export const useNewOccurrenceActionModal = () => {
     file,
     isDragging,
     handleDragLeave,
+    isFinished,
   };
 };

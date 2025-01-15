@@ -14,10 +14,12 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   dueDate: z.date(),
+  finishedAt: z.date().optional(),
   title: z.string().min(1, "Obrigatório."),
   responsible: z.string().min(1, "Obrigatório."),
   isFinished: z.boolean(),
   description: z.string().optional(),
+  responsibleEmail: z.string().email().min(1, "Obrigatório"),
 });
 
 export type FormData = z.infer<typeof schema>;
@@ -29,6 +31,8 @@ export const useEditOccurrenceActionModal = () => {
     occurrenceActionBeingSeen,
     handleRefetchOccurrences,
   } = useOccurrencesContext();
+
+  console.log(occurrenceActionBeingSeen);
 
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
@@ -84,25 +88,26 @@ export const useEditOccurrenceActionModal = () => {
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
+    watch,
     formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
-      description: occurrenceActionBeingSeen?.description,
+      description: "",
       dueDate: new Date(occurrenceActionBeingSeen?.dueDate!),
       isFinished: occurrenceActionBeingSeen?.isFinished,
       responsible: occurrenceActionBeingSeen?.responsible,
       title: occurrenceActionBeingSeen?.title,
+      finishedAt: occurrenceActionBeingSeen?.finishedAt
+        ? new Date(occurrenceActionBeingSeen?.finishedAt!)
+        : undefined,
+      responsibleEmail: occurrenceActionBeingSeen?.responsibleEmail,
     },
   });
 
-  /*  console.log("selectedSeverity", selectedSeverity);
-  console.log("errors", errors);
-  occurrenceSeveritySelectOptions;
-  console.log(
-    "occurrenceSeveritySelectOptions",
-    occurrenceSeveritySelectOptions
-  ); */
+  console.log("erros", errors);
+
+  const isFinished = watch("isFinished");
 
   const queryClient = useQueryClient();
 
@@ -151,6 +156,7 @@ export const useEditOccurrenceActionModal = () => {
         occurrenceId: occurrenceActionBeingSeen?.occurrenceId!,
         responsible: data.responsible,
         title: data.title,
+        responsibleEmail: data.responsibleEmail,
       });
 
       if (file) {
@@ -200,5 +206,6 @@ export const useEditOccurrenceActionModal = () => {
     isDeleteModalOpen,
     handleDeleteOccurrence,
     isLoadingDeleteOccurrenceAction,
+    isFinished,
   };
 };

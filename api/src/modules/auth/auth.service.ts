@@ -13,6 +13,7 @@ import { RigsRepository } from 'src/shared/database/repositories/rigs.repositori
 import { UsersContractRepository } from 'src/shared/database/repositories/usersContract.repositories';
 import { AccessLevel } from './entities/AccessLevel';
 import { UserLogService } from '../user-log/user-log.service';
+import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
 
 @Injectable()
 export class AuthService {
@@ -111,6 +112,22 @@ export class AuthService {
     return {
       accessToken,
     };
+  }
+
+  async authenticateWithoutPassword(userId: string) {
+    const user = await this.usersRepo.findUnique({ where: { id: userId } });
+
+    if (!user) {
+      throw new UnauthorizedException('Usuário não encontrado!');
+    }
+
+    // Gerar um token de acesso diretamente
+    const accessToken = await this.generateAccessToken(
+      user.id,
+      user.accessLevel as AccessLevel,
+    );
+
+    return { accessToken };
   }
 
   private async generateAccessToken(

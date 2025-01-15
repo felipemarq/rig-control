@@ -3,7 +3,7 @@ import { customColorToast } from "../../../../../app/utils/customColorToast";
 import { PersistanceEfficiency } from "../../../../../app/entities/PersistanceEfficiency";
 import { useEfficiencyById } from "../../../../../app/hooks/efficiencies/useEfficiencyById";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { useAuth } from "../../../../../app/hooks/useAuth";
 import { efficienciesService } from "../../../../../app/services/efficienciesService";
 import { AxiosError } from "axios";
@@ -33,12 +33,15 @@ interface DetailsContextValues {
   isLoadingUpdateEfficiency: boolean;
   windowWidth: number;
   handleExcelDownload: () => Promise<void>;
+  state: { date: string; rigName: string; well: string; rigId: string };
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
 export const DetailsContextProvider = ({ children }: { children: React.ReactNode }) => {
   const { efficiencyId } = useParams<{ efficiencyId: string }>();
   const { primaryColor } = useTheme();
+  const { state: originalState } = useLocation();
+
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
     // Pode ser um redirecionamento, um erro lançado, ou até mesmo um log.
@@ -46,6 +49,8 @@ export const DetailsContextProvider = ({ children }: { children: React.ReactNode
   }
 
   const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId);
+
+  const state = { ...originalState, rigId: efficiency?.rigId };
 
   const windowWidth = useWindowWidth();
 
@@ -150,6 +155,7 @@ export const DetailsContextProvider = ({ children }: { children: React.ReactNode
         isLoadingUpdateEfficiency,
         efficiencyId,
         handleUpdateEfficiency,
+        state,
       }}
     >
       {children}

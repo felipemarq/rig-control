@@ -26,6 +26,11 @@ import { translateRepairClassification } from 'src/shared/utils/translateRepairC
 import { RepairClassification } from './entities/RepairClassification';
 import { translateClassification } from 'src/shared/utils/translateClassifications';
 import * as PDFDocument from 'pdfkit';
+import { UserLogService } from '../user-log/user-log.service';
+import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
+import { LogType } from '../user-log/entities/LogType';
+import { MailService } from '../mail/mail.service';
+import { formatDate } from 'src/shared/utils/formatDate';
 
 @Injectable()
 export class EfficienciesService {
@@ -38,6 +43,8 @@ export class EfficienciesService {
     private readonly wellsRepo: WellsRepository,
     private readonly deletionRequestRepo: DeletionRequestRepository,
     private readonly temporaryEfficiencyRepo: TemporaryEfficienciesRepository,
+    private readonly userLogService: UserLogService,
+    private readonly mailService: MailService,
   ) {}
 
   private isTimeValid(startHour: string, endHour: string): boolean {
@@ -173,8 +180,6 @@ export class EfficienciesService {
      */
     this.validatePeriodsTime(periods);
 
-    console.log(periods);
-
     /**
      * Constructs the efficiency data object with the provided information.
      * @param createEfficiencyDto The DTO containing the information to construct the efficiency data object.
@@ -268,8 +273,15 @@ export class EfficienciesService {
     let suckingTruckTotalAmount = 0;
     let totalGlossHours = 0;
     let totalRepairHours = 0;
+    let commercialHours = 0;
 
     const wells = await this.wellsRepo.findAll({});
+
+    const rig = await this.rigsRepo.findUnique({
+      where: {
+        id: rigId,
+      },
+    });
 
     /**
      * Iterates through each period, updating wellId based on the name found in wells array.
@@ -293,7 +305,17 @@ export class EfficienciesService {
       return differenceInMinutes(endDate, initialHour);
     };
     periods.forEach(
-      ({ type, startHour, endHour, classification, wellId }, index) => {
+      async (
+        {
+          type,
+          startHour,
+          endHour,
+          classification,
+          wellId,
+          repairClassification,
+        },
+        index,
+      ) => {
         // Find the corresponding well ID in the wells array
         const { id: wellIdFound } = wells.find(({ name }) => wellId === name);
 
@@ -328,6 +350,10 @@ export class EfficienciesService {
         }
         billedScheduledStopTotalHours = 0;
 
+        if (type === 'COMMERCIALLY_STOPPED') {
+          commercialHours += diffInMinutes / 60;
+        }
+
         if (
           type === 'SCHEDULED_STOP' &&
           classification === 'BILLED_SCHEDULED_STOP'
@@ -347,6 +373,100 @@ export class EfficienciesService {
         }
 
         if (type === 'REPAIR') {
+          if (diffInMinutes >= 180) {
+            await this.mailService.sendEmail(
+              [
+                'alanfelipe@conterp.com.br',
+                'luizrangel@conterp.com.br',
+                'felipemarques@conterp.com.br',
+                'bianca@conterp.com.br',
+              ],
+              'Reparo de equipamento requer plano de ação',
+              `<!DOCTYPE html>
+                <html lang="en">
+                <head>
+                    <meta charset="UTF-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>Reparo de Equipamento</title>
+                    <style>
+                        body {
+                            font-family: Arial, sans-serif;
+                            background-color: #f4f4f9;
+                            margin: 0;
+                            padding: 0;
+                        }
+                        .email-container {
+                            max-width: 600px;
+                            margin: auto;
+                            padding: 20px;
+                            border: 1px solid #ddd;
+                            border-radius: 8px;
+                        }
+                        .header {
+                            background-color: #1c7b7b;
+                            color: #ffffff;
+                            text-align: center;
+                            padding: 20px;
+                            font-size: 20px;
+                            font-weight: bold;
+                        }
+                        .content {
+                            padding: 20px;
+                            line-height: 1.6;
+                        }
+                        .content p {
+                            margin: 10px 0;
+                        }
+                        .footer {
+                            margin-top: 20px;
+                            text-align: center;
+                            font-size: 12px;
+                            color: #888;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="email-container">
+                        <div class="header">
+                            Alerta: Reparo de Equipamento Prolongado
+                        </div>
+                        <div class="content">
+                            <p>Prezado(a),</p>
+                            <p>Foi identificado um reparo prolongado em um dos equipamentos. Seguem os detalhes:</p>
+                            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                                <h3 style="margin-top: 0; color: #333;">Detalhes do Reparo</h3>
+                                <p style="margin: 0;"><strong>Sonda:</strong> ${
+                                  rig.name
+                                }</p>
+                                <p style="margin: 0;"><strong>Dia:</strong> ${formatDate(
+                                  new Date(date),
+                                )}</p>
+                                <p style="margin: 0;"><strong>Parte do Equipamento:</strong> ${translateClassification(
+                                  classification,
+                                )}</p>
+                                <p style="margin: 0;"><strong>Parte Quebrada:</strong> ${translateRepairClassification(
+                                  repairClassification,
+                                )}</p>
+                                <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${
+                                  diffInMinutes / 60
+                                } Hrs</p>
+                            </div>
+                            <p style="color: #555;">
+                                Por favor, elabore um plano de ação para resolver o problema o mais breve possível.
+                                Se precisar de mais informações, entre em contato conosco.
+                            </p>
+                        </div>
+                        <div class="footer">
+                            <p>Este é um e-mail automático. Por favor, não responda.</p>
+                            <p>&copy; ${new Date().getFullYear()} Info Conterp. Todos os direitos reservados.</p>
+                        </div>
+                    </div>
+                </body>
+                </html>
+`,
+            );
+          }
+
           totalRepairHours += diffInMinutes / 60;
         }
 
@@ -573,6 +693,7 @@ export class EfficienciesService {
         standByHours: standByTotalHours,
         unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
         billedScheduledStopHours: billedScheduledStopTotalHours,
+        commercialHours: commercialHours,
       },
     });
 
@@ -620,6 +741,12 @@ export class EfficienciesService {
       },
     });
 
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.EFFICIENCY_CREATE,
+    );
+
     return efficiency;
   }
 
@@ -628,11 +755,14 @@ export class EfficienciesService {
    * @param filters - The filters to apply to the query.
    * @returns The efficiencies that match the specified criteria.
    */
-  async findAllByRigId(filters: {
-    rigId: string;
-    startDate: string;
-    endDate: string;
-  }) {
+  async findAllByRigId(
+    filters: {
+      rigId: string;
+      startDate: string;
+      endDate: string;
+    },
+    userId: string,
+  ) {
     const rigExists = await this.rigsRepo.findUnique({
       where: {
         id: filters.rigId,
@@ -660,6 +790,10 @@ export class EfficienciesService {
         userId: true,
         date: true,
         availableHours: true,
+        commercialHours: true,
+        standByHours: true,
+        billedScheduledStopHours: true,
+        unbilledScheduledStopHours: true,
         periods: {
           select: {
             id: true,
@@ -713,6 +847,12 @@ export class EfficienciesService {
       },
     });
 
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.EFFICIENCY_VIEW,
+    );
+
     return efficiencies;
   }
 
@@ -723,16 +863,23 @@ export class EfficienciesService {
       startDate: string;
       endDate: string;
     },
+    userId: string,
   ) {
     const rigExists = await this.rigsRepo.findUnique({
-      where: {
-        id: filters.rigId,
-      },
+      where: { id: filters.rigId },
     });
 
     if (!rigExists) {
       throw new NotFoundException('Sonda não encontrada');
     }
+
+    const formatDate = (date: Date) => {
+      if (date.toString() === 'Invalid Date') {
+        return Intl.DateTimeFormat('pt-br').format(new Date());
+      }
+
+      return Intl.DateTimeFormat('pt-br').format(date);
+    };
 
     const efficiencies = await this.efficiencyRepo.findMany({
       where: {
@@ -742,9 +889,7 @@ export class EfficienciesService {
           lte: new Date(filters.endDate),
         },
       },
-      orderBy: {
-        date: 'asc',
-      },
+      orderBy: { date: 'asc' },
       select: {
         id: true,
         well: true,
@@ -753,92 +898,154 @@ export class EfficienciesService {
         standByHours: true,
         repairHours: true,
         glossHours: true,
+        rig: {
+          select: {
+            name: true,
+          },
+        },
       },
     });
 
     // Criação do documento PDF com tamanho de página A4
-    const doc = new PDFDocument({
-      size: 'A4', // Definimos o tamanho da página como A4
-      margin: 30,
-    });
+    const doc = new PDFDocument({ size: 'A4', margin: 30 });
 
-    // Configurações de resposta para o navegador fazer o download
+    // Configurações de resposta para download
     response.setHeader(
       'Content-Disposition',
       'attachment; filename=relatorio.pdf',
     );
     response.setHeader('Content-Type', 'application/pdf');
-
-    // Definir o fluxo de resposta do documento para o cliente
     doc.pipe(response);
 
-    // Adicionar título ao PDF
+    // Cabeçalho do relatório
     doc
-      .fontSize(14)
-      .text('Relatório de Operação', { align: 'center', underline: true });
+      .fontSize(12)
+      .font('Helvetica-Bold')
+      .text('CONTERP', {
+        align: 'center',
+      })
+      .moveDown(0.5);
+    doc
+      .fontSize(10)
+      .font('Helvetica')
+      //@ts-ignore
+      .text(`SPT: ${efficiencies[0].rig.name}`, { align: 'left' })
+      .text(
+        `Período: ${formatDate(new Date(filters.startDate))} à ${formatDate(
+          new Date(filters.endDate),
+        )}`,
+        {
+          align: 'left',
+        },
+      )
+      .moveDown(1);
+
+    // Título
+    doc.fontSize(14).text('RELATÓRIO DE SERVIÇOS EXECUTADOS', {
+      align: 'center',
+      underline: true,
+    });
     doc.moveDown(1.5);
 
-    // Função para desenhar uma linha da tabela
+    // Função para desenhar linhas da tabela
     const drawRow = (columns: string[], y: number) => {
       let x = doc.page.margins.left;
+      const colWidths = [70, 120, 100, 80, 80, 80, 80];
       columns.forEach((text, i) => {
-        const colWidth = [90, 120, 100, 100, 100, 100][i]; // Defina as larguras das colunas
-        doc.text(text, x, y, { width: colWidth, align: 'left' });
-        x += colWidth; // Avança para a próxima coluna
+        const width = colWidths[i] || 80;
+        doc.text(text, x, y, { width, align: 'left' });
+        x += width;
       });
     };
 
-    // Função para verificar se precisa de nova página
+    // Verificar necessidade de nova página
     const checkPageEnd = (yPosition: number) => {
       const pageHeight = doc.page.height;
-      const bottomMargin = 50; // Definir margem inferior
+      const bottomMargin = 50;
       if (yPosition > pageHeight - bottomMargin) {
-        doc.addPage(); // Adiciona nova página se passar do limite
-        return doc.page.margins.top; // Retorna a nova posição de Y no topo da nova página
+        doc.addPage();
+        return doc.page.margins.top;
       }
       return yPosition;
     };
 
-    // Definir tamanhos de fonte menores para cabeçalhos e dados
-    const headerFontSize = 10;
-    const dataFontSize = 9;
-
-    // Cabeçalhos da tabela
+    // Definindo cabeçalho da tabela
     const headers = [
       'Dia',
       'Poço',
-      'Hrs. Operando',
-      'Hrs. StandBy',
-      'Hrs. Glosa',
-      'Hrs. Reparo',
+      'Hrs Operando',
+      'Hrs StandBy',
+      'Hrs Glosa',
+      'Hrs Reparo',
+      'Total',
     ];
 
     // Desenhar cabeçalhos
-    doc.fontSize(headerFontSize).font('Helvetica-Bold');
-    let currentY = doc.y; // Posição atual no eixo Y
+    doc.fontSize(10).font('Helvetica-Bold');
+    let currentY = doc.y;
     drawRow(headers, currentY);
-    currentY = doc.y + 15; // Incrementa o Y após os cabeçalhos
+    currentY += 20;
 
-    // Desenhar os dados da tabela
-    doc.fontSize(dataFontSize).font('Helvetica');
-    efficiencies.forEach((efficiency) => {
-      currentY = checkPageEnd(currentY); // Verifica se precisa de nova página antes de desenhar a linha
+    // Variáveis de totais
+    let totalOperando = 0,
+      totalStandBy = 0,
+      totalGlosa = 0,
+      totalReparo = 0;
 
+    // Desenhar dados da tabela
+    doc.fontSize(9).font('Helvetica');
+    efficiencies.forEach((eff) => {
+      currentY = checkPageEnd(currentY);
       const row = [
-        efficiency.date.toISOString().split('T')[0], // Formata a data
-        efficiency.well || 'N/A',
-        efficiency.availableHours?.toFixed() ?? '0',
-        efficiency.standByHours?.toFixed() ?? '0',
-        efficiency.glossHours?.toFixed() ?? '0',
-        efficiency.repairHours?.toFixed() ?? '0',
+        formatDate(eff.date),
+        eff.well || 'N/A',
+        eff.availableHours?.toFixed(1) || '0',
+        eff.standByHours?.toFixed(1) || '0',
+        eff.glossHours?.toFixed(1) || '0',
+        eff.repairHours?.toFixed(1) || '0',
+        (
+          eff.availableHours +
+          eff.standByHours +
+          eff.glossHours +
+          eff.repairHours
+        ).toFixed(1),
       ];
-
+      totalOperando += eff.availableHours;
+      totalStandBy += eff.standByHours;
+      totalGlosa += eff.glossHours;
+      totalReparo += eff.repairHours;
       drawRow(row, currentY);
-      currentY += 15; // Incrementa a posição Y para a próxima linha
+      currentY += 15;
     });
+
+    // Totais alinhados com as colunas
+    currentY = checkPageEnd(currentY);
+    doc.fontSize(10).font('Helvetica-Bold');
+    drawRow(
+      [
+        'Totais',
+        '', // Espaço em branco para alinhar com as colunas anteriores
+        totalOperando.toFixed(1),
+        totalStandBy.toFixed(1),
+        totalGlosa.toFixed(1),
+        totalReparo.toFixed(1),
+        (totalOperando + totalStandBy + totalGlosa + totalReparo).toFixed(1),
+      ],
+      currentY,
+    );
+
+    // Rodapé com certificação
+
+    // Adicionando espaçamento para a linha de assinatura
 
     // Finalizar o documento
     doc.end();
+
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.REPORT_GENERATION,
+    );
   }
 
   async excelReport(efficiencyId: string, response: Response) {
@@ -915,7 +1122,7 @@ export class EfficienciesService {
       } | null;
       //@ts-ignore
     }[] = efficiency.periods;
-    //console.log(periods[1].startHour.toString());
+
     const formattedPeriods = periods.map((period) => {
       return {
         ...period,
@@ -1098,7 +1305,9 @@ export class EfficienciesService {
     //Mudar para params depois
     const year = new Date().getFullYear();
 
-    return await this.efficiencyRepo.getAverage(rigId, year);
+    const test = await this.efficiencyRepo.getAverage(rigId, year);
+
+    return test;
   }
 
   async getWellsCountByRig(rigId: string) {
@@ -1111,31 +1320,85 @@ export class EfficienciesService {
   async getRigsAvailableHoursAverage(filters: {
     startDate: string;
     endDate: string;
+    userId: string;
   }) {
-    const rigs = await this.rigsRepo.findAll();
+    const rigs = await this.rigsRepo.findAll({});
+
+    const usersRigs = await this.userRigsRepo.findMany({
+      where: { userId: filters.userId },
+    });
 
     const average = await this.efficiencyRepo.groupBy({
       by: ['rigId'],
       _avg: {
         availableHours: true,
+        standByHours: true,
+        billedScheduledStopHours: true,
+      },
+      _sum: {
+        availableHours: true,
+        standByHours: true,
+        billedScheduledStopHours: true,
       },
       where: {
         date: {
           gte: new Date(filters.startDate),
           lte: new Date(filters.endDate),
         },
+        OR: [
+          {
+            commercialHours: {
+              lte: 0,
+            },
+          },
+          { commercialHours: { equals: null } },
+        ],
       },
       _count: true,
     });
 
-    const result = average.map(({ _avg, rigId, _count }) => {
+    let filteredAverage = [];
+
+    if (usersRigs.length > 0) {
+      filteredAverage = average.filter(({ rigId }) => {
+        return usersRigs.find(({ rigId: userRigId }) => userRigId === rigId);
+      });
+    }
+
+    const commercialDaysGrouppedBy = await this.efficiencyRepo.groupBy({
+      by: ['rigId'],
+      _count: {
+        commercialHours: true, // Conta os dias com commercialHours diferentes de NULL e > 0
+      },
+      where: {
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+        commercialHours: {
+          gt: 0, // Filtra somente os registros com commercialHours maiores que 0
+        },
+      },
+    });
+
+    const result = filteredAverage.map(({ rigId, _count, _sum }) => {
       const rigFound = rigs.find((rig) => rig.id === rigId);
+      const commercialDays = commercialDaysGrouppedBy.find(
+        (rig) => rig.rigId === rigId,
+      );
+
       return {
         rigId,
         rig: rigFound.name,
-        avg: _avg.availableHours,
+        avg:
+          (_sum.availableHours +
+            _sum.standByHours +
+            _sum.billedScheduledStopHours) /
+          _count,
         count: _count,
         state: rigFound.state,
+        //@ts-ignore
+        commercialDays: commercialDays?._count?.commercialHours ?? 0,
       };
     });
 

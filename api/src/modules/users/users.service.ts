@@ -7,6 +7,7 @@ import { ContractRepository } from 'src/shared/database/repositories/contract.re
 import { UsersRepository } from 'src/shared/database/repositories/users.repositories';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { hash } from 'bcryptjs';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class UsersService {
@@ -41,6 +42,24 @@ export class UsersService {
                   select: { client: { select: { id: true, name: true } } },
                 },
               },
+            },
+          },
+        },
+        userNotifications: {
+          select: {
+            isRead: true,
+            notification: {
+              select: {
+                title: true,
+                createdAt: true,
+                description: true,
+                id: true,
+              },
+            },
+          },
+          orderBy: {
+            notification: {
+              createdAt: 'desc',
             },
           },
         },

@@ -1,5 +1,5 @@
-import {UF} from "../../entities/Rig";
-import {httpClient} from "../httpClient";
+import { UF } from "../../entities/Rig";
+import { httpClient } from "../httpClient";
 
 export type RigsAverageResponse = {
   rigId: string;
@@ -7,6 +7,7 @@ export type RigsAverageResponse = {
   avg: number;
   state: UF;
   count: number;
+  commercialDays: number;
 }[];
 
 export type filters = {
@@ -15,12 +16,9 @@ export type filters = {
 };
 
 export const getRigsAverage = async (filters: filters) => {
-  const {data} = await httpClient.get<RigsAverageResponse>(
-    "/efficiencies/average/",
-    {
-      params: filters,
-    }
-  );
+  const { data } = await httpClient.get<RigsAverageResponse>("/efficiencies/average/", {
+    params: filters,
+  });
 
   return data;
 };

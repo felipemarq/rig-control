@@ -8,7 +8,7 @@ export const UnbilledPeriodsPieChartCard = () => {
   const { isFetchingRigsAverage, rigsAverage, isFetchingUnbilledPeriods } =
     useGlobalDashboard();
   return (
-    <Card className="col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
+    <Card className="col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <CardHeader className="pl-7 ">
         <div className="flex gap-2 items-center justify-between cursor-pointer">
           <CardTitle>Tempo não faturado </CardTitle>
@@ -20,8 +20,8 @@ export const UnbilledPeriodsPieChartCard = () => {
         {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
           <div className="flex justify-center items-center">
             <NotFound>
-              <strong>Não</strong> existem dados para a <strong>sonda</strong>{" "}
-              no <strong>período</strong> selecionado!
+              <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
+              <strong>período</strong> selecionado!
             </NotFound>
           </div>
         )}

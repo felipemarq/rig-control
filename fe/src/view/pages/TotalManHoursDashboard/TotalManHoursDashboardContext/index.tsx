@@ -81,20 +81,17 @@ export const TotalManHoursDashboardProvider = ({
   );
   const isEmpty = allTaxes?.every((tax) => tax.count === 0);
 
-  const hasTorOccurrence = occurrencesTaxes?.torOccurrences.some(
-    (tax) => tax.count > 0
-  );
-  const hasTarOccurrence = occurrencesTaxes?.tarOccurrences.some(
-    (tax) => tax.count > 0
-  );
+  const hasTorOccurrence = occurrencesTaxes?.torOccurrences.some((tax) => tax.count > 0);
+  const hasTarOccurrence = occurrencesTaxes?.tarOccurrences.some((tax) => tax.count > 0);
   const hasNotAbsentOccurrence = occurrencesTaxes?.notAbsentOccurrences.some(
     (tax) => tax.count > 0
   );
   const hasCommutingOccurrence = occurrencesTaxes?.commutingOccurrences.some(
     (tax) => tax.count > 0
   );
-  const hasAbsentOccurrencesOccurrence =
-    occurrencesTaxes?.absentOccurrences.some((tax) => tax.count > 0);
+  const hasAbsentOccurrencesOccurrence = occurrencesTaxes?.absentOccurrences.some(
+    (tax) => tax.count > 0
+  );
 
   return (
     <TotalManHoursDashboardContext.Provider

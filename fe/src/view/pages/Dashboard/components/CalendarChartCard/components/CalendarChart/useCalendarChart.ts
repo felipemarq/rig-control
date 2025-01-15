@@ -21,25 +21,30 @@ export const useCalendarChart = () => {
 
   const { efficiencies } = useDashboard();
 
-  const data = efficiencies.map(({ id, availableHours, date }) => {
-    // Converte a string de data para um objeto Date
-    const originalDate = new Date(date.toString());
+  const data = efficiencies.map(
+    ({ availableHours, id, date, standByHours, billedScheduledStopHours }) => {
+      // Converte a string de data para um objeto Date
+      const originalDate = new Date(date.toString());
 
-    // Adiciona um dia à data
-    originalDate.setDate(originalDate.getDate() + 1);
+      // Adiciona um dia à data
+      originalDate.setDate(originalDate.getDate() + 1);
 
-    // Formata a data de volta para o formato original de string
-    const formattedDate = originalDate.toISOString().split("T")[0];
+      // Formata a data de volta para o formato original de string
+      const formattedDate = originalDate.toISOString().split("T")[0];
 
-    return {
-      id,
-      value: availableHours === 24 ? 1 : 0,
-      availableHours,
-      efficiency: ((availableHours / 24) * 100).toFixed(2) + "%",
-      day: formattedDate, // Usa a data formatada
-      date: new Date(formattedDate), // Garante que a data é o objeto Date correto
-    };
-  });
+      const realAvailabeHours =
+        availableHours + standByHours + (billedScheduledStopHours ?? 0);
+
+      return {
+        id,
+        value: realAvailabeHours === 24 ? 1 : 0,
+        availableHours: realAvailabeHours,
+        efficiency: ((realAvailabeHours / 24) * 100).toFixed(2) + "%",
+        day: formattedDate, // Usa a data formatada
+        date: new Date(formattedDate), // Garante que a data é o objeto Date correto
+      };
+    }
+  );
 
   return {
     calendarRange,

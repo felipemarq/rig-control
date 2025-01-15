@@ -3,9 +3,11 @@ export type OccurrenceAction = {
   occurrenceId: string;
   title: string;
   dueDate: string;
+  finishedAt?: string;
   responsible: string;
   description: string;
   isFinished: boolean;
   createdAt: string;
+  responsibleEmail: string;
   files: [] | { path: string }[];
 };

@@ -1,15 +1,24 @@
-import {DataGrid, GridColDef, GridRenderCellParams} from "@mui/x-data-grid";
-import {NotFound} from "../../../../../../components/NotFound";
-import {translateType} from "../../../../../../../app/utils/translateType";
-import {EfficienciesResponse} from "../../../../../../../app/services/efficienciesService/getById";
-import {formatIsoStringToHours} from "../../../../../../../app/utils/formatIsoStringToHours";
-import {translateClassification} from "../../../../../../../app/utils/translateClassification";
-import {Button} from "@/components/ui/button";
+import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
+import { NotFound } from "../../../../../../components/NotFound";
+import { translateType } from "../../../../../../../app/utils/translateType";
+import { EfficienciesResponse } from "../../../../../../../app/services/efficienciesService/getById";
+import { formatIsoStringToHours } from "../../../../../../../app/utils/formatIsoStringToHours";
+import { translateClassification } from "../../../../../../../app/utils/translateClassification";
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { MoreHorizontal } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface ListPeriodsDataGridProps {
   data: EfficienciesResponse;
   openDetailModal(description: string): void;
   windowWidth?: number;
+  state: { date: string; rigName: string; well: string };
 }
 
 export const PeriodsDataGrid = ({
@@ -101,6 +110,40 @@ export const PeriodsDataGrid = ({
               );
             },
           },
+          {
+            field: "id",
+            headerAlign: "center",
+            headerName: "Açoes",
+
+            filterable: false,
+            sortable: false,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        {" "}
+                        <Link
+                          to={`/period-action-plan/${params.value}`}
+                          state={data}
+                          className="w-full flex justify-center items-center"
+                        >
+                          <Button variant="ghost">Criar plano de ação</Button>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </div>
+              );
+            },
+          },
         ]
       : [
           {
@@ -168,6 +211,39 @@ export const PeriodsDataGrid = ({
                   >
                     Ver Detalhes
                   </Button>
+                </div>
+              );
+            },
+          },
+          {
+            field: "id",
+            headerAlign: "center",
+            headerName: "Açoes",
+
+            filterable: false,
+            sortable: false,
+            renderCell(params: GridRenderCellParams) {
+              return (
+                <div className="w-full flex justify-center items-center">
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button aria-haspopup="true" size="icon" variant="ghost">
+                        <MoreHorizontal className="h-4 w-4" />
+                        <span className="sr-only">Toggle menu</span>
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem>
+                        {" "}
+                        <Link
+                          to={`/details/${params.value}`}
+                          className="w-full flex justify-center items-center"
+                        >
+                          <Button variant="ghost">Ver Mais</Button>
+                        </Link>
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </div>
               );
             },
@@ -266,12 +342,9 @@ export const PeriodsDataGrid = ({
           color: "hsl(var(--muted-foreground))",
           borderRadius: "var(--none, 0px)",
           borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderLeft:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderRight:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderTop:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
           //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
           alignItems: "space-between !important",
         },

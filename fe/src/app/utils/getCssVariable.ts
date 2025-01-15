@@ -38,8 +38,7 @@ import { CssVariables } from "../entities/CssVariables";
  *
  * @example
  * // Exemplo de uso:
- * const primaryColor = getCssVariable('--primary');
- * console.log(primaryColor); // Exibe o valor da variável --primary no console
+ * const primaryColor = getCssVariable('--primary')
  */
 export const getCssVariable = (variableName: CssVariables): string => {
   const variable = getComputedStyle(document.documentElement).getPropertyValue(

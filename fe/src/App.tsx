@@ -8,6 +8,8 @@ import { FiltersProvider } from "./app/contexts/FiltersContext";
 import { ThemeProvider } from "./app/contexts/ThemeContext";
 import { ErrorBoundary } from "./view/components/ErrorBoundary";
 import { ErrorBoundaryFallback } from "./view/components/ErrorBoundaryFallback";
+import { OccurrenceFiltersProvider } from "./app/contexts/OccurrenceFiltersContex";
+import { NotificationProvider } from "./app/contexts/NotificationContext";
 
 // Configurando uma instância do QueryClient com opções padrão
 const queryClient = new QueryClient({
@@ -26,13 +28,17 @@ export const App = () => {
       <QueryClientProvider client={queryClient}>
         <ThemeProvider>
           <AuthProvider>
-            <FiltersProvider>
-              <SidebarProvider>
-                {/* Componente de roteamento principal */}
-                <Router />
-                <Toaster position="bottom-center" reverseOrder={false} />
-              </SidebarProvider>
-            </FiltersProvider>
+            <NotificationProvider>
+              <FiltersProvider>
+                <SidebarProvider>
+                  <OccurrenceFiltersProvider>
+                    {/* Componente de roteamento principal */}
+                    <Router />
+                    <Toaster position="bottom-center" reverseOrder={false} />
+                  </OccurrenceFiltersProvider>
+                </SidebarProvider>
+              </FiltersProvider>
+            </NotificationProvider>
           </AuthProvider>
         </ThemeProvider>
 

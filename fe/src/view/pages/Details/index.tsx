@@ -8,11 +8,27 @@ const Details = () => {
   return (
     <DetailsContextProvider>
       <DetailsContext.Consumer>
-        {({ isDetailModalOpen, closeDetailModal, modalDescription, closeDeleteModal, isDeleteModalOpen, isLoadingRemoveEfficiency, handleDeleteEfficiency }) => (
+        {({
+          isDetailModalOpen,
+          closeDetailModal,
+          modalDescription,
+          closeDeleteModal,
+          isDeleteModalOpen,
+          isLoadingRemoveEfficiency,
+          handleDeleteEfficiency,
+        }) => (
           <div className="w-full h-full overflow-y-auto">
-            <Header title="Detalhes da Operação" displayRig={false} displayPeriodRange={false} />
+            <Header
+              title="Detalhes da Operação"
+              displayRig={false}
+              displayPeriodRange={false}
+            />
 
-            <DetailsModal onClose={closeDetailModal} open={isDetailModalOpen} description={modalDescription} />
+            <DetailsModal
+              onClose={closeDetailModal}
+              open={isDetailModalOpen}
+              description={modalDescription}
+            />
 
             <DeleteModal
               title=" Tem certeza que deseja excluir esse registro?"

@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { OccurrenceActionsService } from './occurrence-actions.service';
 import { CreateOccurrenceActionDto } from './dto/create-occurrence-action.dto';

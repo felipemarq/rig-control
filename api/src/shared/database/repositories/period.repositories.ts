@@ -14,8 +14,19 @@ export class PeriodsRepository {
     return await this.prismaService.period.findMany(findManyDto);
   }
 
+  async findUnique(findUniqueDto: Prisma.PeriodFindUniqueArgs) {
+    return await this.prismaService.period.findUnique(findUniqueDto);
+  }
+
   async count(countDto: Prisma.PeriodCountArgs) {
     return await this.prismaService.period.count(countDto);
+  }
+
+  async groupByTotalInterventions(
+    groupByDto: Prisma.PeriodGroupByArgs,
+  ): Promise<any[]> {
+    //@ts-ignore
+    return await this.prismaService.period.groupBy(groupByDto);
   }
 
   async update(

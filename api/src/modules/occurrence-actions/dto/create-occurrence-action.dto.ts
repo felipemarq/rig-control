@@ -29,7 +29,16 @@ export class CreateOccurrenceActionDto {
   @IsOptional()
   description: string;
 
+  @IsString()
+  @IsNotEmpty()
+  responsibleEmail: string;
+
   @IsBoolean()
   @IsOptional()
   isFinished: boolean;
+
+  @IsString()
+  @IsDateString()
+  @IsOptional()
+  finishedAt: string;
 }

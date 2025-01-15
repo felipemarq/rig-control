@@ -43,7 +43,7 @@ export const PeriodsDataGrid = ({
         return (
           <div className="w-full flex justify-center items-center">
             <div className="text-gray-800 font-medium tracking-tighter ">
-              {formatDate(new Date(params.value))}
+              {formatDate(new Date(params.row.efficiency.date))}
             </div>
           </div>
         );
@@ -87,10 +87,7 @@ export const PeriodsDataGrid = ({
       flex: 0.2,
       headerAlign: "center",
       align: "center",
-      /*  valueGetter: (value) => {
-        console.log("value", value);
-        return value.row.type;
-      }, */
+
       renderCell(params: GridRenderCellParams) {
         const parsedStartHour = parse(
           params.row.startHour.split("T")[1].slice(0, 5),
@@ -193,12 +190,9 @@ export const PeriodsDataGrid = ({
           color: "hsl(var(--muted-foreground))",
           borderRadius: "var(--none, 0px)",
           borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderLeft:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderRight:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderTop:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
           //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
           alignItems: "space-between !important",
         },

@@ -1,14 +1,17 @@
-import {UF} from "../../../../app/entities/Rig";
+import { UF } from "../../../../app/entities/Rig";
 
 export type Efficiency = {
   availableHours: number;
+  standByHours: number;
+  billedScheduledStopHours?: number;
+  unbilledScheduledStopHours?: number;
   date: string | Date;
   id: string;
   well: string;
   rigId: string;
   userId: string;
-  user: {name: string};
-  rig: {name: string; state: UF};
+  user: { name: string };
+  rig: { name: string; state: UF };
   periods: {
     id: string;
     efficiencyId: string;

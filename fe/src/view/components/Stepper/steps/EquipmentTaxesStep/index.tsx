@@ -27,7 +27,7 @@ export function EquipmentTaxesStep() {
   return (
     <div>
       <StepHeader
-        title="Taxas de Caminhão"
+        title="Taxas de Equipamento"
         description="Informe as taxas aplicáveis ao uso de caminhões."
       />
 
@@ -40,9 +40,7 @@ export function EquipmentTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.equipmentTaxesStep?.bobRentTax?.message
-                }
+                error={form.formState.errors.equipmentTaxesStep?.bobRentTax?.message}
               />
             )}
           />
@@ -57,8 +55,7 @@ export function EquipmentTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.equipmentTaxesStep?.generatorFuelTax
-                    ?.message
+                  form.formState.errors.equipmentTaxesStep?.generatorFuelTax?.message
                 }
               />
             )}
@@ -73,10 +70,7 @@ export function EquipmentTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.equipmentTaxesStep?.extraTrailerTax
-                    ?.message
-                }
+                error={form.formState.errors.equipmentTaxesStep?.extraTrailerTax?.message}
               />
             )}
           />
@@ -89,9 +83,7 @@ export function EquipmentTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.equipmentTaxesStep?.munckTax?.message
-                }
+                error={form.formState.errors.equipmentTaxesStep?.munckTax?.message}
               />
             )}
           />
@@ -105,10 +97,7 @@ export function EquipmentTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.equipmentTaxesStep?.powerSwivelTax
-                    ?.message
-                }
+                error={form.formState.errors.equipmentTaxesStep?.powerSwivelTax?.message}
               />
             )}
           />

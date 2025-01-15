@@ -93,7 +93,7 @@ export const AverageBarChart = () => {
         }
         onClick={(event) => {
           handleChangeRig(event.data.rigId as string);
-          navigate(`/dashboard`);
+          navigate(`/dashboard`, { state: { shouldApplyFilters: true } });
         }}
         enableGridY={false}
         theme={{

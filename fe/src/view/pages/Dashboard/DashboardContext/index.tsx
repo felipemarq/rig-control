@@ -18,6 +18,10 @@ import { AverageResponse } from "@/app/services/efficienciesService/getAverage";
 import { useEfficiencyAverage } from "@/app/hooks/efficiencies/useEfficiencyAverage";
 import { useGetWellsCountByRig } from "@/app/hooks/efficiencies/useGetWellsCountByRig";
 import { RigWellsCountResponse } from "@/app/services/efficienciesService/getWellsCountByRig";
+import { useNotifications } from "@/app/hooks/useNotifications";
+import { Notification } from "@/app/entities/Notification";
+import { useLocation } from "react-router-dom";
+import { addDays, differenceInDays, parseISO } from "date-fns";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -49,25 +53,33 @@ interface DashboardContextValue {
   handleClosePeriodDataGridModal: () => void;
   isPeriodDataGridModalOpen: boolean;
   periodDataGridModalData: Period[] | null;
-  handleFilterPeriods: (
-    type: "REPAIR" | "GLOSS",
-    classification: string
-  ) => void;
+  handleFilterPeriods: (type: "REPAIR" | "GLOSS", classification: string) => void;
   wellsCount: RigWellsCountResponse;
+  showNotifications: boolean;
+  setShowNotifications: (showNotifications: boolean) => void;
+  notifications: Notification[];
+  handleMarkNotificationAsRead: (notificationId: string) => Promise<void>;
+  isPending: boolean;
+  missingDates: string[];
+  scheduledStoppedDates: string[];
 }
 
 // Criação do contexto
 export const DashboardContext = createContext({} as DashboardContextValue);
 
-export const DashboardProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const { user, signout, isWrongVersion } = useAuth();
+  const {
+    showNotifications,
+    setShowNotifications,
+    notifications,
+    handleMarkNotificationAsRead,
+    isPending,
+  } = useNotifications();
 
   const windowWidth = useWindowWidth();
+  const location = useLocation();
 
   const { filters, selectedRig } = useFiltersContext();
 
@@ -75,9 +87,52 @@ export const DashboardProvider = ({
   const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
-  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(
-    filters.rigId
-  );
+  function getScheduledStoppedDates(efficiencies: EfficienciesResponse) {
+    const allDates: string[] = [];
+
+    efficiencies.forEach((efficiency: Efficiency) => {
+      const hasScheduledStopped = efficiency.periods.find(
+        (period) => period.type === "SCHEDULED_STOP"
+      );
+
+      if (hasScheduledStopped) {
+        allDates.push((efficiency.date as string).split("T")[0]);
+      }
+    });
+    return allDates;
+  }
+
+  const scheduledStoppedDates = getScheduledStoppedDates(efficiencies);
+
+  function getMissingDates(
+    startDate: string,
+    endDate: string,
+    efficiencies: EfficienciesResponse
+  ) {
+    // Converte as datas para objetos Date
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+
+    // Cria um conjunto de todas as datas no intervalo
+    const allDates = [];
+    for (let i = 0; i <= differenceInDays(end, start); i++) {
+      allDates.push(addDays(start, i).toISOString().split("T")[0]); // Formata como "YYYY-MM-DD"
+    }
+
+    // Obtem as datas presentes em efficiencies
+    const efficiencyDates = efficiencies.map(
+      (efficiency) => (efficiency.date as string).split("T")[0] // Formata como "YYYY-MM-DD"
+    );
+
+    // Calcula as datas que estão faltando
+    const missingDates = allDates.filter((date) => !efficiencyDates.includes(date));
+
+    return missingDates;
+  }
+
+  const missingDates = getMissingDates(filters.startDate, filters.endDate, efficiencies);
+
+  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(filters.rigId);
   const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
 
   const isEmpty: boolean = efficiencies.length === 0;
@@ -94,22 +149,21 @@ export const DashboardProvider = ({
 
   const glossPeriods = getGlossPeriods(efficiencies);
 
-  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
+
+  const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
+  const [isPeriodDataGridModalOpen, setIsPeriodDataGridModalOpen] = useState(false);
+
+  const [periodDataGridModalData, setPeriodDataGridModalData] = useState<null | Period[]>(
     null
   );
 
-  const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
-  const [isPeriodDataGridModalOpen, setIsPeriodDataGridModalOpen] =
-    useState(false);
+  /*  console.log(
+    "Gloss periods",
+    glossPeriods.filter((period) => period.classification === "LABOR")
+  ); */
 
-  const [periodDataGridModalData, setPeriodDataGridModalData] = useState<
-    null | Period[]
-  >(null);
-
-  const handleFilterPeriods = (
-    type: "REPAIR" | "GLOSS",
-    classification: string
-  ) => {
+  const handleFilterPeriods = (type: "REPAIR" | "GLOSS", classification: string) => {
     let periods: Period[] | null = null;
 
     if (type === "REPAIR") {
@@ -120,6 +174,10 @@ export const DashboardProvider = ({
       );
     }
 
+    if (type === "GLOSS") {
+      periods = glossPeriods.filter((period) => period.classification === classification);
+    }
+
     if (periods) {
       handleOpenPeriodDataGridModal(periods);
     }
@@ -127,6 +185,7 @@ export const DashboardProvider = ({
 
   const handleOpenPeriodDataGridModal = (periods: Period[]) => {
     setIsPeriodDataGridModalOpen(true);
+    console.log(periods);
     setPeriodDataGridModalData(periods);
   };
 
@@ -158,6 +217,12 @@ export const DashboardProvider = ({
     mutateAsyncUserLog({ loginTime: getCurrentISOString() });
   }, []);
 
+  useEffect(() => {
+    if (location.state?.shouldApplyFilters) {
+      handleApplyFilters();
+    }
+  }, [location.state?.shouldApplyFilters]);
+
   // Cálculos para estatísticas das eficiências
   let totalAvailableHours: number = 0;
   let totalUnavailableHours: number = 0;
@@ -165,8 +230,16 @@ export const DashboardProvider = ({
   let totalMovimentations: number = 0;
 
   efficiencies.forEach((efficiency: Efficiency) => {
-    totalAvailableHours += efficiency.availableHours;
-    totalUnavailableHours += 24 - efficiency.availableHours;
+    totalAvailableHours +=
+      efficiency.availableHours +
+      efficiency.standByHours +
+      (efficiency.billedScheduledStopHours ?? 0);
+
+    totalUnavailableHours +=
+      24 -
+      (efficiency.availableHours +
+        efficiency.standByHours +
+        (efficiency.billedScheduledStopHours ?? 0));
 
     totalMovimentations +=
       efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
@@ -190,6 +263,7 @@ export const DashboardProvider = ({
   return (
     <DashboardContext.Provider
       value={{
+        missingDates,
         average,
         windowWidth,
         handleRemoveSelectedEquipment,
@@ -220,6 +294,12 @@ export const DashboardProvider = ({
         periodDataGridModalData,
         handleFilterPeriods,
         wellsCount,
+        showNotifications,
+        setShowNotifications,
+        notifications,
+        handleMarkNotificationAsRead,
+        isPending,
+        scheduledStoppedDates,
       }}
     >
       {children}

@@ -19,19 +19,27 @@ import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import { Response } from 'express';
 import { DebugEndpoint } from 'src/shared/decorators/DebugEndpoint';
+import { UserLogService } from '../user-log/user-log.service';
+import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
+import { LogType } from '../user-log/entities/LogType';
 
 @Controller('efficiencies')
 export class EfficienciesController {
-  constructor(private readonly efficienciesService: EfficienciesService) {}
+  constructor(
+    private readonly efficienciesService: EfficienciesService,
+    private readonly userLogService: UserLogService,
+  ) {}
 
   @Get('/average')
   getAverageEfficiency(
+    @ActiveUserId() userId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
   ) {
     return this.efficienciesService.getRigsAvailableHoursAverage({
       startDate,
       endDate,
+      userId,
     });
   }
 
@@ -54,12 +62,17 @@ export class EfficienciesController {
     @Query('rigId', ParseUUIDPipe) rigId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @ActiveUserId() userId: string,
   ) {
-    return this.efficienciesService.pdfReport(response, {
-      rigId,
-      startDate,
-      endDate,
-    });
+    return this.efficienciesService.pdfReport(
+      response,
+      {
+        rigId,
+        startDate,
+        endDate,
+      },
+      userId,
+    );
   }
 
   // Rotas com parâmetros de caminho (mais específicas)
@@ -81,25 +94,28 @@ export class EfficienciesController {
   // Rotas com parâmetros de consulta (menos específicas)
   @Get()
   findAll(
-    @DebugEndpoint() userId: string,
     @Query('rigId', ParseUUIDPipe) rigId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @ActiveUserId() userId: string,
   ) {
-    return this.efficienciesService.findAllByRigId({
-      rigId,
-      startDate,
-      endDate,
-    });
+    return this.efficienciesService.findAllByRigId(
+      {
+        rigId,
+        startDate,
+        endDate,
+      },
+      userId,
+    );
   }
 
   // Demais rotas
   @Post()
-  create(
+  async create(
     @ActiveUserId() userId: string,
     @Body() createEfficiencyDto: CreateEfficiencyDto,
   ) {
-    return this.efficienciesService.create(createEfficiencyDto, userId);
+    return await this.efficienciesService.create(createEfficiencyDto, userId);
   }
 
   @Patch(':efficiencyId')

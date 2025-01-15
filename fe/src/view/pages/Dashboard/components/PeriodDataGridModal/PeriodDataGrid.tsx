@@ -2,11 +2,10 @@ import { DataGrid, GridColDef, GridRenderCellParams } from "@mui/x-data-grid";
 import { translateType } from "../../../../../app/utils/translateType";
 import { translateClassification } from "../../../../../app/utils/translateClassification";
 import { Period } from "../../../../../app/entities/Period";
-import { formatDate } from "../../../../../app/utils/formatDate";
 import { localeTextDataGridConfig } from "../../../../../app/utils/localeTextDataGridConfig";
-
 import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
-import { useTheme } from "@/app/contexts/ThemeContext";
+import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
+import { formatDate } from "@/app/utils/formatDate";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -19,19 +18,51 @@ export const PeriodsDataGrid = ({
 
   isLoading,
 }: ListPeriodsDataGridProps) => {
-  const { primaryColor } = useTheme();
   const columns: GridColDef[] = [
     {
-      field: "startHour",
+      field: "date",
       headerName: "Data",
-      width: 150,
+      flex: 0.2,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white font-semibold bg-primary py-1 px-6 rounded-sm">
-              {formatDate(new Date(params.value))}
+            <div className="text-gray-800 font-medium tracking-tighter">
+              {formatDate(new Date(params.row.efficiency.date)).slice(0, 5)}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "startHour",
+      headerName: "Hora Inicial",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-gray-800 font-medium tracking-tighter">
+              {formatIsoStringToHours(params.value)}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "endHour",
+      headerName: "Hora Final",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "center",
+
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-gray-800 font-medium tracking-tighter">
+              {formatIsoStringToHours(params.value)}
             </div>
           </div>
         );
@@ -40,13 +71,13 @@ export const PeriodsDataGrid = ({
     {
       field: "type",
       headerName: "Tipo",
-      width: 150,
+      flex: 0.3,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
+            <div className="text-gray-800 font-medium tracking-tighter">
               {translateType(params.value)}
             </div>
           </div>
@@ -56,13 +87,13 @@ export const PeriodsDataGrid = ({
     {
       field: "classification",
       headerName: "Classificação",
-      flex: 0.2,
+      flex: 0.3,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
           <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
+            <div className="text-gray-800 font-medium tracking-tighter">
               {translateClassification(params.value)}
             </div>
           </div>
@@ -77,7 +108,11 @@ export const PeriodsDataGrid = ({
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
-          <div className="w-full text-white flex justify-center">{params.value}</div>
+          <div className="w-full flex justify-center items-center py-5">
+            <div className="text-gray-800 font-medium tracking-tighter">
+              {params.value}
+            </div>
+          </div>
         );
       },
     },
@@ -91,8 +126,8 @@ export const PeriodsDataGrid = ({
     align: "center",
     renderCell(params: GridRenderCellParams) {
       return (
-        <div className="w-full flex justify-center items-center">
-          <div className="text-white  bg-primary py-1 px-4 rounded-sm">
+        <div className="w-full flex justify-center items-center py-5">
+          <div className="text-gray-800 font-medium tracking-tighter">
             {translateRepairClassification(params.value)}
           </div>
         </div>
@@ -118,32 +153,49 @@ export const PeriodsDataGrid = ({
       className="border-none"
       sx={{
         "& .MuiDataGrid-root": {
-          border: "none",
+          border: "none !important",
         },
         "& .MuiDataGrid-cell": {
-          borderBottom: "none",
-          borderRightColor: "black",
-        },
-        "&.MuiDataGrid-root--densityCompact .MuiDataGrid-cell": { py: "8px" },
-        "&.MuiDataGrid-root--densityStandard .MuiDataGrid-cell": { py: "15px" },
-        "&.MuiDataGrid-root--densityComfortable .MuiDataGrid-cell": {
-          py: "22px",
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-columnHeaders": {
-          backgroundColor: primaryColor,
-          color: "#fff",
-          borderBottom: "none",
+          fontWeight: 400,
+          color: "hsl(var(--muted-foreground))",
+          borderRadius: "var(--none, 0px)",
+          borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
+          alignItems: "space-between !important",
+        },
+        "& .MuiDataGrid-columnHeadersInner": {
+          backgroundColor: "hsl(var(--card))",
+        },
+        "& .MuiDataGrid-columnHeaderTitle": {
+          fontWeight: "bold",
+        },
+        "& .MuiTablePagination-root": {
+          color: "hsl(var(--muted-foreground))",
         },
         "& .MuiDataGrid-virtualScroller": {
-          backgroundColor: "#499595",
+          backgroundColor: "hsl(var(--card))",
+          padding: 0,
         },
         "& .MuiDataGrid-footerContainer": {
-          backgroundColor: primaryColor,
-          color: "#fff",
+          backgroundColor: "hsl(var(--card))",
+          color: "hsl(var(--muted-foreground))",
           borderTop: "none",
         },
         "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-          color: `${primaryColor} !important`,
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-columnSeparator": {
+          display: "none",
+          color: "hsl(var(--muted-foreground)) !important",
+        },
+        "& .MuiDataGrid-withBorderColor": {
+          border: "none",
         },
       }}
     />

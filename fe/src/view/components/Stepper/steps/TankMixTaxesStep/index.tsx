@@ -26,15 +26,14 @@ export function TankMixTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.tankMixTaxesStep?.mixTankMonthRentTax
-                    ?.message
+                  form.formState.errors.tankMixTaxesStep?.mixTankMonthRentTax?.message
                 }
               />
             )}
           />
         </TaxInput>
 
-        <TaxInput title="Taxa de Locação de Tanque Mix (horas)" label="R$">
+        <TaxInput title="Taxa de Locação de Tanque Mix (diária)" label="R$">
           <Controller
             control={form.control}
             name="tankMixTaxesStep.mixTankHourRentTax"
@@ -43,8 +42,7 @@ export function TankMixTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.tankMixTaxesStep?.mixTankHourRentTax
-                    ?.message
+                  form.formState.errors.tankMixTaxesStep?.mixTankHourRentTax?.message
                 }
               />
             )}
@@ -60,8 +58,7 @@ export function TankMixTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.tankMixTaxesStep?.mixTankMobilizationTax
-                    ?.message
+                  form.formState.errors.tankMixTaxesStep?.mixTankMobilizationTax?.message
                 }
               />
             )}
@@ -77,8 +74,8 @@ export function TankMixTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.tankMixTaxesStep
-                    ?.mixTankDemobilizationTax?.message
+                  form.formState.errors.tankMixTaxesStep?.mixTankDemobilizationTax
+                    ?.message
                 }
               />
             )}
@@ -93,9 +90,7 @@ export function TankMixTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.tankMixTaxesStep?.mixTankDtmTax?.message
-                }
+                error={form.formState.errors.tankMixTaxesStep?.mixTankDtmTax?.message}
               />
             )}
           />
@@ -110,8 +105,7 @@ export function TankMixTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.tankMixTaxesStep?.mixTankOperatorTax
-                    ?.message
+                  form.formState.errors.tankMixTaxesStep?.mixTankOperatorTax?.message
                 }
               />
             )}

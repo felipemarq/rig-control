@@ -18,6 +18,7 @@ interface AuthContextValue {
   isUserAdm: boolean;
   isUserSms: boolean;
   isUserViewer: boolean;
+  isUserSupervisor: boolean;
   userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
@@ -47,6 +48,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     Sentry.setUser(null);
     setSignedIn(false);
     queryClient.invalidateQueries({ queryKey: [QueryKeys.ME] });
+    window.location.reload();
   }, []);
 
   const { data, isError, error, isFetching, isSuccess } = useQuery({
@@ -57,6 +59,8 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   });
 
   const isUserAdm = data?.accessLevel === "ADM" ? true : false;
+
+  const isUserSupervisor = data?.accessLevel === "SUPERVISOR" ? true : false;
 
   const isUserSms =
     data?.email === "rommelcaldas@conterp.com.br" ||
@@ -97,8 +101,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   isWrongVersion = systemVersion?.version !== currentVersion.version;
 
-  console.log("user", data);
-
   return (
     <AuthContext.Provider
       value={{
@@ -108,6 +110,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         user: data,
         isUserAdm,
         isUserSms,
+        isUserSupervisor,
         isUserViewer,
         userAccessLevel,
         isWrongVersion,

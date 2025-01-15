@@ -5,9 +5,11 @@ import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
 import { NotFound } from "@/view/components/NotFound";
+import { Button } from "@/components/ui/button";
+import { FileDown } from "lucide-react";
 
 const List = () => {
-  const { efficiencies, handleApplyFilters, isFetchingEfficiencies } =
+  const { efficiencies, handleApplyFilters, isFetchingEfficiencies, handlePdfDownload } =
     useListController();
 
   return (
@@ -32,7 +34,13 @@ const List = () => {
               <CardHeader></CardHeader>
 
               {efficiencies.length > 0 && (
-                <CardContent>
+                <CardContent className="flex flex-col gap-4">
+                  <div className="flex justify-end  gap-10 w-full ">
+                    <Button size="sm" className="gap-1" onClick={handlePdfDownload}>
+                      <span className="hidden sm:inline">Baixar PDF</span>
+                      <FileDown className="h-4 w-4" />
+                    </Button>
+                  </div>
                   <ListEfficienciesDataGrid
                     data={efficiencies}
                     isDashboard={false}

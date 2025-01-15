@@ -82,8 +82,6 @@ export class OccurrencesService {
   ) {
     let whereClause: Prisma.OccurrenceWhereInput = {};
 
-    console.log({ startDate, endDate });
-
     whereClause = {
       AND: [
         { date: { gte: new Date(startDate) } },
@@ -172,6 +170,8 @@ export class OccurrencesService {
             description: true,
             isFinished: true,
             createdAt: true,
+            finishedAt: true,
+            responsibleEmail: true,
             files: {
               select: {
                 path: true,
@@ -188,10 +188,6 @@ export class OccurrencesService {
       },
       where: whereClause,
     });
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} ocurrence`;
   }
 
   async update(occurrenceId: string, updateOcurrenceDto: UpdateOcurrenceDto) {
@@ -327,7 +323,14 @@ export class OccurrencesService {
         baseMap[baseName][month] = record.hours;
       });
 
-      return Object.values(baseMap);
+      const [transformedManHours] = Object.values(baseMap);
+
+      for (let index = 2; index < 11; index++) {
+        transformedManHours[index] =
+          transformedManHours[index] + transformedManHours[index - 1];
+      }
+
+      return [transformedManHours];
     }
 
     //@ts-ignore
@@ -336,6 +339,21 @@ export class OccurrencesService {
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
     ) => {
+      const countsByMonthAccumulated: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+      };
+
       const countsByMonth: { [key: number]: number } = {
         1: 0,
         2: 0,
@@ -354,20 +372,29 @@ export class OccurrencesService {
       occurrences.forEach(({ date, _count }) => {
         const month = date.getMonth() + 1; // Convertendo para mês (1-12)
 
-        if (countsByMonth[month]) {
+        if (countsByMonthAccumulated[month]) {
+          countsByMonthAccumulated[month] += _count.id;
           countsByMonth[month] += _count.id;
         } else {
+          countsByMonthAccumulated[month] = _count.id;
           countsByMonth[month] = _count.id;
         }
       });
 
-      return Object.keys(countsByMonth).map((month) => {
+      for (let index = 2; index < 11; index++) {
+        countsByMonthAccumulated[index] =
+          countsByMonthAccumulated[index] + countsByMonthAccumulated[index - 1];
+      }
+
+      return Object.keys(countsByMonthAccumulated).map((month) => {
         const tax =
-          (countsByMonth[month] / transformedManHours[Number(month)]) *
+          (countsByMonthAccumulated[month] /
+            transformedManHours[Number(month)]) *
           1_000_000;
 
         return {
           month: Number(month),
+          accCount: countsByMonthAccumulated[month],
           count: countsByMonth[month],
           tax: isNaN(tax) ? 0 : tax,
         };
@@ -475,15 +502,35 @@ export class OccurrencesService {
     };
 
     // Iterando sobre o array e somando as horas para cada mês
-    manHoursAgg.forEach(({ _sum, month }) => {
-      if (aggroupedMenHours.hasOwnProperty(month)) {
-        aggroupedMenHours[month] += _sum?.hours || 0;
-      }
-    });
+    manHoursAgg
+      .sort((a, b) => a.month - b.month)
+      .forEach(({ _sum, month }) => {
+        if (aggroupedMenHours.hasOwnProperty(month) && month == 1) {
+          aggroupedMenHours[month] += _sum?.hours || 0;
+        } else if (aggroupedMenHours.hasOwnProperty(month)) {
+          aggroupedMenHours[month] =
+            _sum?.hours + aggroupedMenHours[month - 1] || 0;
+        }
+      });
 
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
     ) => {
+      const countsByMonthAccumulated: { [key: number]: number } = {
+        1: 0,
+        2: 0,
+        3: 0,
+        4: 0,
+        5: 0,
+        6: 0,
+        7: 0,
+        8: 0,
+        9: 0,
+        10: 0,
+        11: 0,
+        12: 0,
+      };
+
       const countsByMonth: { [key: number]: number } = {
         1: 0,
         2: 0,
@@ -502,20 +549,29 @@ export class OccurrencesService {
       occurrences.forEach(({ date, _count }) => {
         const month = date.getMonth() + 1; // Convertendo para mês (1-12)
 
-        if (countsByMonth[month]) {
+        if (countsByMonthAccumulated[month]) {
           countsByMonth[month] += _count.id;
+          countsByMonthAccumulated[month] += _count.id;
         } else {
           countsByMonth[month] = _count.id;
+          countsByMonthAccumulated[month] = _count.id;
         }
       });
 
-      return Object.keys(countsByMonth).map((month) => {
+      for (let index = 2; index < 11; index++) {
+        countsByMonthAccumulated[index] =
+          countsByMonthAccumulated[index] + countsByMonthAccumulated[index - 1];
+      }
+
+      return Object.keys(countsByMonthAccumulated).map((month) => {
         const tax =
-          (countsByMonth[month] / aggroupedMenHours[Number(month)]) * 1_000_000;
+          (countsByMonthAccumulated[month] / aggroupedMenHours[Number(month)]) *
+          1_000_000;
 
         return {
           month: Number(month),
           count: countsByMonth[month],
+          accCount: countsByMonthAccumulated[month],
           tax: isNaN(tax) ? 0 : tax,
         };
       });
@@ -535,6 +591,11 @@ export class OccurrencesService {
     const totalCommutingOccurrences =
       aggroupOccurrencesByMonth(commutingOccurrences);
 
+    /* console.log('totalTarOccurrences', totalTarOccurrences);
+    console.log('totalTorOccurrences', totalTorOccurrences);
+    console.log('totalNotAbsentOccurrences', totalNotAbsentOccurrences);
+    console.log('totalAbsentOccurrences', totalAbsentOccurrences);
+    console.log('totalCommutingOccurrences', totalCommutingOccurrences); */
     return {
       tarOccurrences: totalTarOccurrences,
       torOccurrences: totalTorOccurrences,

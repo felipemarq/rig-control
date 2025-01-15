@@ -1,7 +1,8 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { getCssVariable } from "../utils/getCssVariable";
+import { useAuth } from "../hooks/useAuth";
 
-type Theme = "dark" | "light" | "system";
+type Theme = "dark" | "light" | "system" | "Origem";
 
 type ThemeProviderProps = {
   children: React.ReactNode;
@@ -29,11 +30,13 @@ export function ThemeProvider({
   storageKey = "vite-ui-theme",
   ...props
 }: ThemeProviderProps) {
+  const { user } = useAuth();
   const [theme, setTheme] = useState<Theme>(
-    () => (localStorage.getItem(storageKey) as Theme) || defaultTheme
+    (user?.enterprise?.name as Theme) || defaultTheme
   );
 
   const [primaryColor, setPrimaryColor] = useState(getCssVariable("--primary"));
+  console.log("primaryColor", primaryColor);
 
   useEffect(() => {
     const root = window.document.documentElement;

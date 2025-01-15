@@ -53,6 +53,7 @@ model Rig {
   BillingConfiguration  BillingConfiguration[]
   Billing               Billing[]
   contract              Contract               @relation(fields: [contractId], references: [id], onDelete: Cascade)
+  periodActionPlans     PeriodActionPlan[]
 
   @@map("rigs")
 }
@@ -116,9 +117,65 @@ model User {
   manHours            ManHour[]
   files               File[]
 
-  enterprise Enterprise? @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
+  enterprise        Enterprise?        @relation(fields: [enterpriseId], references: [id], onDelete: SetNull)
+  userNotifications UserNotification[]
+  feedbacks         Feedback[]
+  periodActionPlans PeriodActionPlan[]
 
   @@map("users")
+}
+
+model Notification {
+  id              String   @id @default(uuid()) @db.Uuid
+  title           String
+  description     String
+  createdAt       DateTime @default(now())
+  systemVersionId String   @map("system_version_id") @db.Uuid
+
+  systemVersion     SystemVersion      @relation(fields: [systemVersionId], references: [id])
+  userNotifications UserNotification[]
+
+  @@map("notifications")
+}
+
+model UserNotification {
+  userId         String  @map("user_id") @db.Uuid
+  notificationId String  @map("notification_id") @db.Uuid
+  isRead         Boolean @default(false) @map("is_read")
+
+  user         User         @relation(fields: [userId], references: [id])
+  notification Notification @relation(fields: [notificationId], references: [id])
+
+  @@id([userId, notificationId])
+  @@map("users_notifications")
+}
+
+enum FeedbackType {
+  SUGESTION
+  PROBLEM
+  OTHER
+}
+
+enum FeedbackStatus {
+  RECEIVED
+  IN_REVIEW
+  IN_PROGRESS
+  COMPLETED
+  NO_ACTION_NEEDED
+  PENDING
+}
+
+model Feedback {
+  id          String         @id @default(uuid()) @db.Uuid
+  type        FeedbackType
+  status      FeedbackStatus @default(RECEIVED)
+  description String
+  createdAt   DateTime       @default(now())
+
+  userId String @map("user_id") @db.Uuid
+  user   User   @relation(fields: [userId], references: [id])
+
+  @@map("feedbacks")
 }
 
 model UserRig {
@@ -150,6 +207,7 @@ model Efficiency {
   createdAt                     DateTime?         @map("created_at")
   availableHours                Float             @map("available_hours")
   standByHours                  Float?            @map("standby_hours")
+  commercialHours               Float?            @map("commercial_hours")
   unbilledScheduledStopHours    Float?            @map("unbilled_scheduled_stop_hours")
   billedScheduledStopHours      Float?            @map("billed_scheduled_stop_hours")
   repairHours                   Float?            @map("repair_hours")
@@ -206,6 +264,8 @@ enum PeriodClassification {
   PROCESS
   LOGISTICS
   SECURITY
+  COMMERCIAL_UNAVAILABILITY
+  OPERATIONAL_ADEQUACY
   RIG_CAR
   MUD_BOMB
   OPERATION_EQUIPMENT
@@ -345,10 +405,51 @@ model Period {
   efficiencyId         String                @map("efficiency_id") @db.Uuid
   wellId               String?               @map("user_id") @db.Uuid
 
-  well       Well?      @relation(fields: [wellId], references: [id])
-  efficiency Efficiency @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  well              Well?              @relation(fields: [wellId], references: [id])
+  efficiency        Efficiency         @relation(fields: [efficiencyId], references: [id], onDelete: Cascade)
+  periodActionPlans PeriodActionPlan[]
 
   @@map("periods")
+}
+
+model PeriodActionPlan {
+  id    String @id @default(uuid()) @db.Uuid
+  title String
+
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  userId                String                 @map("user_id") @db.Uuid
+  rigId                 String                 @map("rig_id") @db.Uuid
+  periodId              String                 @map("period_id") @db.Uuid
+  isFinished            Boolean                @default(false)
+  finishedAt            DateTime?              @map("finished_at")
+  user                  User                   @relation(fields: [userId], references: [id])
+  rig                   Rig                    @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  period                Period                 @relation(fields: [periodId], references: [id], onDelete: Cascade)
+  periodActionPlanItems PeriodActionPlanItem[]
+  files                 File[]
+
+  @@map("period_action_plans")
+}
+
+model PeriodActionPlanItem {
+  id             String    @id @default(uuid()) @db.Uuid // Unique identifier
+  sequenceNumber Int // Sequential number for the item
+  task           String // "O que fazer?" - Task description
+  assignee       String // "Quem?" - Responsible person or team
+  dueDate        DateTime // "Quando?" - Deadline or planned date
+  reason         String // "Por que?" - Reason for the task
+  instructions   String // "Como fazer?" - Detailed instructions
+  notes          String? // "Observação" - Optional field for extra notes or comments
+  isFinished     Boolean   @default(false)
+  finishedAt     DateTime? @map("finished_at")
+  createdAt      DateTime  @default(now()) // Creation timestamp
+  updatedAt      DateTime  @updatedAt // Automatic update timestamp
+
+  actionPlan   PeriodActionPlan @relation(fields: [actionPlanId], references: [id], onDelete: Cascade) // Relation to PeriodActionPlan
+  actionPlanId String           @map("action_plan_id") @db.Uuid // Foreign key to PeriodActionPlan
+
+  @@map("period_action_plan_items")
 }
 
 model Well {
@@ -581,18 +682,41 @@ model TemporaryPeriod {
   @@map("temporary_periods")
 }
 
+enum LogType {
+  LOGIN
+  LOGOUT
+  PASSWORD_CHANGE
+  CONFIGURATION_CHANGE
+  DATA_EXPORT
+  BDO_CREATE
+  BDO_EDIT
+  BDO_DELETE
+  EFFICIENCY_VIEW
+  EFFICIENCY_CREATE
+  EFFICIENCY_EDIT
+  OCCURRENCE_CREATE
+  OCCURRENCE_EDIT
+  OCCURRENCE_DELETE
+  REPORT_GENERATION
+  VIEW_CRITICAL_DATA
+  ALERT_ACKNOWLEDGMENT
+  OTHER
+}
+
 model UserLog {
   id        String   @id @default(uuid()) @db.Uuid
   loginTime DateTime @map("login_time")
+  logType   LogType  @default(LOGIN) @map("log_type")
 
   userId String @map("user_id") @db.Uuid
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model SystemVersion {
-  id        String   @id @default(uuid()) @db.Uuid
-  version   String
-  createdAt DateTime @default(now())
+  id            String         @id @default(uuid()) @db.Uuid
+  version       String
+  createdAt     DateTime       @default(now())
+  notifications Notification[]
 }
 
 enum OccurrenceType {
@@ -678,16 +802,18 @@ model Occurrence {
 }
 
 model OccurrenceAction {
-  id           String     @id @default(uuid()) @db.Uuid
-  occurrenceId String     @map("occurrence_id") @db.Uuid
-  title        String
-  dueDate      DateTime
-  responsible  String
-  description  String?
-  isFinished   Boolean    @default(false)
-  createdAt    DateTime   @default(now()) @map("created_at")
-  files        File[]
-  occurrence   Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
+  id               String     @id @default(uuid()) @db.Uuid
+  occurrenceId     String     @map("occurrence_id") @db.Uuid
+  title            String
+  dueDate          DateTime
+  responsible      String
+  responsibleEmail String?
+  description      String?
+  isFinished       Boolean    @default(false)
+  createdAt        DateTime   @default(now()) @map("created_at")
+  finishedAt       DateTime?  @map("finished_at")
+  files            File[]
+  occurrence       Occurrence @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
 
   @@map("occurrence_action")
 }
@@ -698,10 +824,12 @@ model File {
   userId             String            @map("user_id") @db.Uuid
   occurrenceId       String?           @map("occurrence_id") @db.Uuid
   occurrenceActionId String?           @map("occurrence_action_id") @db.Uuid
+  periodActionPlanId String?           @map("period_action_plan_id") @db.Uuid
   createdAt          DateTime          @default(now()) @map("created_at")
   user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrence         Occurrence?       @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
   occurrenceAction   OccurrenceAction? @relation(fields: [occurrenceActionId], references: [id], onDelete: Cascade)
+  periodActionPlan   PeriodActionPlan? @relation(fields: [periodActionPlanId], references: [id], onDelete: Cascade)
 
   @@map("files")
 }

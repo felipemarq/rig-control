@@ -7,6 +7,7 @@ import { httpClient } from "../httpClient";
 export type aggregatedTaxes = {
   month: number;
   count: number;
+  accCount: number;
   tax: number;
 }[];
 
@@ -19,9 +20,7 @@ export type OccurrencesTaxesResponse = {
 };
 
 export const getTaxes = async () => {
-  const { data } = await httpClient.get<OccurrencesTaxesResponse>(
-    `/occurrences/taxes/`
-  );
+  const { data } = await httpClient.get<OccurrencesTaxesResponse>(`/occurrences/taxes/`);
 
   return data;
 };

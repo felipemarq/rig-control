@@ -7,9 +7,7 @@ export const useAverageBarChart = () => {
 
   const convertedResul: BarDatum[] = average.map(({ avg, month }) => {
     return {
-      month: `${months[Number(month.split("-")[1]) - 1].label} de ${
-        month.split("-")[0]
-      } `,
+      month: `${months[Number(month.split("-")[1]) - 1].label}`,
       avg: ((avg / 24) * 100).toFixed(2),
     };
   });

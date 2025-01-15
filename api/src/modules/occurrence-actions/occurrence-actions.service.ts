@@ -1,9 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOccurrenceActionDto } from './dto/create-occurrence-action.dto';
 import { UpdateOccurrenceActionDto } from './dto/update-occurrence-action.dto';
 import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { FileService } from '../file/file.service';
+import { MailService } from '../mail/mail.service';
 
 @Injectable()
 export class OccurrenceActionsService {
@@ -11,23 +16,37 @@ export class OccurrenceActionsService {
     private readonly occurrenceActionsRepo: OccurrenceActionsRepository,
     private readonly occurrenceRepo: OccurrenceRepository,
     private readonly filesService: FileService,
+    private readonly mailsService: MailService,
   ) {}
   async create(createOccurrenceActionDto: CreateOccurrenceActionDto) {
     const occurrence = await this.occurrenceRepo.findUnique({
       where: { id: createOccurrenceActionDto.occurrenceId },
-      include: { occurrenceActions: true },
     });
 
     if (!occurrence) {
       throw new NotFoundException('Ocorrência não encontrada!');
     }
 
-    return await this.occurrenceActionsRepo.create({
+    if (
+      createOccurrenceActionDto.isFinished &&
+      !createOccurrenceActionDto.finishedAt
+    ) {
+      throw new ConflictException('Data de conclusão é obrigatória!');
+    }
+
+    const occurrenceAction = await this.occurrenceActionsRepo.create({
       data: createOccurrenceActionDto,
       include: {
         files: true,
       },
     });
+
+    await this.mailsService.sendOccurrenceActionEmail(
+      createOccurrenceActionDto,
+      occurrence,
+    );
+
+    return occurrenceAction;
   }
 
   async findAll() {
@@ -56,6 +75,26 @@ export class OccurrenceActionsService {
     occurrenceActionId: string,
     updateOccurrenceActionDto: UpdateOccurrenceActionDto,
   ) {
+    const occurrence = await this.occurrenceRepo.findUnique({
+      where: { id: updateOccurrenceActionDto.occurrenceId },
+    });
+
+    if (!occurrence) {
+      throw new NotFoundException('Ocorrência não encontrada!');
+    }
+
+    if (
+      updateOccurrenceActionDto.isFinished &&
+      !updateOccurrenceActionDto.finishedAt
+    ) {
+      throw new Error('Data de conclusão é obrigatória!');
+    }
+
+    await this.mailsService.sendUpdateOccurrenceActionEmail(
+      updateOccurrenceActionDto,
+      occurrence,
+    );
+
     return await this.occurrenceActionsRepo.update({
       where: { id: occurrenceActionId },
       data: updateOccurrenceActionDto,
