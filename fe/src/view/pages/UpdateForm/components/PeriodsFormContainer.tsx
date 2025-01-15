@@ -1,20 +1,20 @@
 import React from "react";
-import {cn} from "../../../../app/utils/cn";
-import {TimePicker} from "antd";
+import { cn } from "../../../../app/utils/cn";
+import { TimePicker } from "antd";
 import dayjs from "dayjs";
-import {Select} from "../../../components/Select";
-import {periodTypes} from "../../../../app/utils/periodTypes";
+import { Select } from "../../../components/Select";
+import { periodTypes } from "../../../../app/utils/periodTypes";
 import {
   getPeriodClassification,
   getRepairClassification,
 } from "../../../../app/utils/periodClassifications";
-import {Button} from "../../../components/Button";
+import { Button } from "../../../components/Button";
 import TextArea from "antd/es/input/TextArea";
-import {useForm} from "./UpdateFormContext/useForm";
-import {Input} from "../../../components/Input";
-import {AlertTriangle, ChevronUp, TrashIcon} from "lucide-react";
-import {translateType} from "../../../../app/utils/translateType";
-import {PeriodType} from "../../../../app/entities/PeriodType";
+import { useForm } from "./UpdateFormContext/useForm";
+import { Input } from "../../../components/Input";
+import { AlertTriangle, ChevronUp, TrashIcon } from "lucide-react";
+import { translateType } from "../../../../app/utils/translateType";
+import { PeriodType } from "../../../../app/entities/PeriodType";
 
 export const PeriodsFormContainer = () => {
   const {
@@ -76,9 +76,7 @@ export const PeriodsFormContainer = () => {
                   }`}
                 >
                   <div>
-                    <h2 className="text-primary font-bold">
-                      Período {index + 1}
-                    </h2>
+                    <h2 className="text-primary font-bold">Período {index + 1}</h2>
                     <div
                       className={cn(
                         `flex flex-col transition-all duration-500 ${
@@ -113,8 +111,7 @@ export const PeriodsFormContainer = () => {
                           <div className="flex items-center justify-center gap-1 text-redAccent-500">
                             <AlertTriangle />
                             <span>
-                              Campos obrigatórios não preenchidos. Por favor,
-                              verifique.{" "}
+                              Campos obrigatórios não preenchidos. Por favor, verifique.{" "}
                             </span>{" "}
                           </div>
                         )}
@@ -166,11 +163,7 @@ export const PeriodsFormContainer = () => {
                           popupClassName="custom-timepicker-popup"
                           defaultValue={dayjs(startHour, format)}
                           onChange={(time, timeString) =>
-                            handleStartHourChange(
-                              time,
-                              timeString as string,
-                              id
-                            )
+                            handleStartHourChange(time, timeString as string, id)
                           }
                           format={format}
                           disabledTime={() => {
@@ -188,7 +181,7 @@ export const PeriodsFormContainer = () => {
                             return {
                               disabledHours: () => {
                                 const disabledHours = Array.from(
-                                  {length: 24},
+                                  { length: 24 },
                                   (_, hour) => (hour < minHour ? hour : -1)
                                 );
                                 return disabledHours;
@@ -196,7 +189,7 @@ export const PeriodsFormContainer = () => {
                               disabledMinutes: (selectedHour) => {
                                 if (selectedHour === minHour) {
                                   // Desativar minutos antes do horário mínimo
-                                  return Array.from({length: 60}, (_, minute) =>
+                                  return Array.from({ length: 60 }, (_, minute) =>
                                     minute < minMinute ? minute : -1
                                   );
                                 }
@@ -219,15 +212,14 @@ export const PeriodsFormContainer = () => {
                           }
                           format={format}
                           disabledTime={() => {
-                            const [hourString, minuteString] =
-                              startHour.split(":");
+                            const [hourString, minuteString] = startHour.split(":");
 
                             const minHour = Number(hourString); // Defina o valor mínimo da hora aqui
                             const minMinute = Number(minuteString); // Defina o valor mínimo dos minutos aqui
                             return {
                               disabledHours: () => {
                                 const disabledHours = Array.from(
-                                  {length: 24},
+                                  { length: 24 },
                                   (_, hour) => (hour < minHour ? hour : -1)
                                 );
                                 return disabledHours;
@@ -235,7 +227,7 @@ export const PeriodsFormContainer = () => {
                               disabledMinutes: (selectedHour) => {
                                 if (selectedHour === minHour) {
                                   // Desativar minutos antes do horário mínimo
-                                  return Array.from({length: 60}, (_, minute) =>
+                                  return Array.from({ length: 60 }, (_, minute) =>
                                     minute < minMinute ? minute : -1
                                   );
                                 }
@@ -251,15 +243,11 @@ export const PeriodsFormContainer = () => {
                   <div className="flex justify-between col-span-12  lg:col-span-6  items-end p-4 ">
                     <div className="w-full">
                       <Input
-                        onChange={(value) =>
-                          handlePeriodWell(id, value.target.value)
-                        }
+                        onChange={(value) => handlePeriodWell(id, value.target.value)}
                         value={well}
                         name="well"
                         error={getErrorMessageByFildName("well")}
-                        placeholder={
-                          type === "DTM" ? "Poço de Destino" : "Poço"
-                        }
+                        placeholder={type === "DTM" ? "Poço de Destino" : "Poço"}
                         labelStyles="text-black"
                         className="w-full border-1 text-black border-black bg-white hover:bg-white "
                       />
@@ -273,7 +261,7 @@ export const PeriodsFormContainer = () => {
                         placeholder="Tipo"
                         value={type}
                         onChange={(value) => handlePeriodType(id, value)}
-                        options={periodTypes.map(({id, type}) => {
+                        options={periodTypes.map(({ id, type }) => {
                           return {
                             value: id,
                             label: type,
@@ -287,15 +275,13 @@ export const PeriodsFormContainer = () => {
                     {type && (
                       <div className="w-full">
                         <Select
-                          error={getErrorMessageByFildName(
-                            `${id} classification`
-                          )}
-                          onChange={(value) =>
-                            handlePeriodClassification(id, value)
-                          }
+                          error={getErrorMessageByFildName(`${id} classification`)}
+                          onChange={(value) => handlePeriodClassification(id, value)}
                           placeholder="Classificação"
                           value={classification}
-                          options={getPeriodClassification(type)}
+                          options={getPeriodClassification(type)
+                            .filter(({ value }) => value !== "SCHEDULED_STOP")
+                            .filter(({ value }) => value !== "PROCESS")}
                         />
                       </div>
                     )}
@@ -306,9 +292,7 @@ export const PeriodsFormContainer = () => {
                       <div className="w-full">
                         <Select
                           error={!repairClassification ? "Obrigatório" : ""}
-                          onChange={(value) =>
-                            handleRepairClassification(id, value)
-                          }
+                          onChange={(value) => handleRepairClassification(id, value)}
                           placeholder="Tipo do Reparo"
                           value={repairClassification ?? ""}
                           options={getRepairClassification(classification)}
@@ -383,9 +367,7 @@ export const PeriodsFormContainer = () => {
         <Button
           disabled={!isFormValid || isLoading}
           className="bg-primary w-2/3 "
-          onClick={() =>
-            hasRemainingMinutes ? handleSave() : handleSubmit(periods)
-          }
+          onClick={() => (hasRemainingMinutes ? handleSave() : handleSubmit(periods))}
         >
           {hasRemainingMinutes ? "Salvar dados" : "Enviar dados"}
         </Button>
