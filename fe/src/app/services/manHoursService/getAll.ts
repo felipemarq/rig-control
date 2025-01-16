@@ -12,8 +12,14 @@ export type ManHoursResponse = Array<{
   base: { name: string };
 }>;
 
-export const getAll = async () => {
-  const { data } = await httpClient.get<ManHoursResponse>(`/man-hours/`);
+export type ManHourFilters = {
+  year: string;
+};
+
+export const getAll = async ({ year }: ManHourFilters) => {
+  const { data } = await httpClient.get<ManHoursResponse>(`/man-hours/`, {
+    params: { year: year },
+  });
 
   return data;
 };

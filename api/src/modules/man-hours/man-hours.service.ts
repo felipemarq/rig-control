@@ -10,6 +10,7 @@ import { ManHourRepository } from 'src/shared/database/repositories/manHour.repo
 import { BaseRepository } from 'src/shared/database/repositories/base.repositories';
 import { getMonth } from 'date-fns';
 import dayjs from 'dayjs';
+import { CreateManyManHourDto } from './dto/create-many-man-hour.dto';
 
 @Injectable()
 export class ManHoursService {
@@ -52,11 +53,55 @@ export class ManHoursService {
     });
   }
 
+  async createMany(userId: string, createManyManHourDto: CreateManyManHourDto) {
+    const { baseId, year } = createManyManHourDto;
+    const numberYear = Number(year);
+
+    const baseExists = await this.basesRepo.findUnique({
+      where: { id: baseId },
+    });
+
+    if (!baseExists) {
+      throw new NotFoundException(`Base não encontrada`);
+    }
+
+    for (let index = 1; index <= 12; index++) {
+      const manHourAlreadyExists = await this.manHoursRepo.findFirst({
+        where: {
+          baseId,
+          month: index,
+          year: numberYear,
+        },
+      });
+
+      if (manHourAlreadyExists) {
+        throw new ConflictException(`Hora já inserida!`);
+      }
+    }
+
+    await this.manHoursRepo.createMany({
+      data: [
+        { hours: 0, month: 1, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 2, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 3, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 4, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 5, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 6, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 7, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 8, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 9, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 10, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 11, year: numberYear, userId: userId, baseId },
+        { hours: 0, month: 12, year: numberYear, userId: userId, baseId },
+      ],
+    });
+  }
+
   async findAllByBaseId(baseId: string) {
     return await this.manHoursRepo.findMany({ where: { baseId } });
   }
 
-  async findAll() {
+  async findAll(year: string) {
     let whereClause = {};
 
     /*  whereClause = {
@@ -112,6 +157,9 @@ export class ManHoursService {
     }); */
 
     return await this.manHoursRepo.findMany({
+      where: {
+        year: Number(year),
+      },
       select: {
         id: true,
         baseId: true,

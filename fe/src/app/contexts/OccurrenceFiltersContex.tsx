@@ -29,14 +29,8 @@ export const OccurrenceFiltersProvider = ({
   const currentDate = new Date();
   const firstDayOfYear = startOfYear(currentDate);
   const lastDayOfYear = endOfYear(currentDate);
-  const formattedFirstDay = format(
-    firstDayOfYear,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfYear,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
+  const formattedFirstDay = format(firstDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  const formattedLastDay = format(lastDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
 
   const [selectedStartDate] = useState<string>(formattedFirstDay);
   const [selectedEndDate] = useState<string>(formattedLastDay);
@@ -57,9 +51,8 @@ export const OccurrenceFiltersProvider = ({
   const handleApplyFilters = () => {
     refetchOccurrences();
   };
-  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(
-    filter: TFilter
-  ) {
+
+  function handleChangeFilters<TFilter extends keyof OccurrenceFilters>(filter: TFilter) {
     return (value: OccurrenceFilters[TFilter]) => {
       if (value === filters[filter]) return;
 
