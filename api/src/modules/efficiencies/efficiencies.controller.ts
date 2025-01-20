@@ -22,6 +22,7 @@ import { DebugEndpoint } from 'src/shared/decorators/DebugEndpoint';
 import { UserLogService } from '../user-log/user-log.service';
 import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
 import { LogType } from '../user-log/entities/LogType';
+import { DeleteBodyDto } from './dto/delete-body.dto';
 
 @Controller('efficiencies')
 export class EfficienciesController {
@@ -107,6 +108,11 @@ export class EfficienciesController {
       },
       userId,
     );
+  }
+
+  @Post('/delete')
+  async delete(@Body() deleteBody: DeleteBodyDto) {
+    return await this.efficienciesService.deleteWithBody(deleteBody);
   }
 
   // Demais rotas

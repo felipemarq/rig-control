@@ -13,9 +13,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     domainEfficiency.christmasTreeDisassemblyHours
   );
 
-  const bobRentHours = getTotalHoursFromTimeString(
-    domainEfficiency.bobRentHours
-  );
+  const bobRentHours = getTotalHoursFromTimeString(domainEfficiency.bobRentHours);
 
   const periodsArray = domainEfficiency.periods.map(
     ({
@@ -54,9 +52,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
         classification: classification,
         description: description,
         type: type,
-        repairClassification: repairClassification
-          ? repairClassification
-          : null,
+        repairClassification: repairClassification ? repairClassification : null,
         wellId: well,
       };
     }
@@ -79,10 +75,8 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isFuelGeneratorSelected: domainEfficiency.isFuelGeneratorSelected,
     isMobilizationSelected: domainEfficiency.isMobilizationSelected,
     isDemobilizationSelected: domainEfficiency.isDemobilizationSelected,
-    isTankMixMobilizationSelected:
-      domainEfficiency.isTankMixMobilizationSelected,
-    isTankMixDemobilizationSelected:
-      domainEfficiency.isTankMixDemobilizationSelected,
+    isTankMixMobilizationSelected: domainEfficiency.isTankMixMobilizationSelected,
+    isTankMixDemobilizationSelected: domainEfficiency.isTankMixDemobilizationSelected,
     isTankMixDTMSelected: domainEfficiency.isTankMixDTMSelected,
     isTruckCartSelected: domainEfficiency.isTruckCartSelected,
     isTruckTankSelected: domainEfficiency.isTruckTankSelected,

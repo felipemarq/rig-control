@@ -709,25 +709,51 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   //SPT 88
 
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
-  const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
-  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
-  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
-    useState(false);
-  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
-    useState(false);
-  const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
-  const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
-  const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
-  const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
-  const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
-  const [isTruckCartSelected, setIsTruckCartSelected] = useState(false);
-  const [isMunckSelected, setIsMunckSelected] = useState(false);
-  const [isTransportationSelected, setIsTransportationSelected] = useState(false);
-  const [truckKm, setTruckKm] = useState(0);
-  const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(false);
-  const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
+  const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(
+    !!efficiency?.hasMixTankMonthRent
+  );
+  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(
+    !!efficiency?.hasMixTankOperator
+  );
+  const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] = useState(
+    !!efficiency?.hasMixTankMobilization
+  );
+  const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] = useState(
+    !!efficiency?.hasMixTankDemobilization
+  );
+  const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(
+    !!efficiency?.hasGeneratorFuel
+  );
+  const [isMobilizationSelected, setIsMobilizationSelected] = useState(
+    !!efficiency?.hasMobilization
+  );
+  const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(
+    !!efficiency?.hasDemobilization
+  );
+  const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(
+    !!efficiency?.hasMixTankDtm
+  );
+  const [isTruckTankSelected, setIsTruckTankSelected] = useState(
+    !!efficiency?.hasTruckTank
+  );
+  const [isTruckCartSelected, setIsTruckCartSelected] = useState(
+    !!efficiency?.hasTruckCartRent
+  );
+  const [isMunckSelected, setIsMunckSelected] = useState(!!efficiency?.hasMunck);
+  const [isTransportationSelected, setIsTransportationSelected] = useState(
+    !!efficiency?.hasTransportation
+  );
+  const [truckKm, setTruckKm] = useState(efficiency?.truckKmHours ?? 0);
+  const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(
+    !!efficiency?.hasExtraTrailer
+  );
+  const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(
+    !!efficiency?.hasPowerSwivel
+  );
   const [mobilizationPlace, setMobilizationPlace] = useState("");
-  const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(false);
+  const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(
+    !!efficiency?.hasSuckingTruck
+  );
   const [christmasTreeDisassemblyHours, setChristmasTreeDisassemblyHours] =
     useState<string>("");
   const [bobRentHours, setBobRentHours] = useState<string>("");

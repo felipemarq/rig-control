@@ -31,6 +31,7 @@ import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
 import { LogType } from '../user-log/entities/LogType';
 import { MailService } from '../mail/mail.service';
 import { formatDate } from 'src/shared/utils/formatDate';
+import { DeleteBodyDto } from './dto/delete-body.dto';
 
 @Injectable()
 export class EfficienciesService {
@@ -170,9 +171,32 @@ export class EfficienciesService {
      * Retrieves the billing configuration for the specified rig.
      * @param rigId The ID of the rig for which to retrieve the billing configuration.
      */
-    const rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
-      where: { rigId },
-    });
+
+    let rigBillingConfiguration = null;
+
+    if (rigId === '02736c13-435a-490a-9e1e-4390ad5ecef9') {
+      rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
+        where: {
+          rigId,
+          AND: [
+            { startDate: { lte: new Date(date) } }, // startDate <= now
+            { endDate: { gte: new Date(date) } }, // endDate >= now
+          ],
+        },
+      });
+
+      if (!rigBillingConfiguration) {
+        throw new NotFoundException(
+          `Configuração de faturamento para a sonda  não encontrada.`,
+        );
+      }
+    } else {
+      rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
+        where: {
+          rigId,
+        },
+      });
+    }
 
     /**
      * Checks if the periods provided overlap or are invalid.
@@ -447,9 +471,9 @@ export class EfficienciesService {
                                 <p style="margin: 0;"><strong>Parte Quebrada:</strong> ${translateRepairClassification(
                                   repairClassification,
                                 )}</p>
-                                <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${
+                                <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${(
                                   diffInMinutes / 60
-                                } Hrs</p>
+                                ).toFixed(2)} Hrs</p>
                             </div>
                             <p style="color: #555;">
                                 Por favor, elabore um plano de ação para resolver o problema o mais breve possível.
@@ -1297,6 +1321,19 @@ export class EfficienciesService {
     }
 
     await this.efficiencyRepo.delete({ where: { id: efficiencyId } });
+    return null;
+  }
+
+  async deleteWithBody(deleteBody: DeleteBodyDto) {
+    const efficiency = await this.efficiencyRepo.findFirst({
+      where: { AND: [{ date: deleteBody.date }, { rigId: deleteBody.rigId }] },
+    });
+
+    if (!efficiency) {
+      return;
+    }
+
+    await this.efficiencyRepo.delete({ where: { id: efficiency.id } });
     return null;
   }
 

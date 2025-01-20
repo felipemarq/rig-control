@@ -7,15 +7,25 @@ import {
   Param,
   Delete,
   Put,
+  Query,
 } from '@nestjs/common';
 import { ManHoursService } from './man-hours.service';
 import { CreateManHourDto } from './dto/create-man-hour.dto';
 import { UpdateManHourDto } from './dto/update-man-hour.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
+import { CreateManyManHourDto } from './dto/create-many-man-hour.dto';
 
 @Controller('man-hours')
 export class ManHoursController {
   constructor(private readonly manHoursService: ManHoursService) {}
+
+  @Post('create-many')
+  createMany(
+    @ActiveUserId() userId: string,
+    @Body() createManyManHourDto: CreateManyManHourDto,
+  ) {
+    return this.manHoursService.createMany(userId, createManyManHourDto);
+  }
 
   @Post()
   create(
@@ -45,8 +55,8 @@ export class ManHoursController {
   }
 
   @Get()
-  findAll() {
-    return this.manHoursService.findAll();
+  findAll(@Query('year') year: string) {
+    return this.manHoursService.findAll(year);
   }
 
   @Delete(':id')

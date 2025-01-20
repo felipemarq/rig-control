@@ -16,13 +16,8 @@ import { occurrenceTypeSelectOptions } from "../pages/Occurrences/utils/occurren
 import { natureSelectOptions } from "../pages/Occurrences/utils/natureSelectOptions";
 import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersContext";
 export const OccurrenceFiltersSheet = () => {
-  const {
-    filters,
-    bases,
-    handleChangeFilters,
-    handleClearFilters,
-    handleApplyFilters,
-  } = useOccurrencesFiltersContext();
+  const { filters, bases, handleChangeFilters, handleClearFilters, handleApplyFilters } =
+    useOccurrencesFiltersContext();
   return (
     <Sheet>
       <SheetTrigger>
@@ -30,14 +25,11 @@ export const OccurrenceFiltersSheet = () => {
       </SheetTrigger>
       <SheetContent className="bg-card overflow-y-auto">
         <SheetHeader>
-          <SheetTitle className="border-b-2 mb-8 border-gray-500">
-            Filtros
-          </SheetTitle>
+          <SheetTitle className="border-b-2 mb-8 border-gray-500">Filtros</SheetTitle>
           <SheetDescription className="">
             <div className="flex flex-col gap-12">
               <div className="grid gap-4">
                 <Select
-                  error={filters.baseId ? "" : "Selecione uma sonda!"}
                   placeholder="Sonda"
                   value={filters.baseId ?? ""}
                   onChange={(value) => handleChangeFilters("baseId")(value)}
