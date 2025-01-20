@@ -1,4 +1,5 @@
 import { create } from "./create";
+import { deleteWithBody } from "./deleteWithBody";
 import { getAll } from "./getAll";
 import { getAverage } from "./getAverage";
 import { getById } from "./getById";
@@ -16,4 +17,5 @@ export const efficienciesService = {
   getAverage: getAverage,
   getRigsAverage: getRigsAverage,
   getWellsCountByRig: getWellsCountByRig,
+  deleteWithBody: deleteWithBody,
 };

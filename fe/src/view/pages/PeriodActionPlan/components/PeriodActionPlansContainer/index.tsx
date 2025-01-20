@@ -2,6 +2,7 @@ import { Spinner } from "@/view/components/Spinner";
 import { usePeriodActionPlansContainer } from "./usePeriodActionPlansContainer";
 import { PeriodActionPlanItem } from "./PeriodActionPlanItem";
 import { DeleteModal } from "@/view/components/DeleteModal";
+import { NotFound } from "@/view/components/NotFound";
 
 export const PeriodActionPlansContainer = () => {
   const {
@@ -43,6 +44,15 @@ export const PeriodActionPlansContainer = () => {
             />
           ))}
         </>
+      )}
+
+      {!isFetchingPeriodsActionPlans && periodActionPlans.length === 0 && (
+        <div className="col-span-3 my-16">
+          <NotFound>
+            <strong>Não</strong> existem dados para o <strong>período</strong>{" "}
+            selecionado!
+          </NotFound>
+        </div>
       )}
     </div>
   );

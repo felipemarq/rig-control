@@ -62,6 +62,7 @@ interface DashboardContextValue {
   isPending: boolean;
   missingDates: string[];
   scheduledStoppedDates: string[];
+  commerciallyStoppedDates: string[];
 }
 
 // Criação do contexto
@@ -102,6 +103,21 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     return allDates;
   }
 
+  function getCommertialyStoppedDates(efficiencies: EfficienciesResponse) {
+    const allDates: string[] = [];
+    efficiencies.forEach((efficiency) => {
+      const hasCommertialStopped = efficiency.periods.find(
+        (period) => period.type === "COMMERCIALLY_STOPPED"
+      );
+
+      if (hasCommertialStopped) {
+        allDates.push((efficiency.date as string).split("T")[0]);
+      }
+    });
+    return allDates;
+  }
+
+  const commerciallyStoppedDates = getCommertialyStoppedDates(efficiencies);
   const scheduledStoppedDates = getScheduledStoppedDates(efficiencies);
 
   function getMissingDates(
@@ -300,6 +316,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
         handleMarkNotificationAsRead,
         isPending,
         scheduledStoppedDates,
+        commerciallyStoppedDates,
       }}
     >
       {children}

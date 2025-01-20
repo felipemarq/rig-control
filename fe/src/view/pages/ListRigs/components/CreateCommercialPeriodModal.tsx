@@ -12,7 +12,7 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { v4 as uuidv4 } from "uuid";
-import { Loader2 } from "lucide-react";
+import { AlertCircle, Loader2 } from "lucide-react";
 import * as Sentry from "@sentry/react";
 import { z } from "zod";
 import { Controller, useForm } from "react-hook-form";
@@ -25,6 +25,8 @@ import { DatePickerInput } from "@/view/components/DatePickerInput";
 import { efficiencyMappers } from "@/app/services/mappers/efficiencyMappers";
 import { efficienciesService } from "@/app/services/efficienciesService";
 import { addDays, format, isAfter } from "date-fns";
+import { formatDate } from "@/app/utils/formatDate";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   type: z.string().min(1, "Obrigatório."),
@@ -42,7 +44,10 @@ export default function CreateCommercialPeriodModal({
   children: React.ReactNode;
   selectedRig: string;
 }) {
+  const { primaryColor } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Controla a abertura do dialog
+
+  const [dateBeingProcessed, setDateBeingProcessed] = useState<Date | null>(null);
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
@@ -51,11 +56,15 @@ export default function CreateCommercialPeriodModal({
     resolver: zodResolver(schema),
   });
 
-  const { isPending: isLoading, mutateAsync } = useMutation({
+  const { isPending: isLoadingCreate, mutateAsync } = useMutation({
     mutationFn: efficienciesService.create,
   });
 
-  console.log("formState", formState.errors);
+  const { isPending: isLoadingDelete, mutateAsync: deleteAsync } = useMutation({
+    mutationFn: efficienciesService.deleteWithBody,
+  });
+
+  const isLoading = isLoadingCreate || isLoadingDelete;
 
   const handleProcessDates = async (
     startDate: Date,
@@ -70,6 +79,8 @@ export default function CreateCommercialPeriodModal({
       try {
         // Exemplo de operação para cada dia (pode ser substituído pela lógica desejada)
         console.log(`Processando para o dia: ${format(currentDate, "yyyy-MM-dd")}`);
+
+        setDateBeingProcessed(currentDate);
 
         // Aqui você pode chamar sua função assíncrona, como o mutateAsync
         const { toPersistenceObj } = efficiencyMappers.toPersistance({
@@ -111,7 +122,7 @@ export default function CreateCommercialPeriodModal({
           truckKm: 0,
         });
 
-        console.log("toPersistenceObj", toPersistenceObj);
+        await deleteAsync({ date: currentDate, rigId: selectedRig });
 
         await mutateAsync(toPersistenceObj);
       } catch (error: any) {
@@ -122,10 +133,12 @@ export default function CreateCommercialPeriodModal({
           error
         );
       }
-
       // Incrementa o dia
       currentDate = addDays(currentDate, 1);
     }
+
+    customColorToast("Dados criados com sucesso!", primaryColor, "success");
+    setIsDialogOpen(false);
   };
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
@@ -216,6 +229,22 @@ export default function CreateCommercialPeriodModal({
                 </RadioGroup>
               )}
             />
+            {!isLoading && (
+              <div className="flex gap-2 text-redAccent-500">
+                <AlertCircle size={40} className="text-" />
+
+                <span className="flex gap-1">
+                  Criar período de parada comercial irá deletar qualquer registro
+                  existente no intervalo selecionado!
+                </span>
+              </div>
+            )}
+
+            {isLoading && dateBeingProcessed && (
+              <span className="flex gap-1 text-gray-700">
+                Processando para o dia: {formatDate(dateBeingProcessed)} aguarde...
+              </span>
+            )}
           </div>
           <DialogFooter>
             <Button type="submit" disabled={isLoading}>

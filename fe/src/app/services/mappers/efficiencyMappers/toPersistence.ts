@@ -9,9 +9,6 @@ import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
 
-  console.log("tree", domainEfficiency.christmasTreeDisassemblyHours);
-  console.log("rent", domainEfficiency.bobRentHours);
-
   const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
     domainEfficiency.christmasTreeDisassemblyHours
   );

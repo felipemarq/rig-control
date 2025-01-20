@@ -19,6 +19,7 @@ import { WellsCountBarChartCard } from "./components/WellsCountBarChartCard";
 import { NotificationsPopover } from "@/view/components/NotificationsPopover";
 import { MissingDaysCard } from "./components/MissingDaysCard";
 import { ScheduledStoppedCard } from "./components/ScheduledStoppedCard";
+import { CommerciallyStoppedCard } from "./components/CommerciallyStoppedCard";
 
 const Dashboard = () => {
   return (
@@ -38,6 +39,7 @@ const Dashboard = () => {
           missingDates,
           scheduledStoppedDates,
           efficiencies,
+          commerciallyStoppedDates,
         }) => {
           return (
             <div className="">
@@ -61,6 +63,12 @@ const Dashboard = () => {
                 <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
                   <StatboxContainer />
                   <div className="flex  justify-end gap-4">
+                    {commerciallyStoppedDates.length > 0 && (
+                      <div className="">
+                        <CommerciallyStoppedCard />
+                      </div>
+                    )}
+
                     {missingDates.length > 0 && efficiencies.length > 0 && (
                       <div className="">
                         <MissingDaysCard />

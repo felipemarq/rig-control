@@ -31,6 +31,7 @@ import { getCurrentISOString } from 'src/shared/utils/getCurrentISOString';
 import { LogType } from '../user-log/entities/LogType';
 import { MailService } from '../mail/mail.service';
 import { formatDate } from 'src/shared/utils/formatDate';
+import { DeleteBodyDto } from './dto/delete-body.dto';
 
 @Injectable()
 export class EfficienciesService {
@@ -1320,6 +1321,19 @@ export class EfficienciesService {
     }
 
     await this.efficiencyRepo.delete({ where: { id: efficiencyId } });
+    return null;
+  }
+
+  async deleteWithBody(deleteBody: DeleteBodyDto) {
+    const efficiency = await this.efficiencyRepo.findFirst({
+      where: { AND: [{ date: deleteBody.date }, { rigId: deleteBody.rigId }] },
+    });
+
+    if (!efficiency) {
+      return;
+    }
+
+    await this.efficiencyRepo.delete({ where: { id: efficiency.id } });
     return null;
   }
 
