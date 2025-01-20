@@ -2,7 +2,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { AlertTriangle, CheckCircle, Clock } from "lucide-react";
 import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboardContext";
-import { OccurrencesResponse } from "@/app/services/occurrencesService/getAll";
 import { differenceInMinutes } from "date-fns";
 
 export const StatboxContainer = () => {
