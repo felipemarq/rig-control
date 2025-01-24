@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { Prisma, PrismaClient } from '@prisma/client';
+import { PersistanceEfficiency } from 'src/modules/efficiencies/entities/PersistanceEfficiency';
 
 @Injectable()
 export class EfficienciesRepository {
@@ -13,11 +14,17 @@ export class EfficienciesRepository {
     return await this.prismaService.efficiency.create(createDto);
   }
 
-  async findMany(findAllDto: Prisma.EfficiencyFindManyArgs) {
+  async findMany(
+    findAllDto: Prisma.EfficiencyFindManyArgs,
+  ): Promise<PersistanceEfficiency[]> {
+    //@ts-ignore
     return await this.prismaService.efficiency.findMany(findAllDto);
   }
 
-  async findUnique(findUniqueDto: Prisma.EfficiencyFindUniqueArgs) {
+  async findUnique(
+    findUniqueDto: Prisma.EfficiencyFindUniqueArgs,
+  ): Promise<PersistanceEfficiency> {
+    //@ts-ignore
     return await this.prismaService.efficiency.findUnique(findUniqueDto);
   }
 

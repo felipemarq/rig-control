@@ -15,14 +15,15 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 export const CalendarChart = () => {
   const { calendarRange, data, navigate } = useCalendarChart();
   const { primaryColor } = useTheme();
+  console.log("calendar data", data);
   return (
     <ResponsiveCalendar
       data={data}
       from={calendarRange.from}
       to={calendarRange.to}
-      maxValue={1}
+      maxValue={10}
       emptyColor="#eeeeee"
-      colors={["#FACC15", "#FACC15", "#FACC15", primaryColor]}
+      colors={["#FACC15", "#81c460", primaryColor]}
       margin={{ top: 0, right: 40, bottom: 0, left: 40 }}
       yearSpacing={40}
       monthBorderColor="#ffffff"

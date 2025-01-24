@@ -29,6 +29,10 @@ export class BillingRepository {
     return await this.prismaService.billing.update(updateDto);
   }
 
+  async delete(deleteDto: Prisma.BillingDeleteArgs) {
+    return await this.prismaService.billing.delete(deleteDto);
+  }
+
   async findAll({ startDate, endDate }) {
     const formattedStartDate = new Date(startDate);
     const formattedEndDate = new Date(endDate);

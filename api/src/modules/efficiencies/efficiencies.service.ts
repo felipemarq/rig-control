@@ -17,7 +17,7 @@ import { WellsRepository } from 'src/shared/database/repositories/well.repositor
 import { PeriodDto } from './dto/create-period-dto';
 import { TemporaryEfficienciesRepository } from 'src/shared/database/repositories/temporaryEfficienciesRepositories';
 import { UpdateEfficiencyDto } from './dto/update-efficiency.dto';
-import { Response } from 'express';
+import e, { Response } from 'express';
 import * as XLSX from 'xlsx';
 import { PeriodType } from './entities/PeriodType';
 import { PeriodClassification } from './entities/PeriodClassification';
@@ -32,6 +32,8 @@ import { LogType } from '../user-log/entities/LogType';
 import { MailService } from '../mail/mail.service';
 import { formatDate } from 'src/shared/utils/formatDate';
 import { DeleteBodyDto } from './dto/delete-body.dto';
+import { Interval } from './entities/Interval';
+import { getDiffInMinutes } from 'src/shared/utils/getDiffInMinutes';
 
 @Injectable()
 export class EfficienciesService {
@@ -47,6 +49,71 @@ export class EfficienciesService {
     private readonly userLogService: UserLogService,
     private readonly mailService: MailService,
   ) {}
+
+  private readonly selectEfficiencyObject = {
+    id: true,
+    well: true,
+    rigId: true,
+    userId: true,
+    date: true,
+    availableHours: true,
+    commercialHours: true,
+    standByHours: true,
+    billedScheduledStopHours: true,
+    unbilledScheduledStopHours: true,
+    periods: {
+      select: {
+        id: true,
+        startHour: true,
+        endHour: true,
+        classification: true,
+        repairClassification: true,
+        description: true,
+        type: true,
+        well: {
+          select: {
+            id: true,
+            name: true,
+          },
+        },
+      },
+    },
+    createdAt: true,
+    christmasTreeDisassemblyHours: true,
+    bobRentHours: true,
+    hasDemobilization: true,
+    hasMobilization: true,
+    hasExtraTrailer: true,
+    hasGeneratorFuel: true,
+    hasMixTankDemobilization: true,
+    hasMixTankDtm: true,
+    hasMixTankHourRent: true,
+    hasMixTankMobilization: true,
+    hasMixTankMonthRent: true,
+    hasMixTankOperator: true,
+    hasMunck: true,
+    hasPowerSwivel: true,
+    hasSuckingTruck: true,
+    hasTransportation: true,
+    hasTruckCartRent: true,
+    truckKmHours: true,
+    dtmHours: true,
+    hasTruckTank: true,
+    repairHours: true,
+    glossHours: true,
+    user: { select: { name: true } },
+    rig: { select: { name: true, state: true, stateFlagImagePath: true } },
+    fluidRatio: {
+      select: {
+        ratio: true,
+      },
+    },
+    equipmentRatio: {
+      select: {
+        ratio: true,
+      },
+    },
+  };
 
   private isTimeValid(startHour: string, endHour: string): boolean {
     const startTime = new Date(startHour);
@@ -172,37 +239,11 @@ export class EfficienciesService {
      * @param rigId The ID of the rig for which to retrieve the billing configuration.
      */
 
-    let rigBillingConfiguration = null;
-
-    if (rigId === '02736c13-435a-490a-9e1e-4390ad5ecef9') {
-      rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
-        where: {
-          rigId,
-          AND: [
-            { startDate: { lte: new Date(date) } }, // startDate <= now
-            { endDate: { gte: new Date(date) } }, // endDate >= now
-          ],
-        },
-      });
-
-      if (!rigBillingConfiguration) {
-        throw new NotFoundException(
-          `Configuração de faturamento para a sonda  não encontrada.`,
-        );
-      }
-    } else {
-      rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
-        where: {
-          rigId,
-        },
-      });
-    }
-
     /**
      * Checks if the periods provided overlap or are invalid.
      * @param periods The array of periods to check.
      */
-    this.validatePeriodsTime(periods);
+    /*  this.validatePeriodsTime(periods); */
 
     /**
      * Constructs the efficiency data object with the provided information.
@@ -277,24 +318,6 @@ export class EfficienciesService {
     let equipmentLt20TotalAmmount = 0;
     let equipmentBt20And50TotalAmmount = 0;
     let equipmentGt50TotalAmmount = 0;
-    let mobilizationTotalAmount = 0;
-    let demobilizationTotalAmount = 0;
-    let extraTrailerTotalAmount = 0;
-    let powerSwivelTotalAmount = 0;
-    let truckCartRentTotalAmount = 0;
-    let transportationTotalAmount = 0;
-    let truckKmTotalAmount = 0;
-    let bobRentTotalAmount = 0;
-    let truckTankTotalAmount = 0;
-    let munckTotalAmount = 0;
-    let mixTankMonthRentTotalAmount = 0;
-    let mixTankHourRentTotalAmount = 0;
-    let generatorFuelTotalAmount = 0;
-    let mixTankOperatorTotalAmount = 0;
-    let mixTankDTMTotalAmount = 0;
-    let mixTankMobilizationTotalAmount = 0;
-    let mixTankDemobilizationTotalAmount = 0;
-    let suckingTruckTotalAmount = 0;
     let totalGlossHours = 0;
     let totalRepairHours = 0;
     let commercialHours = 0;
@@ -397,6 +420,184 @@ export class EfficienciesService {
         }
 
         if (type === 'REPAIR') {
+          await this.mailService.sendEmail(
+            ['ricardo@conterp.com.br', 'felipemarques@conterp.com.br'], // Lista de destinatários
+            'Notificação de Reparo de Equipamento', // Assunto do e-mail
+            `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Reparo de Equipamento</title>
+                  <style>
+                      body {
+                          font-family: Arial, sans-serif;
+                          background-color: #f4f4f9;
+                          margin: 0;
+                          padding: 0;
+                      }
+                      .email-container {
+                          max-width: 600px;
+                          margin: auto;
+                          padding: 20px;
+                          border: 1px solid #ddd;
+                          border-radius: 8px;
+                      }
+                      .header {
+                          background-color: #1c7b7b;
+                          color: #ffffff;
+                          text-align: center;
+                          padding: 20px;
+                          font-size: 20px;
+                          font-weight: bold;
+                      }
+                      .content {
+                          padding: 20px;
+                          line-height: 1.6;
+                      }
+                      .content p {
+                          margin: 10px 0;
+                      }
+                      .footer {
+                          margin-top: 20px;
+                          text-align: center;
+                          font-size: 12px;
+                          color: #888;
+                      }
+                  </style>
+              </head>
+              <body>
+                  <div class="email-container">
+                      <div class="header">
+                          Notificação de Reparo de Equipamento
+                      </div>
+                      <div class="content">
+                          <p>Prezado Ricardo,</p>
+                          <p>Foi identificado um reparo em um dos equipamentos. Seguem os detalhes:</p>
+                          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                              <h3 style="margin-top: 0; color: #333;">Detalhes do Reparo</h3>
+                              <p style="margin: 0;"><strong>Sonda:</strong> ${
+                                rig.name
+                              }</p>
+                              <p style="margin: 0;"><strong>Dia:</strong> ${formatDate(
+                                new Date(date),
+                              )}</p>
+                              <p style="margin: 0;"><strong>Parte do Equipamento:</strong> ${translateClassification(
+                                classification,
+                              )}</p>
+                              <p style="margin: 0;"><strong>Parte Quebrada:</strong> ${translateRepairClassification(
+                                repairClassification,
+                              )}</p>
+                              <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${(
+                                diffInMinutes / 60
+                              ).toFixed(2)} Hrs</p>
+                          </div>
+                          <p style="color: #555;">
+                              Esta é uma notificação padrão sobre os reparos em andamento.
+                          </p>
+                      </div>
+                      <div class="footer">
+                          <p>Este é um e-mail automático. Por favor, não responda.</p>
+                          <p>&copy; ${new Date().getFullYear()} Rig Manager. Todos os direitos reservados.</p>
+                      </div>
+                  </div>
+              </body>
+              </html>
+            `,
+          );
+
+          await this.mailService.sendEmail(
+            [
+              'alanfelipe@conterp.com.br',
+              'luizrangel@conterp.com.br',
+              'felipemarques@conterp.com.br',
+              'bianca@conterp.com.br',
+            ],
+            'Reparo de equipamento requer plano de ação',
+            `<!DOCTYPE html>
+              <html lang="en">
+              <head>
+                  <meta charset="UTF-8">
+                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                  <title>Reparo de Equipamento</title>
+                  <style>
+                      body {
+                          font-family: Arial, sans-serif;
+                          background-color: #f4f4f9;
+                          margin: 0;
+                          padding: 0;
+                      }
+                      .email-container {
+                          max-width: 600px;
+                          margin: auto;
+                          padding: 20px;
+                          border: 1px solid #ddd;
+                          border-radius: 8px;
+                      }
+                      .header {
+                          background-color: #1c7b7b;
+                          color: #ffffff;
+                          text-align: center;
+                          padding: 20px;
+                          font-size: 20px;
+                          font-weight: bold;
+                      }
+                      .content {
+                          padding: 20px;
+                          line-height: 1.6;
+                      }
+                      .content p {
+                          margin: 10px 0;
+                      }
+                      .footer {
+                          margin-top: 20px;
+                          text-align: center;
+                          font-size: 12px;
+                          color: #888;
+                      }
+                  </style>
+              </head>
+              <body>
+                  <div class="email-container">
+                      <div class="header">
+                          Alerta: Reparo de Equipamento Prolongado
+                      </div>
+                      <div class="content">
+                          <p>Prezado(a),</p>
+                          <p>Foi identificado um reparo prolongado em um dos equipamentos. Seguem os detalhes:</p>
+                          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                              <h3 style="margin-top: 0; color: #333;">Detalhes do Reparo</h3>
+                              <p style="margin: 0;"><strong>Sonda:</strong> ${
+                                rig.name
+                              }</p>
+                              <p style="margin: 0;"><strong>Dia:</strong> ${formatDate(
+                                new Date(date),
+                              )}</p>
+                              <p style="margin: 0;"><strong>Parte do Equipamento:</strong> ${translateClassification(
+                                classification,
+                              )}</p>
+                              <p style="margin: 0;"><strong>Parte Quebrada:</strong> ${translateRepairClassification(
+                                repairClassification,
+                              )}</p>
+                              <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${(
+                                diffInMinutes / 60
+                              ).toFixed(2)} Hrs</p>
+                          </div>
+                          <p style="color: #555;">
+                              Por favor, elabore um plano de ação para resolver o problema o mais breve possível.
+                              Se precisar de mais informações, entre em contato conosco.
+                          </p>
+                      </div>
+                      <div class="footer">
+                          <p>Este é um e-mail automático. Por favor, não responda.</p>
+                          <p>&copy; ${new Date().getFullYear()} Rig Manager. Todos os direitos reservados.</p>
+                      </div>
+                  </div>
+              </body>
+              </html>
+`,
+          );
+
           if (diffInMinutes >= 180) {
             await this.mailService.sendEmail(
               [
@@ -482,7 +683,7 @@ export class EfficienciesService {
                         </div>
                         <div class="footer">
                             <p>Este é um e-mail automático. Por favor, não responda.</p>
-                            <p>&copy; ${new Date().getFullYear()} Info Conterp. Todos os direitos reservados.</p>
+                            <p>&copy; ${new Date().getFullYear()} Rig Manager. Todos os direitos reservados.</p>
                         </div>
                     </div>
                 </body>
@@ -534,8 +735,182 @@ export class EfficienciesService {
       });
     }
 
+    efficiencyData['dtmHours'] =
+      dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
+
+    const efficiency = await this.efficiencyRepo.create({
+      data: {
+        ...efficiencyData,
+        glossHours: totalGlossHours,
+        repairHours: totalRepairHours,
+        standByHours: standByTotalHours,
+        unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
+        billedScheduledStopHours: billedScheduledStopTotalHours,
+        commercialHours: commercialHours,
+      },
+    });
+
+    await this.calculateEfficiencyBilling(efficiency.id);
+
+    await this.userLogService.create(
+      getCurrentISOString(),
+      userId,
+      LogType.EFFICIENCY_CREATE,
+    );
+
+    return efficiency;
+  }
+
+  async calculateEfficiencyBilling(efficiencyId: string) {
+    const efficiency = await this.efficiencyRepo.findUnique({
+      where: { id: efficiencyId },
+      select: this.selectEfficiencyObject,
+    });
+
+    let billedScheduledStopTotalHours = 0;
+    let unbilledScheduledStopTotalHours = 0;
+    let standByTotalHours = 0;
+    let dtmLt20TotalHours = 0;
+    let dtmBt20And50TotalHours = 0;
+    let dtmGt50TotalHours = 0;
+    let dtmLt20TotalAmmount = 0;
+    let dtmBt20and50TotalAmmout = 0;
+    let dtmGt50TotalAmount = 0;
+    let fluidLt20TotalAmmount = 0;
+    let fluidBt20And50TotalAmmount = 0;
+    let fluidGt50TotalAmmount = 0;
+    let equipmentLt20TotalAmmount = 0;
+    let equipmentBt20And50TotalAmmount = 0;
+    let equipmentGt50TotalAmmount = 0;
+    let mobilizationTotalAmount = 0;
+    let demobilizationTotalAmount = 0;
+    let extraTrailerTotalAmount = 0;
+    let powerSwivelTotalAmount = 0;
+    let truckCartRentTotalAmount = 0;
+    let transportationTotalAmount = 0;
+    let truckKmTotalAmount = 0;
+    let bobRentTotalAmount = 0;
+    let truckTankTotalAmount = 0;
+    let munckTotalAmount = 0;
+    let mixTankMonthRentTotalAmount = 0;
+    let mixTankHourRentTotalAmount = 0;
+    let generatorFuelTotalAmount = 0;
+    let mixTankOperatorTotalAmount = 0;
+    let mixTankDTMTotalAmount = 0;
+    let mixTankMobilizationTotalAmount = 0;
+    let mixTankDemobilizationTotalAmount = 0;
+    let suckingTruckTotalAmount = 0;
+    let totalGlossHours = 0;
+    let totalRepairHours = 0;
+    let commercialHours = 0;
+
+    let rigBillingConfiguration = null;
+    const rigId = efficiency.rigId;
+    const date = efficiency.date;
+
+    /*
+    SPT 60 - 544e1dbe-c059-428d-b6c6-042add9dbcc0
+
+    SPT 111 - 064278ad-a056-4f34-894a-0074ec586c89
+
+    SPT 76 - aa5fb3c1-63f5-47ab-86bd-7f31b7302e67
+
+    SPT 151 - ec620219-9d57-4a6a-84d5-61c94cdc797f
+
+    */
+    if (
+      rigId === '544e1dbe-c059-428d-b6c6-042add9dbcc0' ||
+      rigId === '064278ad-a056-4f34-894a-0074ec586c89' ||
+      rigId === 'aa5fb3c1-63f5-47ab-86bd-7f31b7302e67' ||
+      rigId === 'ec620219-9d57-4a6a-84d5-61c94cdc797f'
+    ) {
+      rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
+        where: {
+          rigId,
+          AND: [
+            { startDate: { lte: new Date(date) } }, // startDate <= now
+            { endDate: { gte: new Date(date) } }, // endDate >= now
+          ],
+        },
+      });
+
+      if (!rigBillingConfiguration) {
+        throw new NotFoundException(
+          `Configuração de faturamento para a sonda não encontrada na data enviada.`,
+        );
+      }
+    } else {
+      rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
+        where: {
+          rigId,
+        },
+      });
+    }
+
+    efficiency.periods.forEach(
+      async ({ type, startHour, endHour, classification }, index) => {
+        // Convert startHour and endHour to Date objects
+        const horaInicial = new Date(startHour);
+        const horaFinal = new Date(endHour);
+
+        // Function to calculate the difference in minutes between two dates
+
+        // Calculate the difference in minutes between start and end hour
+        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+
+        // Update total amounts and hours based on period type and classification
+        if (type === 'DTM') {
+          if (classification === 'LT20') {
+            dtmLt20TotalAmmount = 1;
+            dtmLt20TotalHours += diffInMinutes / 60;
+          }
+
+          if (classification === 'BT20AND50') {
+            dtmBt20and50TotalAmmout = 1;
+            dtmBt20And50TotalHours += diffInMinutes / 60;
+          }
+
+          if (classification === 'GT50') {
+            dtmGt50TotalAmount = 1;
+            dtmGt50TotalHours += diffInMinutes / 60;
+          }
+        }
+        billedScheduledStopTotalHours = 0;
+
+        if (type === 'COMMERCIALLY_STOPPED') {
+          commercialHours += diffInMinutes / 60;
+        }
+
+        if (
+          type === 'SCHEDULED_STOP' &&
+          classification === 'BILLED_SCHEDULED_STOP'
+        ) {
+          billedScheduledStopTotalHours += diffInMinutes / 60;
+        }
+
+        if (
+          type === 'SCHEDULED_STOP' &&
+          classification === 'UNBILLED_SCHEDULED_STOP'
+        ) {
+          unbilledScheduledStopTotalHours += diffInMinutes / 60;
+        }
+
+        if (type === 'STAND_BY') {
+          standByTotalHours += diffInMinutes / 60;
+        }
+
+        if (type === 'REPAIR') {
+          totalRepairHours += diffInMinutes / 60;
+        }
+
+        if (type === 'GLOSS') {
+          totalGlossHours += diffInMinutes / 60;
+        }
+      },
+    );
+
     const availableHourAmount =
-      availableHours * rigBillingConfiguration.availableHourTax;
+      efficiency.availableHours * rigBillingConfiguration.availableHourTax;
 
     const scheduledStopAmount =
       billedScheduledStopTotalHours * rigBillingConfiguration.availableHourTax;
@@ -585,7 +960,7 @@ export class EfficienciesService {
       rigBillingConfiguration.dtmHourTax;
 
     const christmasTreeDisassemblyAmount =
-      christmasTreeDisassemblyHours *
+      efficiency.christmasTreeDisassemblyHours *
       rigBillingConfiguration.christmasTreeDisassemblyTax;
 
     const calculateSelectedValues = (selection: boolean, taxString: string) => {
@@ -593,85 +968,87 @@ export class EfficienciesService {
     };
 
     powerSwivelTotalAmount = calculateSelectedValues(
-      isPowerSwivelSelected,
+      efficiency.hasPowerSwivel,
       'powerSwivelTax',
     );
 
     mixTankDemobilizationTotalAmount = calculateSelectedValues(
-      isTankMixDemobilizationSelected,
+      efficiency.hasMixTankDemobilization,
       'mixTankDemobilizationTax',
     );
 
     mixTankMobilizationTotalAmount = calculateSelectedValues(
-      isTankMixMobilizationSelected,
+      efficiency.hasMixTankMobilization,
       'mixTankMobilizationTax',
     );
 
     mixTankDTMTotalAmount = calculateSelectedValues(
-      isTankMixDTMSelected,
+      efficiency.hasMixTankDtm,
       'mixTankDtmTax',
     );
 
     mixTankOperatorTotalAmount = calculateSelectedValues(
-      isMixTankOperatorsSelected,
+      efficiency.hasMixTankOperator,
       'mixTankOperatorTax',
     );
 
     mixTankMonthRentTotalAmount = calculateSelectedValues(
-      isMixTankMonthSelected,
+      efficiency.hasMixTankMonthRent,
       'mixTankMonthRentTax',
     );
 
     mixTankHourRentTotalAmount = calculateSelectedValues(
-      isMixTankSelected,
+      efficiency.hasMixTankHourRent,
       'mixTankHourRentTax',
     );
 
     generatorFuelTotalAmount = calculateSelectedValues(
-      isFuelGeneratorSelected,
+      efficiency.hasGeneratorFuel,
       'generatorFuelTax',
     );
 
-    munckTotalAmount = calculateSelectedValues(isMunckSelected, 'munckTax');
+    munckTotalAmount = calculateSelectedValues(efficiency.hasMunck, 'munckTax');
 
     truckTankTotalAmount = calculateSelectedValues(
-      isTruckTankSelected,
+      efficiency.hasTruckTank,
       'truckTankTax',
     );
 
     mobilizationTotalAmount = calculateSelectedValues(
-      isMobilizationSelected,
+      efficiency.hasMobilization,
       'mobilization',
     );
 
     demobilizationTotalAmount = calculateSelectedValues(
-      isDemobilizationSelected,
+      efficiency.hasDemobilization,
       'demobilization',
     );
 
     extraTrailerTotalAmount = calculateSelectedValues(
-      isExtraTrailerSelected,
+      efficiency.hasExtraTrailer,
       'extraTrailerTax',
     );
 
     suckingTruckTotalAmount = calculateSelectedValues(
-      isSuckingTruckSelected,
+      efficiency.hasSuckingTruck,
       'suckingTruckTax',
     );
 
     transportationTotalAmount = calculateSelectedValues(
-      isTransportationSelected,
+      efficiency.hasTransportation,
       'transportationTax',
     );
 
     truckCartRentTotalAmount = calculateSelectedValues(
-      isTruckCartSelected,
+      efficiency.hasTruckCartRent,
       'truckCartRentTax',
     );
 
-    bobRentTotalAmount = rigBillingConfiguration.bobRentTax * bobRentHours;
+    bobRentTotalAmount =
+      rigBillingConfiguration.bobRentTax * efficiency.bobRentHours;
 
-    truckKmTotalAmount = rigBillingConfiguration.truckKmTax * truckKm;
+    truckKmTotalAmount =
+      rigBillingConfiguration.truckKmTax * efficiency.truckKmHours;
 
     const totalAmmount =
       availableHourAmount +
@@ -705,21 +1082,6 @@ export class EfficienciesService {
       truckKmTotalAmount +
       scheduledStopAmount +
       standByHourAmount;
-
-    efficiencyData['dtmHours'] =
-      dtmLt20TotalHours + dtmGt50TotalHours + dtmBt20And50TotalHours;
-
-    const efficiency = await this.efficiencyRepo.create({
-      data: {
-        ...efficiencyData,
-        glossHours: totalGlossHours,
-        repairHours: totalRepairHours,
-        standByHours: standByTotalHours,
-        unbilledScheduledStopHours: unbilledScheduledStopTotalHours,
-        billedScheduledStopHours: billedScheduledStopTotalHours,
-        commercialHours: commercialHours,
-      },
-    });
 
     await this.billingRepo.create({
       data: {
@@ -764,14 +1126,57 @@ export class EfficienciesService {
         standByHourAmount,
       },
     });
+  }
 
-    await this.userLogService.create(
-      getCurrentISOString(),
-      userId,
-      LogType.EFFICIENCY_CREATE,
-    );
+  /* TEMPORARY */
 
-    return efficiency;
+  async recalculateEfficiency(filters: {
+    rigId: string;
+    startDate: string;
+    endDate: string;
+  }) {
+    const efficiencies = await this.efficiencyRepo.findMany({
+      where: {
+        rigId: filters.rigId,
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+      select: this.selectEfficiencyObject,
+    });
+
+    for (const efficiency of efficiencies) {
+      console.log(
+        `=============================================================`,
+      );
+      console.log(
+        `Enviando dados do dia ${formatDate(new Date(efficiency.date))}`,
+      );
+
+      const billingFound = await this.billingRepo.findFisrt({
+        where: {
+          efficiencyId: efficiency.id,
+        },
+      });
+
+      await this.billingRepo.delete({
+        where: {
+          id: billingFound.id,
+        },
+      });
+
+      await this.calculateEfficiencyBilling(efficiency.id);
+
+      console.log(
+        `Criado dados do dia ${formatDate(new Date(efficiency.date))}`,
+      );
+    }
+
+    return efficiencies;
   }
 
   /**
@@ -856,6 +1261,7 @@ export class EfficienciesService {
         dtmHours: true,
         hasTruckTank: true,
         repairHours: true,
+        glossHours: true,
         user: { select: { name: true } },
         rig: { select: { name: true, state: true, stateFlagImagePath: true } },
         fluidRatio: {
@@ -1021,7 +1427,7 @@ export class EfficienciesService {
     efficiencies.forEach((eff) => {
       currentY = checkPageEnd(currentY);
       const row = [
-        formatDate(eff.date),
+        formatDate(new Date(eff.date)),
         eff.well || 'N/A',
         eff.availableHours?.toFixed(1) || '0',
         eff.standByHours?.toFixed(1) || '0',
@@ -1130,6 +1536,7 @@ export class EfficienciesService {
       },
     });
 
+    //@ts-ignore
     const periods: {
       efficiencyId: string;
       id: string;
