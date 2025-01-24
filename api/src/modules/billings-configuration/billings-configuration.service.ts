@@ -141,7 +141,9 @@ export class BillingsConfigurationService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} billingsConfiguration`;
+  async remove(billingConfigurationId: string) {
+    return await this.billingConfigRepo.delete({
+      where: { id: billingConfigurationId },
+    });
   }
 }

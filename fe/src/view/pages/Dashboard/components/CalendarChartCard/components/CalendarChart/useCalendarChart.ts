@@ -22,7 +22,7 @@ export const useCalendarChart = () => {
   const { efficiencies } = useDashboard();
 
   const data = efficiencies.map(
-    ({ availableHours, id, date, standByHours, billedScheduledStopHours }) => {
+    ({ availableHours, id, date, standByHours, billedScheduledStopHours, periods }) => {
       // Converte a string de data para um objeto Date
       const originalDate = new Date(date.toString());
 
@@ -35,9 +35,23 @@ export const useCalendarChart = () => {
       const realAvailabeHours =
         availableHours + standByHours + (billedScheduledStopHours ?? 0);
 
+      let dataItemValue = 0;
+
+      if (realAvailabeHours === 24) {
+        dataItemValue = 10;
+      }
+
+      const hasCommeciallyStoppedPeriod = periods.some(
+        ({ type }) => type === "COMMERCIALLY_STOPPED"
+      );
+
+      if (hasCommeciallyStoppedPeriod) {
+        dataItemValue = 5;
+      }
+
       return {
         id,
-        value: realAvailabeHours === 24 ? 1 : 0,
+        value: dataItemValue,
         availableHours: realAvailabeHours,
         efficiency: ((realAvailabeHours / 24) * 100).toFixed(2) + "%",
         day: formattedDate, // Usa a data formatada

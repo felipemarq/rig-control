@@ -60,8 +60,8 @@ export class BillingsConfigurationController {
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billingsConfigurationService.remove(+id);
+  @Delete(':billingConfigurationId')
+  remove(@Param('billingConfigurationId') billingConfigurationId: string) {
+    return this.billingsConfigurationService.remove(billingConfigurationId);
   }
 }

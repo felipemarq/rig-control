@@ -76,6 +76,33 @@ export class EfficienciesController {
     );
   }
 
+  @Post('/delete')
+  async delete(@Body() deleteBody: DeleteBodyDto) {
+    return await this.efficienciesService.deleteWithBody(deleteBody);
+  }
+
+  @Get('/recalculate')
+  async recalculate(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return await this.efficienciesService.recalculateEfficiency({
+      rigId,
+      startDate,
+      endDate,
+    });
+  }
+
+  @Post('/confirm/:efficiencyId')
+  async confirmEfficiency(
+    @Param('efficiencyId', ParseUUIDPipe) efficiencyId: string,
+  ) {
+    return await this.efficienciesService.calculateEfficiencyBilling(
+      efficiencyId,
+    );
+  }
+
   // Rotas com parâmetros de caminho (mais específicas)
   @Get(':efficiencyId')
   findById(@Param('efficiencyId', ParseUUIDPipe) efficiencyId: string) {
@@ -108,11 +135,6 @@ export class EfficienciesController {
       },
       userId,
     );
-  }
-
-  @Post('/delete')
-  async delete(@Body() deleteBody: DeleteBodyDto) {
-    return await this.efficienciesService.deleteWithBody(deleteBody);
   }
 
   // Demais rotas

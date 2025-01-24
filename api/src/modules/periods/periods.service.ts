@@ -161,7 +161,7 @@ export class PeriodsService {
       if (efficiency.periods.length > 0) {
         //@ts-ignore
         const rigName = efficiency.rig.name; // Nome da sonda
-        const efficiencyDate = efficiency.date.toISOString().split('T')[0]; // Data da eficiência (sem horário)
+        const efficiencyDate = efficiency.date.split('T')[0]; // Data da eficiência (sem horário)
 
         // Inicializar o conjunto para a sonda, caso ainda não exista
         if (!dtmDaysByRig[rigName]) {
@@ -197,7 +197,7 @@ export class PeriodsService {
       //@ts-ignore
       if (efficiency.periods.length > 0) {
         // Extrair a data da eficiência (ignorando o horário)
-        const efficiencyDate = efficiency.date.toISOString().split('T')[0];
+        const efficiencyDate = efficiency.date.split('T')[0];
         daysWithDTM.add(efficiencyDate); // Adicionar ao conjunto de dias únicos
       }
     });
