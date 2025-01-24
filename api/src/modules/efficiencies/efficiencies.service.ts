@@ -421,7 +421,7 @@ export class EfficienciesService {
 
         if (type === 'REPAIR') {
           await this.mailService.sendEmail(
-            ['ricardo@conterp.com.br'], // Apenas o diretor de operações
+            ['ricardo@conterp.com.br', 'felipemarques@conterp.com.br'], // Lista de destinatários
             'Notificação de Reparo de Equipamento', // Assunto do e-mail
             `<!DOCTYPE html>
               <html lang="en">
