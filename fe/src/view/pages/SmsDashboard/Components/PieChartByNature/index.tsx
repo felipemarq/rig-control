@@ -18,12 +18,14 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboardContext";
 import { OccurenceNature } from "@/app/entities/Occurrence";
 import { natureTranslation } from "@/app/utils/natureTranslation";
+import { useNavigate } from "react-router-dom";
 
 type ChartData = { id: OccurenceNature; nature: string; qtd: number; fill: string }[];
 
 export const PieChartByNature = () => {
   const { primaryColor } = useTheme();
-  const { occurrences } = useSmsDashboardContext();
+  const navigate = useNavigate();
+  const { occurrences, handleChangeFilters } = useSmsDashboardContext();
 
   const chartConfig = {
     visitors: {
@@ -91,6 +93,10 @@ export const PieChartByNature = () => {
           <PieChart>
             <ChartTooltip content={<ChartTooltipContent nameKey="id" hideLabel />} />
             <Pie
+              onClick={(event) => {
+                handleChangeFilters("nature")(event.id);
+                navigate(`/occurrences`, { state: { shouldApplyFilters: true } });
+              }}
               data={data}
               dataKey="qtd"
               label={({ payload, ...props }) => {

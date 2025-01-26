@@ -17,12 +17,14 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboardContext";
 import { OccurrenceType } from "@/app/entities/Occurrence";
 import { occurrenceTypeTranslation } from "@/app/utils/occurrenceTypeTranslation";
+import { useNavigate } from "react-router-dom";
 
 type ChartData = { id: OccurrenceType; type: string; qtd: number }[];
 
 export const BarChartByType = () => {
   const { primaryColor } = useTheme();
-  const { occurrences } = useSmsDashboardContext();
+  const navigate = useNavigate();
+  const { occurrences, handleChangeFilters } = useSmsDashboardContext();
 
   const chartConfig = {
     qtd: {
@@ -73,10 +75,19 @@ export const BarChartByType = () => {
               tickLine={false}
               tickMargin={10}
               axisLine={false}
+
               //tickFormatter={(value) => value.slice(0, 3)}
             />
             <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Bar dataKey="qtd" fill="var(--color-qtd)" radius={8}>
+            <Bar
+              dataKey="qtd"
+              fill="var(--color-qtd)"
+              radius={8}
+              onClick={(event) => {
+                handleChangeFilters("type")(event.id);
+                navigate(`/occurrences`, { state: { shouldApplyFilters: true } });
+              }}
+            >
               <LabelList
                 position="top"
                 offset={12}
