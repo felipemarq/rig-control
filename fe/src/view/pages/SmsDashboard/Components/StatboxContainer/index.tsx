@@ -7,8 +7,6 @@ import { differenceInMinutes } from "date-fns";
 export const StatboxContainer = () => {
   const { occurrences } = useSmsDashboardContext();
 
-  console.log("Occurrences", occurrences);
-
   const totalOccurrences = occurrences.length;
 
   let totalOccurrenceActions = 0;
@@ -23,7 +21,6 @@ export const StatboxContainer = () => {
       if (occurrenceAction.isFinished) {
         totalFinishedOccurrenceActions++;
 
-        console.log(occurrenceAction.finishedAt);
         const createdAt = new Date(occurrence.date);
         const finishedAt = new Date(occurrenceAction.finishedAt!);
 

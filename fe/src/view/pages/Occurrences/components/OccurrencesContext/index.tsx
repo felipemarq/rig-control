@@ -9,7 +9,8 @@ import {
   OccurrenceFilters,
   OccurrencesResponse,
 } from "@/app/services/occurrencesService/getAll";
-import React, { createContext, useCallback, useState } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 // Definição do tipo do contexto
 interface OccurrencesContextValue {
@@ -57,6 +58,8 @@ export const OccurrencesContext = createContext({} as OccurrencesContextValue);
 export const OccurrencesProvider = ({ children }: { children: React.ReactNode }) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
+  const location = useLocation();
+
   const [occurenceIdActionPlanBeingSeen, setOccurenceIdActionPlanBeingSeen] = useState<
     string | null
   >(null);
@@ -74,6 +77,12 @@ export const OccurrencesProvider = ({ children }: { children: React.ReactNode })
   const handleRefetchOccurrences = () => {
     refetchOccurrences();
   };
+
+  useEffect(() => {
+    if (location.state?.shouldApplyFilters) {
+      handleApplyFilters();
+    }
+  }, [location.state?.shouldApplyFilters]);
 
   const [isNewOccurrenceModalOpen, setIsNewOccurrenceModalOpen] = useState(false);
 
