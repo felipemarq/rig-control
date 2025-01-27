@@ -15,6 +15,7 @@ export enum QueryKeys {
   PERIOD_ACTION_PLAN = "period-action-plan",
   EFFICIENCY = "efficiency",
   EFFICIENCIES = "efficiencies",
+  EFFICIENCIES_PENDING_CONFIRMATION = "efficiencies-pending-confirmation",
   BILLING = "billing",
   BILLINGS = "billings",
   CONTRACT_RIGS = "contract-rigs",

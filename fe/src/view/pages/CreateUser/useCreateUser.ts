@@ -16,11 +16,11 @@ import { QueryKeys } from "../../../app/config/QueryKeys";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
-  name: z.string().nonempty("Nome é obrigatório"),
-  email: z.string().nonempty("Email é obrigatório"),
-  accessLevel: z.enum(["ADM", "USER", "VIEWER"]),
-  rigId: z.string().nonempty("Sonda é obrigatório"),
-  contractId: z.string().nonempty("Contrato é obrigatório"),
+  name: z.string().min(1, "Nome é obrigatório"),
+  email: z.string().min(1, "Email é obrigatório"),
+  accessLevel: z.enum(["ADM", "USER", "VIEWER", "SUPERVISOR"]),
+  rigId: z.string().min(1, "Sonda é obrigatório"),
+  contractId: z.string().min(1, "Contrato é obrigatório"),
 });
 
 type FormData = z.infer<typeof schema>;

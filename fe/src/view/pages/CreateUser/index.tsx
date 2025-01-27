@@ -7,7 +7,18 @@ import { AccessLevel } from "../../../app/entities/AccessLevel";
 import { Select } from "../../components/Select";
 
 const CreateUser = () => {
-  const { errors, register, handleSubmit, isLoading, control, contracts, contractRigs, isFetchingContractRigs } = useCreateUser();
+  const {
+    errors,
+    register,
+    handleSubmit,
+    isLoading,
+    control,
+    contracts,
+    contractRigs,
+    isFetchingContractRigs,
+  } = useCreateUser();
+
+  console.log("errors", errors);
 
   return (
     <div className="w-full h-full overflow-y-scroll">

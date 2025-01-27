@@ -5,7 +5,7 @@ import { localStorageKeys } from "../config/localStorageKeys";
 //import.meta.env.VITE_APP_BASE_URL,
 //"http://localhost:3000/"
 export const httpClient = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_URL,
+  baseURL: "http://localhost:3000/",
 });
 
 httpClient.interceptors.request.use(async (config) => {

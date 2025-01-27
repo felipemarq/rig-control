@@ -12,6 +12,8 @@ import { QueryKeys } from "../config/QueryKeys";
 import { useSystemVersion } from "../hooks/useSystemVersion";
 import { currentVersion } from "../config/CurrentVersion";
 import { clarity } from "react-microsoft-clarity";
+import { useGetEfficiencyPedingConfirmation } from "../hooks/efficiencies/useGetEfficiencyPedingConfirmation";
+import { EfficienciesResponse } from "../services/efficienciesService/getAll";
 
 interface AuthContextValue {
   signedIn: boolean;
@@ -24,6 +26,7 @@ interface AuthContextValue {
   signin(accessToken: string): void;
   signout(): void;
   isWrongVersion: boolean;
+  pendingEfficienciesConfirmation: EfficienciesResponse;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
@@ -58,17 +61,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     staleTime: Infinity,
   });
 
-  const isUserAdm = data?.accessLevel === "ADM" ? true : false;
+  const isUserAdm = data?.accessLevel === AccessLevel.ADM ? true : false;
 
-  const isUserSupervisor = data?.accessLevel === "SUPERVISOR" ? true : false;
+  const isUserSupervisor = data?.accessLevel === AccessLevel.SUPERVISOR ? true : false;
 
   const isUserSms =
     data?.email === "rommelcaldas@conterp.com.br" ||
     data?.email === "bianca@conterp.com.br";
 
-  const isUserViewer = data?.accessLevel === "VIEWER";
+  const isUserViewer = data?.accessLevel === AccessLevel.VIEWER;
 
   const userAccessLevel = data?.accessLevel!;
+
+  const { pendingEfficienciesConfirmation, refetchpendingEfficienciesConfirmation } =
+    useGetEfficiencyPedingConfirmation(isUserSupervisor);
+
+  useEffect(() => {
+    refetchpendingEfficienciesConfirmation();
+  }, [data]);
+
+  console.log(
+    "pendingEfficienciesConfirmation",
+    JSON.stringify(pendingEfficienciesConfirmation)
+  );
 
   useEffect(() => {
     if (import.meta.env.PROD) {
@@ -114,6 +129,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         isUserViewer,
         userAccessLevel,
         isWrongVersion,
+        pendingEfficienciesConfirmation,
       }}
     >
       {isFetching && (

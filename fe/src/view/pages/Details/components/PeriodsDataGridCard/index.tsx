@@ -15,6 +15,12 @@ import { PeriodsDataGrid } from "./components/PeriodsDataGrid";
 import { NotFound } from "@/view/components/NotFound";
 import { formatDate } from "@/app/utils/formatDate";
 import { MoreDetailsDialog } from "./components/MoreDetailsDialog";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 export const PeriodsDataGridCard = () => {
   const {
@@ -50,23 +56,20 @@ export const PeriodsDataGridCard = () => {
           <>
             <div className="flex justify-end  gap-5 lg:w-1/2 ">
               <MoreDetailsDialog efficiency={efficiency} />
-              {canUserEdit && (
-                <Button
-                  size="sm"
-                  className="gap-1"
-                  onClick={openDeleteModal}
-                  variant="destructive"
-                >
-                  <span className="hidden sm:inline"> Deletar Registro</span>
-                  <Trash className="h-4 w-4" />
-                </Button>
-              )}
 
               {canUserEdit && (
-                <Button size="sm" className="gap-1" onClick={handleExcelDownload}>
-                  <span className="hidden sm:inline"> Baixar Excel</span>
-                  <FileDown className="h-4 w-4" />
-                </Button>
+                <TooltipProvider skipDelayDuration={1}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button size="sm" className="gap-1" onClick={handleExcelDownload}>
+                        <FileDown className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Add to library</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
 
               {efficiency.isEditable && (
@@ -91,6 +94,18 @@ export const PeriodsDataGridCard = () => {
                 >
                   <span className="hidden sm:inline"> Tornar Registro Editável</span>
                   <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+
+              {canUserEdit && (
+                <Button
+                  size="sm"
+                  className="gap-1"
+                  onClick={openDeleteModal}
+                  variant="destructive"
+                >
+                  <span className="hidden sm:inline"> Deletar Registro</span>
+                  <Trash className="h-4 w-4" />
                 </Button>
               )}
             </div>

@@ -658,7 +658,7 @@ export class EfficienciesService {
       },
     });
 
-    await this.calculateEfficiencyBilling(efficiency.id);
+    //await this.calculateEfficiencyBilling(efficiency.id);
 
     await this.userLogService.create(
       getCurrentISOString(),
@@ -1034,6 +1034,13 @@ export class EfficienciesService {
         standByHourAmount,
       },
     });
+
+    await this.efficiencyRepo.update({
+      where: { id: efficiencyId },
+      data: {
+        isConfirmed: true,
+      },
+    });
   }
 
   /* TEMPORARY */
@@ -1170,6 +1177,8 @@ export class EfficienciesService {
         hasTruckTank: true,
         repairHours: true,
         glossHours: true,
+        isEditable: true,
+        isConfirmed: true,
         user: { select: { name: true } },
         rig: { select: { name: true, state: true, stateFlagImagePath: true } },
         fluidRatio: {
@@ -1567,6 +1576,7 @@ export class EfficienciesService {
         hasTruckTank: true,
         repairHours: true,
         isEditable: true,
+        isConfirmed: true,
         rig: true,
         standByHours: true,
         user: {
@@ -1762,5 +1772,29 @@ export class EfficienciesService {
       where: { id: efficiencyId },
       data: updateEfficiencyDto,
     });
+  }
+
+  async pendingConfirmation(userId: string) {
+    const usersRigs = await this.userRigsRepo.findMany({
+      where: { userId },
+    });
+
+    let pendingRequests = [];
+
+    for (const user of usersRigs) {
+      pendingRequests = pendingRequests.concat(
+        await this.efficiencyRepo.findMany({
+          where: {
+            rigId: user.rigId,
+            isConfirmed: false,
+          },
+          include: {
+            rig: { select: { name: true } },
+          },
+        }),
+      );
+    }
+
+    return pendingRequests;
   }
 }

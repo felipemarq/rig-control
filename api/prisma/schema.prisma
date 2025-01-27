@@ -214,6 +214,7 @@ model Efficiency {
   glossHours                    Float?            @map("gloss_hours")
   dtmHours                      Float             @map("dtm_hours")
   isEditable                    Boolean?          @default(false) @map("is_editable")
+  isConfirmed                   Boolean?          @default(false) @map("is_confirmed")
   hasDemobilization             Boolean           @map("has_demobilization")
   hasMobilization               Boolean?          @map("has_mobilization")
   hasExtraTrailer               Boolean           @map("has_extra_trailer")

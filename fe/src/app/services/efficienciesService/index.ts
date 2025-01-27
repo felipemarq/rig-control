@@ -3,6 +3,7 @@ import { deleteWithBody } from "./deleteWithBody";
 import { getAll } from "./getAll";
 import { getAverage } from "./getAverage";
 import { getById } from "./getById";
+import { getPedingConfirmation } from "./getPedingConfirmation";
 import { getRigsAverage } from "./getRigsAverage";
 import { getWellsCountByRig } from "./getWellsCountByRig";
 import { remove } from "./remove";
@@ -18,4 +19,5 @@ export const efficienciesService = {
   getRigsAverage: getRigsAverage,
   getWellsCountByRig: getWellsCountByRig,
   deleteWithBody: deleteWithBody,
+  getPedingConfirmation: getPedingConfirmation,
 };
