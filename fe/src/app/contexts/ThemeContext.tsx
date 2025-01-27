@@ -36,7 +36,6 @@ export function ThemeProvider({
   );
 
   const [primaryColor, setPrimaryColor] = useState(getCssVariable("--primary"));
-  console.log("primaryColor", primaryColor);
 
   useEffect(() => {
     const root = window.document.documentElement;

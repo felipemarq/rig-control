@@ -14,6 +14,7 @@ import { usePeriodsDataGrid } from "./usePeriodsDataGrid";
 import { PeriodsDataGrid } from "./components/PeriodsDataGrid";
 import { NotFound } from "@/view/components/NotFound";
 import { formatDate } from "@/app/utils/formatDate";
+import { MoreDetailsDialog } from "./components/MoreDetailsDialog";
 
 export const PeriodsDataGridCard = () => {
   const {
@@ -30,6 +31,8 @@ export const PeriodsDataGridCard = () => {
     state,
   } = usePeriodsDataGrid();
 
+  console.log("efficiency", efficiency);
+
   return (
     <Card className="col-span-12 row-span-4 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] overflow-y-auto">
       <CardHeader className="flex flex-row items-center justify-between gap-4 ">
@@ -45,7 +48,8 @@ export const PeriodsDataGridCard = () => {
         </div>
         {efficiency && (
           <>
-            <div className="flex justify-end  gap-10 lg:w-1/2 ">
+            <div className="flex justify-end  gap-5 lg:w-1/2 ">
+              <MoreDetailsDialog efficiency={efficiency} />
               {canUserEdit && (
                 <Button
                   size="sm"

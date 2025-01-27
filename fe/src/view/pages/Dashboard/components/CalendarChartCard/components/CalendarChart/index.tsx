@@ -15,7 +15,6 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 export const CalendarChart = () => {
   const { calendarRange, data, navigate } = useCalendarChart();
   const { primaryColor } = useTheme();
-  console.log("calendar data", data);
   return (
     <ResponsiveCalendar
       data={data}
