@@ -49,7 +49,7 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Ocorrências",
+            title: "Listar BDOs",
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
@@ -61,7 +61,7 @@ export const useAppsidebar = () => {
             description: "Configure your playground",
           },
           {
-            title: "Criar Ocorrência",
+            title: "Criar BDO",
             url: "/form/menu",
             icon: Settings2,
             description: "Configure your playground",
@@ -138,7 +138,7 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Ocorrências",
+            title: "Listar BDOs",
             url: "/occurrences",
             icon: Settings2,
             description: "Configure your playground",
@@ -191,7 +191,7 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Ocorrências",
+            title: "Listar BDOs",
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
@@ -276,13 +276,13 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Ocorrências",
+            title: "Listar BDOs",
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
           },
           {
-            title: "Criar Ocorrência",
+            title: "Criar BDO",
             url: "/form/menu",
             icon: Settings2,
             description: "Configure your playground",
@@ -329,7 +329,7 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Ocorrências",
+            title: "Listar BDOs",
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",
@@ -382,7 +382,7 @@ export const useAppsidebar = () => {
             description: "Browse your starred prompts",
           },
           {
-            title: "Listar Ocorrências",
+            title: "Listar BDOs",
             url: "/list",
             icon: Settings2,
             description: "Configure your playground",

@@ -29,7 +29,13 @@ interface DetailsContextValues {
   isUserAdm: boolean;
   efficiencyId: string;
   canUserEdit: boolean;
-  handleUpdateEfficiency: () => void;
+  handleUpdateEfficiency: ({
+    attribute,
+    value,
+  }: {
+    attribute: "isEditable" | "isConfirmed";
+    value: boolean;
+  }) => Promise<void>;
   isLoadingUpdateEfficiency: boolean;
   windowWidth: number;
   handleExcelDownload: () => Promise<void>;
@@ -74,11 +80,18 @@ export const DetailsContextProvider = ({ children }: { children: React.ReactNode
     mutateAsync: mutateAsyncUpdateEfficiency,
   } = useMutation({ mutationFn: efficienciesService.update });
 
-  const handleUpdateEfficiency = async () => {
+  const handleUpdateEfficiency = async ({
+    attribute,
+    value,
+  }: {
+    attribute: "isEditable" | "isConfirmed";
+    value: boolean;
+  }) => {
+    const payload = { [attribute]: value };
     try {
       await mutateAsyncUpdateEfficiency({
         efficiencyId: efficiencyId,
-        isEditable: true,
+        ...payload,
       });
       queryClient.invalidateQueries({ queryKey: [QueryKeys.EFFICIENCY] });
     } catch (error: any | typeof AxiosError) {

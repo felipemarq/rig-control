@@ -30,7 +30,6 @@ export const useLineChart = () => {
     },
   ];
 
-  console.log("efficiencies", efficiencies);
   // Função para formatar as eficiências para o gráfico de linha
   const formatEfficiencyToLineChart = (efficiencies: Efficiency[]) => {
     //Coloca o nome da sonda no ID para aparecer no Hover do gráfico

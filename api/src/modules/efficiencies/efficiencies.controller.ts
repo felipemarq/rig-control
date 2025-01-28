@@ -31,6 +31,11 @@ export class EfficienciesController {
     private readonly userLogService: UserLogService,
   ) {}
 
+  @Get('/pending-efficiency-confirmation')
+  async pendingConfirmation(@ActiveUserId() userId: string) {
+    return await this.efficienciesService.pendingConfirmation(userId);
+  }
+
   @Get('/average')
   getAverageEfficiency(
     @ActiveUserId() userId: string,

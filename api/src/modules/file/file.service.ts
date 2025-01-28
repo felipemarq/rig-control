@@ -54,7 +54,7 @@ export class FileService {
     })) as unknown as OccurrenceWithFiles;
 
     if (!occurrence) {
-      throw new NotFoundException('Ocorrência não encontrada!');
+      throw new NotFoundException('BDO não encontrado!');
     }
 
     if (occurrence.files.length > 0) {
@@ -92,7 +92,7 @@ export class FileService {
     })) as unknown as OccurrenceWithFiles;
 
     if (!occurrenceAction) {
-      throw new NotFoundException('Ocorrência não encontrada!');
+      throw new NotFoundException('BDO não encontradO!');
     }
 
     if (occurrenceAction.files.length > 0) {

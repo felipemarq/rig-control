@@ -1,15 +1,13 @@
-import {httpClient} from "../httpClient";
+import { httpClient } from "../httpClient";
 
 export interface UpdateParams {
   efficiencyId: string;
-  isEditable: boolean;
+  isEditable?: boolean;
+  isConfirmed?: boolean;
 }
 
-export const update = async ({efficiencyId, ...params}: UpdateParams) => {
-  const {data} = await httpClient.patch(
-    `/efficiencies/${efficiencyId}`,
-    params
-  );
+export const update = async ({ efficiencyId, ...params }: UpdateParams) => {
+  const { data } = await httpClient.patch(`/efficiencies/${efficiencyId}`, params);
 
   return data;
 };

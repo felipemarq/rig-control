@@ -9,6 +9,7 @@ import { ErrorBoundary } from "../components/ErrorBoundary";
 import { ErrorBoundaryFallback } from "../components/ErrorBoundaryFallback";
 import { useAuth } from "@/app/hooks/useAuth";
 import { WrongVersionAlertModal } from "../pages/Dashboard/components/WrongVersionAlertModal";
+import UrgentWarningSummaryDialog from "../components/UrgentWarningSummaryDialog";
 
 export const SystemVersion = () => {
   return (
@@ -24,7 +25,8 @@ export const SystemVersion = () => {
 
 export const ShadcnLayout = () => {
   //const {activeItem,handleNavItemChange} = useMainLayout()
-  const { isWrongVersion } = useAuth();
+  const { isWrongVersion, pendingEfficienciesConfirmation } = useAuth();
+
   return (
     <SidebarLayout>
       <div className=" w-full h-full flex ">
@@ -42,6 +44,12 @@ export const ShadcnLayout = () => {
           <Suspense fallback={<SuspenseFallback />}>
             {!isWrongVersion && <Outlet />}
             {isWrongVersion && <WrongVersionAlertModal />}
+            {pendingEfficienciesConfirmation.length > 0 && (
+              <UrgentWarningSummaryDialog
+                //@ts-ignore
+                pendingEfficienciesConfirmation={pendingEfficienciesConfirmation}
+              />
+            )}
           </Suspense>
         </ErrorBoundary>
       </div>

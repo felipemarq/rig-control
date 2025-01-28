@@ -14,6 +14,7 @@ export type PersistanceEfficiency = {
   userId: string;
   user: { name: string };
   isEditable: boolean | null;
+  isConfirmed: boolean | null;
   rig: { name: string; state: UF };
   periods: {
     id: string;

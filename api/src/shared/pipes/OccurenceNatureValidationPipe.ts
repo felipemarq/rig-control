@@ -11,7 +11,7 @@ export class OccurenceNatureValidationPipe implements PipeTransform {
   transform(value: any, metadata: ArgumentMetadata) {
     if (!this.isValidOccurenceNature(value)) {
       throw new BadRequestException(
-        `Natureza de ocorrência inválido. Deveria ser um dos seguintes valores: ${Object.values(
+        `Natureza de BDO inválido. Deveria ser um dos seguintes valores: ${Object.values(
           OccurenceNature,
         ).join(', ')}`,
       );
