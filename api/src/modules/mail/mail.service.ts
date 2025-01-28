@@ -57,7 +57,7 @@ export class MailService {
         </div>
 
         <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0;">
-          <h3 style="margin-top: 0; color: #333;">Detalhes da Ocorrência</h3>
+          <h3 style="margin-top: 0; color: #333;">Detalhes do BDO</h3>
           <p style="margin: 0;"><strong>Título:</strong> ${occurrence.title}</p>
           <p style="margin: 0;"><strong>Data:</strong> ${new Date(
             occurrence.date,
@@ -84,7 +84,7 @@ export class MailService {
         </div>
         
         <p style="color: #555;">
-          Acesse o sistema para ver mais detalhes e acompanhar o progresso da ação e da ocorrência.
+          Acesse o sistema para ver mais detalhes e acompanhar o progresso da ação e do BDO.
           Se precisar de mais informações, entre em contato conosco.
         </p>
 
@@ -145,7 +145,7 @@ export class MailService {
           </div>
 
           <div style="background-color: #f0f0f0; padding: 15px; border-radius: 5px; margin: 20px 0;">
-            <h3 style="margin-top: 0; color: #333;">Detalhes da Ocorrência</h3>
+            <h3 style="margin-top: 0; color: #333;">Detalhes do BDO</h3>
             <p style="margin: 0;"><strong>Título:</strong> ${
               occurrence.title
             }</p>
@@ -176,7 +176,7 @@ export class MailService {
           </div>
           
           <p style="color: #555;">
-            Acesse o sistema para ver mais detalhes e acompanhar o progresso da ação e da ocorrência.
+            Acesse o sistema para ver mais detalhes e acompanhar o progresso da ação e do BDO.
             Se precisar de mais informações, entre em contato conosco.
           </p>
 

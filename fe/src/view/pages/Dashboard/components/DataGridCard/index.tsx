@@ -17,10 +17,8 @@ export const DataGridCard = () => {
     <Card className="col-span-12 row-span-3 lg:col-span-5 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <CardHeader className="flex flex-row items-center">
         <div className="grid gap-2">
-          <CardTitle>Ocorrências</CardTitle>
-          <CardDescription>
-            Lista de Ocorrências do período selecionado
-          </CardDescription>
+          <CardTitle>BDOs</CardTitle>
+          <CardDescription>Lista de BDOs do período selecionado</CardDescription>
         </div>
         {/*   <Button asChild size="sm" className="ml-auto gap-1">
           <Link to="/">

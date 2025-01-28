@@ -382,21 +382,38 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handlePeriodWell = (id: string, well: string) => {
+    // Verifica se o poço foi preenchido
     if (!well) {
       setError({ fieldName: `${id} well`, message: "Obrigatório" });
     } else {
       removeError(`${id} well`);
     }
 
+    // Encontra o índice do período atual
+    const currentPeriodIndex = periods.findIndex((period) => period.id === id);
+
+    // Verifica se há um período anterior
+    const previousPeriod =
+      currentPeriodIndex > 0 ? periods[currentPeriodIndex - 1] : null;
+
+    // Verifica se o poço do período anterior é diferente do poço atual
+    const isWellDifferentFromPrevious = previousPeriod && previousPeriod.well !== well;
+
+    // Atualiza os períodos
     const newPeriods = periods.map((period) => {
-      return period.id === id
-        ? {
-            ...period,
-            well: well,
-          }
-        : period;
+      if (period.id === id) {
+        removeError(`${id} type`);
+        return {
+          ...period,
+          well: well,
+          // Define o tipo como DTM se o poço for diferente do anterior
+          type: isWellDifferentFromPrevious ? "DTM" : period.type,
+        };
+      }
+      return period;
     });
 
+    // Atualiza o estado dos períodos
     setPeriods(newPeriods);
   };
 

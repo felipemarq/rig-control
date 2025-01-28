@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useMemo } from "react";
 import { AlertTriangle, CalendarDays } from "lucide-react";
 

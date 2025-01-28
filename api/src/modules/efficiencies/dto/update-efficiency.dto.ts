@@ -4,4 +4,8 @@ export class UpdateEfficiencyDto {
   @IsOptional()
   @IsBoolean()
   isEditable: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isConfirmed: boolean;
 }

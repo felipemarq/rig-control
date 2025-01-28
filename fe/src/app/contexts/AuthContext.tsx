@@ -74,16 +74,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const userAccessLevel = data?.accessLevel!;
 
   const { pendingEfficienciesConfirmation, refetchpendingEfficienciesConfirmation } =
-    useGetEfficiencyPedingConfirmation(isUserSupervisor);
+    useGetEfficiencyPedingConfirmation(
+      isUserSupervisor || data?.email === "felipemarques@conterp.com.br"
+    );
 
   useEffect(() => {
     refetchpendingEfficienciesConfirmation();
   }, [data]);
-
-  console.log(
-    "pendingEfficienciesConfirmation",
-    JSON.stringify(pendingEfficienciesConfirmation)
-  );
 
   useEffect(() => {
     if (import.meta.env.PROD) {

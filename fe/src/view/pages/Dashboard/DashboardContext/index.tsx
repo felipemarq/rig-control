@@ -63,6 +63,7 @@ interface DashboardContextValue {
   missingDates: string[];
   scheduledStoppedDates: string[];
   commerciallyStoppedDates: string[];
+  userHasPendingNotifications: boolean;
 }
 
 // Criação do contexto
@@ -78,6 +79,10 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     handleMarkNotificationAsRead,
     isPending,
   } = useNotifications();
+
+  const userHasPendingNotifications = notifications.some(
+    (notification) => !notification.isRead
+  );
 
   const windowWidth = useWindowWidth();
   const location = useLocation();
@@ -317,6 +322,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
         isPending,
         scheduledStoppedDates,
         commerciallyStoppedDates,
+        userHasPendingNotifications,
       }}
     >
       {children}

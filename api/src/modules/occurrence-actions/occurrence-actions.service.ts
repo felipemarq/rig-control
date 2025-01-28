@@ -24,7 +24,7 @@ export class OccurrenceActionsService {
     });
 
     if (!occurrence) {
-      throw new NotFoundException('Ocorrência não encontrada!');
+      throw new NotFoundException('BDO não encontrado!');
     }
 
     if (
@@ -80,7 +80,7 @@ export class OccurrenceActionsService {
     });
 
     if (!occurrence) {
-      throw new NotFoundException('Ocorrência não encontrada!');
+      throw new NotFoundException('BDO não encontrado!');
     }
 
     if (

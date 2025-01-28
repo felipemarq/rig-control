@@ -7,7 +7,7 @@ import {
   CardContent,
   CardDescription,
 } from "@/components/ui/card";
-import { FileDown, Pencil, Trash } from "lucide-react";
+import { Check, FileDown, Pencil, Trash } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Spinner } from "@/view/components/Spinner";
 import { usePeriodsDataGrid } from "./usePeriodsDataGrid";
@@ -55,10 +55,24 @@ export const PeriodsDataGridCard = () => {
         {efficiency && (
           <>
             <div className="flex justify-end  gap-5 lg:w-1/2 ">
+              {!efficiency.isConfirmed && canUserEdit && (
+                <Button
+                  size="sm"
+                  className="flex justify-center items-center gap-2"
+                  disabled={isLoadingUpdateEfficiency}
+                  onClick={() =>
+                    handleUpdateEfficiency({ attribute: "isConfirmed", value: true })
+                  }
+                >
+                  <Check className="h-4 w-4" />
+                  <span>Confirmar Registro</span>
+                </Button>
+              )}
+
               <MoreDetailsDialog efficiency={efficiency} />
 
               {canUserEdit && (
-                <TooltipProvider skipDelayDuration={1}>
+                <TooltipProvider delayDuration={0}>
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button size="sm" className="gap-1" onClick={handleExcelDownload}>
@@ -66,35 +80,53 @@ export const PeriodsDataGridCard = () => {
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>
-                      <p>Add to library</p>
+                      <p>Baixar arquivo em Excel</p>
                     </TooltipContent>
                   </Tooltip>
                 </TooltipProvider>
               )}
 
               {efficiency.isEditable && (
-                <Button
-                  asChild
-                  size="sm"
-                  className="flex justify-center items-center gap-1"
-                >
-                  <Link to={`/form/${efficiencyId}`}>
-                    <span className="hidden sm:inline"> Editar Registro</span>
-                    <Pencil className="h-4 w-4" />
-                  </Link>
-                </Button>
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        asChild
+                        size="sm"
+                        className="flex justify-center items-center gap-1"
+                      >
+                        <Link to={`/form/${efficiencyId}`}>
+                          <Pencil className="h-4 w-4" />
+                        </Link>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Editar Registro</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
 
               {!efficiency.isEditable && canUserEdit && (
-                <Button
-                  size="sm"
-                  className="flex justify-center items-center gap-2"
-                  disabled={isLoadingUpdateEfficiency}
-                  onClick={() => handleUpdateEfficiency()}
-                >
-                  <span className="hidden sm:inline"> Tornar Registro Editável</span>
-                  <Pencil className="h-4 w-4" />
-                </Button>
+                <TooltipProvider delayDuration={0}>
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        size="sm"
+                        className="flex justify-center items-center gap-2"
+                        disabled={isLoadingUpdateEfficiency}
+                        onClick={() =>
+                          handleUpdateEfficiency({ attribute: "isEditable", value: true })
+                        }
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Tornar Registro Editável</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
               )}
 
               {canUserEdit && (

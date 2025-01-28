@@ -20,6 +20,7 @@ import { NotificationsPopover } from "@/view/components/NotificationsPopover";
 import { MissingDaysCard } from "./components/MissingDaysCard";
 import { ScheduledStoppedCard } from "./components/ScheduledStoppedCard";
 import { CommerciallyStoppedCard } from "./components/CommerciallyStoppedCard";
+import NotificationDialog from "./components/NotificationsDialog";
 
 const Dashboard = () => {
   return (
@@ -40,6 +41,7 @@ const Dashboard = () => {
           scheduledStoppedDates,
           efficiencies,
           commerciallyStoppedDates,
+          userHasPendingNotifications,
         }) => {
           return (
             <div className="">
@@ -107,6 +109,13 @@ const Dashboard = () => {
                     {isWrongVersion && <WrongVersionAlertModal />}
 
                     {periodDataGridModalData && <PeriodDataGridModal />}
+
+                    {userHasPendingNotifications && (
+                      <NotificationDialog
+                        isOpen={userHasPendingNotifications}
+                        count={notifications.filter((n) => !n.isRead).length}
+                      />
+                    )}
                   </div>
                 </main>
               </div>
