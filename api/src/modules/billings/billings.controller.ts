@@ -8,7 +8,7 @@ export class BillingsController {
 
   @Get()
   async findByRigId(
-    @IsUserAdm() userId: string,
+    @IsUserAdm() _userId: string,
     @Query('rigId', ParseUUIDPipe)
     rigId: string,
     @Query('startDate') startDate: string,

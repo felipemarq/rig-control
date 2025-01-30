@@ -84,7 +84,10 @@ export class TemporaryEfficiencyService {
       truckKm,
       isExtraTrailerSelected,
       isPowerSwivelSelected,
+      mobilizationPlace,
       isSuckingTruckSelected,
+      createdAt,
+      isMobilizationOutSelected,
     } = createEfficiencyDto;
 
     /**
@@ -179,7 +182,7 @@ export class TemporaryEfficiencyService {
       hasTruckCartRent: isTruckCartSelected,
       hasTruckTank: isTruckTankSelected,
       truckKmHours: truckKm,
-      temporaryPeriods: {
+      periods: {
         createMany: {
           data: periods,
         },

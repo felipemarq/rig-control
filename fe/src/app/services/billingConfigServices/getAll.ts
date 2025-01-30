@@ -19,6 +19,7 @@ export interface BillingConfigResponse {
   equipmentRatioGt50Tax: number;
   readjustment: number;
   mobilization: number;
+  mobilizationOut: number;
   bobRentTax: number;
   christmasTreeDisassemblyTax: number;
   demobilization: number;
@@ -43,9 +44,7 @@ export interface BillingConfigResponse {
 }
 
 export const getAll = async () => {
-  const { data } = await httpClient.get<Array<BillingConfigResponse>>(
-    `billings-config/`
-  );
+  const { data } = await httpClient.get<Array<BillingConfigResponse>>(`billings-config/`);
 
   return data;
 };

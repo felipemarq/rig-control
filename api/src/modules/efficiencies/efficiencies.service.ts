@@ -176,6 +176,7 @@ export class EfficienciesService {
       mobilizationPlace,
       isSuckingTruckSelected,
       createdAt,
+      isMobilizationOutSelected,
     } = createEfficiencyDto;
 
     /**
@@ -262,6 +263,7 @@ export class EfficienciesService {
       bobRentHours: bobRentHours,
       hasDemobilization: isDemobilizationSelected,
       hasMobilization: isMobilizationSelected,
+      hasMobilizationOut: isMobilizationOutSelected,
       hasExtraTrailer: isExtraTrailerSelected,
       hasGeneratorFuel: isFuelGeneratorSelected,
       hasMixTankDemobilization: isTankMixDemobilizationSelected,
@@ -711,7 +713,7 @@ export class EfficienciesService {
     let totalGlossHours = 0;
     let totalRepairHours = 0;
     let commercialHours = 0;
-
+    let mobilizationOutTotalAmount = 0;
     let rigBillingConfiguration = null;
     const rigId = efficiency.rigId;
     const date = efficiency.date;
@@ -730,7 +732,8 @@ export class EfficienciesService {
       rigId === '544e1dbe-c059-428d-b6c6-042add9dbcc0' ||
       rigId === '064278ad-a056-4f34-894a-0074ec586c89' ||
       rigId === 'aa5fb3c1-63f5-47ab-86bd-7f31b7302e67' ||
-      rigId === 'ec620219-9d57-4a6a-84d5-61c94cdc797f'
+      rigId === 'ec620219-9d57-4a6a-84d5-61c94cdc797f' ||
+      rigId === 'c9eabd8e-6fa6-4474-837f-4636cabc6fe1'
     ) {
       rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
         where: {
@@ -927,6 +930,11 @@ export class EfficienciesService {
       'mobilization',
     );
 
+    mobilizationOutTotalAmount = calculateSelectedValues(
+      efficiency.hasMobilizationOut,
+      'mobilizationOut',
+    );
+
     demobilizationTotalAmount = calculateSelectedValues(
       efficiency.hasDemobilization,
       'demobilization',
@@ -989,7 +997,8 @@ export class EfficienciesService {
       bobRentTotalAmount +
       truckKmTotalAmount +
       scheduledStopAmount +
-      standByHourAmount;
+      standByHourAmount +
+      mobilizationOutTotalAmount;
 
     await this.billingRepo.create({
       data: {
@@ -1078,11 +1087,13 @@ export class EfficienciesService {
         },
       });
 
-      await this.billingRepo.delete({
-        where: {
-          id: billingFound.id,
-        },
-      });
+      if (billingFound) {
+        await this.billingRepo.delete({
+          where: {
+            id: billingFound.id,
+          },
+        });
+      }
 
       await this.calculateEfficiencyBilling(efficiency.id);
 
@@ -1558,6 +1569,8 @@ export class EfficienciesService {
         christmasTreeDisassemblyHours: true,
         bobRentHours: true,
         hasDemobilization: true,
+        hasMobilization: true,
+        hasMobilizationOut: true,
         hasExtraTrailer: true,
         hasGeneratorFuel: true,
         hasMixTankDemobilization: true,

@@ -27,6 +27,10 @@ export class CreateEfficiencyDto {
   @IsNotEmpty()
   well: string;
 
+  @IsNotEmpty()
+  @IsDateString()
+  createdAt: string;
+
   @IsUUID()
   @IsNotEmpty()
   @IsString()
@@ -125,4 +129,8 @@ export class CreateEfficiencyDto {
   @IsOptional()
   @IsBoolean()
   isSuckingTruckSelected: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isMobilizationOutSelected: boolean;
 }

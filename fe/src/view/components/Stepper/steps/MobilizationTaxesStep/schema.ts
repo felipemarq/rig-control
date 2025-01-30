@@ -12,6 +12,7 @@ export const mobilizationTaxesStepSchema = z.object({
   fluidRatioGt50Tax: z.union([z.string().min(1), z.number()]),
   fluidRatioLt20Tax: z.union([z.string().min(1), z.number()]),
   mobilization: z.union([z.string().min(1), z.number()]),
+  mobilizationOut: z.union([z.string().min(1), z.number()]),
   demobilization: z.union([z.string().min(1), z.number()]),
   transportationTax: z.union([z.string().min(1), z.number()]),
 });

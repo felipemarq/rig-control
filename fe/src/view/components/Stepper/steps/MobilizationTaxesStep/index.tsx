@@ -40,10 +40,7 @@ export function MobilizationTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.mobilizationTaxesStep?.dtmHourTax
-                    ?.message
-                }
+                error={form.formState.errors.mobilizationTaxesStep?.dtmHourTax?.message}
               />
             )}
           />
@@ -57,10 +54,7 @@ export function MobilizationTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.mobilizationTaxesStep?.dtmLt20Tax
-                    ?.message
-                }
+                error={form.formState.errors.mobilizationTaxesStep?.dtmLt20Tax?.message}
               />
             )}
           />
@@ -75,8 +69,7 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep?.dtmBt20And50Tax
-                    ?.message
+                  form.formState.errors.mobilizationTaxesStep?.dtmBt20And50Tax?.message
                 }
               />
             )}
@@ -91,10 +84,7 @@ export function MobilizationTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
-                error={
-                  form.formState.errors.mobilizationTaxesStep?.dtmGt50Tax
-                    ?.message
-                }
+                error={form.formState.errors.mobilizationTaxesStep?.dtmGt50Tax?.message}
               />
             )}
           />
@@ -109,8 +99,8 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep
-                    ?.equipmentRatioLt20Tax?.message
+                  form.formState.errors.mobilizationTaxesStep?.equipmentRatioLt20Tax
+                    ?.message
                 }
               />
             )}
@@ -126,8 +116,8 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep
-                    ?.equipmentRatioBt20And50Tax?.message
+                  form.formState.errors.mobilizationTaxesStep?.equipmentRatioBt20And50Tax
+                    ?.message
                 }
               />
             )}
@@ -143,8 +133,8 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep
-                    ?.equipmentRatioGt50Tax?.message
+                  form.formState.errors.mobilizationTaxesStep?.equipmentRatioGt50Tax
+                    ?.message
                 }
               />
             )}
@@ -160,8 +150,7 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep?.fluidRatioLt20Tax
-                    ?.message
+                  form.formState.errors.mobilizationTaxesStep?.fluidRatioLt20Tax?.message
                 }
               />
             )}
@@ -177,8 +166,8 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep
-                    ?.fluidRatioBt20And50Tax?.message
+                  form.formState.errors.mobilizationTaxesStep?.fluidRatioBt20And50Tax
+                    ?.message
                 }
               />
             )}
@@ -194,8 +183,7 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep?.fluidRatioGt50Tax
-                    ?.message
+                  form.formState.errors.mobilizationTaxesStep?.fluidRatioGt50Tax?.message
                 }
               />
             )}
@@ -210,9 +198,22 @@ export function MobilizationTaxesStep() {
               <InputCurrency
                 onChange={onChange}
                 value={value}
+                error={form.formState.errors.mobilizationTaxesStep?.mobilization?.message}
+              />
+            )}
+          />
+        </TaxInput>
+
+        <TaxInput title="Taxa de Mobilização fora de Aracaju" label="R$">
+          <Controller
+            control={form.control}
+            name="mobilizationTaxesStep.mobilizationOut"
+            render={({ field: { onChange, value } }) => (
+              <InputCurrency
+                onChange={onChange}
+                value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep?.mobilization
-                    ?.message
+                  form.formState.errors.mobilizationTaxesStep?.mobilizationOut?.message
                 }
               />
             )}
@@ -228,8 +229,7 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep?.demobilization
-                    ?.message
+                  form.formState.errors.mobilizationTaxesStep?.demobilization?.message
                 }
               />
             )}
@@ -244,8 +244,7 @@ export function MobilizationTaxesStep() {
                 onChange={onChange}
                 value={value}
                 error={
-                  form.formState.errors.mobilizationTaxesStep?.transportationTax
-                    ?.message
+                  form.formState.errors.mobilizationTaxesStep?.transportationTax?.message
                 }
               />
             )}

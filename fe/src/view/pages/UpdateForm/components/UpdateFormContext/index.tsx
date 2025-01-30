@@ -79,6 +79,8 @@ interface UpdateFormContextValue {
   toggleVisibility(): void;
   handleConfirmButton(): void;
   getPeriodState(periodId: string): boolean;
+  isMobilizationOutSelected: boolean;
+  handleMobilizationOutCheckbox(): void;
   isConfigsConfirmed: boolean;
   isSuckingTruckSelected: boolean;
   usersRigs: { id: string; name: string }[];
@@ -341,6 +343,7 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
       isPowerSwivelSelected,
       mobilizationPlace,
       isSuckingTruckSelected,
+      isMobilizationOutSelected,
     });
 
     try {
@@ -419,6 +422,7 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
       isPowerSwivelSelected,
       mobilizationPlace,
       isSuckingTruckSelected,
+      isMobilizationOutSelected,
     });
 
     try {
@@ -750,6 +754,9 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(
     !!efficiency?.hasPowerSwivel
   );
+  const [isMobilizationOutSelected, setIsMobilizationOutSelected] = useState(
+    efficiency?.hasMobilizationOut ?? false
+  );
   const [mobilizationPlace, setMobilizationPlace] = useState("");
   const [isSuckingTruckSelected, setIsSuckingTruckSelected] = useState(
     !!efficiency?.hasSuckingTruck
@@ -781,6 +788,11 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
   const handleMobilizationCheckbox = useCallback(() => {
     setIsMobilizationSelected((prevState) => !prevState);
     setMobilizationPlace("");
+  }, []);
+
+  const handleMobilizationOutCheckbox = useCallback(() => {
+    setIsMobilizationOutSelected((prevState) => !prevState);
+    setIsMobilizationSelected(false);
   }, []);
 
   const handleDemobilizationCheckbox = useCallback(() => {
@@ -872,6 +884,8 @@ export const UpdateFormProvider = ({ children }: { children: React.ReactNode }) 
         handleDescription,
         handleSubmit,
         cleanFields,
+        handleMobilizationOutCheckbox,
+        isMobilizationOutSelected,
         handlePeriodWell,
         isLoading: isLoadingEfficiency || isLoadingRemoveEfficiency || isLoadingTemporary,
         userRig,

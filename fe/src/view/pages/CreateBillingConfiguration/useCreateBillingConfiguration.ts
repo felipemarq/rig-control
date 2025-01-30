@@ -53,6 +53,7 @@ export const useCreateBillingConfiguration = () => {
         fluidRatioLt20Tax: 0,
         mobilization: 0,
         transportationTax: 0,
+        mobilizationOut: 0,
       },
       truckTaxesStep: {
         suckingTruckTax: 0,
@@ -147,6 +148,9 @@ export const useCreateBillingConfiguration = () => {
         mobilization:
           currencyStringToNumber(formattedFormData.mobilization as string) ??
           (formattedFormData.mobilization as number),
+        mobilizationOut:
+          currencyStringToNumber(formattedFormData.mobilizationOut as string) ??
+          (formattedFormData.mobilizationOut as number),
         readjustment: 1,
         bobRentTax:
           currencyStringToNumber(formattedFormData.bobRentTax as string) ??

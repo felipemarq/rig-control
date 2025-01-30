@@ -217,6 +217,7 @@ model Efficiency {
   isConfirmed                   Boolean?          @default(false) @map("is_confirmed")
   hasDemobilization             Boolean           @map("has_demobilization")
   hasMobilization               Boolean?          @map("has_mobilization")
+  hasMobilizationOut            Boolean?          @map("has_mobilization_out")
   hasExtraTrailer               Boolean           @map("has_extra_trailer")
   hasPowerSwivel                Boolean           @map("has_power_swivel")
   hasTruckCartRent              Boolean           @map("has_truck_cart_rent")
@@ -530,10 +531,11 @@ model BillingConfiguration {
   createdBy                   String?
   updatedBy                   String?
 
-  readjustment   Float
-  mobilization   Float? @default(0)
-  demobilization Float? @default(0)
-  rig            Rig    @relation(fields: [rigId], references: [id], onDelete: Cascade)
+  readjustment    Float
+  mobilization    Float? @default(0)
+  mobilizationOut Float? @default(0)
+  demobilization  Float? @default(0)
+  rig             Rig    @relation(fields: [rigId], references: [id], onDelete: Cascade)
 
   @@map("billing_configurations")
 }
@@ -559,6 +561,7 @@ model Billing {
   equipmentBt20And50Amount       Float  @map("equipment_bt_20_and_50_amount")
   equipmentGt50Amount            Float  @map("equipment_gt_50_amount")
   mobilizationAmount             Float  @map("mobilization_amount")
+  mobilizationOutAmount          Float  @default(0) @map("mobilization_out_amount")
   demobilizationAmount           Float  @map("demobilization_amount")
   extraTrailerAmount             Float  @map("extra_trailer_amount")
   powerSwivelAmount              Float  @map("power_swivel_amount")

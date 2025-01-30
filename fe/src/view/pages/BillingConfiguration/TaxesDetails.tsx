@@ -128,6 +128,10 @@ export default function TaxesDetails({
           <TableCell>{formatCurrency(billingConfig.mobilization)}</TableCell>
         </TableRow>
         <TableRow>
+          <TableCell>Taxa de Mobilização fora de Aracaju</TableCell>
+          <TableCell>{formatCurrency(billingConfig.mobilizationOut)}</TableCell>
+        </TableRow>
+        <TableRow>
           <TableCell>Taxa de Desmobilização</TableCell>
           <TableCell>{formatCurrency(billingConfig.demobilization)}</TableCell>
         </TableRow>

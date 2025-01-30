@@ -91,6 +91,7 @@ export const useBillingConfiguration = () => {
         fluidRatioGt50Tax: configBeingSeen ? configBeingSeen.fluidRatioGt50Tax : 0,
         fluidRatioLt20Tax: configBeingSeen ? configBeingSeen.fluidRatioLt20Tax : 0,
         mobilization: configBeingSeen ? configBeingSeen.mobilization : 0,
+        mobilizationOut: configBeingSeen ? configBeingSeen.mobilizationOut : 0,
         transportationTax: configBeingSeen ? configBeingSeen.transportationTax : 0,
       },
       truckTaxesStep: {
@@ -156,6 +157,7 @@ export const useBillingConfiguration = () => {
           fluidRatioGt50Tax: configBeingSeen ? configBeingSeen.fluidRatioGt50Tax : 0,
           fluidRatioLt20Tax: configBeingSeen ? configBeingSeen.fluidRatioLt20Tax : 0,
           mobilization: configBeingSeen ? configBeingSeen.mobilization : 0,
+          mobilizationOut: configBeingSeen ? configBeingSeen.mobilizationOut : 0,
           transportationTax: configBeingSeen ? configBeingSeen.transportationTax : 0,
         },
         truckTaxesStep: {
@@ -303,6 +305,9 @@ export const useBillingConfiguration = () => {
           currencyStringToNumber(
             formattedFormData.christmasTreeDisassemblyTax as string
           ) ?? (formattedFormData.christmasTreeDisassemblyTax as number),
+        mobilizationOut:
+          currencyStringToNumber(formattedFormData.mobilizationOut as string) ??
+          (formattedFormData.mobilizationOut as number),
       });
       queryClient.invalidateQueries({ queryKey: ["contracts", "rigs"] });
       customColorToast("Confiuração cadastrada com Sucesso!", primaryColor, "success");

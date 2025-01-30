@@ -129,4 +129,8 @@ export class CreateEfficiencyDto {
   @IsOptional()
   @IsBoolean()
   isSuckingTruckSelected: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isMobilizationOutSelected: boolean;
 }
