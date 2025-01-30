@@ -23,6 +23,7 @@ export interface DomainEfficiency {
   isDemobilizationSelected?: boolean;
   isTankMixMobilizationSelected?: boolean;
   isTankMixDemobilizationSelected?: boolean;
+  isMobilizationOutSelected?: boolean;
   isTankMixDTMSelected?: boolean;
   bobRentHours?: string;
   isTruckCartSelected?: boolean;

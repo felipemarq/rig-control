@@ -16,6 +16,7 @@ export interface BillingConfigCreateParams {
   equipmentRatioGt50Tax: number;
   readjustment: number;
   mobilization: number;
+  mobilizationOut: number;
   bobRentTax: number;
   christmasTreeDisassemblyTax: number;
   demobilization: number;

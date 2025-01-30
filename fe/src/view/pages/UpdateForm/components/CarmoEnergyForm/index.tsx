@@ -1,14 +1,12 @@
 import Checkbox from "../../../../components/CheckBox";
-
-import {Select} from "../../../../components/Select";
-import {useForm} from "../UpdateFormContext/useForm";
+import { useForm } from "../UpdateFormContext/useForm";
 
 export const CarmoEnergyContainer = () => {
   const {
     isMobilizationSelected,
     handleMobilizationCheckbox,
-    mobilizationPlace,
-    handleMobilizationPlace,
+    isMobilizationOutSelected,
+    handleMobilizationOutCheckbox,
     isSuckingTruckSelected,
     handleSuckingTruckCheckbox,
   } = useForm();
@@ -16,35 +14,24 @@ export const CarmoEnergyContainer = () => {
   return (
     <div className="bg-primary py-4  w-1/2 my-4  rounded-xl ">
       <div className="p-4 rounded-xl flex flex-col gap-2">
-        <div className="flex gap-2 items-center justify-center">
-          <div className="flex-1">
-            <Checkbox
-              checked={isMobilizationSelected}
-              id="mobilization"
-              handleChecked={handleMobilizationCheckbox}
-            >
-              Mobilização
-            </Checkbox>
-          </div>
+        <div className="flex-1">
+          <Checkbox
+            checked={isMobilizationSelected}
+            id="mobilization"
+            handleChecked={handleMobilizationCheckbox}
+          >
+            Mobilização em aracaju
+          </Checkbox>
+        </div>
 
-          <div className="flex-1">
-            <Select
-              disabled={!isMobilizationSelected}
-              placeholder="Em"
-              value={mobilizationPlace}
-              onChange={(value) => handleMobilizationPlace(value)}
-              options={[
-                {
-                  value: "Aracaju",
-                  label: "Aracaju",
-                },
-                {
-                  value: "Bahia",
-                  label: "Bahia",
-                },
-              ]}
-            />
-          </div>
+        <div className="flex-1">
+          <Checkbox
+            checked={isMobilizationOutSelected}
+            id="mobilizationOut"
+            handleChecked={handleMobilizationOutCheckbox}
+          >
+            Mobilização fora de aracaju
+          </Checkbox>
         </div>
 
         <div>

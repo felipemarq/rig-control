@@ -86,6 +86,8 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isExtraTrailerSelected: domainEfficiency.isExtraTrailerSelected,
     isPowerSwivelSelected: domainEfficiency.isPowerSwivelSelected,
     isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
+    mobilizationPlace: domainEfficiency.mobilizationPlace,
+    isMobilizationOutSelected: domainEfficiency.isMobilizationOutSelected,
   };
 
   domainEfficiency.periods.forEach(({ equipmentRatio, fluidRatio }) => {

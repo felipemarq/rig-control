@@ -165,5 +165,10 @@ export class CreateBillingsConfigurationDto {
   @IsNumber()
   @IsOptional()
   @IsNotEmpty()
+  mobilizationOut: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
   demobilization: number;
 }

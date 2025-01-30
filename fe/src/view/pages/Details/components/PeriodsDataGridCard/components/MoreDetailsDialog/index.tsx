@@ -29,6 +29,8 @@ export const MoreDetailsDialog = ({ efficiency }: MoreDetailsDialogProps) => {
   if (efficiency.hasTruckCartRent) details.push("Aluguel de caminhão");
   if (efficiency.hasTruckTank) details.push("Caminhão tanque");
   if (efficiency.hasSuckingTruck) details.push("Caminhão sugador");
+  if (efficiency.hasMobilization) details.push("Mobilização");
+  if (efficiency.hasMobilizationOut) details.push("Mobilização fora de Aracaju");
   if (efficiency.bobRentHours)
     details.push(`"Aluguel por hora de bob" - ${efficiency.bobRentHours} horas`);
   if (efficiency.truckKmHours)

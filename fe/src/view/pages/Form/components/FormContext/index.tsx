@@ -80,7 +80,8 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
-
+  handleMobilizationOutCheckbox(): void;
+  isMobilizationOutSelected: boolean;
   isSuckingTruckSelected: boolean;
   usersRigs: { id: string; name: string }[];
   mobilizationPlace: string;
@@ -241,6 +242,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       isFuelGeneratorSelected,
       isMobilizationSelected,
       isDemobilizationSelected,
+      isMobilizationOutSelected,
       isTankMixMobilizationSelected,
       isTankMixDemobilizationSelected,
       isTankMixDTMSelected,
@@ -256,6 +258,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       mobilizationPlace,
       isSuckingTruckSelected,
     });
+
+    console.log(toPersistenceObj);
 
     try {
       await mutateAsync(toPersistenceObj);
@@ -299,6 +303,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       isFuelGeneratorSelected,
       isMobilizationSelected,
       isDemobilizationSelected,
+      isMobilizationOutSelected,
       isTankMixMobilizationSelected,
       isTankMixDemobilizationSelected,
       isTankMixDTMSelected,
@@ -647,6 +652,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
+  const [isMobilizationOutSelected, setIsMobilizationOutSelected] = useState(false);
   const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
   const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
   const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
@@ -684,7 +690,12 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
 
   const handleMobilizationCheckbox = useCallback(() => {
     setIsMobilizationSelected((prevState) => !prevState);
-    setMobilizationPlace("");
+    setIsMobilizationOutSelected(false);
+  }, []);
+
+  const handleMobilizationOutCheckbox = useCallback(() => {
+    setIsMobilizationOutSelected((prevState) => !prevState);
+    setIsMobilizationSelected(false);
   }, []);
 
   const handleDemobilizationCheckbox = useCallback(() => {
@@ -835,6 +846,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
         updatePeriodState,
         hasRemainingMinutes,
         isVisible,
+        isMobilizationOutSelected,
+        handleMobilizationOutCheckbox,
       }}
     >
       {children}

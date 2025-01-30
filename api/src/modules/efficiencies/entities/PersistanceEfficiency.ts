@@ -40,6 +40,7 @@ export type PersistanceEfficiency = {
   bobRentHours: number;
   hasDemobilization: boolean;
   hasMobilization: boolean | null;
+  hasMobilizationOut: boolean | null;
   hasExtraTrailer: boolean;
   hasGeneratorFuel: boolean;
   hasMixTankDemobilization: boolean;
