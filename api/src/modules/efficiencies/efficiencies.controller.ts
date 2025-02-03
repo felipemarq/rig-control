@@ -121,8 +121,8 @@ export class EfficienciesController {
   }
 
   @Get('/average/:rigId')
-  getAverage(@Param('rigId') rigId: string) {
-    return this.efficienciesService.getAverage(rigId);
+  getAverage(@Param('rigId') rigId: string, @Query('year') year: string) {
+    return this.efficienciesService.getAverage(rigId, year);
   }
   // Rotas com parâmetros de consulta (menos específicas)
   @Get()

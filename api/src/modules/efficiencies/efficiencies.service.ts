@@ -1675,14 +1675,10 @@ export class EfficienciesService {
     return null;
   }
 
-  async getAverage(rigId: string) {
-    //const rigId = '073168f7-b634-466d-aaee-a7968a39e2b1';
-    //Mudar para params depois
-    const year = new Date().getFullYear();
+  async getAverage(rigId: string, year: string) {
+    const res = await this.efficiencyRepo.getAverage(rigId, Number(year));
 
-    const test = await this.efficiencyRepo.getAverage(rigId, year);
-
-    return test;
+    return res;
   }
 
   async getWellsCountByRig(rigId: string) {

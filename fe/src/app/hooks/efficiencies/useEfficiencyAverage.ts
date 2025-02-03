@@ -1,11 +1,12 @@
-import {useQuery} from "@tanstack/react-query";
-import {efficienciesService} from "../../services/efficienciesService";
+import { useQuery } from "@tanstack/react-query";
+import { efficienciesService } from "../../services/efficienciesService";
+import { EfficienciesAverageFilters } from "@/app/services/efficienciesService/getAverage";
 
-export const useEfficiencyAverage = (rig: string) => {
-  const {data, isFetching, refetch} = useQuery({
+export const useEfficiencyAverage = (filters: EfficienciesAverageFilters) => {
+  const { data, isFetching, refetch } = useQuery({
     queryKey: ["average"],
-    enabled: false,
-    queryFn: () => efficienciesService.getAverage(rig),
+    enabled: true,
+    queryFn: () => efficienciesService.getAverage(filters),
     staleTime: 24 * 60 * 60 * 1000,
   });
 

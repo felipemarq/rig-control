@@ -154,7 +154,10 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   const missingDates = getMissingDates(filters.startDate, filters.endDate, efficiencies);
 
   const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(filters.rigId);
-  const { average, refetchAverage } = useEfficiencyAverage(filters.rigId);
+  const { average, refetchAverage } = useEfficiencyAverage({
+    rigId: filters.rigId,
+    year: new Date(filters.startDate).getFullYear(),
+  });
 
   const isEmpty: boolean = efficiencies.length === 0;
   const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
