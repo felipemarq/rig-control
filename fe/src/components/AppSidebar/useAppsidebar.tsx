@@ -126,16 +126,10 @@ export const useAppsidebar = () => {
         isActive: true,
         items: [
           {
-            title: "Dashboard Geral",
-            url: "/dashboard/total-man-hours",
+            title: "Dashboard SMS",
+            url: "/dashboard/sms",
             icon: History,
             description: "View your recent prompts",
-          },
-          {
-            title: "Dashboard por Base",
-            url: "/dashboard/man-hours",
-            icon: Star,
-            description: "Browse your starred prompts",
           },
           {
             title: "Listar Ocorrências",
@@ -217,16 +211,10 @@ export const useAppsidebar = () => {
         isActive: true,
         items: [
           {
-            title: "Dashboard Geral",
-            url: "/dashboard/total-man-hours",
+            title: "Dashboard SMS",
+            url: "/dashboard/sms",
             icon: History,
             description: "View your recent prompts",
-          },
-          {
-            title: "Dashboard por Base",
-            url: "/dashboard/man-hours",
-            icon: Star,
-            description: "Browse your starred prompts",
           },
           {
             title: "Listar Registros",
@@ -408,16 +396,10 @@ export const useAppsidebar = () => {
         isActive: true,
         items: [
           {
-            title: "Dashboard Geral",
-            url: "/dashboard/total-man-hours",
+            title: "Dashboard SMS",
+            url: "/dashboard/sms",
             icon: History,
             description: "View your recent prompts",
-          },
-          {
-            title: "Dashboard por Base",
-            url: "/dashboard/man-hours",
-            icon: Star,
-            description: "Browse your starred prompts",
           },
           {
             title: "Listar Ocorrências",

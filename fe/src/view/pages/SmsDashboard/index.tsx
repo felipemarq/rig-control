@@ -6,6 +6,8 @@ import { PieChartByNature } from "./Components/PieChartByNature";
 import { OccurrenceFiltersSheet } from "@/view/components/OccurrenceFiltersSheet";
 import { Spinner } from "@/view/components/Spinner";
 import { PedingActionPlans } from "./Components/PedingActionPlans";
+import { TorOccurrencesBarChartCard } from "./Components/TorOccurrencesBarChartCard";
+import { TarOccurrencesBarChartCard } from "./Components/TarOccurrencesBarChartCard";
 
 export default function SmsDashboard() {
   return (
@@ -33,10 +35,16 @@ export default function SmsDashboard() {
               <div>
                 <StatboxContainer />
 
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 ">
                   <BarChartByType />
 
                   <PieChartByNature />
+
+                  <TorOccurrencesBarChartCard />
+
+                  <TarOccurrencesBarChartCard />
+
+                  {/*  <TfsaOccurrencesBarChartCard /> */}
 
                   <PedingActionPlans />
                 </div>

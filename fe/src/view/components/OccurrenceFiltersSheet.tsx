@@ -18,6 +18,15 @@ import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersC
 export const OccurrenceFiltersSheet = () => {
   const { filters, bases, handleChangeFilters, handleClearFilters, handleApplyFilters } =
     useOccurrencesFiltersContext();
+
+  const basesSelect = [
+    { value: "all", label: "Todas as Bases" }, // Nova opção adicionada
+    ...bases.map(({ id, name }) => ({
+      value: id ?? "",
+      label: name ?? "",
+    })),
+  ];
+
   return (
     <Sheet>
       <SheetTrigger>
@@ -30,13 +39,10 @@ export const OccurrenceFiltersSheet = () => {
             <div className="flex flex-col gap-12">
               <div className="grid gap-4">
                 <Select
-                  placeholder="Sonda"
-                  value={filters.baseId ?? ""}
+                  placeholder="Base"
+                  value={filters.baseId ?? "all"}
                   onChange={(value) => handleChangeFilters("baseId")(value)}
-                  options={bases.map(({ id, name }) => ({
-                    value: id ?? "",
-                    label: name ?? "",
-                  }))}
+                  options={basesSelect}
                 />
 
                 <>

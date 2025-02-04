@@ -36,16 +36,12 @@ const UpdateUserRigs = lazy(() => import("@/view/pages/UpdateUserRigs/index"));
 const Report = lazy(() => import("@/view/pages/Report/index"));
 const Occurrences = lazy(() => import("@/view/pages/Occurrences/index"));
 const ManHours = lazy(() => import("@/view/pages/ManHours/index"));
-const TotalManHoursDashboard = lazy(
-  () => import("@/view/pages/TotalManHoursDashboard/index")
-);
 const CreateBillingConfiguration = lazy(
   () => import("@/view/pages/CreateBillingConfiguration/index")
 );
 const BillingConfiguration = lazy(
   () => import("@/view/pages/BillingConfiguration/index")
 );
-const ManHoursDashboard = lazy(() => import("@/view/pages/ManHoursDashboard/index"));
 const SmsDashboard = lazy(() => import("@/view/pages/SmsDashboard/index"));
 const UserLogs = lazy(() => import("@/view/pages/UserLogs/index"));
 const PeriodActionPlan = lazy(() => import("@/view/pages/PeriodActionPlan/index"));
@@ -132,10 +128,6 @@ export const Router = () => {
                 <Route path="/man-hours" element={<ManHours />} />
                 <Route path="/occurrences/man-hours" element={<ManHours />} />
                 <Route
-                  path="/dashboard/total-man-hours"
-                  element={<TotalManHoursDashboard />}
-                />
-                <Route
                   path="/create-billing-configuration"
                   element={<CreateBillingConfiguration />}
                 />
@@ -143,8 +135,6 @@ export const Router = () => {
                   path="/billing-configuration/:rigId"
                   element={<BillingConfiguration />}
                 />
-
-                <Route path="/dashboard/man-hours" element={<ManHoursDashboard />} />
                 <Route path="/dashboard/sms" element={<SmsDashboard />} />
                 <Route path="/period-action-plan/" element={<PeriodActionPlan />} />
                 <Route

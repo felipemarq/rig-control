@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateOcurrenceDto } from './dto/create-ocurrence.dto';
 import { UpdateOcurrenceDto } from './dto/update-ocurrence.dto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
@@ -117,7 +121,7 @@ export class OccurrencesService {
       };
     }
 
-    if (baseId) {
+    if (baseId && baseId !== 'all') {
       whereClause = {
         ...whereClause,
         baseId: baseId,
@@ -424,11 +428,33 @@ export class OccurrencesService {
     };
   }
 
-  async getAllTaxes() {
+  async getAllTaxes(filters: {
+    startDate: string;
+    endDate: string;
+    baseId: string;
+  }) {
+    console.log('caiu aqui', filters);
+    let occurrencesWhereClause: any = {
+      date: {
+        gte: new Date(filters.startDate),
+        lte: new Date(filters.endDate),
+      },
+    };
+
+    if (filters.baseId && filters.baseId !== 'all') {
+      occurrencesWhereClause = {
+        ...occurrencesWhereClause,
+        baseId: filters.baseId,
+      };
+    }
+
+    console.log('occurrencesWhereClause', occurrencesWhereClause);
+
     const tarOccurrences = await this.occurrencesRepo.groupBy({
       by: ['date'],
       where: {
         category: 'TAR',
+        ...occurrencesWhereClause,
       },
       _count: {
         id: true,
@@ -439,6 +465,7 @@ export class OccurrencesService {
       by: ['date'],
       where: {
         OR: [{ category: 'TOR' }, { category: 'TAR' }],
+        ...occurrencesWhereClause,
       },
       _count: {
         id: true,
@@ -449,6 +476,7 @@ export class OccurrencesService {
       by: ['date'],
       where: {
         isAbsent: false,
+        ...occurrencesWhereClause,
       },
       _count: {
         id: true,
@@ -459,6 +487,7 @@ export class OccurrencesService {
       by: ['date'],
       where: {
         isAbsent: true,
+        ...occurrencesWhereClause,
       },
       _count: {
         id: true,
@@ -469,13 +498,33 @@ export class OccurrencesService {
       by: ['date'],
       where: {
         nature: 'COMMUTING_ACCIDENT',
+        ...occurrencesWhereClause,
       },
       _count: {
         id: true,
       },
     });
 
-    const now = new Date();
+    const startDate = new Date(filters.startDate);
+
+    let manHoursWhereClause: any = {
+      year: startDate.getFullYear(),
+    };
+
+    if (filters.baseId && filters.baseId !== 'all') {
+      manHoursWhereClause = {
+        ...manHoursWhereClause,
+        baseId: filters.baseId,
+      };
+    }
+
+    // const endDate = new Date(filters.endDate);
+
+    /* if (startDate.getFullYear() !== endDate.getFullYear()) {
+      throw new BadRequestException(
+        'Data de inicio e fim devem ser do mesmo ano!',
+      );
+    } */
 
     const manHoursAgg: { _sum: { hours: number }; month: number }[] =
       await this.manHoursRepo.groupBy({
@@ -483,7 +532,7 @@ export class OccurrencesService {
         _sum: {
           hours: true,
         },
-        where: { year: now.getFullYear() },
+        where: manHoursWhereClause,
       });
 
     const aggroupedMenHours = {
@@ -516,7 +565,7 @@ export class OccurrencesService {
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
     ) => {
-      const countsByMonthAccumulated: { [key: number]: number } = {
+      let countsByMonthAccumulated: { [key: number]: number } = {
         1: 0,
         2: 0,
         3: 0,
@@ -558,9 +607,9 @@ export class OccurrencesService {
         }
       });
 
-      for (let index = 2; index < 11; index++) {
-        countsByMonthAccumulated[index] =
-          countsByMonthAccumulated[index] + countsByMonthAccumulated[index - 1];
+      for (let index = 2; index <= 12; index++) {
+        countsByMonthAccumulated[index] = countsByMonthAccumulated[index] +=
+          countsByMonthAccumulated[index - 1];
       }
 
       return Object.keys(countsByMonthAccumulated).map((month) => {
@@ -596,6 +645,7 @@ export class OccurrencesService {
     console.log('totalNotAbsentOccurrences', totalNotAbsentOccurrences);
     console.log('totalAbsentOccurrences', totalAbsentOccurrences);
     console.log('totalCommutingOccurrences', totalCommutingOccurrences); */
+
     return {
       tarOccurrences: totalTarOccurrences,
       torOccurrences: totalTorOccurrences,

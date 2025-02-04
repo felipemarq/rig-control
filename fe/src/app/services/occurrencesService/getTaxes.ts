@@ -19,8 +19,16 @@ export type OccurrencesTaxesResponse = {
   commutingOccurrences: aggregatedTaxes;
 };
 
-export const getTaxes = async () => {
-  const { data } = await httpClient.get<OccurrencesTaxesResponse>(`/occurrences/taxes/`);
+export type OccurrencesTaxesFilters = {
+  startDate: string;
+  endDate: string;
+  baseId?: string;
+};
+
+export const getTaxes = async (filters: OccurrencesTaxesFilters) => {
+  const { data } = await httpClient.get<OccurrencesTaxesResponse>(`/occurrences/taxes/`, {
+    params: filters,
+  });
 
   return data;
 };
