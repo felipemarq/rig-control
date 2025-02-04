@@ -1,4 +1,5 @@
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
+import { useOccurrencesTaxes } from "@/app/hooks/occurrences/useOccurrencesTaxes";
 import { useBases } from "@/app/hooks/useBases";
 import { useOccurrencesFiltersContext } from "@/app/hooks/useOccurrencesFiltersContext";
 import { BasesResponse } from "@/app/services/basesService/getAll";
@@ -6,7 +7,8 @@ import {
   OccurrenceFilters,
   OccurrencesResponse,
 } from "@/app/services/occurrencesService/getAll";
-import React, { createContext } from "react";
+import { OccurrencesTaxesResponse } from "@/app/services/occurrencesService/getTaxes";
+import React, { createContext, useEffect, useMemo } from "react";
 
 // Definição do tipo do contexto
 interface SmsDashboardContextValue {
@@ -16,7 +18,7 @@ interface SmsDashboardContextValue {
   handleChangeFilters<TFilter extends keyof OccurrenceFilters>(
     filter: TFilter
   ): (value: OccurrenceFilters[TFilter]) => void;
-
+  occurrencesTaxes?: OccurrencesTaxesResponse;
   bases: BasesResponse;
   isFetchingBases: boolean;
   filters: OccurrenceFilters;
@@ -26,7 +28,7 @@ interface SmsDashboardContextValue {
   occurrences: OccurrencesResponse;
   isFetchingOccurrences: boolean;
   isInitialLoading: boolean;
-
+  isFetchingOccurrencesTaxes: boolean;
   handleRefetchOccurrences(): void;
 }
 
@@ -46,11 +48,23 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
 
   const handleApplyFilters = () => {
     refetchOccurrences();
+    refetchOccurrencesTaxes();
   };
+
+  useEffect(() => {
+    refetchOccurrencesTaxes();
+  }, [occurrences]);
 
   const handleRefetchOccurrences = () => {
     refetchOccurrences();
   };
+
+  const { occurrencesTaxes, isFetchingOccurrencesTaxes, refetchOccurrencesTaxes } =
+    useOccurrencesTaxes({
+      endDate: filters.endDate,
+      startDate: filters.startDate,
+      baseId: filters.baseId,
+    });
 
   return (
     <SmsDashboardContext.Provider
@@ -58,6 +72,7 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
         // isFetchingOccurrences,
         // occurrences,
         isFetchingOccurrences,
+        isFetchingOccurrencesTaxes,
         isInitialLoading,
         occurrences,
         bases,
@@ -67,6 +82,7 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
         handleClearFilters,
         handleApplyFilters,
         handleRefetchOccurrences,
+        occurrencesTaxes,
       }}
     >
       {children}

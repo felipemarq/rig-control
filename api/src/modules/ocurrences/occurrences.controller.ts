@@ -38,8 +38,12 @@ export class OccurrencesController {
   }
 
   @Get('/taxes')
-  getAllTaxes(@Param('baseId') baseId: string) {
-    return this.occurrencesService.getAllTaxes();
+  getAllTaxes(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+    @Query('baseId') baseId: string,
+  ) {
+    return this.occurrencesService.getAllTaxes({ startDate, endDate, baseId });
   }
 
   @Get('/taxes/:baseId')

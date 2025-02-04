@@ -118,6 +118,7 @@ export const PeriodsDataGrid = ({
             filterable: false,
             sortable: false,
             renderCell(params: GridRenderCellParams) {
+              console.log(params.row.type);
               return (
                 <div className="w-full flex justify-center items-center">
                   <DropdownMenu>
@@ -128,16 +129,18 @@ export const PeriodsDataGrid = ({
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
-                      <DropdownMenuItem>
-                        {" "}
-                        <Link
-                          to={`/period-action-plan/${params.value}`}
-                          state={data}
-                          className="w-full flex justify-center items-center"
-                        >
-                          <Button variant="ghost">Criar plano de ação</Button>
-                        </Link>
-                      </DropdownMenuItem>
+                      {params.row.type === "REPAIR" && (
+                        <DropdownMenuItem>
+                          {" "}
+                          <Link
+                            to={`/period-action-plan/${params.value}`}
+                            state={data}
+                            className="w-full flex justify-center items-center"
+                          >
+                            <Button variant="ghost">Criar plano de ação</Button>
+                          </Link>
+                        </DropdownMenuItem>
+                      )}
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>

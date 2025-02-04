@@ -326,12 +326,9 @@ export const ManHoursDataGrid = ({
           color: "hsl(var(--muted-foreground))",
           borderRadius: "var(--none, 0px)",
           borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderLeft:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderRight:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderTop:
-            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
           //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
           alignItems: "space-between !important",
         },

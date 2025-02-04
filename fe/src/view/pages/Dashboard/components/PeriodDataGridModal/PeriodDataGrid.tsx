@@ -6,6 +6,8 @@ import { localeTextDataGridConfig } from "../../../../../app/utils/localeTextDat
 import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
 import { formatIsoStringToHours } from "@/app/utils/formatIsoStringToHours";
 import { formatDate } from "@/app/utils/formatDate";
+import { getDiffInMinutes } from "@/app/utils/getDiffInMinutes";
+import { parse } from "date-fns";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -63,6 +65,33 @@ export const PeriodsDataGrid = ({
           <div className="w-full flex justify-center items-center">
             <div className="text-gray-800 font-medium tracking-tighter">
               {formatIsoStringToHours(params.value)}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
+      field: "minutes",
+      headerName: "Minutos",
+      flex: 0.2,
+      headerAlign: "center",
+      align: "center",
+
+      renderCell(params: GridRenderCellParams) {
+        const parsedStartHour = parse(
+          params.row.startHour.split("T")[1].slice(0, 5),
+          "HH:mm",
+          new Date()
+        );
+        const parsedEndHour = parse(
+          params.row.endHour.split("T")[1].slice(0, 5),
+          "HH:mm",
+          new Date()
+        );
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-gray-800 font-medium tracking-tighter ">
+              {getDiffInMinutes(parsedEndHour, parsedStartHour)}
             </div>
           </div>
         );
