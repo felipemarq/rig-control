@@ -35,7 +35,6 @@ export const FiltersProvider = ({ children }: { children: React.ReactNode }) => 
 
   const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
   const formattedLastDay = format(threeDaysBeforeToday, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-
   const [selectedRig, setSelectedRig] = useState<string>("");
   const [selectedStartDate, setSelectedStartDate] = useState<string>(formattedFirstDay);
   const [selectedEndDate, setSelectedEndDate] = useState<string>(formattedLastDay);

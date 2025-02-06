@@ -99,6 +99,19 @@ export class EfficienciesController {
     });
   }
 
+  @Get('/confirm-days')
+  async confirmDays(
+    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return await this.efficienciesService.confirmDays({
+      rigId,
+      startDate,
+      endDate,
+    });
+  }
+
   @Post('/confirm/:efficiencyId')
   async confirmEfficiency(
     @Param('efficiencyId', ParseUUIDPipe) efficiencyId: string,

@@ -48,9 +48,15 @@ export class PeriodsService {
     whereClause = {
       efficiency: {
         date: { gte: new Date(startDate), lte: new Date(endDate) },
-        rigId: rigId,
       },
     };
+
+    if (rigId) {
+      whereClause = {
+        ...whereClause,
+        rigId,
+      };
+    }
 
     if (searchTerm) {
       whereClause = {
@@ -115,7 +121,12 @@ export class PeriodsService {
             lte: new Date(filters.endDate),
           },
         },
-        OR: [{ type: 'GLOSS' }, { type: 'REPAIR' }],
+        OR: [
+          { type: 'GLOSS' },
+          { type: 'REPAIR' },
+          { type: 'COMMERCIALLY_STOPPED' },
+          { classification: 'UNBILLED_SCHEDULED_STOP' },
+        ],
       },
       include: { efficiency: { include: { rig: true } } },
     });
