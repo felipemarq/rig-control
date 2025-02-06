@@ -8,7 +8,7 @@ import {
   OccurrencesResponse,
 } from "@/app/services/occurrencesService/getAll";
 import { OccurrencesTaxesResponse } from "@/app/services/occurrencesService/getTaxes";
-import React, { createContext, useEffect, useMemo } from "react";
+import React, { createContext, useEffect } from "react";
 
 // Definição do tipo do contexto
 interface SmsDashboardContextValue {

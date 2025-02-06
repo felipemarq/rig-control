@@ -63,7 +63,10 @@ export const UnbilledPeriodsPieChart = () => {
           from: "color",
           modifiers: [["darker", 0.2]],
         }}
-        onClick={(event) => handleSelectedPieChartViewChange(event.id as PeriodType)}
+        onClick={(event) => {
+          console.log(event);
+          handleSelectedPieChartViewChange(event.label as PeriodType);
+        }}
         valueFormat={(value) => `${value} Hrs`}
         enableArcLinkLabels={false}
         arcLinkLabelsTextColor={"#679d4d"}

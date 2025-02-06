@@ -18,6 +18,7 @@ import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboar
 
 import { months } from "@/app/utils/months";
 import { useTheme } from "@/app/contexts/ThemeContext";
+import { Spinner } from "@/view/components/Spinner";
 
 export const TfsaOccurrencesBarChartCard = () => {
   const { isFetchingOccurrencesTaxes, occurrencesTaxes } = useSmsDashboardContext();
@@ -61,40 +62,43 @@ export const TfsaOccurrencesBarChartCard = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
-          <BarChart
-            accessibilityLayer
-            data={convertedResul}
-            margin={{
-              top: 0,
-            }}
-          >
-            <CartesianGrid vertical={false} />
-            <XAxis
-              dataKey="month"
-              tickLine={false}
-              tickMargin={10}
-              axisLine={false}
-              tickFormatter={(value) => value.slice(0, 3)}
-            />
-
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
-            <Bar
-              dataKey="tax"
-              fill="var(--color-tax)"
-              radius={8}
-              max={500}
-              maxBarSize={500}
+        {isFetchingOccurrencesTaxes && <Spinner />}
+        {!isFetchingOccurrencesTaxes && (
+          <ChartContainer config={chartConfig}>
+            <BarChart
+              accessibilityLayer
+              data={convertedResul}
+              margin={{
+                top: 0,
+              }}
             >
-              <LabelList
-                position="top"
-                offset={12}
-                className="fill-foreground"
-                fontSize={12}
+              <CartesianGrid vertical={false} />
+              <XAxis
+                dataKey="month"
+                tickLine={false}
+                tickMargin={10}
+                axisLine={false}
+                tickFormatter={(value) => value.slice(0, 3)}
               />
-            </Bar>
-          </BarChart>
-        </ChartContainer>
+
+              <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+              <Bar
+                dataKey="tax"
+                fill="var(--color-tax)"
+                radius={8}
+                max={500}
+                maxBarSize={500}
+              >
+                <LabelList
+                  position="top"
+                  offset={12}
+                  className="fill-foreground"
+                  fontSize={12}
+                />
+              </Bar>
+            </BarChart>
+          </ChartContainer>
+        )}
       </CardContent>
     </Card>
   );

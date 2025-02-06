@@ -13,6 +13,10 @@ import { PieChartData } from "../components/UnbilledPeriodsPieChartCard/Unbilled
 import { getDiffInMinutes } from "../../../../app/utils/getDiffInMinutes";
 import { formatNumberWithFixedDecimals } from "../../../../app/utils/formatNumberWithFixedDecimals";
 import { useTheme } from "@/app/contexts/ThemeContext";
+import { translateType } from "@/app/utils/translateType";
+/* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
+import { useGetByPeriodType } from "@/app/hooks/periods/useGetByPeriodType";
+import { OrderByType } from "@/app/entities/OrderBy"; */
 
 // Definição do tipo do contexto
 interface GlobalDashboardContextValue {
@@ -92,6 +96,19 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       },
       true
     );
+
+  /*   const { periodsResponse, refetchPeriods, isFetchingPeriods } = useGetByPeriodType({
+    rigId: undefined,
+    periodType: undefined,
+    periodClassification: undefined,
+    repairClassification: null,
+    orderBy: OrderByType.ASC,
+    startDate: filters.startDate,
+    endDate: filters.endDate,
+    pageSize: "50",
+    pageIndex: "1",
+    searchTerm: undefined,
+  }); */
 
   const [selectedDashboardView, setSelectedDashboardView] =
     useState<DashboardView>("ALL");
@@ -176,20 +193,36 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       new Date()
     );
 
-    const foundIndex = acc.findIndex((item) => item.id === current.type);
+    const translatedType = translateType(current.type);
+
+    const foundIndex = acc.findIndex((item) => item.id === translatedType);
 
     const diffInHours = getDiffInMinutes(parsedEndHour, parsedStartHour) / 60;
 
+    let color = primaryColor;
+
+    if (current.type === "REPAIR") {
+      color = "#81c460";
+    }
+
+    if (current.type === "SCHEDULED_STOP") {
+      color = "#f87171";
+    }
+
+    if (current.type === "COMMERCIALLY_STOPPED") {
+      color = "#FACC15";
+    }
+
     if (foundIndex === -1) {
       acc.push({
-        id: current.type,
+        id: translatedType!,
         label: current.type,
         value: Number(diffInHours.toFixed(2)),
-        color: current.type === "REPAIR" ? primaryColor : "#81c460",
+        color: color,
       });
     } else {
       acc = acc.map((accItem) =>
-        accItem.id === current.type
+        accItem.id === translatedType
           ? {
               ...accItem,
               value: Number((accItem.value + diffInHours).toFixed(2)),

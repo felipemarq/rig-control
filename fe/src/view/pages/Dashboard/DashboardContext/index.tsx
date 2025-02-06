@@ -22,6 +22,8 @@ import { useNotifications } from "@/app/hooks/useNotifications";
 import { Notification } from "@/app/entities/Notification";
 import { useLocation } from "react-router-dom";
 import { addDays, differenceInDays, parseISO } from "date-fns";
+import { getCommertialyStoppedDates } from "@/app/utils/getCommertialyStoppedDates";
+import { getScheduledStoppedDates } from "@/app/utils/getScheduledStoppedDates";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -92,35 +94,6 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   // Utilização dos hooks para eficiências e médias de eficiência
   const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
-
-  function getScheduledStoppedDates(efficiencies: EfficienciesResponse) {
-    const allDates: string[] = [];
-
-    efficiencies.forEach((efficiency: Efficiency) => {
-      const hasScheduledStopped = efficiency.periods.find(
-        (period) => period.type === "SCHEDULED_STOP"
-      );
-
-      if (hasScheduledStopped) {
-        allDates.push((efficiency.date as string).split("T")[0]);
-      }
-    });
-    return allDates;
-  }
-
-  function getCommertialyStoppedDates(efficiencies: EfficienciesResponse) {
-    const allDates: string[] = [];
-    efficiencies.forEach((efficiency) => {
-      const hasCommertialStopped = efficiency.periods.find(
-        (period) => period.type === "COMMERCIALLY_STOPPED"
-      );
-
-      if (hasCommertialStopped) {
-        allDates.push((efficiency.date as string).split("T")[0]);
-      }
-    });
-    return allDates;
-  }
 
   const commerciallyStoppedDates = getCommertialyStoppedDates(efficiencies);
   const scheduledStoppedDates = getScheduledStoppedDates(efficiencies);

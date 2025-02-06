@@ -58,7 +58,7 @@ export class PeriodsController {
 
   @Get()
   async findByPeriodType(
-    @Query('rigId', ParseUUIDPipe) rigId: string,
+    @Query('rigId') rigId: string | null,
     @Query('periodType') periodType: PeriodType | null,
     @Query('periodClassification')
     periodClassification: PeriodClassification | null,

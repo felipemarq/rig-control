@@ -5,7 +5,7 @@ import { RepairClassification } from "../../entities/RepairClassification";
 import { httpClient } from "../httpClient";
 
 export type GetByPeriodTypeFilters = {
-  rigId: string;
+  rigId?: string;
   periodType?: PeriodType;
   periodClassification?: string;
   repairClassification: null | RepairClassification;

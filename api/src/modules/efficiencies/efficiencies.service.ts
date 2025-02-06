@@ -424,7 +424,7 @@ export class EfficienciesService {
         if (type === 'REPAIR') {
           await this.mailService.sendEmail(
             ['ricardo@conterp.com.br', 'felipemarques@conterp.com.br'], // Lista de destinatários
-            'Notificação de Reparo de Equipamento', // Assunto do e-mail
+            `Notificação de Reparo de Equipamento ${rig.name}`, // Assunto do e-mail
             `<!DOCTYPE html>
               <html lang="en">
               <head>
@@ -516,7 +516,7 @@ export class EfficienciesService {
                 'felipemarques@conterp.com.br',
                 'bianca@conterp.com.br',
               ],
-              'Reparo de equipamento requer plano de ação',
+              `Reparo de equipamento requer plano de ação - ${rig.name}`,
               `<!DOCTYPE html>
                 <html lang="en">
                 <head>
@@ -719,13 +719,22 @@ export class EfficienciesService {
     const date = efficiency.date;
 
     /*
-    SPT 60 - 544e1dbe-c059-428d-b6c6-042add9dbcc0
+    
+    SPT 60 - 544e1dbe-c059-428d-b6c6-042add9dbcc0 ✅
 
-    SPT 111 - 064278ad-a056-4f34-894a-0074ec586c89
+    SPT 111 - 064278ad-a056-4f34-894a-0074ec586c89 ✅
 
-    SPT 76 - aa5fb3c1-63f5-47ab-86bd-7f31b7302e67
+    SPT 76 - aa5fb3c1-63f5-47ab-86bd-7f31b7302e67 ✅
 
-    SPT 151 - ec620219-9d57-4a6a-84d5-61c94cdc797f
+    SPT 151 - ec620219-9d57-4a6a-84d5-61c94cdc797f ✅
+
+    SPT 116 - c9eabd8e-6fa6-4474-837f-4636cabc6fe1 ✅
+
+    SPT 54 - e07b74a7-607f-4cde-a261-5c2e41d73827 ✅
+
+    SPT 88 - 18884437-f1d1-40f2-946c-960909b8ce5e ✅
+
+    SPT 115 - 4647d981-55d1-45cd-bd49-3bb957d5242b ✅
 
     */
     if (
@@ -733,7 +742,9 @@ export class EfficienciesService {
       rigId === '064278ad-a056-4f34-894a-0074ec586c89' ||
       rigId === 'aa5fb3c1-63f5-47ab-86bd-7f31b7302e67' ||
       rigId === 'ec620219-9d57-4a6a-84d5-61c94cdc797f' ||
-      rigId === 'c9eabd8e-6fa6-4474-837f-4636cabc6fe1'
+      rigId === 'c9eabd8e-6fa6-4474-837f-4636cabc6fe1' ||
+      rigId === 'e07b74a7-607f-4cde-a261-5c2e41d73827' ||
+      rigId === '18884437-f1d1-40f2-946c-960909b8ce5e'
     ) {
       rigBillingConfiguration = await this.billingConfigRepo.findFisrt({
         where: {
@@ -1100,6 +1111,41 @@ export class EfficienciesService {
       console.log(
         `Criado dados do dia ${formatDate(new Date(efficiency.date))}`,
       );
+    }
+
+    return efficiencies;
+  }
+
+  async confirmDays(filters: {
+    rigId: string;
+    startDate: string;
+    endDate: string;
+  }) {
+    const efficiencies = await this.efficiencyRepo.findMany({
+      where: {
+        rigId: filters.rigId,
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
+      orderBy: {
+        date: 'asc',
+      },
+    });
+
+    for (const efficiency of efficiencies) {
+      console.log(
+        `=============================================================`,
+      );
+      console.log(`Confirmando dia ${formatDate(new Date(efficiency.date))}`);
+
+      await this.efficiencyRepo.update({
+        where: { id: efficiency.id },
+        data: {
+          isConfirmed: true,
+        },
+      });
     }
 
     return efficiencies;
