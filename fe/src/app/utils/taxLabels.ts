@@ -31,6 +31,8 @@ export const taxNames = [
   "truckcartrentamount",
   "truckkmamount",
   "trucktankamount",
+  "commerciallystoppedamount",
+  "mobilizationoutamount",
 ];
 
 export const taxTranslation: Record<string, string> = {
@@ -58,6 +60,7 @@ export const taxTranslation: Record<string, string> = {
   mixtankmonthrentamount: "Loc Tanque Mix Mensal",
   mixtankoperatoramount: "Operadores de Tanque Mix",
   mobilizationamount: "Mobilização",
+  mobilizationoutamount: "Mobilização Fora de Aracaju",
   munckamount: "Loc. Munk",
   powerswivelamount: "Power Swivel",
   repairhouramount: "Horas em Reparo",
@@ -69,6 +72,7 @@ export const taxTranslation: Record<string, string> = {
   scheduledstopamount: "Parada programada faturada",
   standbyhouramount: "Stand By",
   unbilledscheduledstopamount: "Parada programada não faturada",
+  commerciallystoppedamount: "Comercialmente parada",
 };
 
 export const taxSuffix: Record<string, string> = {

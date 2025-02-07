@@ -44,6 +44,8 @@ export interface BillingByRigIdResponse {
   scheduledstopamount: number;
   standbyhouramount: number;
   unbilledscheduledstopamount: number;
+  commerciallystoppedamount: number;
+  mobilizationoutamount: number;
 }
 
 export const getbyRigId = async (filters: BillingsByRigIFilters) => {

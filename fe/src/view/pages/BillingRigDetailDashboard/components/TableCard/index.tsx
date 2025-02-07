@@ -56,7 +56,8 @@ export const TableCard = () => {
                         className={cn(
                           (key === "glosshouramount" ||
                             key === "unbilledscheduledstopamount" ||
-                            key === "repairhouramount") &&
+                            key === "repairhouramount" ||
+                            key === "commerciallystoppedamount") &&
                             "text-red-500"
                         )}
                       >

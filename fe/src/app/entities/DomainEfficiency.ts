@@ -35,4 +35,5 @@ export interface DomainEfficiency {
   isPowerSwivelSelected?: boolean;
   mobilizationPlace?: string;
   isSuckingTruckSelected?: boolean;
+  isConfirmed?: boolean;
 }

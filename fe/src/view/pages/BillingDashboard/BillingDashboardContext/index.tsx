@@ -37,6 +37,7 @@ interface BillingDashboardContextValue {
   totalGlossAmount: number | string;
   totalRepairAmount: number | string;
   totalUnbilledAmount: number | string;
+  totalCommerciallyStoppedAmount: number | string;
   setSliderState({
     isBeginning,
     isEnd,
@@ -172,6 +173,8 @@ export const BillingDashboardProvider = ({
   const { billings, isFetchingBillings, refetchBillings } =
     useBillings(filters);
 
+  console.log("billings", billings);
+
   const { configs, isFetchingConfig } = useConfigBillings();
 
   const isEmpty: boolean = billings.length === 0;
@@ -203,19 +206,32 @@ export const BillingDashboardProvider = ({
     totalGlossAmount,
     totalRepairAmount,
     totalUnbilledAmount,
+    totalCommerciallyStoppedAmount,
   } = useMemo(() => {
     let totalBillings = 0;
     let totalRepairUnbilled = 0;
     let totalGlossUnbilled = 0;
+    let totalCommerciallyStoppedUnbilled = 0;
 
-    billings.forEach(({ total, repairhouramount, glosshouramount }) => {
-      totalBillings += total;
-      totalGlossUnbilled += glosshouramount;
+    billings.forEach(
+      ({
+        total,
+        repairhouramount,
+        glosshouramount,
+        commerciallystoppedamount,
+      }) => {
+        totalBillings += total;
+        totalGlossUnbilled += glosshouramount;
 
-      if (repairhouramount) {
-        totalRepairUnbilled += repairhouramount;
+        if (commerciallystoppedamount) {
+          totalCommerciallyStoppedUnbilled += commerciallystoppedamount;
+        }
+
+        if (repairhouramount) {
+          totalRepairUnbilled += repairhouramount;
+        }
       }
-    });
+    );
 
     const totalAmount = formatCurrency(totalBillings);
 
@@ -225,8 +241,13 @@ export const BillingDashboardProvider = ({
     const totalGlossAmount = formatCurrencyStringToNegativeNumber(
       formatCurrency(totalGlossUnbilled)
     );
+    const totalCommerciallyStoppedAmount = formatCurrencyStringToNegativeNumber(
+      formatCurrency(totalCommerciallyStoppedUnbilled)
+    );
     const totalUnbilledAmount = formatCurrency(
-      totalRepairUnbilled + totalGlossUnbilled
+      totalRepairUnbilled +
+        totalGlossUnbilled +
+        totalCommerciallyStoppedUnbilled
     );
 
     return {
@@ -234,6 +255,7 @@ export const BillingDashboardProvider = ({
       totalRepairAmount,
       totalGlossAmount,
       totalUnbilledAmount,
+      totalCommerciallyStoppedAmount,
     };
   }, [billings]);
 
@@ -267,6 +289,7 @@ export const BillingDashboardProvider = ({
         totalAmount,
         totalGlossAmount,
         totalRepairAmount,
+        totalCommerciallyStoppedAmount,
         setSliderState,
         sliderState,
         isEditRigModalOpen,

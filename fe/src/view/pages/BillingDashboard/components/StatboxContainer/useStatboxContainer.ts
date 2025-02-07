@@ -1,4 +1,4 @@
-import {useBillingDashboard} from "../../BillingDashboardContext/useBillingDashboard";
+import { useBillingDashboard } from "../../BillingDashboardContext/useBillingDashboard";
 
 export const useStatboxContainer = () => {
   const {
@@ -7,7 +7,8 @@ export const useStatboxContainer = () => {
     totalRepairAmount,
     totalUnbilledAmount,
     isFetchingBillings,
-    averageEfficiency
+    averageEfficiency,
+    totalCommerciallyStoppedAmount,
   } = useBillingDashboard();
 
   return {
@@ -16,6 +17,7 @@ export const useStatboxContainer = () => {
     totalRepairAmount,
     isFetchingBillings,
     totalUnbilledAmount,
-    averageEfficiency
+    averageEfficiency,
+    totalCommerciallyStoppedAmount,
   };
 };

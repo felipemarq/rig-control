@@ -843,6 +843,9 @@ export class EfficienciesService {
       unbilledScheduledStopTotalHours *
       rigBillingConfiguration.availableHourTax;
 
+    const commerciallyStoppedAmount =
+      commercialHours * rigBillingConfiguration.commerciallyStoppedTax;
+
     const glossHourAmount =
       totalGlossHours * rigBillingConfiguration.availableHourTax;
 
@@ -1037,7 +1040,9 @@ export class EfficienciesService {
         scheduledStopAmount,
         glossHourAmount,
         repairHourAmount,
+        commerciallyStoppedAmount: commerciallyStoppedAmount,
         unbilledScheduledStopAmount: unbilledScheduledStopTotalAmount,
+        mobilizationOutAmount: mobilizationOutTotalAmount,
         dtmLt20Amount,
         dtmBt20And50Amount,
         dtmGt50Amount,
@@ -1823,6 +1828,10 @@ export class EfficienciesService {
   }
 
   async update(updateEfficiencyDto: UpdateEfficiencyDto, efficiencyId: string) {
+    if (updateEfficiencyDto.isConfirmed) {
+      this.calculateEfficiencyBilling(efficiencyId);
+    }
+
     return await this.efficiencyRepo.update({
       where: { id: efficiencyId },
       data: updateEfficiencyDto,
