@@ -8,8 +8,6 @@ export const httpClient = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_URL,
 });
 
-console.log("baseURL", import.meta.env.VITE_APP_BASE_URL);
-
 httpClient.interceptors.request.use(async (config) => {
   const accessToken = localStorage.getItem(localStorageKeys.ACCESS_TOKEN);
 

@@ -2,7 +2,6 @@
 // yarn add @nivo/calendar
 import { ResponsiveCalendar } from "@nivo/calendar";
 import { useCalendarChart } from "./useCalendarChart";
-import { cn } from "@/lib/utils";
 import { formatDate } from "@/app/utils/formatDate";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
@@ -29,26 +28,100 @@ export const CalendarChart = () => {
       monthSpacing={0}
       dayBorderWidth={2}
       dayBorderColor="#ffffff"
-      tooltip={(e) => {
+      tooltip={(e: any) => {
+        const availableHours =
+          e.data.totalAvailableHours -
+          e.data.totalStandByHours -
+          e.data.totalScheduledStoppedHours;
         return (
-          <div
-            className={cn(
-              "z-50 w-64 rounded-md border bg-popover p-4 text-popover-foreground shadow-md outline-none data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 duration-75"
-            )}
-          >
-            <div>
-              <span>Dia: </span> {/* @ts-ignore */}
-              <span> {formatDate(new Date(e.data.day))}</span>
+          <div className="flex flex-col bg-white p-4 rounded-md">
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Data:</span>
+              <>{formatDate(new Date(e.data.day))}</>
+            </div>
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Eficiência:</span>
+              <>{e.data.efficiency}%</>
+            </div>
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Operando:</span>
+              {/* //@ts-ignore */}
+              <span> {availableHours.toFixed(2)} Hrs</span>
             </div>
 
-            <div>
-              <span>Horas Disp.: </span> {/* @ts-ignore */}
-              <span> {e.data.availableHours} Hrs</span>
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>StandBy:</span>
+              <span> {e.data.totalStandByHours.toFixed(2)} Hrs</span>
             </div>
 
-            <div>
-              {/* @ts-ignore */}
-              <span>Eficiência: </span> <span> {e.data.efficiency}</span>
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Reparo:</span>
+              <span> {e.data.totalRepairHours.toFixed(2)}Hrs</span>
+            </div>
+
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Glosa:</span>
+              <span> {e.data.totalGlossHours.toFixed(2)} Hrs</span>
+            </div>
+
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Parada comercial:</span>
+              <span> {e.data.totalCommertialHours.toFixed(2)} Hrs</span>
+            </div>
+
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Parada programada:</span>
+              <span> {e.data.totalScheduledStoppedHours.toFixed(2)} Hrs</span>
+            </div>
+
+            <div
+              className="text-sm flex gap-2 "
+              style={{
+                color: primaryColor,
+              }}
+            >
+              <span>Parada programada não faturada:</span>
+              <span> {e.data.totalUnbilledScheduledStopHours.toFixed(2)} Hrs</span>
             </div>
           </div>
         );

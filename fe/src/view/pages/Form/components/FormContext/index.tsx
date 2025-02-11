@@ -281,8 +281,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       ]);
       queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", { replace: true });
-      handleToggleNavItem("dashboard");
+      // navigate("/dashboard", { replace: true });
+      // handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       Sentry.captureException(error);
       treatAxiosError(error);

@@ -48,6 +48,105 @@ export const LineChart = () => {
           "points",
           "legends",
         ]}
+        sliceTooltip={(event: any) => {
+          const data = event.slice.points[0].data;
+          const availableHours =
+            data.totalAvailableHours -
+            data.totalStandByHours -
+            data.totalScheduledStoppedHours;
+          return (
+            <div className="flex flex-col bg-white p-4 rounded-md">
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Data:</span>
+                <>{data.x}</>
+              </div>
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Eficiência:</span>
+                <>{data.y}%</>
+              </div>
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Operando:</span>
+                {/* //@ts-ignore */}
+                <span> {availableHours.toFixed(2)} Hrs</span>
+              </div>
+
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>StandBy:</span>
+                <span> {data.totalStandByHours} Hrs</span>
+              </div>
+
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Reparo:</span>
+                <span> {data.totalRepairHours.toFixed(2)}Hrs</span>
+              </div>
+
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Glosa:</span>
+                <span> {data.totalGlossHours.toFixed(2)} Hrs</span>
+              </div>
+
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Parada comercial:</span>
+                <span> {data.totalCommertialHours.toFixed(2)} Hrs</span>
+              </div>
+
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Parada programada:</span>
+                <span> {data.totalScheduledStoppedHours.toFixed(2)} Hrs</span>
+              </div>
+
+              <div
+                className="text-sm flex gap-2 "
+                style={{
+                  color: primaryColor,
+                }}
+              >
+                <span>Parada programada não faturada:</span>
+                <span> {data.totalUnbilledScheduledStopHours.toFixed(2)} Hrs</span>
+              </div>
+            </div>
+          );
+        }}
         axisLeft={null}
         useMesh={true}
         theme={{

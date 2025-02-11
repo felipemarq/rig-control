@@ -34,6 +34,7 @@ import { formatDate } from 'src/shared/utils/formatDate';
 import { DeleteBodyDto } from './dto/delete-body.dto';
 import { Interval } from './entities/Interval';
 import { getDiffInMinutes } from 'src/shared/utils/getDiffInMinutes';
+import { start } from 'repl';
 
 @Injectable()
 export class EfficienciesService {
@@ -397,7 +398,6 @@ export class EfficienciesService {
             dtmGt50TotalHours += diffInMinutes / 60;
           }
         }
-        billedScheduledStopTotalHours = 0;
 
         if (type === 'COMMERCIALLY_STOPPED') {
           commercialHours += diffInMinutes / 60;
@@ -419,6 +419,10 @@ export class EfficienciesService {
 
         if (type === 'STAND_BY') {
           standByTotalHours += diffInMinutes / 60;
+        }
+
+        if (type === 'REPAIR') {
+          totalRepairHours += diffInMinutes / 60;
         }
 
         if (type === 'REPAIR') {
@@ -601,8 +605,6 @@ export class EfficienciesService {
 `,
             );
           }
-
-          totalRepairHours += diffInMinutes / 60;
         }
 
         if (type === 'GLOSS') {
@@ -1744,6 +1746,9 @@ export class EfficienciesService {
     endDate: string;
     userId: string;
   }) {
+    if (!filters.startDate || !filters.endDate) {
+      return [];
+    }
     const rigs = await this.rigsRepo.findAll({});
 
     const usersRigs = await this.userRigsRepo.findMany({
