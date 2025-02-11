@@ -1,10 +1,10 @@
-import { Efficiency } from "@/view/pages/Dashboard/entities/Efficiency";
 import { EfficienciesResponse } from "../services/efficienciesService/getAll";
+import { PersistanceEfficiency } from "../entities/PersistanceEfficiency";
 
 export function getScheduledStoppedDates(efficiencies: EfficienciesResponse) {
   const allDates: string[] = [];
 
-  efficiencies.forEach((efficiency: Efficiency) => {
+  efficiencies.forEach((efficiency: PersistanceEfficiency) => {
     const hasScheduledStopped = efficiency.periods.find(
       (period) => period.type === "SCHEDULED_STOP"
     );
