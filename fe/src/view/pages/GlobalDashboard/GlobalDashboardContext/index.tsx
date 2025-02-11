@@ -51,6 +51,7 @@ interface GlobalDashboardContextValue {
   };
   handleChangeDashboardView: (view: DashboardView) => void;
   selectedDashboardView: DashboardView;
+  selectedPeriodClassification: string | null;
 }
 
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
@@ -67,6 +68,9 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const { primaryColor } = useTheme();
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
   const [selectedPieChartView, setSelectedPieChartView] = useState(PeriodType.REPAIR);
+  const [selectedPeriodClassification, setSelectedPeriodClassification] = useState<
+    string | null
+  >(null);
 
   const [selectedDetailPieChartView, setSelectedDetailPieChartView] = useState<
     null | string
@@ -80,6 +84,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
   const handleSelectedDetailPieChartViewChange = (classification: string) => {
     setSelectedDetailPieChartView(classification);
+    setSelectedPeriodClassification(classification);
   };
 
   const handleCloseDetailsGraph = () => {
@@ -268,6 +273,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         totalDaysSelected,
         rigsAverage,
         isFetchingRigsAverage,
+        selectedPeriodClassification,
         isEmpty,
       }}
     >

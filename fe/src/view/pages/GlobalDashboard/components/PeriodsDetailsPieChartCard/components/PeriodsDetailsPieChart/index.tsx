@@ -104,9 +104,6 @@ export const PeriodsDetailsPieChart = ({
           },
         ]} */
       />
-      <small className="absolute bottom-16 right-14 italic text-gray-700 text-xs">
-        * Clique no gráfico para ver detalhes
-      </small>
     </div>
   );
 };

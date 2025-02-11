@@ -100,9 +100,6 @@ export const UnbilledPeriodsPieChart = () => {
           },
         ]} */
       />
-      <small className="absolute bottom-12 right-14 italic text-gray-700 text-xs">
-        * Clique no gráfico para ver detalhes
-      </small>
     </div>
   );
 };

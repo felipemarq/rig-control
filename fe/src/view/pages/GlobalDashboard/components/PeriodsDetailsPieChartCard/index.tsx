@@ -6,6 +6,7 @@ import { PeriodsDetailsPieChart } from "./components/PeriodsDetailsPieChart";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { Maximize, X } from "lucide-react";
 
 export const PeriodsDetailsPieChartCard = () => {
   const { isFetchingRigsAverage, rigsAverage, isFetchingUnbilledPeriods } =
@@ -24,7 +25,9 @@ export const PeriodsDetailsPieChartCard = () => {
     >
       <CardHeader className="pl-7 ">
         <div className="flex gap-2 items-center justify-between cursor-pointer">
-          <CardTitle>Detalhes do periodo não faturado selecionado </CardTitle>
+          <CardTitle className="text-sm">
+            Detalhes do periodo não faturado selecionado{" "}
+          </CardTitle>
           <div className="flex gap-2 items-center">
             <Button
               size="sm"
@@ -32,10 +35,10 @@ export const PeriodsDetailsPieChartCard = () => {
                 setSelectedView((prev) => (prev === "HOURS" ? "PERCENTAGE" : "HOURS"))
               }
             >
-              {selectedView === "HOURS" ? "Ver porcentagem" : "Ver horas"}
+              {selectedView === "HOURS" ? "%" : "Horas"}
             </Button>
             <Button size="sm" onClick={() => setIsExpanded((prev) => !prev)}>
-              {isExpanded ? "Fechar" : "Expandir"}
+              {isExpanded ? <X /> : <Maximize />}
             </Button>
           </div>
         </div>

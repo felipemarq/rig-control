@@ -12,6 +12,7 @@ import { PeriodsDetailsPieChartCard } from "./components/PeriodsDetailsPieChartC
 import { FilterSheet } from "@/view/components/FilterSheet";
 import { Header } from "@/view/components/Header";
 import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard";
+import { RepairDetailsPieChartCard } from "./components/RepairDetailsPieChartCard";
 
 const GlobalDashboard = () => {
   return (
@@ -24,6 +25,8 @@ const GlobalDashboard = () => {
           isChartDataEmpty,
           handleChangeDashboardView,
           selectedDashboardView,
+          selectedPeriodClassification,
+          selectedPieChartView,
         }) => (
           <div className="overflow-y-auto w-full">
             <Header title="Dashboard Geral" displayRig={false}>
@@ -73,6 +76,10 @@ const GlobalDashboard = () => {
                     <>
                       <UnbilledPeriodsPieChartCard />
                       {isDetailsGraphVisible && <PeriodsDetailsPieChartCard />}
+                      {selectedPeriodClassification &&
+                        selectedPieChartView === "REPAIR" && (
+                          <RepairDetailsPieChartCard />
+                        )}
                     </>
                   )}
                   <UnbilledPeriodsByRigCard />
