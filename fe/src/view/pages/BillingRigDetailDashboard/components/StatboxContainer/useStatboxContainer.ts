@@ -11,7 +11,8 @@ export const useStatboxContainer = () => {
     billing.length != 0
       ? billing[0].glosshouramount +
         billing[0].repairhouramount +
-        billing[0].unbilledscheduledstopamount
+        billing[0].unbilledscheduledstopamount +
+        billing[0].commerciallystoppedamount
       : 0;
 
   const totalUnbilledcheduledAmount =

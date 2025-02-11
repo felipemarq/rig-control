@@ -2,7 +2,6 @@ import React, { createContext, useEffect, useState } from "react";
 import { useEfficiencies } from "../../../../app/hooks/efficiencies/useEfficiencies";
 import { useAuth } from "../../../../app/hooks/useAuth";
 import { User } from "../../../../app/entities/User";
-import { Efficiency } from "../entities/Efficiency";
 import { EfficienciesResponse } from "../../../../app/services/efficienciesService/getAll";
 import { getRepairPeriods } from "../../../../app/utils/getRepairPeriods";
 import { Period } from "../../../../app/entities/Period";
@@ -24,6 +23,7 @@ import { useLocation } from "react-router-dom";
 import { addDays, differenceInDays, parseISO } from "date-fns";
 import { getCommertialyStoppedDates } from "@/app/utils/getCommertialyStoppedDates";
 import { getScheduledStoppedDates } from "@/app/utils/getScheduledStoppedDates";
+import { calculateTotalsEfficiencies } from "@/app/utils/calculateTotalsEfficiencies";
 
 // Definição do tipo do contexto
 interface DashboardContextValue {
@@ -132,6 +132,8 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     year: new Date(filters.startDate).getFullYear(),
   });
 
+  console.log("efficiencies", efficiencies);
+
   const isEmpty: boolean = efficiencies.length === 0;
   const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
 
@@ -220,37 +222,30 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     }
   }, [location.state?.shouldApplyFilters]);
 
-  // Cálculos para estatísticas das eficiências
-  let totalAvailableHours: number = 0;
-  let totalUnavailableHours: number = 0;
-  let totalDtms: number = 0;
-  let totalMovimentations: number = 0;
+  const {
+    totalAvailableHours,
+    /*  totalCommertialHours, */
+    totalRepairHours,
+    totalGlossHours,
+    totalStandByHours,
+    totalScheduledStoppedHours,
+    totalDtms,
+    totalMovimentations,
+    totalUnavailableHours,
+    /*  totalUnbilledScheduledStopHours, */
+  } = calculateTotalsEfficiencies(efficiencies);
 
-  efficiencies.forEach((efficiency: Efficiency) => {
-    totalAvailableHours +=
-      efficiency.availableHours +
-      efficiency.standByHours +
-      (efficiency.billedScheduledStopHours ?? 0);
-
-    totalUnavailableHours +=
-      24 -
-      (efficiency.availableHours +
-        efficiency.standByHours +
-        (efficiency.billedScheduledStopHours ?? 0));
-
-    totalMovimentations +=
-      efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
-
-    const dtmFound = efficiency.periods.find(({ type }) => type === "DTM");
-
-    if (dtmFound) {
-      totalDtms++;
-    }
-  });
+  const totalHoursToCalculateEfficiency =
+    totalAvailableHours +
+    totalRepairHours +
+    totalGlossHours +
+    totalStandByHours +
+    totalScheduledStoppedHours;
 
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
+
   let availableHoursPercentage: number = Number(
-    ((totalAvailableHours * 100) / totalHours).toFixed(2)
+    ((totalAvailableHours * 100) / totalHoursToCalculateEfficiency).toFixed(2)
   );
   let unavailableHoursPercentage: number = Number(
     ((totalUnavailableHours * 100) / totalHours).toFixed(2)

@@ -1,3 +1,4 @@
+import { confirm } from "./confirm";
 import { create } from "./create";
 import { deleteWithBody } from "./deleteWithBody";
 import { getAll } from "./getAll";
@@ -20,4 +21,5 @@ export const efficienciesService = {
   getWellsCountByRig: getWellsCountByRig,
   deleteWithBody: deleteWithBody,
   getPedingConfirmation: getPedingConfirmation,
+  confirm: confirm,
 };

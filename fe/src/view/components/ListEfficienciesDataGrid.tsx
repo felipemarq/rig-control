@@ -6,7 +6,6 @@ import {
 } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { formatDate } from "../../app/utils/formatDate";
-import { Efficiency } from "../pages/Dashboard/entities/Efficiency";
 import { NotFound } from "./NotFound";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,9 +15,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { MoreHorizontal } from "lucide-react";
+import { PersistanceEfficiency } from "@/app/entities/PersistanceEfficiency";
 
 interface ListDataGridProps {
-  data: Efficiency[];
+  data: PersistanceEfficiency[];
   isDashboard: boolean;
   windowWidth?: number;
   limitPagination?: boolean;

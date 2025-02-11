@@ -1,7 +1,7 @@
 // Importações necessárias - useDashboard e Efficiency
 import { useTheme } from "@/app/contexts/ThemeContext";
+import { PersistanceEfficiency } from "@/app/entities/PersistanceEfficiency";
 import { useBillingRigDetailDashboard } from "@/view/pages/BillingRigDetailDashboard/BillingRigDetailDashboardContext/useBillingDashboard";
-import { Efficiency } from "@/view/pages/Dashboard/entities/Efficiency";
 
 //import {Efficiency} from "../../../../entities/Efficiency";
 
@@ -34,7 +34,7 @@ export const useLineChart = () => {
   ];
 
   // Função para formatar as eficiências para o gráfico de linha
-  const formatEfficiencyToLineChart = (efficiencies: Efficiency[]) => {
+  const formatEfficiencyToLineChart = (efficiencies: PersistanceEfficiency[]) => {
     //Coloca o nome da sonda no ID para aparecer no Hover do gráfico
     data[0]["id"] = efficiencies[0].rig.name;
     // Itera sobre as eficiências para formatar os dados

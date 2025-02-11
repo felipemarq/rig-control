@@ -22,7 +22,6 @@ export default function RigCard({
   name,
   state,
   isActive,
-  stateFlagImagePath,
   onSetRigBeignEdited,
   navigate,
 }: RigCardProps) {
@@ -31,13 +30,6 @@ export default function RigCard({
     <Card className="overflow-hidden shadow-lg" id={id}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 bg-gradient-to-r from-green-500 to-primary text-white p-6">
         <div className="flex items-center space-x-4">
-          <img
-            className="h-8 rounded-md shadow-[0px_3px_15px_#718096]"
-            src={
-              stateFlagImagePath ??
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Bandeira_da_Bahia.svg/383px-Bandeira_da_Bahia.svg.png"
-            }
-          />
           <div>
             <CardTitle className="text-2xl font-bold">{name}</CardTitle>
             <p className="text-sm opacity-75">{state}</p>

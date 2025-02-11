@@ -47,7 +47,9 @@ export default function CreateCommercialPeriodModal({
   const { primaryColor } = useTheme();
   const [isDialogOpen, setIsDialogOpen] = useState(false); // Controla a abertura do dialog
 
-  const [dateBeingProcessed, setDateBeingProcessed] = useState<Date | null>(null);
+  const [dateBeingProcessed, setDateBeingProcessed] = useState<Date | null>(
+    null
+  );
   const {
     handleSubmit: hookFormhandleSubmit,
     control,
@@ -64,6 +66,11 @@ export default function CreateCommercialPeriodModal({
     mutationFn: efficienciesService.deleteWithBody,
   });
 
+  const {
+    /* isPending: isLoadingConfirmEfficiency, */
+    mutateAsync: mutateAsyncConfirmEfficiency,
+  } = useMutation({ mutationFn: efficienciesService.confirm });
+
   const isLoading = isLoadingCreate || isLoadingDelete;
 
   const handleProcessDates = async (
@@ -78,7 +85,9 @@ export default function CreateCommercialPeriodModal({
     while (!isAfter(currentDate, endDate)) {
       try {
         // Exemplo de operação para cada dia (pode ser substituído pela lógica desejada)
-        console.log(`Processando para o dia: ${format(currentDate, "yyyy-MM-dd")}`);
+        console.log(
+          `Processando para o dia: ${format(currentDate, "yyyy-MM-dd")}`
+        );
 
         setDateBeingProcessed(currentDate);
 
@@ -124,7 +133,10 @@ export default function CreateCommercialPeriodModal({
 
         await deleteAsync({ date: currentDate, rigId: selectedRig });
 
-        await mutateAsync(toPersistenceObj);
+        const efficiency = await mutateAsync(toPersistenceObj);
+        console.log(efficiency);
+
+        await mutateAsyncConfirmEfficiency(efficiency.id);
       } catch (error: any) {
         Sentry.captureException(error);
         treatAxiosError(error);
@@ -165,7 +177,9 @@ export default function CreateCommercialPeriodModal({
       </DialogTrigger>
       <DialogContent className="sm:max-w-[525px]">
         <DialogHeader>
-          <DialogTitle className="text-gray-800">Período de parada comercial</DialogTitle>
+          <DialogTitle className="text-gray-800">
+            Período de parada comercial
+          </DialogTitle>
           <DialogDescription>
             Informe os dados do período de parada comercial
           </DialogDescription>
@@ -224,7 +238,9 @@ export default function CreateCommercialPeriodModal({
                       value="OPERATIONAL_ADEQUACY"
                       id="OPERATIONAL_ADEQUACY"
                     />
-                    <Label htmlFor="OPERATIONAL_ADEQUACY">Adequação Operacional</Label>
+                    <Label htmlFor="OPERATIONAL_ADEQUACY">
+                      Adequação Operacional
+                    </Label>
                   </div>
                 </RadioGroup>
               )}
@@ -234,15 +250,16 @@ export default function CreateCommercialPeriodModal({
                 <AlertCircle size={40} className="text-" />
 
                 <span className="flex gap-1">
-                  Criar período de parada comercial irá deletar qualquer registro
-                  existente no intervalo selecionado!
+                  Criar período de parada comercial irá deletar qualquer
+                  registro existente no intervalo selecionado!
                 </span>
               </div>
             )}
 
             {isLoading && dateBeingProcessed && (
               <span className="flex gap-1 text-gray-700">
-                Processando para o dia: {formatDate(dateBeingProcessed)} aguarde...
+                Processando para o dia: {formatDate(dateBeingProcessed)}{" "}
+                aguarde...
               </span>
             )}
           </div>

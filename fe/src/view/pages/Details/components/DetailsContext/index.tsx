@@ -68,7 +68,8 @@ export const DetailsContextProvider = ({ children }: { children: React.ReactNode
   const canUserEdit =
     isUserAdm ||
     user?.email === "alissonmenezes@conterp.com.br" ||
-    user?.email === "adelsonferreira@conterp.com.br";
+    user?.email === "adelsonferreira@conterp.com.br" ||
+    user?.email === "chandler@conterp.com.br";
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);

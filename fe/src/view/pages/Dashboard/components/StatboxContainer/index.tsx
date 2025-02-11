@@ -5,13 +5,12 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {Progress} from "@/components/ui/progress";
-import {BaggageClaim, TimerIcon, TimerOff, Truck} from "lucide-react";
-import {useStatboxContainer} from "./useStatboxContainer";
+import { Progress } from "@/components/ui/progress";
+import { BaggageClaim, TimerIcon, TimerOff, Truck } from "lucide-react";
+import { useStatboxContainer } from "./useStatboxContainer";
 
 export const StatboxContainer = () => {
   const {
-    totalAvailableHours,
     availableHoursPercentage,
     totalUnavailableHours,
     unavailableHoursPercentage,
@@ -25,17 +24,13 @@ export const StatboxContainer = () => {
         className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
       >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">
-            Horas Disponiveis
-          </CardTitle>
+          <CardTitle className="text-sm font-medium">Eficiência Operacional</CardTitle>
           <TimerIcon className="h-8 w-8 text-muted-foreground" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold">
-            {totalAvailableHours.toFixed()}Hrs
-          </div>
+          <div className="text-2xl font-bold">{availableHoursPercentage.toFixed()} %</div>
           <p className="text-xs text-muted-foreground">
-            Total de horas faturadas pela sonda
+            Média da eficiência operacional da sonda
           </p>
         </CardContent>
         <CardFooter>
@@ -94,8 +89,7 @@ export const StatboxContainer = () => {
         <CardContent>
           <div className="text-2xl font-bold">{totalMovimentations}</div>
           <p className="text-xs text-muted-foreground">
-            Total de monivmentações de Equipamentos e Fluidos no período
-            selecionado
+            Total de monivmentações de Equipamentos e Fluidos no período selecionado
           </p>
         </CardContent>
       </Card>

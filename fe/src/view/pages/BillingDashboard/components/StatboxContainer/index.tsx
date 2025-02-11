@@ -5,13 +5,18 @@ import {
   CardContent,
   CardFooter,
 } from "@/components/ui/card";
-import {DollarSign, TimerOff} from "lucide-react";
-import {useStatboxContainer} from "./useStatboxContainer";
-import {Spinner} from "@/view/components/Spinner";
+import { DollarSign, TimerOff } from "lucide-react";
+import { useStatboxContainer } from "./useStatboxContainer";
+import { Spinner } from "@/view/components/Spinner";
 
 export const StatboxContainer = () => {
-  const {totalAmount, totalGlossAmount, totalRepairAmount, isFetchingBillings,averageEfficiency} =
-    useStatboxContainer();
+  const {
+    totalAmount,
+    totalGlossAmount,
+    totalRepairAmount,
+    isFetchingBillings,
+    totalCommerciallyStoppedAmount,
+  } = useStatboxContainer();
 
   return (
     <>
@@ -74,17 +79,17 @@ export const StatboxContainer = () => {
       </Card>
       <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium ">
-          Eficiência Média
+          <CardTitle className="text-sm font-medium text-redAccent-500">
+            Parada Comercial
           </CardTitle>
-          <TimerOff className="h-8 w-8 text-muted-foreground " />
+          <TimerOff className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
         <CardContent>
-          <div className="text-2xl font-bold ">
-            {averageEfficiency.toFixed(2)}%
+          <div className="text-2xl font-bold text-redAccent-500 tracking-tighter">
+            {totalCommerciallyStoppedAmount}
           </div>
-          <p className="text-xs text-muted-foreground ">
-          Eficiência média das sondas selecionadas
+          <p className="text-xs text-muted-foreground text-redAccent-500">
+            Faturamento perdido por parada comercial
           </p>
         </CardContent>
         <CardFooter></CardFooter>

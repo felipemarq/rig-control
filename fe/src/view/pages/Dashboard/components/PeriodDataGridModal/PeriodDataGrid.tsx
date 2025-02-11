@@ -145,6 +145,28 @@ export const PeriodsDataGrid = ({
         );
       },
     },
+    {
+      field: "id",
+      headerName: "Descrição",
+      flex: 0.7,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        console.log("params", params);
+        return (
+          <div className="w-full flex justify-center items-center py-5">
+            <span
+              className="text-primary underline font-semibold cursor-pointer"
+              onClick={() => {
+                window.open(`/details/${params.row.efficiency.id}`, "_blank");
+              }}
+            >
+              Ver Dia
+            </span>
+          </div>
+        );
+      },
+    },
   ];
 
   columns.splice(3, 0, {

@@ -29,7 +29,10 @@ export class BillingsService {
     startDate: string;
     endDate: string;
   }) {
-    return await this.billingRepo.findAll({ startDate, endDate });
+    const billings = await this.billingRepo.findAll({ startDate, endDate });
+
+    console.log(billings);
+    return billings;
   }
 
   /*  async findMany() {

@@ -3,6 +3,7 @@ import { UF } from "../../../../app/entities/Rig";
 export type Efficiency = {
   availableHours: number;
   standByHours: number;
+  repairHours: number;
   billedScheduledStopHours?: number;
   unbilledScheduledStopHours?: number;
   date: string | Date;

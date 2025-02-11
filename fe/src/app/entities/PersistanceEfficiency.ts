@@ -58,6 +58,7 @@ export type PersistanceEfficiency = {
   truckKmHours: number;
   hasTruckTank: boolean;
   repairHours?: number;
+  glossHours: number;
   Billing: {
     availableHourAmount: number;
     mobilizationAmount: number;

@@ -6,10 +6,21 @@ export const useBarChart = () => {
   const { billings } = useBillingDashboard();
 
   const data = billings.map(
-    ({ rigname, total, repairhouramount, glosshouramount }) => {
+    ({
+      rigname,
+      total,
+      repairhouramount,
+      glosshouramount,
+      unbilledscheduledstopamount,
+      commerciallystoppedamount,
+    }) => {
       const fixedTotal = formatNumberWithFixedDecimals(total, 2);
+      const totalRepair = repairhouramount ?? 0;
       const fixedTotalLost = formatNumberWithFixedDecimals(
-        repairhouramount ?? 0 + glosshouramount,
+        totalRepair +
+          glosshouramount +
+          unbilledscheduledstopamount +
+          commerciallystoppedamount,
         2
       );
       return {
