@@ -662,7 +662,7 @@ export class EfficienciesService {
       },
     });
 
-    //await this.calculateEfficiencyBilling(efficiency.id);
+    await this.calculateEfficiencyBilling(efficiency.id);
 
     await this.userLogService.create(
       getCurrentISOString(),
@@ -1147,12 +1147,14 @@ export class EfficienciesService {
       );
       console.log(`Confirmando dia ${formatDate(new Date(efficiency.date))}`);
 
-      await this.efficiencyRepo.update({
+      await this.calculateEfficiencyBilling(efficiency.id);
+
+      /*  await this.efficiencyRepo.update({
         where: { id: efficiency.id },
         data: {
           isConfirmed: true,
         },
-      });
+      }); */
     }
 
     return efficiencies;
