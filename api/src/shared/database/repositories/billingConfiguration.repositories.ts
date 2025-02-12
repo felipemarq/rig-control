@@ -10,6 +10,10 @@ export class BillingConfigurationsRepository {
     return await this.prismaService.billingConfiguration.create(createDto);
   }
 
+  async delete(deleteDto: Prisma.BillingConfigurationDeleteArgs) {
+    return await this.prismaService.billingConfiguration.delete(deleteDto);
+  }
+
   async findUnique(findUniqueDto: Prisma.BillingConfigurationFindUniqueArgs) {
     return await this.prismaService.billingConfiguration.findUnique(
       findUniqueDto,

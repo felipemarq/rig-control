@@ -8,6 +8,7 @@ import { rigsService } from "../../../../../app/services/rigsService";
 import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
 import { AxiosError } from "axios";
 import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
@@ -19,7 +20,7 @@ type FormData = z.infer<typeof schema>;
 
 const isActiveOptions = [
   {
-    value: "",
+    value: " ",
     label: "Desativada",
   },
   {
@@ -29,8 +30,9 @@ const isActiveOptions = [
 ];
 
 export const useEditRigModal = () => {
-  const { rigBeingEdited, isEditRigModalOpen, handleCloseEditRigModal } =
-    useListRigs();
+  const { rigBeingEdited, isEditRigModalOpen, handleCloseEditRigModal } = useListRigs();
+
+  const { primaryColor } = useTheme();
 
   const queryClient = useQueryClient();
 
@@ -49,7 +51,9 @@ export const useEditRigModal = () => {
     },
   });
 
-  const { isLoading, mutateAsync } = useMutation(rigsService.update);
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: rigsService.update,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
@@ -60,7 +64,7 @@ export const useEditRigModal = () => {
         state: data.state as UF,
       });
 
-      customColorToast("Sonda editada com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Sonda editada com Sucesso!", primaryColor, "success");
       reset();
       handleCloseEditRigModal();
 

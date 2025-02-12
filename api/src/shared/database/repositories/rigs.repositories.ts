@@ -14,8 +14,8 @@ export class RigsRepository {
     return await this.prismaService.rig.findUnique(findUniqueDto);
   }
 
-  async findAll() {
-    return await this.prismaService.rig.findMany();
+  async findAll(findManyDto: Prisma.RigFindManyArgs) {
+    return await this.prismaService.rig.findMany(findManyDto);
   }
 
   async update(updateDto: Prisma.RigUpdateArgs) {

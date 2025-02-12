@@ -29,6 +29,8 @@ export class ContractsService {
         id: true,
         name: true,
         rigs: true,
+        logoImagePath: true,
+        client: true,
       },
     });
   }

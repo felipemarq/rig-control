@@ -23,6 +23,12 @@ export class UsersService {
         name: true,
         email: true,
         accessLevel: true,
+        userLog: {
+          select: {
+            loginTime: true,
+          },
+          take: 1,
+        },
         rigs: {
           select: {
             rig: {
@@ -31,11 +37,32 @@ export class UsersService {
                 name: true,
                 state: true,
                 isActive: true,
-                contract: true,
+                contract: {
+                  select: { client: { select: { id: true, name: true } } },
+                },
               },
             },
           },
         },
+        userNotifications: {
+          select: {
+            isRead: true,
+            notification: {
+              select: {
+                title: true,
+                createdAt: true,
+                description: true,
+                id: true,
+              },
+            },
+          },
+          orderBy: {
+            notification: {
+              createdAt: 'desc',
+            },
+          },
+        },
+        enterprise: true,
       },
     });
 
@@ -71,6 +98,15 @@ export class UsersService {
       select: {
         id: true,
         name: true,
+        userLog: {
+          select: {
+            loginTime: true,
+          },
+          take: 1,
+          orderBy: {
+            loginTime: 'desc',
+          },
+        },
         contracts: {
           select: {
             contract: {
@@ -97,6 +133,7 @@ export class UsersService {
         accessLevel: true,
         email: true,
       },
+      orderBy: { name: 'asc' },
       where: whereClause,
     });
 

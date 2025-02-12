@@ -1,4 +1,4 @@
-import {httpClient} from "../httpClient";
+import { httpClient } from "../httpClient";
 
 export interface BillingConfigResponse {
   id: string;
@@ -19,6 +19,7 @@ export interface BillingConfigResponse {
   equipmentRatioGt50Tax: number;
   readjustment: number;
   mobilization: number;
+  mobilizationOut: number;
   bobRentTax: number;
   christmasTreeDisassemblyTax: number;
   demobilization: number;
@@ -38,12 +39,12 @@ export interface BillingConfigResponse {
   truckCartRentTax: number;
   truckKmTax: number;
   truckTankTax: number;
+  startDate: string;
+  endDate: string;
 }
 
 export const getAll = async () => {
-  const {data} = await httpClient.get<Array<BillingConfigResponse>>(
-    `billings-config/`
-  );
+  const { data } = await httpClient.get<Array<BillingConfigResponse>>(`billings-config/`);
 
   return data;
 };

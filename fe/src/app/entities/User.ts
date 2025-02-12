@@ -1,5 +1,6 @@
-import {AccessLevel} from "./AccessLevel";
-import {Contract} from "./Contract";
+import { AccessLevel } from "./AccessLevel";
+import { Contract } from "./Contract";
+import { Notification } from "./Notification";
 
 export interface User {
   id: string;
@@ -7,6 +8,11 @@ export interface User {
   email: string;
   accessLevel: AccessLevel;
   contract?: Array<Contract>;
+  userLog:
+    | {
+        loginTime: string;
+      }[]
+    | [];
   rigs: {
     rig: {
       id: string;
@@ -14,9 +20,13 @@ export interface User {
       state?: string;
       isAtive?: boolean;
       contract: {
-        id: string;
-        name: string;
+        client: {
+          id: string;
+          name: string;
+        };
       };
     };
   }[];
+  enterprise?: { id: string; logoImagePath: string; mainColor: string; name: string };
+  userNotifications: Notification[];
 }

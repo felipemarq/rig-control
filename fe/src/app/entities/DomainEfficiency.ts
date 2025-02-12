@@ -1,7 +1,6 @@
 export interface DomainEfficiency {
   rigId: string | undefined;
   date: string | Date;
-  well: string;
   availableHours: number;
   periods: {
     id: string;
@@ -13,6 +12,7 @@ export interface DomainEfficiency {
     fluidRatio: string;
     equipmentRatio: string;
     repairClassification: string | null;
+    well: string;
   }[];
   christmasTreeDisassemblyHours?: string;
   isMixTankSelected?: boolean;
@@ -23,6 +23,7 @@ export interface DomainEfficiency {
   isDemobilizationSelected?: boolean;
   isTankMixMobilizationSelected?: boolean;
   isTankMixDemobilizationSelected?: boolean;
+  isMobilizationOutSelected?: boolean;
   isTankMixDTMSelected?: boolean;
   bobRentHours?: string;
   isTruckCartSelected?: boolean;
@@ -34,4 +35,5 @@ export interface DomainEfficiency {
   isPowerSwivelSelected?: boolean;
   mobilizationPlace?: string;
   isSuckingTruckSelected?: boolean;
+  isConfirmed?: boolean;
 }

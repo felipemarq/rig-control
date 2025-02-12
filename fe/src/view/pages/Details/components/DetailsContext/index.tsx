@@ -1,17 +1,22 @@
-import {createContext, useState} from "react";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {PersistanceEfficiency} from "../../../../../app/entities/PersistanceEfficiency";
-import {useEfficiencyById} from "../../../../../app/hooks/efficiencies/useEfficiencyById";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {useNavigate, useParams} from "react-router-dom";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
+import { createContext, useState } from "react";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { PersistanceEfficiency } from "../../../../../app/entities/PersistanceEfficiency";
+import { useEfficiencyById } from "../../../../../app/hooks/efficiencies/useEfficiencyById";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { QueryKeys } from "../../../../../app/config/QueryKeys";
+import { useWindowWidth } from "@/app/hooks/useWindowWidth";
+import { excelPeriodsReport } from "@/app/services/efficienciesService/excelPeriodsReport";
+import { saveAs } from "file-saver";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface DetailsContextValues {
   isFetchingEfficiency: boolean;
-  efficiency: never[] | PersistanceEfficiency;
+  efficiency: null | PersistanceEfficiency;
   isDetailModalOpen: boolean;
   closeDetailModal: () => void;
   openDetailModal: (description: string) => void;
@@ -22,20 +27,26 @@ interface DetailsContextValues {
   isLoadingRemoveEfficiency: boolean;
   handleDeleteEfficiency: () => Promise<void>;
   isUserAdm: boolean;
-
-  closeDeletionRequestModal: () => void;
-  openDeletionRequestModal: () => void;
-  isDeletionRequestModalOpen: boolean;
   efficiencyId: string;
+  canUserEdit: boolean;
+  handleUpdateEfficiency: ({
+    attribute,
+    value,
+  }: {
+    attribute: "isEditable" | "isConfirmed";
+    value: boolean;
+  }) => Promise<void>;
+  isLoadingUpdateEfficiency: boolean;
+  windowWidth: number;
+  handleExcelDownload: () => Promise<void>;
+  state: { date: string; rigName: string; well: string; rigId: string };
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
-export const DetailsContextProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
-  const {efficiencyId} = useParams<{efficiencyId: string}>();
+export const DetailsContextProvider = ({ children }: { children: React.ReactNode }) => {
+  const { efficiencyId } = useParams<{ efficiencyId: string }>();
+  const { primaryColor } = useTheme();
+  const { state: originalState } = useLocation();
 
   if (typeof efficiencyId === "undefined") {
     // Trate o erro de acordo com a necessidade do seu aplicativo
@@ -43,29 +54,74 @@ export const DetailsContextProvider = ({
     throw new Error("efficiencyId is undefined");
   }
 
-  const {efficiency, isFetchingEfficiency} = useEfficiencyById(efficiencyId!);
+  const { efficiency, isFetchingEfficiency } = useEfficiencyById(efficiencyId);
+
+  const state = { ...originalState, rigId: efficiency?.rigId };
+
+  const windowWidth = useWindowWidth();
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const {isUserAdm} = useAuth();
+  const { isUserAdm, user } = useAuth();
+
+  //Temporário
+  const canUserEdit =
+    isUserAdm ||
+    user?.email === "alissonmenezes@conterp.com.br" ||
+    user?.email === "adelsonferreira@conterp.com.br" ||
+    user?.email === "chandler@conterp.com.br";
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
-  const [isDeletionRequestModalOpen, setIsDeletionRequestModalOpen] =
-    useState<boolean>(false);
 
   const [modalDescription, setModalDescription] = useState<string>("");
 
   const {
-    isLoading: isLoadingRemoveEfficiency,
+    isPending: isLoadingUpdateEfficiency,
+    mutateAsync: mutateAsyncUpdateEfficiency,
+  } = useMutation({ mutationFn: efficienciesService.update });
+
+  const handleUpdateEfficiency = async ({
+    attribute,
+    value,
+  }: {
+    attribute: "isEditable" | "isConfirmed";
+    value: boolean;
+  }) => {
+    const payload = { [attribute]: value };
+    try {
+      await mutateAsyncUpdateEfficiency({
+        efficiencyId: efficiencyId,
+        ...payload,
+      });
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EFFICIENCY] });
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+    }
+  };
+
+  const handleExcelDownload = async () => {
+    try {
+      const data = await excelPeriodsReport(efficiencyId);
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, "relatorio.xlsx");
+    } catch (error) {
+      console.error("Erro ao baixar o relatório", error);
+    }
+  };
+
+  const {
+    isPending: isLoadingRemoveEfficiency,
     mutateAsync: mutateAsyncRemoveEfficiency,
-  } = useMutation(efficienciesService.remove);
+  } = useMutation({ mutationFn: efficienciesService.remove });
 
   const handleDeleteEfficiency = async () => {
     try {
       await mutateAsyncRemoveEfficiency(efficiencyId!);
-      queryClient.invalidateQueries({queryKey: ["efficiencies"]});
-      customColorToast("Dados Deletados com Sucesso!", "#1c7b7b", "success");
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.EFFICIENCIES] });
+      customColorToast("Dados Deletados com Sucesso!", primaryColor, "success");
       closeDeleteModal();
       navigate("/dashboard");
     } catch (error: any | typeof AxiosError) {
@@ -83,14 +139,6 @@ export const DetailsContextProvider = ({
     setIsDetailModalOpen(true);
   };
 
-  const closeDeletionRequestModal = () => {
-    setIsDeletionRequestModalOpen(false);
-  };
-
-  const openDeletionRequestModal = () => {
-    setIsDeletionRequestModalOpen(true);
-  };
-
   const closeDeleteModal = () => {
     setModalDescription("");
     setIsDeleteModalOpen(false);
@@ -103,6 +151,8 @@ export const DetailsContextProvider = ({
   return (
     <DetailsContext.Provider
       value={{
+        windowWidth,
+        handleExcelDownload,
         isFetchingEfficiency,
         efficiency,
         isDetailModalOpen,
@@ -115,10 +165,11 @@ export const DetailsContextProvider = ({
         isLoadingRemoveEfficiency,
         handleDeleteEfficiency,
         isUserAdm,
+        canUserEdit,
+        isLoadingUpdateEfficiency,
         efficiencyId,
-        closeDeletionRequestModal,
-        openDeletionRequestModal,
-        isDeletionRequestModalOpen,
+        handleUpdateEfficiency,
+        state,
       }}
     >
       {children}

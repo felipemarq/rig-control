@@ -1,36 +1,44 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {localStorageKeys} from "../config/localStorageKeys";
-import {useQuery} from "@tanstack/react-query";
-import {usersService} from "../services/usersService";
-import {User} from "../entities/User";
-import {treatAxiosError} from "../utils/treatAxiosError";
-import {AxiosError} from "axios";
-import {PageLoader} from "../../view/components/PageLoader";
-import {AccessLevel} from "../entities/AccessLevel";
+import * as Sentry from "@sentry/react";
+import { createContext, useCallback, useEffect, useState } from "react";
+import { localStorageKeys } from "../config/localStorageKeys";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { usersService } from "../services/usersService";
+import { User } from "../entities/User";
+import { treatAxiosError } from "../utils/treatAxiosError";
+import { AxiosError } from "axios";
+import { PageLoader } from "../../view/components/PageLoader";
+import { AccessLevel } from "../entities/AccessLevel";
+import { QueryKeys } from "../config/QueryKeys";
+import { useSystemVersion } from "../hooks/useSystemVersion";
+import { currentVersion } from "../config/CurrentVersion";
+import { clarity } from "react-microsoft-clarity";
+import { useGetEfficiencyPedingConfirmation } from "../hooks/efficiencies/useGetEfficiencyPedingConfirmation";
+import { EfficienciesResponse } from "../services/efficienciesService/getAll";
 
 interface AuthContextValue {
   signedIn: boolean;
   isUserAdm: boolean;
-  isAlertSeen: boolean;
+  isUserSms: boolean;
+  isUserViewer: boolean;
+  isUserSupervisor: boolean;
   userAccessLevel: AccessLevel;
   user: User | undefined;
   signin(accessToken: string): void;
   signout(): void;
-  handleIsAlertSeen(): void;
+  isWrongVersion: boolean;
+  pendingEfficienciesConfirmation: EfficienciesResponse;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
 
-export const AuthProvider = ({children}: {children: React.ReactNode}) => {
+export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [signedIn, setSignedIn] = useState<boolean>(() => {
-    const storedAccessToken = localStorage.getItem(
-      localStorageKeys.ACCESS_TOKEN
-    );
+    const storedAccessToken = localStorage.getItem(localStorageKeys.ACCESS_TOKEN);
 
     return !!storedAccessToken;
   });
 
-  const [isAlertSeen, setIsAlertSeen] = useState(true);
+  const queryClient = useQueryClient();
 
   const signin = useCallback((accessToken: string) => {
     localStorage.setItem(localStorageKeys.ACCESS_TOKEN, accessToken);
@@ -40,22 +48,53 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
 
   const signout = useCallback(() => {
     localStorage.removeItem(localStorageKeys.ACCESS_TOKEN);
+    Sentry.setUser(null);
     setSignedIn(false);
-    remove();
+    queryClient.invalidateQueries({ queryKey: [QueryKeys.ME] });
+    window.location.reload();
   }, []);
 
-  const handleIsAlertSeen = () => [setIsAlertSeen(true)];
-
-  const {data, isError, error, isFetching, isSuccess, remove} = useQuery({
-    queryKey: ["users", "me"],
+  const { data, isError, error, isFetching, isSuccess } = useQuery({
+    queryKey: [QueryKeys.ME],
     queryFn: () => usersService.me(),
     enabled: signedIn,
     staleTime: Infinity,
   });
 
-  const isUserAdm = data?.accessLevel === "ADM" ? true : false;
+  const isUserAdm = data?.accessLevel === AccessLevel.ADM ? true : false;
+
+  const isUserSupervisor = data?.accessLevel === AccessLevel.SUPERVISOR ? true : false;
+
+  const isUserSms =
+    data?.email === "rommelcaldas@conterp.com.br" ||
+    data?.email === "bianca@conterp.com.br";
+
+  const isUserViewer = data?.accessLevel === AccessLevel.VIEWER;
 
   const userAccessLevel = data?.accessLevel!;
+
+  const { pendingEfficienciesConfirmation, refetchpendingEfficienciesConfirmation } =
+    useGetEfficiencyPedingConfirmation(
+      isUserSupervisor || data?.email === "felipemarques@conterp.com.br"
+    );
+
+  useEffect(() => {
+    refetchpendingEfficienciesConfirmation();
+  }, [data]);
+
+  useEffect(() => {
+    if (import.meta.env.PROD) {
+      Sentry.setUser({
+        email: data?.email,
+        username: data?.name,
+      });
+
+      // Identify the user
+      if (clarity.hasStarted()) {
+        clarity.identify(data?.id ?? "", { name: data?.name, email: data?.email });
+      }
+    }
+  }, []);
 
   useEffect(() => {
     if (isError) {
@@ -63,6 +102,16 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
       signout();
     }
   }, [isError, signout]);
+
+  const { systemVersion, refetchSystemVersion } = useSystemVersion();
+
+  useEffect(() => {
+    refetchSystemVersion();
+  }, [signedIn]);
+
+  let isWrongVersion = false;
+
+  isWrongVersion = systemVersion?.version !== currentVersion.version;
 
   return (
     <AuthContext.Provider
@@ -72,12 +121,18 @@ export const AuthProvider = ({children}: {children: React.ReactNode}) => {
         signout,
         user: data,
         isUserAdm,
+        isUserSms,
+        isUserSupervisor,
+        isUserViewer,
         userAccessLevel,
-        isAlertSeen,
-        handleIsAlertSeen,
+        isWrongVersion,
+        pendingEfficienciesConfirmation,
       }}
     >
-      {true && <PageLoader isLoading={isFetching} />}
+      {isFetching && (
+        <PageLoader isLoading={isFetching} logoPath={data?.enterprise?.logoImagePath} />
+      )}
+
       {!isFetching && children}
     </AuthContext.Provider>
   );

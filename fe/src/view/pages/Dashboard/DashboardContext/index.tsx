@@ -1,252 +1,272 @@
-import {createContext, useState} from "react";
-import React from "react";
-import {useEfficiencies} from "../../../../app/hooks/efficiencies/useEfficiencies";
-import {useAuth} from "../../../../app/hooks/useAuth";
-import {User} from "../../../../app/entities/User";
-import {SelectOptions} from "../../../../app/entities/SelectOptions";
-import {startOfMonth, endOfMonth, format} from "date-fns";
-import {useRigs} from "../../../../app/hooks/rigs/useRigs";
-import {Rig} from "../../../../app/entities/Rig";
-import {Efficiency} from "../entities/Efficiency";
-import {useEfficiencyAverage} from "../../../../app/hooks/efficiencies/useEfficiencyAverage";
-import {AverageResponse} from "../../../../app/services/efficienciesService/getAverage";
-import {useSidebarContext} from "../../../../app/contexts/SidebarContext";
-import {getPeriodRange} from "../../../../app/utils/getPeriodRange";
-import {months} from "../../../../app/utils/months";
-import {FilterType} from "../../../../app/entities/FilterType";
-import {filterOptions} from "../../../../app/utils/filterOptions";
-import {years} from "../../../../app/utils/years";
+import React, { createContext, useEffect, useState } from "react";
+import { useEfficiencies } from "../../../../app/hooks/efficiencies/useEfficiencies";
+import { useAuth } from "../../../../app/hooks/useAuth";
+import { User } from "../../../../app/entities/User";
+import { EfficienciesResponse } from "../../../../app/services/efficienciesService/getAll";
+import { getRepairPeriods } from "../../../../app/utils/getRepairPeriods";
+import { Period } from "../../../../app/entities/Period";
+import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
+import { getGlossPeriods } from "../../../../app/utils/getGlossPeriods";
+import { useWindowWidth } from "@/app/hooks/useWindowWidth";
+import { useMutation } from "@tanstack/react-query";
+import { MutationKeys } from "@/app/config/MutationKeys";
+import { userLogCreateParams } from "@/app/services/userLogsService/create";
+import { userLogsService } from "@/app/services/userLogsService";
+import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
+import { AverageResponse } from "@/app/services/efficienciesService/getAverage";
+import { useEfficiencyAverage } from "@/app/hooks/efficiencies/useEfficiencyAverage";
+import { useGetWellsCountByRig } from "@/app/hooks/efficiencies/useGetWellsCountByRig";
+import { RigWellsCountResponse } from "@/app/services/efficienciesService/getWellsCountByRig";
+import { useNotifications } from "@/app/hooks/useNotifications";
+import { Notification } from "@/app/entities/Notification";
+import { useLocation } from "react-router-dom";
+import { addDays, differenceInDays, parseISO } from "date-fns";
+import { getCommertialyStoppedDates } from "@/app/utils/getCommertialyStoppedDates";
+import { getScheduledStoppedDates } from "@/app/utils/getScheduledStoppedDates";
+import { calculateTotalsEfficiencies } from "@/app/utils/calculateTotalsEfficiencies";
 
+// Definição do tipo do contexto
 interface DashboardContextValue {
-  selectedRig: string;
-  selectedPeriod: string;
-  handleChangeRig(rigId: string): void;
-  handleChangePeriod(period: string): void;
-  handleStartDateChange(date: Date): void;
-  handleEndDateChange(date: Date): void;
-  handleToggleFilterType(filterType: FilterType): void;
-  isAlertSeen: boolean;
-  handleIsAlertSeen(): void;
-  selectedEndDate: string;
-  selectedStartDate: string;
   isFetchingEfficiencies: boolean;
   handleApplyFilters(): void;
-  handleYearChange(year: string): void;
-  selectedYear: string;
-  selectedFilterType: FilterType;
-  //handleTogglePeriodFilterType(): void;
   user: User | undefined;
   signout(): void;
   isEmpty: boolean;
-  // isCustomPeriodActive: boolean;
-  rigs:
-    | Rig[]
-    | {
-        id: string;
-        name: string;
-      }[];
-  efficiencies: Efficiency[];
+  repairPeriods: Period[] | never[];
+  glossPeriods: Period[] | never[];
+  efficiencies: EfficienciesResponse;
   totalAvailableHours: number;
   availableHoursPercentage: number;
   totalUnavailableHours: number;
   unavailableHoursPercentage: number;
   totalDtms: number;
   totalMovimentations: number;
-  isFetchingAverage: boolean;
-  average: AverageResponse;
+  selectedGloss: string | null;
+  handleSelectGloss: (gloss: string) => void;
+  selectedEquipment: string | null;
+  handleSelectEquipment: (equipment: string) => void;
+  handleRemoveSelectedEquipment: () => void;
   windowWidth: number;
-  filterOptions: SelectOptions;
-  months: SelectOptions;
-  years: SelectOptions;
+  selectedRig: string;
+  exceedsEfficiencyThreshold: boolean;
+  isWrongVersion: boolean;
+  average: AverageResponse;
+  handleOpenPeriodDataGridModal: (periods: Period[]) => void;
+  handleClosePeriodDataGridModal: () => void;
+  isPeriodDataGridModalOpen: boolean;
+  periodDataGridModalData: Period[] | null;
+  handleFilterPeriods: (type: "REPAIR" | "GLOSS", classification: string) => void;
+  wellsCount: RigWellsCountResponse;
+  showNotifications: boolean;
+  setShowNotifications: (showNotifications: boolean) => void;
+  notifications: Notification[];
+  handleMarkNotificationAsRead: (notificationId: string) => Promise<void>;
+  isPending: boolean;
+  missingDates: string[];
+  scheduledStoppedDates: string[];
+  commerciallyStoppedDates: string[];
+  userHasPendingNotifications: boolean;
 }
 
+// Criação do contexto
 export const DashboardContext = createContext({} as DashboardContextValue);
 
-export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
-  const {user, signout, isAlertSeen, handleIsAlertSeen} = useAuth();
+export const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
+  // Utilização dos hooks para autenticação e contexto da barra lateral
+  const { user, signout, isWrongVersion } = useAuth();
+  const {
+    showNotifications,
+    setShowNotifications,
+    notifications,
+    handleMarkNotificationAsRead,
+    isPending,
+  } = useNotifications();
 
-  const {windowWidth} = useSidebarContext();
-
-  const isUserAdm = user?.accessLevel === "ADM";
-
-  const {rigs} = useRigs(isUserAdm);
-
-  const userRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
-      return {
-        id,
-        name,
-      };
-    }) || [];
-
-  const [selectedRig, setSelectedRig] = useState<string>("");
-
-  //Mudar as Rigs
-
-  /*   const [selectedStartDate, setSelectedStartDate] = useState(
-    new Date().toISOString()
-  );
-  const [selectedEndDate, setSelectedEndDate] = useState(
-    new Date().toISOString()
-  );
- */
-
-  // Obtenha a data atual
-  const currentDate = new Date();
-
-  // Obtenha o primeiro dia do mês atual
-  const firstDayOfMonth = startOfMonth(currentDate);
-
-  // Obtenha o último dia do mês atual
-  const lastDayOfMonth = endOfMonth(currentDate);
-
-  // Formate as datas como strings no formato ISO (ou qualquer formato desejado)
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
+  const userHasPendingNotifications = notifications.some(
+    (notification) => !notification.isRead
   );
 
-  // Defina os estados iniciais
-  const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
+  const windowWidth = useWindowWidth();
+  const location = useLocation();
 
-  const [selectedPeriod, setSelectedPeriod] = useState("");
-  const [selectedYear, setSeletectedYear] = useState("2023");
+  const { filters, selectedRig } = useFiltersContext();
 
-  const [filters, setFilters] = useState({
-    rigId: selectedRig,
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
-  });
-
-  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
+  // Utilização dos hooks para eficiências e médias de eficiência
+  const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
-  const {average, refetchAverage, isFetchingAverage} = useEfficiencyAverage(
-    filters.rigId
-  );
+  const commerciallyStoppedDates = getCommertialyStoppedDates(efficiencies);
+  const scheduledStoppedDates = getScheduledStoppedDates(efficiencies);
+
+  function getMissingDates(
+    startDate: string,
+    endDate: string,
+    efficiencies: EfficienciesResponse
+  ) {
+    // Converte as datas para objetos Date
+    const start = parseISO(startDate);
+    const end = parseISO(endDate);
+
+    // Cria um conjunto de todas as datas no intervalo
+    const allDates = [];
+    for (let i = 0; i <= differenceInDays(end, start); i++) {
+      allDates.push(addDays(start, i).toISOString().split("T")[0]); // Formata como "YYYY-MM-DD"
+    }
+
+    // Obtem as datas presentes em efficiencies
+    const efficiencyDates = efficiencies.map(
+      (efficiency) => (efficiency.date as string).split("T")[0] // Formata como "YYYY-MM-DD"
+    );
+
+    // Calcula as datas que estão faltando
+    const missingDates = allDates.filter((date) => !efficiencyDates.includes(date));
+
+    return missingDates;
+  }
+
+  const missingDates = getMissingDates(filters.startDate, filters.endDate, efficiencies);
+
+  const { wellsCount, refetchWellsCount } = useGetWellsCountByRig(filters.rigId);
+  const { average, refetchAverage } = useEfficiencyAverage({
+    rigId: filters.rigId,
+    year: new Date(filters.startDate).getFullYear(),
+  });
+
+  console.log("efficiencies", efficiencies);
 
   const isEmpty: boolean = efficiencies.length === 0;
+  const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
 
-  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.PERIOD
-  );
-
+  // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
     refetchEffciencies();
+    refetchWellsCount();
     refetchAverage();
   };
 
-  const handleChangeRig = (rigId: string) => {
-    setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
-  };
+  const repairPeriods = getRepairPeriods(efficiencies);
 
-  const handleStartDateChange = (date: Date) => {
-    setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      startDate: date.toISOString(),
-    }));
-  };
+  const glossPeriods = getGlossPeriods(efficiencies);
 
-  const handleEndDateChange = (date: Date) => {
-    setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      endDate: date.toISOString(),
-    }));
-  };
+  const [selectedEquipment, setSelectedEquipment] = useState<string | null>(null);
 
-  const handleChangePeriod = (period: string) => {
-    setSelectedPeriod(period);
+  const [selectedGloss, setSelectedGloss] = useState<string | null>(null);
+  const [isPeriodDataGridModalOpen, setIsPeriodDataGridModalOpen] = useState(false);
 
-    const periodFound = getPeriodRange(selectedRig, selectedYear);
+  const [periodDataGridModalData, setPeriodDataGridModalData] = useState<null | Period[]>(
+    null
+  );
 
-    if (periodFound) {
-      const monthPeriodSelected = periodFound.months.find((month) => {
-        return month.month === period;
-      });
+  /*  console.log(
+    "Gloss periods",
+    glossPeriods.filter((period) => period.classification === "LABOR")
+  ); */
 
-      handleStartDateChange(monthPeriodSelected?.startDate!);
-      handleEndDateChange(monthPeriodSelected?.endDate!);
+  const handleFilterPeriods = (type: "REPAIR" | "GLOSS", classification: string) => {
+    let periods: Period[] | null = null;
+
+    if (type === "REPAIR") {
+      periods = repairPeriods.filter(
+        (period) =>
+          period.classification === selectedEquipment &&
+          period.repairClassification === classification
+      );
+    }
+
+    if (type === "GLOSS") {
+      periods = glossPeriods.filter((period) => period.classification === classification);
+    }
+
+    if (periods) {
+      handleOpenPeriodDataGridModal(periods);
     }
   };
 
-  const handleToggleFilterType = (filterType: FilterType) => {
-    setSelectedFilterType(filterType);
-
-    handleStartDateChange(new Date(formattedFirstDay));
-    handleEndDateChange(new Date(formattedLastDay));
+  const handleOpenPeriodDataGridModal = (periods: Period[]) => {
+    setIsPeriodDataGridModalOpen(true);
+    console.log(periods);
+    setPeriodDataGridModalData(periods);
   };
 
-  const handleYearChange = (year: string) => {
-    setSeletectedYear(year);
-    setSelectedPeriod("");
+  const handleClosePeriodDataGridModal = () => {
+    setIsPeriodDataGridModalOpen(false);
+    setPeriodDataGridModalData(null);
   };
 
-  //Lopping para armazenar informações dos stats (colocar em um useMemo)
+  const handleSelectGloss = (gloss: string) => {
+    setSelectedGloss(gloss);
+  };
 
-  let totalAvailableHours: number = 0;
-  let totalUnavailableHours: number = 0;
-  let totalDtms: number = 0;
-  let totalMovimentations: number = 0;
+  const handleSelectEquipment = (equipment: string) => {
+    setSelectedEquipment(equipment);
+  };
 
-  efficiencies.forEach((efficiency: Efficiency) => {
-    totalAvailableHours += efficiency.availableHours;
-    totalUnavailableHours += 24 - efficiency.availableHours;
+  const handleRemoveSelectedEquipment = () => {
+    setSelectedEquipment(null);
+  };
 
-    //Somando as movimentações
-
-    totalMovimentations +=
-      efficiency.fluidRatio.length + efficiency.equipmentRatio.length;
-
-    const dtmFound = efficiency.periods.find(({type}) => {
-      if (type === "DTM") {
-        return type;
-      }
-    });
-
-    if (dtmFound) {
-      totalDtms++;
-    }
+  const { mutateAsync: mutateAsyncUserLog } = useMutation({
+    mutationKey: [MutationKeys.USER_LOG],
+    mutationFn: async (data: userLogCreateParams) => {
+      return await userLogsService.create(data);
+    },
   });
+
+  useEffect(() => {
+    mutateAsyncUserLog({ loginTime: getCurrentISOString() });
+  }, []);
+
+  useEffect(() => {
+    if (location.state?.shouldApplyFilters) {
+      handleApplyFilters();
+    }
+  }, [location.state?.shouldApplyFilters]);
+
+  const {
+    totalAvailableHours,
+    /*  totalCommertialHours, */
+    totalRepairHours,
+    totalGlossHours,
+    totalStandByHours,
+    totalScheduledStoppedHours,
+    totalDtms,
+    totalMovimentations,
+    totalUnavailableHours,
+    /*  totalUnbilledScheduledStopHours, */
+  } = calculateTotalsEfficiencies(efficiencies);
+
+  const totalHoursToCalculateEfficiency =
+    totalAvailableHours +
+    totalRepairHours +
+    totalGlossHours +
+    totalStandByHours +
+    totalScheduledStoppedHours;
 
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
 
   let availableHoursPercentage: number = Number(
-    ((totalAvailableHours * 100) / totalHours).toFixed(2)
+    ((totalAvailableHours * 100) / totalHoursToCalculateEfficiency).toFixed(2)
   );
   let unavailableHoursPercentage: number = Number(
     ((totalUnavailableHours * 100) / totalHours).toFixed(2)
   );
 
+  // Retorno do provedor do contexto com os valores e funções necessárias
   return (
     <DashboardContext.Provider
       value={{
-        years,
-        months,
-        selectedRig,
-        handleChangeRig,
-        selectedPeriod,
-        handleChangePeriod,
-        handleToggleFilterType,
-        selectedStartDate,
-        selectedEndDate,
-        handleStartDateChange,
-        handleEndDateChange,
+        missingDates,
+        average,
+        windowWidth,
+        handleRemoveSelectedEquipment,
+        handleSelectEquipment,
+        selectedEquipment,
+        glossPeriods,
+        repairPeriods,
         handleApplyFilters,
         efficiencies,
         isFetchingEfficiencies,
-        isFetchingAverage,
         user,
-        filterOptions,
-        selectedFilterType,
-        rigs: isUserAdm ? rigs : userRigs,
         signout,
         isEmpty,
         totalAvailableHours,
@@ -255,12 +275,25 @@ export const DashboardProvider = ({children}: {children: React.ReactNode}) => {
         unavailableHoursPercentage,
         totalDtms,
         totalMovimentations,
-        average,
-        windowWidth,
-        isAlertSeen,
-        handleIsAlertSeen,
-        handleYearChange,
-        selectedYear,
+        handleSelectGloss,
+        selectedRig,
+        selectedGloss,
+        exceedsEfficiencyThreshold,
+        isWrongVersion,
+        handleClosePeriodDataGridModal,
+        handleOpenPeriodDataGridModal,
+        isPeriodDataGridModalOpen,
+        periodDataGridModalData,
+        handleFilterPeriods,
+        wellsCount,
+        showNotifications,
+        setShowNotifications,
+        notifications,
+        handleMarkNotificationAsRead,
+        isPending,
+        scheduledStoppedDates,
+        commerciallyStoppedDates,
+        userHasPendingNotifications,
       }}
     >
       {children}

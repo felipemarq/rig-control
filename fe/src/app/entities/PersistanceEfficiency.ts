@@ -1,23 +1,34 @@
-import {UF} from "./Rig";
+import { PeriodType } from "./PeriodType";
+import { UF } from "./Rig";
 
 export type PersistanceEfficiency = {
   availableHours: number;
+  commercialHours: number;
+  billedScheduledStopHours?: number;
+  unbilledScheduledStopHours?: number;
+  standByHours: number;
   date: string | Date;
   id: string;
   well: string;
   rigId: string;
   userId: string;
-  user: {name: string};
-  rig: {name: string; state: UF};
+  user: { name: string };
+  isEditable: boolean | null;
+  isConfirmed: boolean | null;
+  rig: { name: string; state: UF };
   periods: {
     id: string;
     efficiencyId: string;
     startHour: string;
     endHour: string;
-    type: string;
+    type: PeriodType;
     classification: string;
     description: string;
     repairClassification: string | null;
+    well: {
+      id: string;
+      name: string;
+    };
   }[];
   equipmentRatio: {
     ratio: string;
@@ -30,6 +41,7 @@ export type PersistanceEfficiency = {
   bobRentHours: number;
   hasDemobilization: boolean;
   hasMobilization: boolean | null;
+  hasMobilizationOut?: boolean;
   hasExtraTrailer: boolean;
   hasGeneratorFuel: boolean;
   hasMixTankDemobilization: boolean;
@@ -45,6 +57,8 @@ export type PersistanceEfficiency = {
   hasTruckCartRent: boolean;
   truckKmHours: number;
   hasTruckTank: boolean;
+  repairHours?: number;
+  glossHours: number;
   Billing: {
     availableHourAmount: number;
     mobilizationAmount: number;
@@ -66,6 +80,7 @@ export type PersistanceEfficiency = {
 
 export type ToPersistanceEfficiency = {
   availableHours: number;
+  createdAt: string | Date;
   date: string | Date;
   rigId: string;
   well: string;
@@ -102,4 +117,5 @@ export type ToPersistanceEfficiency = {
   isPowerSwivelSelected?: boolean;
   mobilizationPlace?: string;
   isSuckingTruckSelected?: boolean;
+  isMobilizationOutSelected?: boolean;
 };

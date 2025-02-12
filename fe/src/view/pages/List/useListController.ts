@@ -1,66 +1,30 @@
-import {useState} from "react";
-import {useAuth} from "../../../app/hooks/useAuth";
-import {useRigs} from "../../../app/hooks/rigs/useRigs";
-import {endOfMonth, format, startOfMonth} from "date-fns";
-import {useEfficiencies} from "../../../app/hooks/efficiencies/useEfficiencies";
-import {FilterType} from "../../../app/entities/FilterType";
-import {getPeriodRange} from "../../../app/utils/getPeriodRange";
+import { useAuth } from "../../../app/hooks/useAuth";
+import { useRigs } from "../../../app/hooks/rigs/useRigs";
+import { useEfficiencies } from "../../../app/hooks/efficiencies/useEfficiencies";
+import { years } from "../../../app/utils/years";
+import { useFiltersContext } from "../../../app/hooks/useFiltersContext";
+import { filterOptions } from "../../../app/utils/filterOptions";
+import { pdfEfficiencyReport } from "@/app/services/efficienciesService/pdfEfficiencyReport";
+import { saveAs } from "file-saver";
 
 export const useListController = () => {
-  const {user, signout} = useAuth();
+  const { user, signout } = useAuth();
 
   const isUserAdm = user?.accessLevel === "ADM";
 
-  const {rigs} = useRigs(isUserAdm);
+  const { rigs } = useRigs(isUserAdm);
 
   const userRig =
-    user?.rigs.map(({rig: {id, name}}) => {
+    user?.rigs.map(({ rig: { id, name } }) => {
       return {
         id,
         name,
       };
     }) || [];
 
-  const [selectedRig, setSelectedRig] = useState<string>(() => {
-    return isUserAdm ? "" : user?.rigs[0].rig.id!;
-  });
+  const { filters } = useFiltersContext();
 
-  // Obtenha a data atual
-  const currentDate = new Date();
-
-  // Obtenha o primeiro dia do mês atual
-  const firstDayOfMonth = startOfMonth(currentDate);
-
-  // Obtenha o último dia do mês atual
-  const lastDayOfMonth = endOfMonth(currentDate);
-
-  // Formate as datas como strings no formato ISO (ou qualquer formato desejado)
-  const formattedFirstDay = format(
-    firstDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-  const formattedLastDay = format(
-    lastDayOfMonth,
-    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx"
-  );
-
-  // Defina os estados iniciais
-  const [selectedStartDate, setSelectedStartDate] = useState(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] = useState(formattedLastDay);
-
-  const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.PERIOD
-  );
-
-  const [selectedPeriod, setSelectedPeriod] = useState("");
-
-  const [filters, setFilters] = useState({
-    rigId: selectedRig,
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
-  });
-
-  const {efficiencies, isFetchingEfficiencies, refetchEffciencies} =
+  const { efficiencies, isFetchingEfficiencies, refetchEffciencies } =
     useEfficiencies(filters);
 
   const isEmpty: boolean = efficiencies.length === 0;
@@ -69,61 +33,17 @@ export const useListController = () => {
     refetchEffciencies();
   };
 
-  const handleChangeRig = (rigId: string) => {
-    setSelectedRig(rigId);
-    setFilters((prevState) => ({...prevState, rigId: rigId}));
-  };
-
-  const handleStartDateChange = (date: Date) => {
-    setSelectedStartDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      startDate: date.toISOString(),
-    }));
-  };
-
-  const handleEndDateChange = (date: Date) => {
-    setSelectedEndDate(date.toISOString());
-    setFilters((prevState) => ({
-      ...prevState,
-      endDate: date.toISOString(),
-    }));
-  };
-
-  const handleChangePeriod = (period: string) => {
-    setSelectedPeriod(period);
-
-    const periodFound = getPeriodRange(selectedRig);
-
-    if (periodFound) {
-      const monthPeriodSelected = periodFound.months.find((month) => {
-        return month.month === period;
-      });
-
-      handleStartDateChange(monthPeriodSelected?.startDate!);
-      handleEndDateChange(monthPeriodSelected?.endDate!);
+  const handlePdfDownload = async () => {
+    try {
+      const data = await pdfEfficiencyReport(filters);
+      const blob = new Blob([data], { type: "application/pdf" });
+      saveAs(blob, "relatorio.pdf");
+    } catch (error) {
+      console.error("Erro ao baixar o relatório", error);
     }
   };
 
-  const handleToggleFilterType = (filterType: FilterType) => {
-    setSelectedFilterType(filterType);
-
-    handleStartDateChange(new Date(formattedFirstDay));
-    handleEndDateChange(new Date(formattedLastDay));
-  };
-
-  const filterOptions = [
-    {label: "Período de Medição", value: FilterType.PERIOD as string},
-    {label: "Período Customizado", value: FilterType.CUSTOM as string},
-  ];
-
   return {
-    selectedRig,
-    handleChangeRig,
-    selectedStartDate,
-    selectedEndDate,
-    handleStartDateChange,
-    handleEndDateChange,
     handleApplyFilters,
     efficiencies,
     isFetchingEfficiencies,
@@ -131,10 +51,8 @@ export const useListController = () => {
     rigs: isUserAdm ? rigs : userRig,
     signout,
     isEmpty,
-    selectedFilterType,
     filterOptions,
-    selectedPeriod,
-    handleChangePeriod,
-    handleToggleFilterType,
+    years,
+    handlePdfDownload,
   };
 };

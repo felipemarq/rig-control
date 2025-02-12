@@ -29,6 +29,28 @@ export class BillingsService {
     startDate: string;
     endDate: string;
   }) {
-    return await this.billingRepo.findAll({ startDate, endDate });
+    const billings = await this.billingRepo.findAll({ startDate, endDate });
+
+    console.log(billings);
+    return billings;
   }
+
+  /*  async findMany() {
+    const response = await this.billingRepo.findMany({});
+
+    let total = 0;
+    let glossTotal = 0;
+
+    for (const biling of response) {
+      const subtracted = biling.total - biling.glossHourAmount;
+
+      await this.billingRepo.update({
+        where: { id: biling.id },
+        data: { total: subtracted },
+      });
+    }
+
+
+    return response;
+  } */
 }

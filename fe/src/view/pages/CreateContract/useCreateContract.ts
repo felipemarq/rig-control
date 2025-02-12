@@ -1,47 +1,46 @@
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
-import {AxiosError} from "axios";
-import {customColorToast} from "../../../app/utils/customColorToast";
-import {contractsService} from "../../../app/services/contractsService";
-import {useNavigate} from "react-router-dom";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { treatAxiosError } from "../../../app/utils/treatAxiosError";
+import { AxiosError } from "axios";
+import { customColorToast } from "../../../app/utils/customColorToast";
+import { contractsService } from "../../../app/services/contractsService";
+import { useNavigate } from "react-router-dom";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
-  name: z.string().nonempty("Nome é obrigatório"),
+  name: z.string().min(1, "Nome é obrigatório"),
 });
 
 type FormData = z.infer<typeof schema>;
 
 export const useCreateContract = () => {
   const navigate = useNavigate();
-
+  const { primaryColor } = useTheme();
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
     control,
     reset,
-    formState: {errors},
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
   });
 
   const queryClient = useQueryClient();
-  const {isLoading, mutateAsync} = useMutation(contractsService.create);
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: contractsService.create,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
       await mutateAsync(data);
 
-      customColorToast(
-        "Contrato cadastrado com Sucesso!",
-        "#1c7b7b",
-        "success"
-      );
+      customColorToast("Contrato cadastrado com Sucesso!", primaryColor, "success");
       reset();
 
-      queryClient.invalidateQueries({queryKey: ["contracts"]});
+      queryClient.invalidateQueries({ queryKey: ["contracts"] });
       navigate("/contracts");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

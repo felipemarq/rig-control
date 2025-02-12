@@ -7,10 +7,12 @@ import {
   Param,
   Delete,
   Put,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { BillingsConfigurationService } from './billings-configuration.service';
 import { CreateBillingsConfigurationDto } from './dto/create-billings-configuration.dto';
 import { UpdateBillingsConfigurationDto } from './dto/update-billings-configuration.dto';
+import { IsUserAdm } from 'src/shared/decorators/IsUserAdm';
 
 @Controller('billings-config')
 export class BillingsConfigurationController {
@@ -21,20 +23,30 @@ export class BillingsConfigurationController {
   @Post()
   create(
     @Body() createBillingsConfigurationDto: CreateBillingsConfigurationDto,
+    @IsUserAdm() isUserAdm: boolean,
   ) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
     return this.billingsConfigurationService.create(
       createBillingsConfigurationDto,
     );
   }
 
   @Get()
-  findAll() {
+  findAll(@IsUserAdm() isUserAdm: boolean) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
     return this.billingsConfigurationService.findAll();
   }
 
   @Get(':rigId')
-  findOne(@Param('rigId') rigId: string) {
-    return this.billingsConfigurationService.findUnique(rigId);
+  findOne(@IsUserAdm() isUserAdm: boolean, @Param('rigId') rigId: string) {
+    if (!isUserAdm) {
+      throw new UnauthorizedException('Acesso Restrito!');
+    }
+    return this.billingsConfigurationService.findAllByRigId(rigId);
   }
 
   @Put(':billingConfigId')
@@ -48,8 +60,8 @@ export class BillingsConfigurationController {
     );
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.billingsConfigurationService.remove(+id);
+  @Delete(':billingConfigurationId')
+  remove(@Param('billingConfigurationId') billingConfigurationId: string) {
+    return this.billingsConfigurationService.remove(billingConfigurationId);
   }
 }

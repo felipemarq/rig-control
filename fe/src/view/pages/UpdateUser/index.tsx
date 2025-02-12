@@ -3,16 +3,20 @@ import { Header } from "../../components/Header";
 import { Input } from "../../components/Input";
 import { useUpdateUser } from "./useUpdateUser";
 
-export const UpdateUser = () => {
+const UpdateUser = () => {
   const { errors, register, handleSubmit, isLoading } = useUpdateUser();
 
   return (
-    <div className="w-full h-full overflow-y-scroll">
-      <Header title="USUÁRIO" subtitle="Editar Dados" />
+    <div className="w-full h-full flex justify-center i'tems-center">
+      <Header title="" displayRig={false} displayPeriodRange={false} />
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>
-          <div className="w-full p-4 bg-gray-300 rounded-lg flex flex-col gap-2 lg:w-1/2 lg:mx-auto">
+          <div className="w-full p-8 bg-gray-300 rounded-lg flex flex-col gap-2 lg:w-1/2 lg:mx-auto">
+            <header className="py-6">
+              <h1 className="text-xl font-bold text-gray-900">Atualizar Usuário</h1>
+              <span className="tracking-tighter text-gray-700">Edite suas informações de perfil abaixo</span>
+            </header>
             <div className="w-full">
               <Input
                 className=" bg-white w-full rounded-lg border-2 text-black border-white focus:border-white   hover:bg-gray-100 hover:border-3 cursor-not-allowed"
@@ -59,3 +63,5 @@ export const UpdateUser = () => {
     </div>
   );
 };
+
+export default UpdateUser;

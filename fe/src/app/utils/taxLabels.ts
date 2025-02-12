@@ -26,10 +26,13 @@ export const taxNames = [
   "munckamount",
   "powerswivelamount",
   "suckingtruckamount",
+  "repairhouramount",
   "transportationamount",
   "truckcartrentamount",
   "truckkmamount",
   "trucktankamount",
+  "commerciallystoppedamount",
+  "mobilizationoutamount",
 ];
 
 export const taxTranslation: Record<string, string> = {
@@ -57,13 +60,19 @@ export const taxTranslation: Record<string, string> = {
   mixtankmonthrentamount: "Loc Tanque Mix Mensal",
   mixtankoperatoramount: "Operadores de Tanque Mix",
   mobilizationamount: "Mobilização",
+  mobilizationoutamount: "Mobilização Fora de Aracaju",
   munckamount: "Loc. Munk",
   powerswivelamount: "Power Swivel",
+  repairhouramount: "Horas em Reparo",
   suckingtruckamount: "Caminhão Sugador",
   transportationamount: "Transporte",
   truckcartrentamount: "Locação Caminhão + Carreta",
   truckkmamount: "Km Caminhão",
   trucktankamount: "Locação Caminhão + Tanque",
+  scheduledstopamount: "Parada programada faturada",
+  standbyhouramount: "Stand By",
+  unbilledscheduledstopamount: "Parada programada não faturada",
+  commerciallystoppedamount: "Comercialmente parada",
 };
 
 export const taxSuffix: Record<string, string> = {

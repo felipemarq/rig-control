@@ -1,10 +1,9 @@
-export const translateType = (
-  type: "DTM" | "GLOSS" | "REPAIR" | "WORKING" | "SCHEDULED_STOP"
-) => {
+import { PeriodType } from "../entities/PeriodType";
+
+export const translateType = (type: PeriodType) => {
   if (type === "DTM") {
     return type;
   }
-
   if (type === "GLOSS") {
     return "Glosa";
   }
@@ -14,8 +13,11 @@ export const translateType = (
   if (type === "WORKING") {
     return "Operando";
   }
-
   if (type === "SCHEDULED_STOP") {
     return "Parada de Manutenção";
+  }
+
+  if (type === "COMMERCIALLY_STOPPED") {
+    return "Comercialmente Parado";
   }
 };

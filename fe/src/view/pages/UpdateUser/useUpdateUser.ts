@@ -1,14 +1,15 @@
-import {z} from "zod";
-import {useForm} from "react-hook-form";
-import {zodResolver} from "@hookform/resolvers/zod";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {treatAxiosError} from "../../../app/utils/treatAxiosError";
-import {AxiosError} from "axios";
-import {customColorToast} from "../../../app/utils/customColorToast";
-import {useNavigate} from "react-router-dom";
-import {usersService} from "../../../app/services/usersService";
-import {AccessLevel} from "../../../app/entities/AccessLevel";
-import {useAuth} from "../../../app/hooks/useAuth";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { treatAxiosError } from "../../../app/utils/treatAxiosError";
+import { AxiosError } from "axios";
+import { customColorToast } from "../../../app/utils/customColorToast";
+import { useNavigate } from "react-router-dom";
+import { usersService } from "../../../app/services/usersService";
+import { AccessLevel } from "../../../app/entities/AccessLevel";
+import { useAuth } from "../../../app/hooks/useAuth";
+import { useTheme } from "@/app/contexts/ThemeContext";
 
 const schema = z.object({
   name: z.string().nonempty("Nome é obrigatório"),
@@ -23,14 +24,14 @@ type FormData = z.infer<typeof schema>;
 
 export const useUpdateUser = () => {
   const navigate = useNavigate();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
   const {
     handleSubmit: hookFormHandleSubmit,
     register,
     control,
     reset,
-    formState: {errors},
+    formState: { errors },
   } = useForm<FormData>({
     resolver: zodResolver(schema),
     defaultValues: {
@@ -40,7 +41,10 @@ export const useUpdateUser = () => {
   });
 
   const queryClient = useQueryClient();
-  const {isLoading, mutateAsync} = useMutation(usersService.update);
+  const { primaryColor } = useTheme();
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: usersService.update,
+  });
 
   const handleSubmit = hookFormHandleSubmit(async (data) => {
     try {
@@ -50,10 +54,10 @@ export const useUpdateUser = () => {
         ...data,
       });
 
-      customColorToast("Usuário editado com Sucesso!", "#1c7b7b", "success");
+      customColorToast("Usuário editado com Sucesso!", primaryColor, "success");
       reset();
 
-      queryClient.invalidateQueries({queryKey: ["users"]});
+      queryClient.invalidateQueries({ queryKey: ["users"] });
       navigate("/dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);

@@ -1,0 +1,6 @@
+export enum OccurenceNature {
+  ACCIDENT = 'ACCIDENT',
+  INCIDENT = 'INCIDENT',
+  DEATH = 'DEATH',
+  COMMUTING_ACCIDENT = 'COMMUTING_ACCIDENT',
+}

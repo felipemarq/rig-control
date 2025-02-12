@@ -1,13 +1,11 @@
 import axios from "axios";
-import {localStorageKeys} from "../config/localStorageKeys";
+import { localStorageKeys } from "../config/localStorageKeys";
 //import {localStorageKeys} from "../config/localStorageKeys";
 //import { timeout } from "../utils/timeout";
-
-const renderBaseURL = "https://dashboard-backendv3.onrender.com";
-//const awsBaseURL = "https://54.224.10.112:3000"
-
+//import.meta.env.VITE_APP_BASE_URL,
+//"http://localhost:3000/"
 export const httpClient = axios.create({
-  baseURL: "http://127.0.0.1:3000",
+  baseURL: "http://localhost:3000/",
 });
 
 httpClient.interceptors.request.use(async (config) => {

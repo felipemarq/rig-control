@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  postgres:
+    image: 'postgres:latest'
+    container_name: pq
+    environment:
+      POSTGRES_USER: 'root'
+      POSTGRES_PASSWORD: 'root'
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d
+    ports:
+      - '5432:5432'

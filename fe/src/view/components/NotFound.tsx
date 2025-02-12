@@ -1,15 +1,19 @@
 import React from "react";
-import emptyBox from "../../assets/icons/emptyBox.svg";
+import { EmptyBox } from "@/assets/icons/EmptyBox";
 
 interface NotFoundProps {
   children: React.ReactNode;
+  Icon?: React.ExoticComponent<any>;
 }
 
-export const NotFound = ({children}: NotFoundProps) => {
+export const NotFound = ({ children, Icon }: NotFoundProps) => {
   return (
-    <div className="w-full h-full flex  mt-40 justify-center items-center flex-col">
-      <img src={emptyBox} />
-      <h2 className="text-primary-500 mt-1 flex-1">{children}</h2>
+    <div className="w-full h-full flex justify-center items-center">
+      <div className="flex justify-center items-center flex-col">
+        {Icon && <Icon />}
+        {!Icon && <EmptyBox />}
+        <h2 className="text-primary mt-1 text-center flex-1">{children}</h2>
+      </div>
     </div>
   );
 };

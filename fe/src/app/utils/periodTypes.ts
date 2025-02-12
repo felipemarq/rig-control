@@ -19,4 +19,8 @@ export const periodTypes = [
     id: "SCHEDULED_STOP",
     type: "Parada de Manutenção",
   },
+  {
+    id: "STAND_BY",
+    type: "StandBy",
+  },
 ];

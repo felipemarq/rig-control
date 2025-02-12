@@ -16,6 +16,7 @@ export const IsUserAdm = createParamDecorator<undefined>(
     if (role === AccessLevel.ADM) {
       return true;
     }
-    return false;
+
+    throw new UnauthorizedException('Acesso restrito!');
   },
 );

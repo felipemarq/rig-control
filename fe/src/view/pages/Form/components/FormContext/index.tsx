@@ -1,21 +1,24 @@
-import {createContext, useCallback, useEffect, useState} from "react";
-import {useAuth} from "../../../../../app/hooks/useAuth";
-import {useNavigate} from "react-router-dom";
-import {v4 as uuidv4} from "uuid";
-import {efficiencyMappers} from "../../../../../app/services/mappers/efficiencyMappers";
-import {customColorToast} from "../../../../../app/utils/customColorToast";
-import {useMutation, useQueryClient} from "@tanstack/react-query";
-import {efficienciesService} from "../../../../../app/services/efficienciesService";
-import {AxiosError} from "axios";
-import {treatAxiosError} from "../../../../../app/utils/treatAxiosError";
-import {Dayjs} from "dayjs";
-import {parse, differenceInMinutes} from "date-fns";
-
-type ErrorArgs = {fieldName: string; message: string};
-
+import { createContext, useCallback, useEffect, useState } from "react";
+import { useAuth } from "../../../../../app/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
+import { v4 as uuidv4 } from "uuid";
+import { efficiencyMappers } from "../../../../../app/services/mappers/efficiencyMappers";
+import { customColorToast } from "../../../../../app/utils/customColorToast";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { efficienciesService } from "../../../../../app/services/efficienciesService";
+import { AxiosError } from "axios";
+import { treatAxiosError } from "../../../../../app/utils/treatAxiosError";
+import { Dayjs } from "dayjs";
+import { parse, differenceInMinutes } from "date-fns";
+import { ErrorArgs, useErrors } from "../../../../../app/hooks/useErrors";
+import { useSidebarContext } from "../../../../../app/contexts/SidebarContext";
+import { temporaryEfficienciesServices } from "../../../../../app/services/temporaryEfficienciesServices";
+import { useTemporaryEfficiencyByUserId } from "../../../../../app/hooks/temporaryEfficiencies/useTemporaryEfficiencyByUserId";
+import { TemporaryEfficiencyResponse } from "../../../../../app/services/temporaryEfficienciesServices/getById";
+import * as Sentry from "@sentry/react";
+import { useTheme } from "@/app/contexts/ThemeContext";
 interface FormContextValue {
   date: Date | undefined;
-  well: string;
   remainingMinutes: number | undefined;
   periods: Periods;
   isLoading: boolean;
@@ -25,27 +28,36 @@ interface FormContextValue {
     state?: string | undefined;
     isAtive?: boolean | undefined;
     contract: {
-      id: string;
-      name: string;
+      client: {
+        id: string;
+        name: string;
+      };
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
-  handleStartHourChange(
-    time: Dayjs | null,
-    timeString: string,
-    id: string
-  ): void;
+  handleStartHourChange(time: Dayjs | null, timeString: string, id: string): void;
   handleDeletePeriod(id: string): void;
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
   handlePeriodType(id: string, type: string): void;
+  handlePeriodWell(id: string, well: string): void;
   handlePeriodClassification(id: string, classification: string): void;
   handleRepairClassification(id: string, repairClassification: string): void;
   handleFluidRatio(id: string, ratio: string | never): void;
   handleEquipmentRatio(id: string, ratio: string | never): void;
   handleDescription(id: string, text: string): void;
   handleSubmit(periods: Periods): Promise<void>;
+  handleSubmitTemporary(periods: Periods): Promise<void>;
+  hasRemainingMinutes: boolean;
   cleanFields(id: string): void;
+  handleSave(): void;
+  updatePeriodState(
+    id: string,
+    state: boolean
+  ): {
+    periodId: string;
+    isCollapsed: boolean;
+  }[];
   isFormValid: boolean;
   isPending: boolean;
   selectedRig: string;
@@ -68,9 +80,10 @@ interface FormContextValue {
   handlePowerSwivelCheckbox(): void;
   handleMobilizationPlace(value: string): void;
   handleSuckingTruckCheckbox(): void;
-  handleWellChange(value: string): void;
+  handleMobilizationOutCheckbox(): void;
+  isMobilizationOutSelected: boolean;
   isSuckingTruckSelected: boolean;
-  usersRigs: {id: string; name: string}[];
+  usersRigs: { id: string; name: string }[];
   mobilizationPlace: string;
   isPowerSwivelSelected: boolean;
   isMixTankSelected: boolean;
@@ -88,15 +101,23 @@ interface FormContextValue {
   isMunckSelected: boolean;
   isTransportationSelected: boolean;
   truckKm: number;
+  isVisible: boolean;
+  isModalOpen: boolean;
+  closeModal(): void;
+  openModal(): void;
+  handleConfirmModal(): void;
+  temporaryEfficiency: TemporaryEfficiencyResponse | never[];
+  isConfigsConfirmed: boolean;
   setError(arg0: ErrorArgs): void;
   removeError(fieldName: string): void;
+  toggleVisibility(): void;
+  handleConfirmButton(): void;
   getErrorMessageByFildName(fieldName: string): string;
   isExtraTrailerSelected: boolean;
+  isDateValid: boolean;
+  getPeriodState(periodId: string): boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
-  handleChristmasTreeDisassemblyHours(
-    time: Dayjs | null,
-    timeString: string
-  ): void;
+  handleChristmasTreeDisassemblyHours(time: Dayjs | null, timeString: string): void;
   selectedContract:
     | {
         rig: {
@@ -105,8 +126,10 @@ interface FormContextValue {
           state?: string | undefined;
           isAtive?: boolean | undefined;
           contract: {
-            id: string;
-            name: string;
+            client: {
+              id: string;
+              name: string;
+            };
           };
         };
       }
@@ -123,33 +146,27 @@ type Periods = {
   fluidRatio: string;
   equipmentRatio: string;
   description: string;
+  well: string;
 }[];
 
 export const FormContext = createContext({} as FormContextValue);
 
-export const FormProvider = ({children}: {children: React.ReactNode}) => {
-  const {user} = useAuth();
-  const isUserAdm = user?.accessLevel === "ADM";
+export const FormProvider = ({ children }: { children: React.ReactNode }) => {
+  //Custom Hooks
   const navigate = useNavigate();
+  const { user, isUserAdm } = useAuth();
+  const { setError, removeError, getErrorMessageByFildName, errors } = useErrors();
+  const { handleToggleNavItem } = useSidebarContext();
   const [date, setDate] = useState<Date>();
-  const [well, setWell] = useState<string>("");
   const [selectedRig, setSelectedRig] = useState<string>(() => {
     return isUserAdm ? "" : user?.rigs[0].rig.id!;
   });
+  const { primaryColor } = useTheme();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const { temporaryEfficiency } = useTemporaryEfficiencyByUserId(user?.id!);
+
   const [remainingMinutes, setRemainingMinutes] = useState<number>();
-  const [periods, setPeriods] = useState<
-    {
-      id: string;
-      startHour: string;
-      endHour: string;
-      type: string;
-      classification: string;
-      fluidRatio: string;
-      repairClassification: null | string;
-      equipmentRatio: string;
-      description: string;
-    }[]
-  >([
+  const [periods, setPeriods] = useState<Periods>([
     {
       id: uuidv4(),
       startHour: "00:00",
@@ -160,47 +177,63 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       repairClassification: null,
       equipmentRatio: "",
       description: "",
+      well: "",
     },
   ]);
 
-  const {isLoading, mutateAsync} = useMutation(efficienciesService.create);
+  const [periodsState, setPeriodsState] = useState([
+    {
+      periodId: periods[0].id,
+      isCollapsed: false,
+    },
+  ]);
+
+  useEffect(() => {
+    setError({ fieldName: "date", message: "Data Inválida!" });
+    setError({ fieldName: `${periods[0].id} well`, message: "Obrigatório" });
+    setError({ fieldName: `${periods[0].id} type`, message: "Obrigatório" });
+    setError({
+      fieldName: `${periods[0].id} classification`,
+      message: "Obrigatório",
+    });
+  }, []);
+
+  const [isVisible, setIsVisible] = useState(true);
+
+  const [isConfigsConfirmed, setConfigsConfirmed] = useState(false);
+
+  const toggleVisibility = () => {
+    setIsVisible(!isVisible);
+  };
+
+  const handleConfirmButton = () => {
+    toggleVisibility();
+    setConfigsConfirmed(true);
+  };
+
+  const getPeriodState = (periodId: string) => {
+    const periodState = periodsState.find((period) => period.periodId === periodId);
+    return periodState?.isCollapsed ?? false;
+  };
+
+  // Utilização de useMutation para obter isLoading e mutateAsync
+  const { isPending: isLoading, mutateAsync } = useMutation({
+    mutationFn: efficienciesService.create,
+  });
+
+  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } =
+    useMutation({
+      mutationFn: temporaryEfficienciesServices.create,
+    });
+
   const queryClient = useQueryClient();
 
-  const [errors, setErrors] = useState<Array<ErrorArgs>>([]);
-
-  const setError = ({fieldName, message}: ErrorArgs) => {
-    const errorAlreadyExists = errors.find(
-      (error) => error.fieldName === fieldName
-    );
-
-    if (errorAlreadyExists) return;
-
-    setErrors((prevState) => [...prevState, {fieldName, message}]);
-  };
-
-  const removeError = (fieldName: string) => {
-    setErrors((prevState) =>
-      prevState.filter((error) => error.fieldName !== fieldName)
-    );
-  };
-
-  const getErrorMessageByFildName = (fieldName: string) => {
-    let findErrorMessage = errors.find(
-      (error) => error.fieldName === fieldName
-    )?.message;
-
-    if (!findErrorMessage) {
-      findErrorMessage = "";
-    }
-
-    return findErrorMessage;
-  };
-
   const handleSubmit = async (periods: Periods) => {
-    const {toPersistenceObj} = efficiencyMappers.toPersistance({
+    // Criação do objeto de persistência utilizando o mapeamento dos dados
+
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
       rigId: selectedRig,
-      date: date ?? new Date(),
-      well,
+      date: date!,
       availableHours: 24,
       periods: periods,
       isMixTankSelected,
@@ -209,6 +242,68 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
       isFuelGeneratorSelected,
       isMobilizationSelected,
       isDemobilizationSelected,
+      isMobilizationOutSelected,
+      isTankMixMobilizationSelected,
+      isTankMixDemobilizationSelected,
+      isTankMixDTMSelected,
+      bobRentHours,
+      christmasTreeDisassemblyHours,
+      isTruckCartSelected,
+      isTruckTankSelected,
+      isMunckSelected,
+      isTransportationSelected,
+      truckKm,
+      isExtraTrailerSelected,
+      isPowerSwivelSelected,
+      mobilizationPlace,
+      isSuckingTruckSelected,
+    });
+
+    console.log(toPersistenceObj);
+
+    try {
+      await mutateAsync(toPersistenceObj);
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
+
+      setPeriods([
+        {
+          id: uuidv4(),
+          startHour: "00:00",
+          endHour: "00:00",
+          type: "",
+          classification: "",
+          fluidRatio: "",
+          repairClassification: null,
+          equipmentRatio: "",
+          description: "",
+          well: "",
+        },
+      ]);
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
+
+      // navigate("/dashboard", { replace: true });
+      // handleToggleNavItem("dashboard");
+    } catch (error: any | typeof AxiosError) {
+      Sentry.captureException(error);
+      treatAxiosError(error);
+    }
+  };
+
+  const handleSubmitTemporary = async (periods: Periods) => {
+    // Criação do objeto de persistência utilizando o mapeamento dos dados
+
+    const { toPersistenceObj } = efficiencyMappers.toPersistance({
+      rigId: selectedRig,
+      date: date!,
+      availableHours: 24,
+      periods: periods,
+      isMixTankSelected,
+      isMixTankOperatorsSelected,
+      isMixTankMonthSelected,
+      isFuelGeneratorSelected,
+      isMobilizationSelected,
+      isDemobilizationSelected,
+      isMobilizationOutSelected,
       isTankMixMobilizationSelected,
       isTankMixDemobilizationSelected,
       isTankMixDTMSelected,
@@ -226,8 +321,8 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     });
 
     try {
-      await mutateAsync(toPersistenceObj);
-      customColorToast("Dados Enviados com Sucesso!", "#1c7b7b", "success");
+      await mutateAsyncTemporaryEfficiency(toPersistenceObj);
+      customColorToast("Dados Enviados com Sucesso!", primaryColor, "success");
 
       setPeriods([
         {
@@ -240,59 +335,134 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
           repairClassification: null,
           equipmentRatio: "",
           description: "",
+          well: "",
         },
       ]);
-      queryClient.invalidateQueries({queryKey: ["efficiencies", "average"]});
+      queryClient.invalidateQueries({ queryKey: ["efficiencies", "average"] });
 
-      navigate("/dashboard", {replace: true});
+      navigate("/dashboard", { replace: true });
+      handleToggleNavItem("dashboard");
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
     }
   };
 
+  const handleSave = () => {
+    if (temporaryEfficiency) {
+      openModal();
+      return;
+    }
+
+    handleSubmitTemporary(periods);
+  };
+
+  const handleConfirmModal = () => {
+    handleSubmitTemporary(periods);
+    closeModal();
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
-  const handleStartHourChange = (
-    time: Dayjs | null,
-    timeString: string,
-    id: string
-  ) => {
-    console.log(time);
+  const handleStartHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, startHour: timeString} : period;
+      return period.id === id ? { ...period, startHour: timeString } : period;
     });
 
     setPeriods(newPeriods);
   };
 
-  const handleEndHourChange = (
-    time: Dayjs | null,
-    timeString: string,
-    id: string
-  ) => {
-    console.log(time);
+  const handleEndHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, endHour: timeString} : period;
+      return period.id === id ? { ...period, endHour: timeString } : period;
     });
 
+    setPeriods(newPeriods);
+  };
+
+  const handlePeriodWell = (id: string, well: string) => {
+    // Verifica se o poço foi preenchido
+    if (!well) {
+      setError({ fieldName: `${id} well`, message: "Obrigatório" });
+    } else {
+      removeError(`${id} well`);
+    }
+
+    // Encontra o índice do período atual
+    const currentPeriodIndex = periods.findIndex((period) => period.id === id);
+
+    // Verifica se há um período anterior
+    const previousPeriod =
+      currentPeriodIndex > 0 ? periods[currentPeriodIndex - 1] : null;
+
+    // Verifica se o poço do período anterior é diferente do poço atual
+    const isWellDifferentFromPrevious = previousPeriod && previousPeriod.well !== well;
+
+    // Atualiza os períodos
+    const newPeriods = periods.map((period) => {
+      if (period.id === id) {
+        removeError(`${id} type`);
+        return {
+          ...period,
+          well: well,
+          // Define o tipo como DTM se o poço for diferente do anterior
+          type: isWellDifferentFromPrevious ? "DTM" : period.type,
+        };
+      }
+      return period;
+    });
+
+    // Atualiza o estado dos períodos
     setPeriods(newPeriods);
   };
 
   const handlePeriodType = (id: string, type: string) => {
+    if (!type) {
+      setError({ fieldName: `${id} type`, message: "Obrigatório" });
+    } else {
+      removeError(`${id} type`);
+    }
     const newPeriods = periods.map((period) => {
-      return period.id === id
-        ? {
-            ...period,
-            type: type,
-            classification: "",
-            repairClassification: null,
-          }
-        : period;
+      if (type === "DTM" && period.id === id) {
+        setError({ fieldName: `${id} well`, message: "Obrigatório" });
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+          well: "",
+        };
+      }
+
+      if (period.id === id) {
+        setError({ fieldName: `${id} classification`, message: "Obrigatório" });
+
+        return {
+          ...period,
+          type: type,
+          classification: "",
+          repairClassification: null,
+        };
+      }
+
+      return period;
     });
 
     setPeriods(newPeriods);
   };
 
   const handlePeriodClassification = (id: string, classification: string) => {
+    if (!classification) {
+      setError({ fieldName: `${id} classification`, message: "Obrigatório" });
+    } else {
+      removeError(`${id} classification`);
+    }
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? {
@@ -306,13 +476,10 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setPeriods(newPeriods);
   };
 
-  const handleRepairClassification = (
-    id: string,
-    repairClassification: string
-  ) => {
+  const handleRepairClassification = (id: string, repairClassification: string) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
-        ? {...period, repairClassification: repairClassification}
+        ? { ...period, repairClassification: repairClassification }
         : period;
     });
 
@@ -321,7 +488,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleFluidRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, fluidRatio: ratio} : period;
+      return period.id === id ? { ...period, fluidRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
@@ -329,17 +496,32 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleEquipmentRatio = (id: string, ratio: string | never) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, equipmentRatio: ratio} : period;
+      return period.id === id ? { ...period, equipmentRatio: ratio } : period;
     });
 
     setPeriods(newPeriods);
   };
 
+  const updatePeriodState = (id: string, state: boolean) => {
+    const newStates = periodsState.map(({ periodId, isCollapsed }) => {
+      return periodId === id
+        ? { periodId, isCollapsed: state }
+        : { periodId, isCollapsed };
+    });
+
+    setPeriodsState(newStates);
+
+    return newStates;
+  };
+
   const addPeriod = () => {
+    const newId = uuidv4();
+    setError({ fieldName: `${newId} type`, message: "Obrigatório" });
+    setError({ fieldName: `${newId} classification`, message: "Obrigatório" });
     setPeriods([
       ...periods,
       {
-        id: uuidv4(),
+        id: newId,
         startHour: periods[periods.length - 1].endHour,
         endHour: "00:00",
         type: "",
@@ -348,8 +530,13 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         repairClassification: null,
         equipmentRatio: "",
         description: "",
+        well: periods[periods.length - 1].well,
       },
     ]);
+
+    const newStates = updatePeriodState(periods[periods.length - 1].id, true);
+
+    setPeriodsState([...newStates, { periodId: newId, isCollapsed: false }]);
   };
 
   const cleanFields = (id: string) => {
@@ -362,23 +549,42 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
             fluidRatio: "",
             equipmentRatio: "",
             description: "",
+            well: "",
           }
         : period;
     });
 
     setPeriods(newPeriods);
   };
+  const millisecondsInADay = 1000 * 60 * 60 * 24;
+
+  const getTotalDaysByDate = (date: Date): number => {
+    const daysInMilliseconds = Number(date);
+    const daysInADay = daysInMilliseconds / millisecondsInADay;
+    const intDays = Math.trunc(daysInADay);
+
+    return intDays;
+  };
+
+  const isDateValid = date
+    ? getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())
+    : false;
 
   const handleDateChange = (date: Date) => {
     setDate(date);
-    if (new Date(date) >= new Date()) {
-      setError({fieldName: "date", message: "Data Inválida!"});
+
+    if (getTotalDaysByDate(new Date(date)) > getTotalDaysByDate(new Date())) {
+      setError({ fieldName: "date", message: "Data Inválida!" });
     } else {
       removeError("date");
     }
   };
 
   const handleDeletePeriod = (id: string) => {
+    removeError(`${id} classification`);
+    removeError(`${id} well`);
+    removeError(`${id} type`);
+
     const newPeriods = periods.filter((period) => period.id !== id);
 
     setPeriods(newPeriods);
@@ -386,7 +592,7 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleDescription = (id: string, text: string) => {
     const newPeriods = periods.map((period) => {
-      return period.id === id ? {...period, description: text} : period;
+      return period.id === id ? { ...period, description: text } : period;
     });
 
     setPeriods(newPeriods);
@@ -414,20 +620,22 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setRemainingMinutes(newMinutes);
   }, [periods]);
 
-  const isFormValid = Boolean(remainingMinutes === 0 && date);
+  const isFormValid = Boolean(date && errors.length === 0);
   const isPending = remainingMinutes !== 0;
+
+  const hasRemainingMinutes = remainingMinutes !== 0;
 
   const userRig = user?.rigs[0].rig!;
 
   const usersRigs =
-    user?.rigs.map(({rig: {id, name}}) => {
+    user?.rigs.map(({ rig: { id, name } }) => {
       return {
         id,
         name,
       };
     }) || [];
 
-  const selectedContract = user?.rigs.find(({rig: {id}}) => {
+  const selectedContract = user?.rigs.find(({ rig: { id } }) => {
     return id === selectedRig;
   });
 
@@ -437,22 +645,20 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
   const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
-  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] =
-    useState(false);
+  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
   const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
     useState(false);
   const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
     useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
-  const [isDemobilizationSelected, setIsDemobilizationSelected] =
-    useState(false);
+  const [isMobilizationOutSelected, setIsMobilizationOutSelected] = useState(false);
+  const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
   const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
   const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
   const [isTruckCartSelected, setIsTruckCartSelected] = useState(false);
   const [isMunckSelected, setIsMunckSelected] = useState(false);
-  const [isTransportationSelected, setIsTransportationSelected] =
-    useState(false);
+  const [isTransportationSelected, setIsTransportationSelected] = useState(false);
   const [truckKm, setTruckKm] = useState(0);
   const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(false);
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
@@ -484,7 +690,12 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
 
   const handleMobilizationCheckbox = useCallback(() => {
     setIsMobilizationSelected((prevState) => !prevState);
-    setMobilizationPlace("");
+    setIsMobilizationOutSelected(false);
+  }, []);
+
+  const handleMobilizationOutCheckbox = useCallback(() => {
+    setIsMobilizationOutSelected((prevState) => !prevState);
+    setIsMobilizationSelected(false);
   }, []);
 
   const handleDemobilizationCheckbox = useCallback(() => {
@@ -495,22 +706,16 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsTankMixDTMSelected((prevState) => !prevState);
   }, []);
 
-  const handleBobRentHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
-      setBobRentHours(timeString);
-    },
-    []
-  );
+  const handleBobRentHours = useCallback((_time: Dayjs | null, timeString: string) => {
+    setBobRentHours(timeString);
+  }, []);
 
   const handleTankMixMobilizationCheckbox = useCallback(() => {
     setIsTankMixMobilizationSelected((prevState) => !prevState);
   }, []);
 
   const handleChristmasTreeDisassemblyHours = useCallback(
-    (time: Dayjs | null, timeString: string) => {
-      console.log(time);
-
+    (_time: Dayjs | null, timeString: string) => {
       setChristmasTreeDisassemblyHours(timeString);
     },
     []
@@ -556,15 +761,6 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
     setIsSuckingTruckSelected((prevState) => !prevState);
   }, []);
 
-  const handleWellChange = useCallback((value: string) => {
-    setWell(value);
-    if (!value) {
-      setError({fieldName: "well", message: "Obrigatório!"});
-    } else {
-      removeError("well");
-    }
-  }, []);
-
   return (
     <FormContext.Provider
       value={{
@@ -585,10 +781,11 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleDescription,
         handleSubmit,
         cleanFields,
-        isLoading,
+        isLoading: isLoading || isLoadingTemporary,
         userRig,
         usersRigs,
         isPending,
+        handlePeriodWell,
         handleMixTankCheckBox,
         isMixTankSelected,
         handleMixTankOperatorsCheckBox,
@@ -609,16 +806,24 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         isTankMixDTMSelected,
         bobRentHours,
         handleBobRentHours,
+        toggleVisibility,
         handleChristmasTreeDisassemblyHours,
         isTruckCartSelected,
         handleTruckCartCheckbox,
         isTruckTankSelected,
         handleTruckTankCheckbox,
         isMunckSelected,
+        isDateValid,
         handleMunckCheckbox,
         isTransportationSelected,
         handleTransportationCheckbox,
         handleTruckKmChange,
+        closeModal,
+        handleConfirmModal,
+        isModalOpen,
+        openModal,
+        temporaryEfficiency,
+        handleSave,
         truckKm,
         handleExtraTrailerCheckbox,
         isExtraTrailerSelected,
@@ -628,14 +833,21 @@ export const FormProvider = ({children}: {children: React.ReactNode}) => {
         handleMobilizationPlace,
         isSuckingTruckSelected,
         handleSuckingTruckCheckbox,
-        well,
-        handleWellChange,
+        handleSubmitTemporary,
         selectedRig,
         setError,
+        handleConfirmButton,
+        isConfigsConfirmed,
         removeError,
         getErrorMessageByFildName,
         handleRepairClassification,
         selectedContract,
+        getPeriodState,
+        updatePeriodState,
+        hasRemainingMinutes,
+        isVisible,
+        isMobilizationOutSelected,
+        handleMobilizationOutCheckbox,
       }}
     >
       {children}

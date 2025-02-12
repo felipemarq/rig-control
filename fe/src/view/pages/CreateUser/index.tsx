@@ -1,12 +1,12 @@
-import {Controller} from "react-hook-form";
-import {Button} from "../../components/Button";
-import {Header} from "../../components/Header";
-import {Input} from "../../components/Input";
-import {useCreateUser} from "./useCreateUser";
-import {AccessLevel} from "../../../app/entities/AccessLevel";
-import {Select} from "../../components/Select";
+import { Controller } from "react-hook-form";
+import { Button } from "../../components/Button";
+import { Header } from "../../components/Header";
+import { Input } from "../../components/Input";
+import { useCreateUser } from "./useCreateUser";
+import { AccessLevel } from "../../../app/entities/AccessLevel";
+import { Select } from "../../components/Select";
 
-export const CreateUser = () => {
+const CreateUser = () => {
   const {
     errors,
     register,
@@ -18,9 +18,13 @@ export const CreateUser = () => {
     isFetchingContractRigs,
   } = useCreateUser();
 
+  console.log("errors", errors);
+
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header title="CADASTRO" subtitle="Cadastro de usuários" />
+      <Header title="Cadastrar Usuário" displayRig={false} displayPeriodRange={false}>
+        <></>
+      </Header>
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>
@@ -53,17 +57,15 @@ export const CreateUser = () => {
                     control={control}
                     defaultValue={AccessLevel.USER}
                     name="accessLevel"
-                    render={({field: {onChange, value}}) => (
+                    render={({ field: { onChange, value } }) => (
                       <Select
                         value={value}
                         placeholder="Nível de Acesso"
                         onChange={onChange}
-                        options={Object.values(AccessLevel).map(
-                          (accessLevel) => ({
-                            value: accessLevel,
-                            label: accessLevel,
-                          })
-                        )}
+                        options={Object.values(AccessLevel).map((accessLevel) => ({
+                          value: accessLevel,
+                          label: accessLevel,
+                        }))}
                       />
                     )}
                   />
@@ -73,13 +75,13 @@ export const CreateUser = () => {
                   <Controller
                     control={control}
                     name="contractId"
-                    render={({field: {onChange, value}}) => (
+                    render={({ field: { onChange, value } }) => (
                       <Select
                         value={value}
                         error={errors.contractId?.message}
                         placeholder="Contrato"
                         onChange={onChange}
-                        options={contracts.map(({id, name}) => ({
+                        options={contracts.map(({ id, name }) => ({
                           value: id,
                           label: name,
                         }))}
@@ -91,14 +93,14 @@ export const CreateUser = () => {
                   <Controller
                     control={control}
                     name="rigId"
-                    render={({field: {onChange, value}}) => (
+                    render={({ field: { onChange, value } }) => (
                       <Select
                         value={value}
                         error={errors.rigId?.message}
                         placeholder="Sonda"
                         isLoading={isFetchingContractRigs}
                         onChange={onChange}
-                        options={contractRigs.map(({id, name}) => ({
+                        options={contractRigs.map(({ id, name }) => ({
                           value: id,
                           label: name,
                         }))}
@@ -117,3 +119,5 @@ export const CreateUser = () => {
     </div>
   );
 };
+
+export default CreateUser;

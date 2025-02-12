@@ -1,4 +1,4 @@
-import {httpClient} from "../httpClient";
+import { httpClient } from "../httpClient";
 
 export type BillingsByRigIFilters = {
   rigId: string;
@@ -21,6 +21,7 @@ export interface BillingByRigIdResponse {
   fluidbt20and50amount: number;
   fluidgt50amount: number;
   fluidlt20amount: number;
+  repairhouramount: number;
   generatorfuelamount: number;
   glosshouramount: number;
   mixtankdemobilizationamount: number;
@@ -40,10 +41,15 @@ export interface BillingByRigIdResponse {
   truckcartrentamount: number;
   truckkmamount: number;
   trucktankamount: number;
+  scheduledstopamount: number;
+  standbyhouramount: number;
+  unbilledscheduledstopamount: number;
+  commerciallystoppedamount: number;
+  mobilizationoutamount: number;
 }
 
 export const getbyRigId = async (filters: BillingsByRigIFilters) => {
-  const {data} = await httpClient.get<Array<BillingByRigIdResponse>>(
+  const { data } = await httpClient.get<Array<BillingByRigIdResponse>>(
     `/billings/`,
     {
       params: filters,

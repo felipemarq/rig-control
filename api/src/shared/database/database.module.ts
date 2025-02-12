@@ -10,6 +10,22 @@ import { ContractRepository } from './repositories/contract.repositories';
 import { UsersContractRepository } from './repositories/usersContract.repositories';
 import { PrismaClient } from '@prisma/client';
 import { DeletionRequestRepository } from './repositories/deletionRequests.repositories';
+import { WellsRepository } from './repositories/well.repositories';
+import { PeriodsRepository } from './repositories/period.repositories';
+import { TemporaryEfficienciesRepository } from './repositories/temporaryEfficienciesRepositories';
+import { UserLogsRepository } from './repositories/userLog.repositories';
+import { SystemVersionRepository } from './repositories/systemVersion.repositories';
+import { OccurrenceRepository } from './repositories/occurrences.repositories';
+import { BaseRepository } from './repositories/base.repositories';
+import { ManHourRepository } from './repositories/manHour.repositories';
+import { FilesRepository } from './repositories/files.repositories';
+import { OccurrenceActionsRepository } from './repositories/occurrence-actions.repositories';
+import { ClientRepository } from './repositories/client.repositories';
+import { NotificationsRepository } from './repositories/notifications.repositories';
+import { UsersNotificationsRepository } from './repositories/usersNotification.repositories';
+import { FeedbackRepository } from './repositories/feedback.repositories';
+import { PeriodActionPlansRepository } from './repositories/periodActionPlans.repositories';
+import { PeriodActionPlanItemsRepository } from './repositories/periodActionPlanItems.repositories';
 
 @Global()
 @Module({
@@ -25,6 +41,22 @@ import { DeletionRequestRepository } from './repositories/deletionRequests.repos
     UsersContractRepository,
     PrismaClient,
     DeletionRequestRepository,
+    WellsRepository,
+    PeriodsRepository,
+    TemporaryEfficienciesRepository,
+    UserLogsRepository,
+    SystemVersionRepository,
+    OccurrenceRepository,
+    BaseRepository,
+    ManHourRepository,
+    FilesRepository,
+    OccurrenceActionsRepository,
+    ClientRepository,
+    NotificationsRepository,
+    UsersNotificationsRepository,
+    FeedbackRepository,
+    PeriodActionPlansRepository,
+    PeriodActionPlanItemsRepository,
   ],
   exports: [
     PrismaService,
@@ -37,6 +69,22 @@ import { DeletionRequestRepository } from './repositories/deletionRequests.repos
     ContractRepository,
     UsersContractRepository,
     DeletionRequestRepository,
+    WellsRepository,
+    PeriodsRepository,
+    TemporaryEfficienciesRepository,
+    UserLogsRepository,
+    SystemVersionRepository,
+    OccurrenceRepository,
+    BaseRepository,
+    FilesRepository,
+    ManHourRepository,
+    OccurrenceActionsRepository,
+    ClientRepository,
+    NotificationsRepository,
+    UsersNotificationsRepository,
+    FeedbackRepository,
+    PeriodActionPlansRepository,
+    PeriodActionPlanItemsRepository,
   ],
 })
 export class DatabaseModule {}

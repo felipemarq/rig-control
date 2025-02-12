@@ -11,7 +11,19 @@ export class BillingsConfigurationService {
 
   async create(createBillingsConfigurationDto: CreateBillingsConfigurationDto) {
     const configAlreadyExists = await this.billingConfigRepo.findFisrt({
-      where: { rigId: createBillingsConfigurationDto.rigId },
+      where: {
+        rigId: createBillingsConfigurationDto.rigId,
+        AND: [
+          {
+            startDate: {
+              gte: createBillingsConfigurationDto.startDate, // start_date < endDate
+            },
+            endDate: {
+              lte: createBillingsConfigurationDto.startDate, // start_date < endDate
+            },
+          },
+        ],
+      },
     });
 
     if (configAlreadyExists) {
@@ -19,7 +31,10 @@ export class BillingsConfigurationService {
     }
 
     return this.billingConfigRepo.create({
-      data: createBillingsConfigurationDto,
+      data: {
+        ...createBillingsConfigurationDto,
+        standByHourTax: createBillingsConfigurationDto.glossHourTax,
+      },
     });
   }
 
@@ -28,6 +43,8 @@ export class BillingsConfigurationService {
       select: {
         id: true,
         availableHourTax: true,
+        startDate: true,
+        endDate: true,
         dtmBt20And50Tax: true,
         dtmGt50Tax: true,
         dtmLt20Tax: true,
@@ -58,17 +75,63 @@ export class BillingsConfigurationService {
         transportationTax: true,
         truckCartRentTax: true,
         truckKmTax: true,
+        mobilizationOut: true,
         truckTankTax: true,
         rig: { select: { id: true, name: true } },
       },
     });
   }
 
-  findUnique(rigId: string) {
-    return this.billingConfigRepo.findFisrt({
+  async findAllByRigId(rigId: string) {
+    return this.billingConfigRepo.findAll({
+      select: {
+        id: true,
+        availableHourTax: true,
+        startDate: true,
+        endDate: true,
+        dtmBt20And50Tax: true,
+        dtmGt50Tax: true,
+        dtmLt20Tax: true,
+        equipmentRatioBt20And50Tax: true,
+        equipmentRatioGt50Tax: true,
+        equipmentRatioLt20Tax: true,
+        fluidRatioBt20And50Tax: true,
+        fluidRatioGt50Tax: true,
+        fluidRatioLt20Tax: true,
+        glossHourTax: true,
+        mobilizationOut: true,
+        mobilization: true,
+        readjustment: true,
+        bobRentTax: true,
+        christmasTreeDisassemblyTax: true,
+        demobilization: true,
+        dtmHourTax: true,
+        extraTrailerTax: true,
+        generatorFuelTax: true,
+        mixTankDemobilizationTax: true,
+        mixTankDtmTax: true,
+        mixTankHourRentTax: true,
+        mixTankMobilizationTax: true,
+        mixTankMonthRentTax: true,
+        mixTankOperatorTax: true,
+        munckTax: true,
+        powerSwivelTax: true,
+        suckingTruckTax: true,
+        transportationTax: true,
+        truckCartRentTax: true,
+        truckKmTax: true,
+        truckTankTax: true,
+        rig: { select: { id: true, name: true } },
+      },
       where: { rigId },
     });
   }
+
+  /*   findUnique(rigId: string) {
+    return this.billingConfigRepo.findFisrt({
+      where: { rigId },
+    });
+  } */
 
   async update(
     billingConfigId: string,
@@ -80,7 +143,9 @@ export class BillingsConfigurationService {
     });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} billingsConfiguration`;
+  async remove(billingConfigurationId: string) {
+    return await this.billingConfigRepo.delete({
+      where: { id: billingConfigurationId },
+    });
   }
 }

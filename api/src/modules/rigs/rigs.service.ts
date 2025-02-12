@@ -43,6 +43,10 @@ export class RigsService {
       truckCartRentTax,
       truckKmTax,
       christmasTreeDisassemblyTax,
+      munckTax,
+      truckTankTax,
+      endDate,
+      startDate,
     } = createRigDto;
 
     const rigNameAlreadyExists = await this.rigsRepo.findUnique({
@@ -75,6 +79,7 @@ export class RigsService {
             fluidRatioLt20Tax,
             generatorFuelTax,
             glossHourTax,
+            standByHourTax: glossHourTax,
             mixTankDemobilizationTax,
             mixTankDtmTax,
             mixTankHourRentTax,
@@ -89,6 +94,10 @@ export class RigsService {
             truckCartRentTax,
             truckKmTax,
             christmasTreeDisassemblyTax,
+            munckTax,
+            truckTankTax,
+            startDate,
+            endDate,
           },
         },
       },
@@ -96,7 +105,7 @@ export class RigsService {
   }
 
   async findAll() {
-    return this.rigsRepo.findAll();
+    return this.rigsRepo.findAll({});
   }
 
   async update(rigId: string, updateRigDto: UpdateRigDto) {

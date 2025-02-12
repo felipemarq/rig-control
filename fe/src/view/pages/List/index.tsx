@@ -1,118 +1,73 @@
-import {Button} from "../../components/Button";
-import {DatePickerInput} from "../../components/DatePickerInput";
-import {Header} from "../../components/Header";
-import {Select} from "../../components/Select";
-import {Spinner} from "../../components/Spinner";
-import {ListEfficienciesDataGrid} from "../../components/ListEfficienciesDataGrid";
-import {useListController} from "./useListController";
-import {FilterIcon} from "lucide-react";
-import {useSidebarContext} from "../../../app/contexts/SidebarContext";
-import {FilterType} from "../../../app/entities/FilterType";
-import {months} from "../../../app/utils/months";
+import { Header } from "../../components/Header";
+import { Spinner } from "../../components/Spinner";
+import { useListController } from "./useListController";
+import { CustomFilterSheet } from "@/view/components/CustomFilterSheet";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { ListEfficienciesDataGrid } from "../../components/ListEfficienciesDataGrid";
+import { NotFound } from "@/view/components/NotFound";
+import { Button } from "@/components/ui/button";
+import { FileDown } from "lucide-react";
 
-export const List = () => {
-  const {
-    efficiencies,
-    selectedRig,
-    rigs,
-    handleChangeRig,
-    handleApplyFilters,
-    handleEndDateChange,
-    handleStartDateChange,
-    selectedEndDate,
-    selectedStartDate,
-    isFetchingEfficiencies,
-    selectedFilterType,
-    handleToggleFilterType,
-    filterOptions,
-    selectedPeriod,
-    handleChangePeriod,
-  } = useListController();
-
-  const {windowWidth} = useSidebarContext();
+const List = () => {
+  const { efficiencies, handleApplyFilters, isFetchingEfficiencies, handlePdfDownload } =
+    useListController();
 
   return (
-    <div className="w-full h-full overflow-y-scroll">
-      <Header title="LISTAGEM" subtitle="Listagem de efficienciências" />
+    <div className="w-full h-full ">
+      <Header title="LISTAGEM" displayRig>
+        <CustomFilterSheet
+          isLoading={isFetchingEfficiencies}
+          onApplyFilters={handleApplyFilters}
+        />
+      </Header>
 
-      <div className="w-full flex flex-wrap justify-center items-center lg:justify-end gap-1 lg:px-4">
-        <div className="w-[113px] lg:w-[213px]">
-          <Select
-            error={""}
-            placeholder="Tipo de Filtro"
-            value={selectedFilterType}
-            onChange={(value) => handleToggleFilterType(value as FilterType)}
-            options={filterOptions}
-          />
-        </div>
-        <div className="w-[113px] lg:w-[123px]">
-          <Select
-            error={""}
-            placeholder="Sonda"
-            value={selectedRig}
-            onChange={(value) => handleChangeRig(value)}
-            options={rigs.map(({id, name}) => ({
-              value: id ?? "",
-              label: name ?? "",
-            }))}
-          />
-        </div>
-
-        {selectedFilterType === FilterType.PERIOD && (
-          <>
-            <div className="w-[113px] lg:w-[123px]">
-              <Select
-                error={""}
-                placeholder="Período"
-                value={selectedPeriod}
-                onChange={(value) => handleChangePeriod(value)}
-                options={months}
-              />
-            </div>
-          </>
-        )}
-
-        {selectedFilterType === FilterType.CUSTOM && (
-          <>
-            <div>
-              <DatePickerInput
-                placeholder="Data de Início"
-                error={""}
-                value={new Date(selectedStartDate)}
-                onChange={(value) => handleStartDateChange(value)}
-              />
-            </div>
-
-            <div>
-              <DatePickerInput
-                placeholder="Data de Fim"
-                error={""}
-                value={new Date(selectedEndDate)}
-                onChange={(value) => handleEndDateChange(value)}
-              />
-            </div>
-          </>
-        )}
-        <div>
-          <Button className="h-[32px] lg:h-[52px]" onClick={handleApplyFilters}>
-            {windowWidth <= 1024 ? <FilterIcon /> : "Aplicar Filtro"}
-          </Button>
-        </div>
-      </div>
-
-      <div className="w-full h-full  lg:mx-5 mt-5 max-w-[1400px] flex justify-center  ">
+      <div className="w-full h-full  mt-5 max-w-[1400px] flex justify-center ">
         {isFetchingEfficiencies && (
-          <div className="lg:w-[70vw] lg:h-[70vh] bg-primary-500 p-2 rounded-md flex justify-center items-center">
+          <div className="lg:w-[70vw] lg:h-[70vh] bg-card p-2 rounded-md flex justify-center items-center">
             <Spinner className="h-12 w-12" />
           </div>
         )}
 
         {!isFetchingEfficiencies && (
-          <div className="w-full h-full bg-primary-200 p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[70vh]">
-            <ListEfficienciesDataGrid data={efficiencies} isDashboard={false} />
+          <div className="h-full  p-2 rounded-md flex justify-center items-center lg:w-[70vw] lg:h-[80vh]">
+            <Card className="w-full h-full  overflow-y-auto ">
+              <CardHeader></CardHeader>
+
+              {efficiencies.length > 0 && (
+                <CardContent className="flex flex-col gap-4">
+                  <div className="flex justify-end  gap-10 w-full ">
+                    <Button size="sm" className="gap-1" onClick={handlePdfDownload}>
+                      <span className="hidden sm:inline">Baixar PDF</span>
+                      <FileDown className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  <ListEfficienciesDataGrid
+                    data={efficiencies}
+                    isDashboard={false}
+                    limitPagination={false}
+                  />
+                </CardContent>
+              )}
+
+              {efficiencies.length === 0 && (
+                <CardContent className=" flex justify-center items h-full w-full">
+                  <div>
+                    <NotFound>
+                      <p>
+                        <strong>Dados não encontrados</strong> para o período selecionado.
+                        Por favor, verifique os filtros aplicados ou tente selecionar
+                        outro intervalo de datas.
+                      </p>
+                    </NotFound>
+                  </div>
+                </CardContent>
+              )}
+            </Card>
           </div>
         )}
       </div>
     </div>
   );
 };
+
+export default List;

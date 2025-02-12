@@ -1,17 +1,16 @@
-import {Button} from "../../components/Button";
-import {Header} from "../../components/Header";
-import {Input} from "../../components/Input";
-import {useCreateContract} from "./useCreateContract";
+import { Button } from "../../components/Button";
+import { Header } from "../../components/Header";
+import { Input } from "../../components/Input";
+import { useCreateContract } from "./useCreateContract";
 
-export const CreateContract = () => {
-  const {errors, register, handleSubmit, isLoading} = useCreateContract();
+const CreateContract = () => {
+  const { errors, register, handleSubmit, isLoading } = useCreateContract();
 
   return (
     <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="CADASTRO"
-        subtitle="Cadastro de sondas e suas configurações"
-      />
+      <Header title="Cadastar Contrato" displayRig={false} displayPeriodRange={false}>
+        <></>
+      </Header>
 
       <div className="w-full h-full ">
         <form className="p-4" onSubmit={handleSubmit}>
@@ -37,3 +36,5 @@ export const CreateContract = () => {
     </div>
   );
 };
+
+export default CreateContract;

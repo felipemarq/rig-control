@@ -1,102 +1,103 @@
-import { PlusIcon } from "@radix-ui/react-icons";
-import { Header } from "../../components/Header";
-import { Spinner } from "../../components/Spinner";
 import { useListUsers } from "./useListUsers";
-import { Link } from "react-router-dom";
+import { Activity, ListFilter, Search } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import UserCard from "./components/UserCard";
+import { Spinner } from "@/view/components/Spinner";
+import { useNavigate } from "react-router-dom";
 
-export const ListUsers = () => {
-  const { users, isFetchingUsers, navigate } = useListUsers();
-
+const ListUsers = () => {
+  const {
+    filteredUsers,
+    orderByLastLogin,
+    searchTerm,
+    handleOrderByLastLogin,
+    handleChangeSearchTerm,
+    isFetchingUsers,
+  } = useListUsers();
+  const navigate = useNavigate();
   return (
-    <div className="w-full h-full overflow-y-scroll">
-      <Header
-        title="USUÁRIOS"
-        subtitle="Listagem de todos os usuários cadastrados no sistema"
-      />
+    <div className="container mx-auto p-6 space-y-8">
+      <h1 className="text-3xl font-bold text-gray-800">Gerenciamento de Usuários</h1>
 
-      <div className="w-full h-full ">
-        <div className="border border-b-2">
-          <h1 className="text-xl text-primary-500 pl-8">
-            Usuários Cadastrados:
-          </h1>
-          {isFetchingUsers && (
-            <div className="flex justify-center items-center h-1/2">
-              <Spinner />
-            </div>
-          )}
-          {!isFetchingUsers && (
-            <div className="p-2 flex flex-col h-full gap-4 lg:items-center lg:p-8">
-              <div
-                onClick={() => navigate("/create-user")}
-                className="p-4 bg-white rounded-2xl shadow-[0_1px_2px] flex  h-20 gap-4 justify-center items-center border-l-4  border-primary-500 lg:w-3/4 cursor-pointer"
-              >
-                <div className="h-11 w-11 rounded-full border-2 border-dashed border-gray-600 flex justify-center items-center">
-                  <PlusIcon className="w-6 h-6 text-gray-600" />
-                </div>
-                <span className="font-medium tracking-[-0.5px] block text-center  text-gray-600">
-                  Cadastre um novo usuário
-                </span>
-              </div>
-
-              {users.map((user) => (
-                <div
-                  key={user.id}
-                  className="p-4 grid grid-cols-12 auto-rows-[50px] gap-3 rounded-2xl shadow-[0_1px_2px] h-60 lg:h-44 justify-between border-l-4 border-primary-500  bg-white lg:w-3/4 "
-                >
-                  <div className="col-span-6 row-span-1 flex flex-col">
-                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                      Nome
-                    </span>
-                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                      {user.name}
-                    </span>
-                  </div>
-
-                  <div className="col-span-12 row-span-1  flex flex-col lg:col-span-6">
-                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                      Email
-                    </span>
-                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                      {user.email}
-                    </span>
-                  </div>
-
-                  <div className="col-span-4 row-span-1  flex flex-col lg:col-span-6">
-                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                      Nv. de Acesso
-                    </span>
-                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                      {user.accessLevel}
-                    </span>
-                  </div>
-
-                  <div className="col-span-6 row-span-1  flex flex-col">
-                    <span className="text-gray-800 tracking-[-0.5] font-medium block">
-                      Contrato
-                    </span>
-                    <span className="text-gray-600 tracking-[-0.5] font-medium block">
-                      {user.accessLevel === "ADM" && "ADM"}
-                      {user.accessLevel !== "ADM" &&
-                        user.rigs[0].rig.contract.name}
-                    </span>
-                  </div>
-
-                  <div className="col-span-12 row-span-1  flex flex-wrap justify-end">
-                    {user.accessLevel !== "ADM" && (
-                      <Link
-                        className="text-primary-500 tracking-[-0.5] underline font-semibold px-2"
-                        to={`/users/update-rigs/${user.id}`}
-                      >
-                        Visualizar Sondas
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
+      <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
+        <div className="relative w-full max-w-md">
+          <Input
+            type="text"
+            placeholder="Pesquisar usuário"
+            value={searchTerm}
+            onChange={(event) => handleChangeSearchTerm(event)}
+            className="pl-10 pr-4 py-2 w-full"
+          />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
+            size={20}
+          />
         </div>
+
+        <div className="flex items-center gap-4">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm" className="h-10">
+                <ListFilter className="mr-2 h-4 w-4" />
+                Ordenar
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Últimos acessos</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuCheckboxItem
+                checked={orderByLastLogin === "DESC"}
+                onCheckedChange={() => handleOrderByLastLogin("DESC")}
+              >
+                Mais Recentes
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={orderByLastLogin === "ASC"}
+                onCheckedChange={() => handleOrderByLastLogin("ASC")}
+              >
+                Menos Recentes
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+
+          <Button className="h-10" onClick={() => navigate(`/users/user-logs/`)}>
+            <Activity className="mr-2 h-4 w-4" />
+            Ver Logs de Usuário
+          </Button>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
+        {isFetchingUsers && (
+          <div className="flex justify-center items-center h-1/2">
+            <Spinner />
+          </div>
+        )}
+
+        {!isFetchingUsers && (
+          <>
+            {filteredUsers.map(({ email, id, name, userLog }) => (
+              <UserCard
+                email={email}
+                id={id}
+                name={name}
+                loginTime={userLog[0].loginTime}
+              />
+            ))}
+          </>
+        )}
       </div>
     </div>
   );
 };
+
+export default ListUsers;

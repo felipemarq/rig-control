@@ -3,7 +3,7 @@ import React from "react";
 import {cn} from "../../app/utils/cn";
 
 const PopoverRoot = ({children}: {children: React.ReactNode}) => {
-  return <RadixPopover.Root>{children}</RadixPopover.Root>;
+  return <RadixPopover.Root modal={true}>{children}</RadixPopover.Root>;
 };
 
 const PopoverTrigger = ({children}: {children: React.ReactNode}) => {
@@ -34,8 +34,13 @@ const PopoverContent = ({children, className}: PopoverContentProps) => {
   );
 };
 
+const PopoverClose = ({children}: {children: React.ReactNode}) => {
+  return <RadixPopover.Close>{children}</RadixPopover.Close>;
+};
+
 export const Popover = {
   Root: PopoverRoot,
   Trigger: PopoverTrigger,
   Content: PopoverContent,
+  Close: PopoverClose,
 };

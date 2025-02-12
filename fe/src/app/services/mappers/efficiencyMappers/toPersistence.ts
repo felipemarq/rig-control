@@ -1,20 +1,19 @@
 import dayjs from "dayjs";
-import {DomainEfficiency} from "../../../entities/DomainEfficiency";
-import {differenceInMinutes, parse} from "date-fns";
-import {ToPersistanceEfficiency} from "../../../entities/PersistanceEfficiency";
-import {getTotalHoursFromTimeString} from "../../../utils/getTotalHoursFromTimeString";
+import { DomainEfficiency } from "../../../entities/DomainEfficiency";
+import { parse } from "date-fns";
+import { ToPersistanceEfficiency } from "../../../entities/PersistanceEfficiency";
+import { getTotalHoursFromTimeString } from "../../../utils/getTotalHoursFromTimeString";
+import { getDiffInMinutes } from "../../../utils/getDiffInMinutes";
+import { getCurrentISOString } from "@/app/utils/getCurrentISOString";
 
 export const toPersistence = (domainEfficiency: DomainEfficiency) => {
   let totalAvailableHours = 0;
-  let totalScheduledStopHours = 0;
 
   const christmasTreeDisassemblyHours = getTotalHoursFromTimeString(
     domainEfficiency.christmasTreeDisassemblyHours
   );
 
-  const bobRentHours = getTotalHoursFromTimeString(
-    domainEfficiency.bobRentHours
-  );
+  const bobRentHours = getTotalHoursFromTimeString(domainEfficiency.bobRentHours);
 
   const periodsArray = domainEfficiency.periods.map(
     ({
@@ -24,66 +23,45 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
       type,
       description,
       repairClassification,
+      well,
     }) => {
-      const [startHourString, startMinuteString] = startHour.split(":");
-      const [endHourString, endMinuteString] = endHour.split(":");
-
       //Soomando as horas totais caso seja operando
+      const parsedStartHour = parse(startHour, "HH:mm", new Date());
+      const parsedEndHour = parse(endHour, "HH:mm", new Date());
 
-      const getDiffInMinutes = (horaFinal: Date, horaInicial: Date) => {
-        const isoEndDate = horaFinal.toISOString().split("T")[0];
-        const isoHour = horaFinal.toISOString().split("T")[1];
-
-        let endDate = horaFinal;
-        if (isoHour === "02:59:00.000Z") {
-          endDate = new Date(`${isoEndDate}T03:00:00.000Z`);
-        }
-
-        return differenceInMinutes(endDate, horaInicial);
-      };
-
-      const horaInicial = parse(startHour, "HH:mm", new Date());
-      const horaFinal = parse(endHour, "HH:mm", new Date());
-
-      if (type === "WORKING" || type === "DTM" || type === "SCHEDULED_STOP") {
-        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+      if (type === "WORKING" || type === "DTM") {
+        const diffInMinutes = getDiffInMinutes(parsedEndHour, parsedStartHour);
 
         totalAvailableHours += diffInMinutes / 60;
       }
 
-      //temporarily
-      if (type === "SCHEDULED_STOP") {
-        const diffInMinutes = getDiffInMinutes(horaFinal, horaInicial);
+      const formatTimeStringToIsoString = (timeString: string) => {
+        const [hourString, minuteString] = timeString.split(":");
 
-        totalScheduledStopHours += diffInMinutes / 60;
-      }
+        const dateWithTime = dayjs()
+          .hour(Number(hourString))
+          .minute(Number(minuteString))
+          .format();
 
-      const startDateWithTime = dayjs()
-        .hour(Number(startHourString))
-        .minute(Number(startMinuteString))
-        .format();
-
-      const endDateWithTime = dayjs()
-        .hour(Number(endHourString))
-        .minute(Number(endMinuteString))
-        .format();
+        return dateWithTime.replace(/-03:00$/, "-00:00");
+      };
 
       return {
-        startHour: startDateWithTime.replace(/-03:00$/, "-00:00"),
-        endHour: endDateWithTime.replace(/-03:00$/, "-00:00"),
+        startHour: formatTimeStringToIsoString(startHour),
+        endHour: formatTimeStringToIsoString(endHour),
         classification: classification,
         description: description,
         type: type,
-        repairClassification: repairClassification
-          ? repairClassification
-          : null,
+        repairClassification: repairClassification ? repairClassification : null,
+        wellId: well,
       };
     }
   );
 
   const toPersistenceObj: ToPersistanceEfficiency = {
     date: domainEfficiency.date,
-    well: domainEfficiency.well,
+    createdAt: getCurrentISOString(),
+    well: domainEfficiency.periods[0].well,
     availableHours: Number(totalAvailableHours.toFixed(2)),
     rigId: domainEfficiency.rigId!,
     periods: periodsArray,
@@ -97,10 +75,8 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isFuelGeneratorSelected: domainEfficiency.isFuelGeneratorSelected,
     isMobilizationSelected: domainEfficiency.isMobilizationSelected,
     isDemobilizationSelected: domainEfficiency.isDemobilizationSelected,
-    isTankMixMobilizationSelected:
-      domainEfficiency.isTankMixMobilizationSelected,
-    isTankMixDemobilizationSelected:
-      domainEfficiency.isTankMixDemobilizationSelected,
+    isTankMixMobilizationSelected: domainEfficiency.isTankMixMobilizationSelected,
+    isTankMixDemobilizationSelected: domainEfficiency.isTankMixDemobilizationSelected,
     isTankMixDTMSelected: domainEfficiency.isTankMixDTMSelected,
     isTruckCartSelected: domainEfficiency.isTruckCartSelected,
     isTruckTankSelected: domainEfficiency.isTruckTankSelected,
@@ -110,9 +86,11 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     isExtraTrailerSelected: domainEfficiency.isExtraTrailerSelected,
     isPowerSwivelSelected: domainEfficiency.isPowerSwivelSelected,
     isSuckingTruckSelected: domainEfficiency.isSuckingTruckSelected,
+    mobilizationPlace: domainEfficiency.mobilizationPlace,
+    isMobilizationOutSelected: domainEfficiency.isMobilizationOutSelected,
   };
 
-  domainEfficiency.periods.forEach(({equipmentRatio, fluidRatio}) => {
+  domainEfficiency.periods.forEach(({ equipmentRatio, fluidRatio }) => {
     if (equipmentRatio) {
       toPersistenceObj.equipmentRatio.push({
         ratio: equipmentRatio,
@@ -126,7 +104,7 @@ export const toPersistence = (domainEfficiency: DomainEfficiency) => {
     }
   });
 
-  return {toPersistenceObj};
+  return { toPersistenceObj };
 };
 
 /* export class PeriodDto {

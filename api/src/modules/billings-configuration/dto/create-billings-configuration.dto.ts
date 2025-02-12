@@ -1,4 +1,5 @@
 import {
+  IsDateString,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -11,6 +12,16 @@ export class CreateBillingsConfigurationDto {
   @IsNotEmpty()
   @IsString()
   rigId: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsDateString()
+  startDate: string;
+
+  @IsString()
+  @IsNotEmpty()
+  @IsDateString()
+  endDate: string;
 
   @IsNumber()
   @IsNotEmpty()
@@ -150,6 +161,11 @@ export class CreateBillingsConfigurationDto {
   @IsOptional()
   @IsNotEmpty()
   mobilization: number;
+
+  @IsNumber()
+  @IsOptional()
+  @IsNotEmpty()
+  mobilizationOut: number;
 
   @IsNumber()
   @IsOptional()
