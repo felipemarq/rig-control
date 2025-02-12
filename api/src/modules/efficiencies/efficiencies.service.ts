@@ -1016,6 +1016,14 @@ export class EfficienciesService {
       standByHourAmount +
       mobilizationOutTotalAmount;
 
+    const billingExist = await this.billingRepo.findFisrt({
+      where: { efficiencyId: efficiencyId },
+    });
+
+    if (billingExist) {
+      await this.billingRepo.delete({ where: { id: billingExist.id } });
+    }
+
     await this.billingRepo.create({
       data: {
         christmasTreeDisassemblyAmount,
