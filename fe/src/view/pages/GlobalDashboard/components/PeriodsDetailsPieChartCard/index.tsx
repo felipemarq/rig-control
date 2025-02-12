@@ -3,24 +3,29 @@ import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
 import { NotFound } from "@/view/components/NotFound";
 import { Spinner } from "@/view/components/Spinner";
 import { PeriodsDetailsPieChart } from "./components/PeriodsDetailsPieChart";
-import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Maximize, X } from "lucide-react";
 
 export const PeriodsDetailsPieChartCard = () => {
-  const { isFetchingRigsAverage, rigsAverage, isFetchingUnbilledPeriods } =
-    useGlobalDashboard();
+  const {
+    isFetchingRigsAverage,
+    rigsAverage,
+    isFetchingUnbilledPeriods,
+    unbilledPeriodsDetailsChartData,
+    handleSelectedDetailPieChartViewChange,
+    isPeriodDetailsGraphExpanded,
+    handleChangePeriodDetailsGraphView,
+    selectedPeriodDetailsGraphView,
+    handleExpandPeriodDetailsGraph,
+  } = useGlobalDashboard();
   ("");
-
-  const [isExpanded, setIsExpanded] = useState(false);
-  const [selectedView, setSelectedView] = useState<"HOURS" | "PERCENTAGE">("PERCENTAGE");
 
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]",
-        isExpanded && "lg:col-span-12 row-span-4"
+        "col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-red-500",
+        isPeriodDetailsGraphExpanded && "lg:col-span-12 row-span-4"
       )}
     >
       <CardHeader className="pl-7 ">
@@ -29,16 +34,11 @@ export const PeriodsDetailsPieChartCard = () => {
             Detalhes do periodo não faturado selecionado{" "}
           </CardTitle>
           <div className="flex gap-2 items-center">
-            <Button
-              size="sm"
-              onClick={() =>
-                setSelectedView((prev) => (prev === "HOURS" ? "PERCENTAGE" : "HOURS"))
-              }
-            >
-              {selectedView === "HOURS" ? "%" : "Horas"}
+            <Button size="sm" onClick={() => handleChangePeriodDetailsGraphView()}>
+              {selectedPeriodDetailsGraphView === "HOURS" ? "%" : "Horas"}
             </Button>
-            <Button size="sm" onClick={() => setIsExpanded((prev) => !prev)}>
-              {isExpanded ? <X /> : <Maximize />}
+            <Button size="sm" onClick={() => handleExpandPeriodDetailsGraph()}>
+              {isPeriodDetailsGraphExpanded ? <X /> : <Maximize />}
             </Button>
           </div>
         </div>
@@ -56,7 +56,14 @@ export const PeriodsDetailsPieChartCard = () => {
         )}
         {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
           <div className="w-full h-full">
-            <PeriodsDetailsPieChart isExpanded={isExpanded} selectedView={selectedView} />
+            <PeriodsDetailsPieChart
+              isExpanded={isPeriodDetailsGraphExpanded}
+              selectedView={selectedPeriodDetailsGraphView}
+              chartData={unbilledPeriodsDetailsChartData}
+              handleSelectedDetailPieChartViewChange={
+                handleSelectedDetailPieChartViewChange
+              }
+            />
           </div>
         )}
       </CardContent>

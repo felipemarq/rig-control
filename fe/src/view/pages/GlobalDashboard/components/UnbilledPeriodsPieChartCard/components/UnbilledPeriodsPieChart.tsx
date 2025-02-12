@@ -1,10 +1,23 @@
 import { ResponsivePie } from "@nivo/pie";
-import { useUnbilledPeriodsPieChart } from "./useUnbilledPeriodsPieChart";
 import { PeriodType } from "../../../../../../app/entities/PeriodType";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
-export const UnbilledPeriodsPieChart = () => {
-  const { chartData, handleSelectedPieChartViewChange } = useUnbilledPeriodsPieChart();
+export type UnbilledPeriodsPieChartData = {
+  id: string;
+  label: string;
+  value: number;
+  color: string;
+}[];
+
+interface UnbilledPeriodsPieChartProps {
+  handleSelectedPieChartViewChange: (type: PeriodType) => void;
+  chartData: UnbilledPeriodsPieChartData;
+}
+
+export const UnbilledPeriodsPieChart = ({
+  chartData,
+  handleSelectedPieChartViewChange,
+}: UnbilledPeriodsPieChartProps) => {
   const { primaryColor } = useTheme();
   return (
     <div className="w-full h-full relative">

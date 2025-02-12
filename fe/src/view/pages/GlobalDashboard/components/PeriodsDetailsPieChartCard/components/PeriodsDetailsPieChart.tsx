@@ -1,23 +1,32 @@
 import { ResponsivePie } from "@nivo/pie";
-import { usePeriodsDetailsPieChart } from "./usePeriodsDetailsPieChart";
 import { useTheme } from "@/app/contexts/ThemeContext";
+
+export interface PeriodsDetailsPieChartProps {
+  isExpanded: boolean;
+  selectedView: "HOURS" | "PERCENTAGE";
+  chartData: PeriodsDetailsPieChartData;
+  handleSelectedDetailPieChartViewChange: (classification: string) => void;
+}
+
+export type PeriodsDetailsPieChartData = {
+  id: string;
+  label: string;
+  value: number;
+  color: string;
+}[];
 
 export const PeriodsDetailsPieChart = ({
   isExpanded,
   selectedView,
-}: {
-  isExpanded: boolean;
-  selectedView: "HOURS" | "PERCENTAGE";
-}) => {
-  const { chartData, handleSelectedDetailPieChartViewChange, mappedChartData } =
-    usePeriodsDetailsPieChart();
-
-  const selectedChartData = selectedView === "HOURS" ? chartData : mappedChartData;
+  chartData,
+  handleSelectedDetailPieChartViewChange,
+}: PeriodsDetailsPieChartProps) => {
+  //const selectedChartData = selectedView === "HOURS" ? chartData : mappedChartData;
   const { primaryColor } = useTheme();
   return (
     <div className="w-full h-full relativ">
       <ResponsivePie
-        data={selectedChartData}
+        data={chartData}
         theme={{
           axis: {
             domain: {
