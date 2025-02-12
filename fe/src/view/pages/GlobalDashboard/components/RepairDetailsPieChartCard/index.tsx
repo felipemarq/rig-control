@@ -16,6 +16,7 @@ export const RepairDetailsPieChartCard = () => {
     selectedPieChartView,
     selectedPeriodClassification,
     repairDetailsChartData,
+    handleSelectedRepairPeriodClassificationChange,
   } = useGlobalDashboard();
 
   return (
@@ -37,7 +38,12 @@ export const RepairDetailsPieChartCard = () => {
       <CardContent className="px-2 h-full">
         {selectedPeriodClassification && unbilledPeriods.length > 0 && (
           <div className="max-w-full h-full">
-            <RepairDetailsPieChart chartData={repairDetailsChartData} />
+            <RepairDetailsPieChart
+              chartData={repairDetailsChartData}
+              handleSelectedRepairPeriodClassificationChange={
+                handleSelectedRepairPeriodClassificationChange
+              }
+            />
           </div>
         )}
       </CardContent>

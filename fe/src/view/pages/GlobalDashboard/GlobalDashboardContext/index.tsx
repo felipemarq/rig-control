@@ -19,6 +19,7 @@ import { translateClassification } from "@/app/utils/translateClassification";
 import { RepairClassification } from "@/app/entities/RepairClassification";
 import { translateRepairClassification } from "@/app/utils/translateRepairClassification";
 import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChart";
+
 /* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
 import { useGetByPeriodType } from "@/app/hooks/periods/useGetByPeriodType";
 import { OrderByType } from "@/app/entities/OrderBy"; */
@@ -63,6 +64,18 @@ interface GlobalDashboardContextValue {
   selectedPeriodDetailsGraphView: "HOURS" | "PERCENTAGE";
   handleExpandPeriodDetailsGraph: () => void;
   repairDetailsChartData: RepairDetailsPieChartData;
+  mappedRigsUnbilledHours: {
+    id: string;
+    label: string;
+    value: number;
+  }[];
+  mappedRigsRepairHours: {
+    id: string;
+    label: string;
+    value: number;
+  }[];
+  handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
+  selectedRepairPeriodClassification: string | null;
 }
 
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
@@ -82,6 +95,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const [selectedPeriodClassification, setSelectedPeriodClassification] = useState<
     string | null
   >(null);
+  const [selectedRepairPeriodClassification, setSelectedRepairPeriodClassification] =
+    useState<string | null>(null);
   const [isPeriodDetailsGraphExpanded, setIsPeriodDetailsGraphExpanded] = useState(false);
   const [selectedPeriodDetailsGraphView, setSelectedPeriodDetailsGraphView] = useState<
     "HOURS" | "PERCENTAGE"
@@ -110,6 +125,10 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const handleSelectedDetailPieChartViewChange = (classification: string) => {
     setSelectedDetailPieChartView(classification);
     setSelectedPeriodClassification(classification);
+  };
+
+  const handleSelectedRepairPeriodClassificationChange = (classification: string) => {
+    setSelectedRepairPeriodClassification(classification);
   };
 
   const handleCloseDetailsGraph = () => {
@@ -283,10 +302,6 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     );
   }, [selectedPieChartView, unbilledPeriods]);
 
-  console.log("selectedPieChartView", selectedPieChartView);
-  console.log("selectedDetailPieChartView", selectedDetailPieChartView);
-  console.log("filteredUnbilledPeriodsByType", filteredUnbilledPeriodsByType);
-
   const unbilledPeriodsDetailsChartData = useMemo(() => {
     const chartData = filteredUnbilledPeriodsByType.reduce(
       (acc: PeriodsDetailsPieChartData, current) => {
@@ -334,16 +349,113 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     }));
 
     return mappedChartData;
-  }, [filteredUnbilledPeriodsByType, selectedPieChartView]);
+  }, [
+    filteredUnbilledPeriodsByType,
+    selectedPieChartView,
+    selectedPeriodDetailsGraphView,
+  ]);
+
+  const mappedRigsUnbilledHours = useMemo(() => {
+    let filteredPeriods = filteredUnbilledPeriodsByType;
+
+    if (selectedDetailPieChartView) {
+      filteredPeriods = filteredPeriods.filter(
+        (period) =>
+          translateClassification(period.classification) === selectedDetailPieChartView
+      );
+    }
+
+    return filteredPeriods.reduce(
+      (acc: { id: string; label: string; value: number }[], current) => {
+        const rigName = current.efficiency?.rig.name!;
+        const rigId = current.efficiency?.rigId!;
+
+        const foundItem = acc.find((accItem) => accItem.id === rigId)!;
+
+        const parsedStartHour = parseHour(current.startHour);
+        const parsedEndHour = parseHour(current.endHour);
+        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+        if (!foundItem) {
+          acc.push({
+            id: rigId,
+            label: rigName,
+            value: Number(diffInHours.toFixed(2)),
+          });
+        } else {
+          acc = acc.map((accItem) =>
+            accItem.id === rigId
+              ? {
+                  ...accItem,
+                  value: Number((accItem.value + diffInHours).toFixed(2)),
+                }
+              : accItem
+          );
+        }
+
+        return acc;
+      },
+      []
+    );
+  }, [filteredUnbilledPeriodsByType, selectedDetailPieChartView]);
+
+  const mappedRigsRepairHours = useMemo(() => {
+    let filteredPeriods = filteredUnbilledPeriodsByType;
+
+    if (selectedRepairPeriodClassification) {
+      filteredPeriods = filteredPeriods.filter(
+        (period) =>
+          period.repairClassification === selectedRepairPeriodClassification &&
+          translateClassification(period.classification) === selectedDetailPieChartView
+      );
+    }
+
+    return filteredPeriods.reduce(
+      (acc: { id: string; label: string; value: number }[], current) => {
+        const rigName = current.efficiency?.rig.name!;
+        const rigId = current.efficiency?.rigId!;
+
+        const foundItem = acc.find((accItem) => accItem.id === rigId)!;
+
+        const parsedStartHour = parseHour(current.startHour);
+        const parsedEndHour = parseHour(current.endHour);
+        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+        if (!foundItem) {
+          acc.push({
+            id: rigId,
+            label: rigName,
+            value: Number(diffInHours.toFixed(2)),
+          });
+        } else {
+          acc = acc.map((accItem) =>
+            accItem.id === rigId
+              ? {
+                  ...accItem,
+                  value: Number((accItem.value + diffInHours).toFixed(2)),
+                }
+              : accItem
+          );
+        }
+
+        return acc;
+      },
+      []
+    );
+  }, [selectedRepairPeriodClassification]);
+
+  console.log("mappedRigsRepairHours", mappedRigsRepairHours);
+  console.log("selectedRepairPeriodClassification", selectedRepairPeriodClassification);
 
   const repairDetailsChartData = useMemo(() => {
     let totalHours = 0;
 
-    return filteredUnbilledPeriodsByType
-      .filter(
-        (period) =>
-          translateClassification(period.classification) === selectedDetailPieChartView
-      )
+    const filteredPeriodsByRepairClassification = filteredUnbilledPeriodsByType.filter(
+      (period) =>
+        translateClassification(period.classification) === selectedDetailPieChartView
+    );
+
+    const repairDetailsChartData = filteredPeriodsByRepairClassification
       .reduce((acc: RepairDetailsPieChartData, current) => {
         const classification = translateRepairClassification(
           current.repairClassification as RepairClassification
@@ -383,7 +495,14 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         ...data,
         percentage: Number(((data.value / totalHours) * 100).toFixed(2)),
       }));
+
+    return repairDetailsChartData;
   }, [selectedDetailPieChartView]);
+  /* 
+  console.log("selectedPieChartView", selectedPieChartView);
+  console.log("selectedDetailPieChartView", selectedDetailPieChartView);
+  console.log("filteredUnbilledPeriodsByType", filteredUnbilledPeriodsByType);
+  console.log("mappedRigsUnbilledHours", mappedRigsUnbilledHours); */
 
   const isChartDataEmpty = unbilledPeriodsChartData.every((data) => data.value === 0);
 
@@ -398,6 +517,9 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   return (
     <GlobalDashboardContext.Provider
       value={{
+        mappedRigsRepairHours,
+        handleSelectedRepairPeriodClassificationChange,
+        selectedRepairPeriodClassification,
         repairDetailsChartData,
         handleChangePeriodDetailsGraphView,
         handleExpandPeriodDetailsGraph,
@@ -427,6 +549,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         isFetchingRigsAverage,
         selectedPeriodClassification,
         isEmpty,
+        mappedRigsUnbilledHours,
       }}
     >
       {children}

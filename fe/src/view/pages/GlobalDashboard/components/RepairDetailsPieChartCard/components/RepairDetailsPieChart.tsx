@@ -3,6 +3,7 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 
 interface RepairDetailsPieChartProps {
   chartData: RepairDetailsPieChartData;
+  handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
 }
 
 export type RepairDetailsPieChartData = {
@@ -15,7 +16,10 @@ export type RepairDetailsPieChartData = {
   percentage: number;
 }[];
 
-export const RepairDetailsPieChart = ({ chartData }: RepairDetailsPieChartProps) => {
+export const RepairDetailsPieChart = ({
+  chartData,
+  handleSelectedRepairPeriodClassificationChange,
+}: RepairDetailsPieChartProps) => {
   const { primaryColor } = useTheme();
   return (
     <ResponsivePie
@@ -79,6 +83,11 @@ export const RepairDetailsPieChart = ({ chartData }: RepairDetailsPieChartProps)
       arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
+      onClick={(event) => {
+        console.log(event);
+        //@ts-ignore
+        handleSelectedRepairPeriodClassificationChange(event.data.classification);
+      }}
       valueFormat={(value) => `${value} Hrs`}
       /*  legends={[
           {

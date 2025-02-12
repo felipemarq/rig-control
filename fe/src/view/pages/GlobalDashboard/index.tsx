@@ -27,6 +27,10 @@ const GlobalDashboard = () => {
           selectedDashboardView,
           selectedPeriodClassification,
           selectedPieChartView,
+          selectedDetailPieChartView,
+          mappedRigsRepairHours,
+          selectedRepairPeriodClassification,
+          mappedRigsUnbilledHours,
         }) => (
           <div className="overflow-y-auto w-full">
             <Header title="Dashboard Geral" displayRig={false}>
@@ -76,13 +80,26 @@ const GlobalDashboard = () => {
                     <>
                       <UnbilledPeriodsPieChartCard />
                       {isDetailsGraphVisible && <PeriodsDetailsPieChartCard />}
-                      {selectedPeriodClassification &&
-                        selectedPieChartView === "REPAIR" && (
-                          <RepairDetailsPieChartCard />
-                        )}
                     </>
                   )}
-                  <UnbilledPeriodsByRigCard />
+                  <UnbilledPeriodsByRigCard
+                    rigsData={mappedRigsUnbilledHours}
+                    selectedView={selectedPieChartView}
+                    selectedDetailView={selectedDetailPieChartView ?? undefined}
+                  />
+                  {selectedPeriodClassification && selectedPieChartView === "REPAIR" && (
+                    <RepairDetailsPieChartCard />
+                  )}
+
+                  {selectedRepairPeriodClassification && (
+                    <UnbilledPeriodsByRigCard
+                      rigsData={mappedRigsRepairHours}
+                      selectedDetailView={selectedDetailPieChartView ?? undefined}
+                      selectedRepairClassification={
+                        selectedRepairPeriodClassification ?? undefined
+                      }
+                    />
+                  )}
                 </div>
               </main>
             </div>
