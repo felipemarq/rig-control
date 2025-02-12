@@ -1,9 +1,21 @@
 import { ResponsivePie } from "@nivo/pie";
-import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
-export const RepairDetailsPieChart = () => {
-  const { chartData /* handleCloseDetailsGraph */ } = useRepairDetailsPieChart();
+interface RepairDetailsPieChartProps {
+  chartData: RepairDetailsPieChartData;
+}
+
+export type RepairDetailsPieChartData = {
+  id: string;
+  label: string;
+  value: number;
+  color: string;
+  classification: string;
+  selectedPeriodClassification: string;
+  percentage: number;
+}[];
+
+export const RepairDetailsPieChart = ({ chartData }: RepairDetailsPieChartProps) => {
   const { primaryColor } = useTheme();
   return (
     <ResponsivePie

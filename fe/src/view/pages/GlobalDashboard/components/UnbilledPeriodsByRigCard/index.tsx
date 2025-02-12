@@ -31,7 +31,7 @@ export const UnbilledPeriodsByRigCard = () => {
     <>
       <Card
         className={cn(
-          "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4",
+          "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4 bg-red-500",
           mappedRigsUnbilledHours.length > 5 && "row-span-3"
         )}
       >
