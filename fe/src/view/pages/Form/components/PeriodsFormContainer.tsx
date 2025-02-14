@@ -346,12 +346,14 @@ export const PeriodsFormContainer = () => {
                     </Button>
                   )}
 
-                  <Button
-                    className="bg-primary w-1/3 lg:w-1/4 text-sm"
-                    onClick={() => addPeriod()}
-                  >
-                    Adicionar período
-                  </Button>
+                  {index === periods.length - 1 && (
+                    <Button
+                      className="bg-primary w-1/3 lg:w-1/4 text-sm"
+                      onClick={() => addPeriod()}
+                    >
+                      Adicionar período
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>
