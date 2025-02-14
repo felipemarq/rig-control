@@ -20,9 +20,10 @@ export type OccurrencesTaxesResponse = {
 };
 
 export type OccurrencesTaxesFilters = {
-  startDate: string;
-  endDate: string;
+  startDate?: string;
+  endDate?: string;
   baseId?: string;
+  year: string;
 };
 
 export const getTaxes = async (filters: OccurrencesTaxesFilters) => {

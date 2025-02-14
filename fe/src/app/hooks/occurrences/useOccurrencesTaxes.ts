@@ -7,7 +7,7 @@ export const useOccurrencesTaxes = (filters: OccurrencesTaxesFilters) => {
   const { data, isFetching, refetch, isLoading } = useQuery({
     queryKey: [QueryKeys.TOTAL_OCCURRENCES_TAXES],
     queryFn: () => occurrencesService.getTaxes(filters),
-    enabled: true,
+    enabled: !!filters.year,
     staleTime: 1000,
   });
 

@@ -16,6 +16,7 @@ import { OccurrenceType } from './entities/OccurrenceType';
 import { UF } from './entities/UF';
 import { OccurenceNature } from './entities/OccurenceNature';
 import { Prisma } from '@prisma/client';
+import { MailService } from '../mail/mail.service';
 
 interface OccurrenceCountByMonth {
   date: Date;
@@ -52,6 +53,7 @@ export class OccurrencesService {
     private readonly basesRepo: BaseRepository,
     private readonly manHoursRepo: ManHourRepository,
     private readonly filesService: FileService,
+    private readonly mailService: MailService,
   ) {}
 
   async create(userId: string, createOcurrenceDto: CreateOcurrenceDto) {
@@ -64,6 +66,10 @@ export class OccurrencesService {
 
     if (!baseExists) {
       throw new NotFoundException('Base não encontrada');
+    }
+
+    if (createOcurrenceDto.nature === OccurenceNature.ACCIDENT) {
+      await this.mailService.sendOccurrenceAcidentEmail(createOcurrenceDto);
     }
 
     return await this.occurrencesRepo.create({
@@ -81,17 +87,19 @@ export class OccurrencesService {
     type: OccurrenceType,
     uf: UF,
     baseId: string,
-    startDate: string,
-    endDate: string,
+    year: string,
   ) {
     let whereClause: Prisma.OccurrenceWhereInput = {};
 
-    whereClause = {
-      AND: [
-        { date: { gte: new Date(startDate) } },
-        { date: { lte: new Date(endDate) } },
-      ],
-    };
+    if (year) {
+      const startOfYear = new Date(`${year}-01-01T00:00:00.000Z`);
+      const endOfYear = new Date(`${year}-12-31T23:59:59.999Z`);
+
+      whereClause = {
+        ...whereClause,
+        AND: [{ date: { gte: startOfYear } }, { date: { lte: endOfYear } }],
+      };
+    }
 
     if (nature) {
       whereClause = {
@@ -432,13 +440,13 @@ export class OccurrencesService {
     startDate: string;
     endDate: string;
     baseId: string;
+    year: string;
   }) {
-    console.log('caiu aqui', filters);
-    let occurrencesWhereClause: any = {
-      date: {
-        gte: new Date(filters.startDate),
-        lte: new Date(filters.endDate),
-      },
+    const startOfYear = new Date(`${filters.year}-01-01T00:00:00.000Z`);
+    const endOfYear = new Date(`${filters.year}-12-31T23:59:59.999Z`);
+
+    let occurrencesWhereClause: Prisma.OccurrenceWhereInput = {
+      AND: [{ date: { gte: startOfYear } }, { date: { lte: endOfYear } }],
     };
 
     if (filters.baseId && filters.baseId !== 'all') {
@@ -447,8 +455,6 @@ export class OccurrencesService {
         baseId: filters.baseId,
       };
     }
-
-    console.log('occurrencesWhereClause', occurrencesWhereClause);
 
     const tarOccurrences = await this.occurrencesRepo.groupBy({
       by: ['date'],
@@ -505,10 +511,8 @@ export class OccurrencesService {
       },
     });
 
-    const startDate = new Date(filters.startDate);
-
     let manHoursWhereClause: any = {
-      year: startDate.getFullYear(),
+      year: Number(filters.year),
     };
 
     if (filters.baseId && filters.baseId !== 'all') {
@@ -550,6 +554,8 @@ export class OccurrencesService {
       12: 0,
     };
 
+    console.log('manHoursAgg', manHoursAgg);
+
     // Iterando sobre o array e somando as horas para cada mês
     manHoursAgg
       .sort((a, b) => a.month - b.month)
@@ -565,6 +571,9 @@ export class OccurrencesService {
     const aggroupOccurrencesByMonth = (
       occurrences: OccurrenceCountByMonth[],
     ) => {
+      const today = new Date();
+      const currentYear = today.getFullYear();
+      const currentMonth = today.getMonth() + 1;
       let countsByMonthAccumulated: { [key: number]: number } = {
         1: 0,
         2: 0,
@@ -613,15 +622,22 @@ export class OccurrencesService {
       }
 
       return Object.keys(countsByMonthAccumulated).map((month) => {
-        const tax =
+        let tax =
           (countsByMonthAccumulated[month] / aggroupedMenHours[Number(month)]) *
           1_000_000;
 
+        if (
+          (currentYear === Number(filters.year) &&
+            currentMonth <= Number(month)) ||
+          isNaN(tax)
+        ) {
+          tax = 0;
+        }
         return {
           month: Number(month),
           count: countsByMonth[month],
           accCount: countsByMonthAccumulated[month],
-          tax: isNaN(tax) ? 0 : tax,
+          tax: tax,
         };
       });
     };
@@ -639,12 +655,6 @@ export class OccurrencesService {
 
     const totalCommutingOccurrences =
       aggroupOccurrencesByMonth(commutingOccurrences);
-
-    /* console.log('totalTarOccurrences', totalTarOccurrences);
-    console.log('totalTorOccurrences', totalTorOccurrences);
-    console.log('totalNotAbsentOccurrences', totalNotAbsentOccurrences);
-    console.log('totalAbsentOccurrences', totalAbsentOccurrences);
-    console.log('totalCommutingOccurrences', totalCommutingOccurrences); */
 
     return {
       tarOccurrences: totalTarOccurrences,

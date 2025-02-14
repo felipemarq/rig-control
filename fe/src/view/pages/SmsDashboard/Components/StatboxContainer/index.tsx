@@ -73,7 +73,7 @@ export const StatboxContainer = () => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">
-            {totalFinishedOccurrenceActionsPercentage}%
+            {totalFinishedOccurrenceActionsPercentage.toFixed(2)}%
           </div>
           <Progress value={totalFinishedOccurrenceActionsPercentage} className="mt-2" />
         </CardContent>

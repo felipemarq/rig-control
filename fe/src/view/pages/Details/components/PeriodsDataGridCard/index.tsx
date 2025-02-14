@@ -37,8 +37,6 @@ export const PeriodsDataGridCard = () => {
     state,
   } = usePeriodsDataGrid();
 
-  console.log("efficiency", efficiency);
-
   return (
     <Card className="col-span-12 row-span-4 lg:col-span-12 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] overflow-y-auto">
       <CardHeader className="flex flex-row items-center justify-between gap-4 ">

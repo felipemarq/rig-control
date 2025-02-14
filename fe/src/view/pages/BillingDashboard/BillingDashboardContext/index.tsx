@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 import React from "react";
 import { useBillings } from "../../../../app/hooks/billings/useBillings";
 import { BillingResponse } from "../../../../app/services/billingServices/getAll";
@@ -38,13 +32,7 @@ interface BillingDashboardContextValue {
   totalRepairAmount: number | string;
   totalUnbilledAmount: number | string;
   totalCommerciallyStoppedAmount: number | string;
-  setSliderState({
-    isBeginning,
-    isEnd,
-  }: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  }): void;
+  setSliderState({ isBeginning, isEnd }: { isBeginning: boolean; isEnd: boolean }): void;
   sliderState: {
     isBeginning: boolean;
     isEnd: boolean;
@@ -88,15 +76,9 @@ interface BillingDashboardContextValue {
   averageEfficiency: number;
 }
 
-export const BillingDashboardContext = createContext(
-  {} as BillingDashboardContextValue
-);
+export const BillingDashboardContext = createContext({} as BillingDashboardContextValue);
 
-export const BillingDashboardProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const BillingDashboardProvider = ({ children }: { children: React.ReactNode }) => {
   const {
     filters,
     selectedEndDate,
@@ -119,9 +101,7 @@ export const BillingDashboardProvider = ({
   // Defina os estados iniciais
 
   const [isEditRigModalOpen, setIsEditRigModalOpen] = useState(false);
-  const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(
-    null
-  );
+  const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(null);
 
   useEffect(() => {
     handleToggleFilterType(FilterType.CUSTOM);
@@ -162,18 +142,12 @@ export const BillingDashboardProvider = ({
 
     setIsEditConfigModalOpen(false);
   }, []);
-  const handleOpenEditConfigModal = useCallback(
-    (data: BillingConfigResponse) => {
-      setConfigBeingEdited(data);
-      setIsEditConfigModalOpen(true);
-    },
-    []
-  );
+  const handleOpenEditConfigModal = useCallback((data: BillingConfigResponse) => {
+    setConfigBeingEdited(data);
+    setIsEditConfigModalOpen(true);
+  }, []);
 
-  const { billings, isFetchingBillings, refetchBillings } =
-    useBillings(filters);
-
-  console.log("billings", billings);
+  const { billings, isFetchingBillings, refetchBillings } = useBillings(filters);
 
   const { configs, isFetchingConfig } = useConfigBillings();
 
@@ -214,12 +188,7 @@ export const BillingDashboardProvider = ({
     let totalCommerciallyStoppedUnbilled = 0;
 
     billings.forEach(
-      ({
-        total,
-        repairhouramount,
-        glosshouramount,
-        commerciallystoppedamount,
-      }) => {
+      ({ total, repairhouramount, glosshouramount, commerciallystoppedamount }) => {
         totalBillings += total;
         totalGlossUnbilled += glosshouramount;
 
@@ -245,9 +214,7 @@ export const BillingDashboardProvider = ({
       formatCurrency(totalCommerciallyStoppedUnbilled)
     );
     const totalUnbilledAmount = formatCurrency(
-      totalRepairUnbilled +
-        totalGlossUnbilled +
-        totalCommerciallyStoppedUnbilled
+      totalRepairUnbilled + totalGlossUnbilled + totalCommerciallyStoppedUnbilled
     );
 
     return {

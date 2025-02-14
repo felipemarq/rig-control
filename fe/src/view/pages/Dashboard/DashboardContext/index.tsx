@@ -132,8 +132,6 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     year: new Date(filters.startDate).getFullYear(),
   });
 
-  console.log("efficiencies", efficiencies);
-
   const isEmpty: boolean = efficiencies.length === 0;
   const exceedsEfficiencyThreshold: boolean = efficiencies.length >= 35;
 
@@ -157,11 +155,6 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     null
   );
 
-  /*  console.log(
-    "Gloss periods",
-    glossPeriods.filter((period) => period.classification === "LABOR")
-  ); */
-
   const handleFilterPeriods = (type: "REPAIR" | "GLOSS", classification: string) => {
     let periods: Period[] | null = null;
 
@@ -184,7 +177,6 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
 
   const handleOpenPeriodDataGridModal = (periods: Period[]) => {
     setIsPeriodDataGridModalOpen(true);
-    console.log(periods);
     setPeriodDataGridModalData(periods);
   };
 
@@ -227,8 +219,8 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
     /*  totalCommertialHours, */
     totalRepairHours,
     totalGlossHours,
-    totalStandByHours,
-    totalScheduledStoppedHours,
+    /* totalStandByHours,
+    totalScheduledStoppedHours, */
     totalDtms,
     totalMovimentations,
     totalUnavailableHours,
@@ -236,11 +228,7 @@ export const DashboardProvider = ({ children }: { children: React.ReactNode }) =
   } = calculateTotalsEfficiencies(efficiencies);
 
   const totalHoursToCalculateEfficiency =
-    totalAvailableHours +
-    totalRepairHours +
-    totalGlossHours +
-    totalStandByHours +
-    totalScheduledStoppedHours;
+    totalAvailableHours + totalRepairHours + totalGlossHours;
 
   const totalHours: number = totalAvailableHours + totalUnavailableHours;
 

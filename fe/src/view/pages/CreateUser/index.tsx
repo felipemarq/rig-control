@@ -18,8 +18,6 @@ const CreateUser = () => {
     isFetchingContractRigs,
   } = useCreateUser();
 
-  console.log("errors", errors);
-
   return (
     <div className="w-full h-full overflow-y-scroll">
       <Header title="Cadastrar Usuário" displayRig={false} displayPeriodRange={false}>

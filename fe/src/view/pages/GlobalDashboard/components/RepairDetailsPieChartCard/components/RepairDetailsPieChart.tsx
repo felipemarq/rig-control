@@ -84,7 +84,6 @@ export const RepairDetailsPieChart = ({
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
       onClick={(event) => {
-        console.log(event);
         //@ts-ignore
         handleSelectedRepairPeriodClassificationChange(event.data.classification);
       }}

@@ -87,14 +87,6 @@ export const useNewOccurrenceActionModal = () => {
 
   const isFinished = watch("isFinished");
 
-  /*  console.log("selectedSeverity", selectedSeverity);
-  console.log("errors", errors);
-  occurrenceSeveritySelectOptions;
-  console.log(
-    "occurrenceSeveritySelectOptions",
-    occurrenceSeveritySelectOptions
-  ); */
-
   const queryClient = useQueryClient();
 
   const { isPending: isLoadingNewOccurrence, mutateAsync: mutateNewOccurrenceAsync } =
@@ -106,8 +98,6 @@ export const useNewOccurrenceActionModal = () => {
     useMutation({
       mutationFn: filesService.uploadOccurrenceActionFile,
     });
-
-  //console.log("errors", errors);
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
     try {

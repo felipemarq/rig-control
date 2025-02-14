@@ -31,7 +31,6 @@ export class BillingsService {
   }) {
     const billings = await this.billingRepo.findAll({ startDate, endDate });
 
-    console.log(billings);
     return billings;
   }
 

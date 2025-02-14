@@ -77,7 +77,6 @@ export const UnbilledPeriodsPieChart = ({
           modifiers: [["darker", 0.2]],
         }}
         onClick={(event) => {
-          console.log(event);
           handleSelectedPieChartViewChange(event.label as PeriodType);
         }}
         valueFormat={(value) => `${value} Hrs`}

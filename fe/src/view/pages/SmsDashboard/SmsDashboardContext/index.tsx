@@ -61,9 +61,8 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
 
   const { occurrencesTaxes, isFetchingOccurrencesTaxes, refetchOccurrencesTaxes } =
     useOccurrencesTaxes({
-      endDate: filters.endDate,
-      startDate: filters.startDate,
       baseId: filters.baseId,
+      year: filters.year,
     });
 
   return (

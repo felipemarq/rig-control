@@ -52,10 +52,7 @@ export class PeriodsService {
     };
 
     if (rigId) {
-      whereClause = {
-        ...whereClause,
-        rigId,
-      };
+      whereClause['efficiency'] = { ...whereClause['efficiency'], rigId };
     }
 
     if (searchTerm) {
@@ -85,9 +82,13 @@ export class PeriodsService {
         repairClassification: repairClassification,
       };
     }
+
+    console.log('totalItems', whereClause);
     const totalItems = await this.periodsRepo.count({
       where: whereClause,
     });
+
+    console.log('totalItems', totalItems);
 
     const periods = await this.periodsRepo.findMany({
       where: whereClause,
@@ -190,16 +191,6 @@ export class PeriodsService {
       dtmDays: dates.size, // Quantidade de dias únicos
     }));
 
-    console.log(`Resumo de dias com DTM por sonda:`, result);
-
-    result.forEach(({ rig, dtmDays }) => {
-      console.log(
-        `A sonda "${rig}" teve ${dtmDays} ${
-          dtmDays === 1 ? 'dia' : 'dias'
-        } com pelo menos um período do tipo DTM.`,
-      );
-    });
-
     // Array para salvar as datas das eficiências que atendem ao critério
     const daysWithDTM = new Set<string>();
 
@@ -212,14 +203,6 @@ export class PeriodsService {
         daysWithDTM.add(efficiencyDate); // Adicionar ao conjunto de dias únicos
       }
     });
-
-    /* console.log(
-      `Datas com pelo menos um período do tipo DTM:`,
-      Array.from(daysWithDTM),
-    ); */
-    console.log(
-      `Quantidade de dias  com pelo menos um período do tipo DTM: ${daysWithDTM.size}`,
-    );
   }
 
   update(id: number, updatePeriodDto: UpdatePeriodDto) {

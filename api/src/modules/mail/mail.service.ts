@@ -4,10 +4,128 @@ import { CreateOccurrenceActionDto } from '../occurrence-actions/dto/create-occu
 import { occurrenceSeverityTranslation } from './utils/occurrenceSeverityTranslation';
 import { natureTranslation } from './utils/natureTranslation';
 import { occurrenceTypeTranslation } from './utils/occurrenceTypeTranslation';
+import { CreateOcurrenceDto } from '../ocurrences/dto/create-ocurrence.dto';
 
 @Injectable()
 export class MailService {
   constructor(private readonly mailerService: MailerService) {}
+
+  private getTranslation<T extends { value: string; label: string }>(
+    value: string | null | undefined,
+    translationArray: T[],
+  ): string {
+    return (
+      translationArray.find((item) => value === item.value)?.label ||
+      'Não especificado'
+    );
+  }
+
+  async sendOccurrenceAcidentEmail(createOcurrenceDto: CreateOcurrenceDto) {
+    const severityLabel = this.getTranslation(
+      createOcurrenceDto.severity,
+      occurrenceSeverityTranslation,
+    );
+    const typeLabel = this.getTranslation(
+      createOcurrenceDto.type,
+      occurrenceTypeTranslation,
+    );
+    const natureLabel = this.getTranslation(
+      createOcurrenceDto.nature,
+      natureTranslation,
+    );
+
+    await this.sendEmail(
+      ['oswaldo@conterp.com.br'], // Lista de destinatários
+      `Notificação de Ocorrência de Acidente - ${createOcurrenceDto.title}`, // Assunto do e-mail
+      `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Ocorrência de Acidente</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f4f4f9;
+                    margin: 0;
+                    padding: 0;
+                }
+                .email-container {
+                    max-width: 600px;
+                    margin: auto;
+                    padding: 20px;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                }
+                .header {
+                    background-color: #b71c1c;
+                    color: #ffffff;
+                    text-align: center;
+                    padding: 20px;
+                    font-size: 20px;
+                    font-weight: bold;
+                }
+                .content {
+                    padding: 20px;
+                    line-height: 1.6;
+                }
+                .content p {
+                    margin: 10px 0;
+                }
+                .footer {
+                    margin-top: 20px;
+                    text-align: center;
+                    font-size: 12px;
+                    color: #888;
+                }
+            </style>
+        </head>
+        <body>
+            <div class="email-container">
+                <div class="header">
+                    Notificação de Ocorrência de Acidente
+                </div>
+                <div class="content">
+                    <p>Prezado Oswaldo,</p>
+                    <p>Uma nova ocorrência de acidente foi registrada. Seguem os detalhes:</p>
+                    <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
+                        <h3 style="margin-top: 0; color: #333;">Detalhes da Ocorrência</h3>
+                        <p style="margin: 0;"><strong>Título:</strong> ${
+                          createOcurrenceDto.title
+                        }</p>
+                        <p style="margin: 0;"><strong>Data:</strong> ${new Date(
+                          createOcurrenceDto.date,
+                        ).toLocaleDateString()}</p>
+                        <p style="margin: 0;"><strong>Hora:</strong> ${new Date(
+                          createOcurrenceDto.hour,
+                        ).toLocaleTimeString()}</p>
+                        <p style="margin: 0;"><strong>Estado:</strong> ${
+                          createOcurrenceDto.state
+                        }</p>
+                        <p style="margin: 0;"><strong>Descrição:</strong> ${
+                          createOcurrenceDto.description
+                        }</p>
+                        <p style="margin: 0;"><strong>Gravidade:</strong> ${severityLabel}</p>
+                        <p style="margin: 0;"><strong>Tipo:</strong> ${typeLabel}</p>
+                        <p style="margin: 0;"><strong>Natureza:</strong> ${natureLabel}</p>
+                        <p style="margin: 0;"><strong>Funcionário Ausente:</strong> ${
+                          createOcurrenceDto.isAbsent ? 'Sim' : 'Não'
+                        }</p>
+                    </div>
+                    <p style="color: #555;">
+                        Esta é uma notificação automática sobre ocorrências de acidente. Para mais informações, entre em contato.
+                    </p>
+                </div>
+                <div class="footer">
+                    <p>Este é um e-mail automático. Por favor, não responda.</p>
+                    <p>&copy; ${new Date().getFullYear()} Rig Manager. Todos os direitos reservados.</p>
+                </div>
+            </div>
+        </body>
+        </html>
+      `,
+    );
+  }
 
   async sendOccurrenceActionEmail(
     occurrenceAction: CreateOccurrenceActionDto,
@@ -24,17 +142,19 @@ export class MailService {
       nature: string;
     },
   ) {
-    const severityFound = occurrenceSeverityTranslation.find(
-      (occurrenceItem) => occurrence.severity === occurrenceItem.value,
+    const severityLabel = this.getTranslation(
+      occurrence.severity,
+      occurrenceSeverityTranslation,
+    );
+    const typeLabel = this.getTranslation(
+      occurrence.type,
+      occurrenceTypeTranslation,
+    );
+    const natureLabel = this.getTranslation(
+      occurrence.nature,
+      natureTranslation,
     );
 
-    const typeFound = occurrenceTypeTranslation.find(
-      (occurrenceItem) => occurrence.type === occurrenceItem.value,
-    );
-
-    const natureFound = natureTranslation.find(
-      (occurrenceItem) => occurrence.nature === occurrenceItem.value,
-    );
     await this.mailerService.sendMail({
       to: occurrenceAction.responsibleEmail, // lista de destinatários
       subject: 'Nova Ação Vinculada a Você', // Assunto do e-mail
@@ -73,13 +193,13 @@ export class MailService {
             occurrence.category || 'Sem categoria'
           }</p>
           <p style="margin: 0;"><strong>Gravidade:</strong> ${
-            severityFound?.label || 'Não especificado'
+            severityLabel || 'Não especificado'
           }</p>
           <p style="margin: 0;"><strong>Tipo:</strong> ${
-            typeFound?.label || 'Não especificado'
+            typeLabel || 'Não especificado'
           }</p>
           <p style="margin: 0;"><strong>Natureza:</strong> ${
-            natureFound?.label || 'Não especificado'
+            natureLabel || 'Não especificado'
           }</p>
         </div>
         
@@ -112,16 +232,17 @@ export class MailService {
       nature: string;
     },
   ) {
-    const severityFound = occurrenceSeverityTranslation.find(
-      (occurrenceItem) => occurrence.severity === occurrenceItem.value,
+    const severityLabel = this.getTranslation(
+      occurrence.severity,
+      occurrenceSeverityTranslation,
     );
-
-    const typeFound = occurrenceTypeTranslation.find(
-      (occurrenceItem) => occurrence.type === occurrenceItem.value,
+    const typeLabel = this.getTranslation(
+      occurrence.type,
+      occurrenceTypeTranslation,
     );
-
-    const natureFound = natureTranslation.find(
-      (occurrenceItem) => occurrence.nature === occurrenceItem.value,
+    const natureLabel = this.getTranslation(
+      occurrence.nature,
+      natureTranslation,
     );
     await this.mailerService.sendMail({
       to: occurrenceAction.responsibleEmail, // lista de destinatários
@@ -165,13 +286,13 @@ export class MailService {
               occurrence.category || 'Sem categoria'
             }</p>
             <p style="margin: 0;"><strong>Gravidade:</strong> ${
-              severityFound?.label || 'Não especificado'
+              severityLabel || 'Não especificado'
             }</p>
             <p style="margin: 0;"><strong>Tipo:</strong> ${
-              typeFound?.label || 'Não especificado'
+              typeLabel || 'Não especificado'
             }</p>
             <p style="margin: 0;"><strong>Natureza:</strong> ${
-              natureFound?.label || 'Não especificado'
+              natureLabel || 'Não especificado'
             }</p>
           </div>
           
@@ -182,7 +303,7 @@ export class MailService {
 
           <footer style="margin-top: 20px; text-align: center; font-size: 12px; color: #888;">
             <p>Este é um e-mail automático, por favor, não responda.</p>
-            <p>&copy; ${new Date().getFullYear()} Info Conterp. Todos os direitos reservados.</p>
+            <p>&copy; ${new Date().getFullYear()} Rig Manager. Todos os direitos reservados.</p>
           </footer>
         </div>
       `,

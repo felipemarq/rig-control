@@ -1100,13 +1100,6 @@ export class EfficienciesService {
     });
 
     for (const efficiency of efficiencies) {
-      console.log(
-        `=============================================================`,
-      );
-      console.log(
-        `Enviando dados do dia ${formatDate(new Date(efficiency.date))}`,
-      );
-
       const billingFound = await this.billingRepo.findFisrt({
         where: {
           efficiencyId: efficiency.id,
@@ -1122,10 +1115,6 @@ export class EfficienciesService {
       }
 
       await this.calculateEfficiencyBilling(efficiency.id);
-
-      console.log(
-        `Criado dados do dia ${formatDate(new Date(efficiency.date))}`,
-      );
     }
 
     return efficiencies;
@@ -1150,11 +1139,6 @@ export class EfficienciesService {
     });
 
     for (const efficiency of efficiencies) {
-      console.log(
-        `=============================================================`,
-      );
-      console.log(`Confirmando dia ${formatDate(new Date(efficiency.date))}`);
-
       await this.calculateEfficiencyBilling(efficiency.id);
 
       /*  await this.efficiencyRepo.update({
@@ -1771,11 +1755,13 @@ export class EfficienciesService {
         availableHours: true,
         standByHours: true,
         billedScheduledStopHours: true,
+        unbilledScheduledStopHours: true,
       },
       _sum: {
         availableHours: true,
         standByHours: true,
         billedScheduledStopHours: true,
+        unbilledScheduledStopHours: true,
       },
       where: {
         date: {
@@ -1830,12 +1816,14 @@ export class EfficienciesService {
         avg:
           (_sum.availableHours +
             _sum.standByHours +
-            _sum.billedScheduledStopHours) /
+            _sum.billedScheduledStopHours +
+            _sum.unbilledScheduledStopHours) /
           _count,
         count: _count,
         state: rigFound.state,
         //@ts-ignore
         commercialDays: commercialDays?._count?.commercialHours ?? 0,
+        unbilledScheduledStopHours: _sum.unbilledScheduledStopHours,
       };
     });
 

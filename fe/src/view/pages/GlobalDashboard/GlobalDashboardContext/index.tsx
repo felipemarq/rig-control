@@ -444,9 +444,6 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     );
   }, [selectedRepairPeriodClassification]);
 
-  console.log("mappedRigsRepairHours", mappedRigsRepairHours);
-  console.log("selectedRepairPeriodClassification", selectedRepairPeriodClassification);
-
   const repairDetailsChartData = useMemo(() => {
     let totalHours = 0;
 
@@ -498,11 +495,6 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
     return repairDetailsChartData;
   }, [selectedDetailPieChartView]);
-  /* 
-  console.log("selectedPieChartView", selectedPieChartView);
-  console.log("selectedDetailPieChartView", selectedDetailPieChartView);
-  console.log("filteredUnbilledPeriodsByType", filteredUnbilledPeriodsByType);
-  console.log("mappedRigsUnbilledHours", mappedRigsUnbilledHours); */
 
   const isChartDataEmpty = unbilledPeriodsChartData.every((data) => data.value === 0);
 

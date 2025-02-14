@@ -29,13 +29,6 @@ export class AuthController {
 
   @Get('test-auth/:userId')
   async testAuth(@Param('userId') userId: string) {
-    /* console.log(env);
-    if (env.nodeEnv !== 'development') {
-      throw new UnauthorizedException(
-        'Este endpoint só pode ser usado em ambiente de desenvolvimento!',
-      );
-    } */
-
     return this.authService.authenticateWithoutPassword(userId);
   }
 }
