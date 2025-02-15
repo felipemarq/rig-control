@@ -32,7 +32,7 @@ const GlobalDashboard = () => {
           selectedRepairPeriodClassification,
           mappedRigsUnbilledHours,
         }) => (
-          <div className="overflow-y-auto w-full">
+          <div className=" w-full">
             <Header title="Dashboard Geral" displayRig={false}>
               <div className="flex flex-row-reverse gap-2  items-center">
                 <FilterSheet
@@ -73,7 +73,7 @@ const GlobalDashboard = () => {
             <div className="flex w-full flex-col">
               <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
                 <StatboxContainer />
-                <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
+                <div className="grid gap-4 md:gap-8 grid-cols-12 ">
                   <AverageBarChartCard />
                   <DaysNotRegisteredCard />
                   {!isChartDataEmpty && selectedDashboardView === "ALL" && (
