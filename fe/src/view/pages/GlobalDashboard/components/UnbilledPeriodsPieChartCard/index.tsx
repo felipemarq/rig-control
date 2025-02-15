@@ -13,7 +13,7 @@ export const UnbilledPeriodsPieChartCard = () => {
     unbilledPeriodsChartData,
   } = useGlobalDashboard();
   return (
-    <Card className="col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-green-400">
+    <Card className="col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
       <CardHeader className="pl-7 ">
         <div className="flex gap-2 items-center justify-between cursor-pointer">
           <CardTitle>Tempo não faturado </CardTitle>

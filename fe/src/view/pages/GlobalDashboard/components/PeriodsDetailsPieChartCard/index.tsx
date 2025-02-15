@@ -24,7 +24,7 @@ export const PeriodsDetailsPieChartCard = () => {
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] bg-red-500",
+        "col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ",
         isPeriodDetailsGraphExpanded && "lg:col-span-12 row-span-4"
       )}
     >

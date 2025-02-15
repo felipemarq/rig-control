@@ -32,8 +32,6 @@ export const useEditOccurrenceActionModal = () => {
     handleRefetchOccurrences,
   } = useOccurrencesContext();
 
-  console.log(occurrenceActionBeingSeen);
-
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [file, setFile] = useState<File | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
@@ -105,8 +103,6 @@ export const useEditOccurrenceActionModal = () => {
     },
   });
 
-  console.log("erros", errors);
-
   const isFinished = watch("isFinished");
 
   const queryClient = useQueryClient();
@@ -143,10 +139,7 @@ export const useEditOccurrenceActionModal = () => {
     }
   };
 
-  //console.log("errors", errors);
-
   const handleSubmit = hookFormhandleSubmit(async (data) => {
-    console.log("data", data);
     try {
       const occurrenceAction = await mutateAsync({
         id: occurrenceActionBeingSeen?.id!,
@@ -181,8 +174,6 @@ export const useEditOccurrenceActionModal = () => {
       //navigate("/dashboard");
     }
   });
-
-  console.log("Occurrence Being Seen", occurrenceActionBeingSeen);
 
   const hasFile = occurrenceActionBeingSeen?.files.length! > 0;
 

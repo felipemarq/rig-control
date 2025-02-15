@@ -172,7 +172,6 @@ export const useNewPeriodActionPlanModal = () => {
               periodActionPlanId: periodActionPlan.id!,
               formData: formData,
             });
-            console.log(`Arquivo ${file.name} enviado com sucesso.`);
           } catch (error) {
             console.error(`Erro ao enviar o arquivo ${file.name}:`, error);
           }

@@ -16,7 +16,10 @@ import { translateType } from "@/app/utils/translateType";
 import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCard/components/UnbilledPeriodsPieChart";
 import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCard/components/PeriodsDetailsPieChart";
 import { translateClassification } from "@/app/utils/translateClassification";
-import { se } from "date-fns/locale";
+import { RepairClassification } from "@/app/entities/RepairClassification";
+import { translateRepairClassification } from "@/app/utils/translateRepairClassification";
+import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChart";
+
 /* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
 import { useGetByPeriodType } from "@/app/hooks/periods/useGetByPeriodType";
 import { OrderByType } from "@/app/entities/OrderBy"; */
@@ -60,6 +63,19 @@ interface GlobalDashboardContextValue {
   isPeriodDetailsGraphExpanded: boolean;
   selectedPeriodDetailsGraphView: "HOURS" | "PERCENTAGE";
   handleExpandPeriodDetailsGraph: () => void;
+  repairDetailsChartData: RepairDetailsPieChartData;
+  mappedRigsUnbilledHours: {
+    id: string;
+    label: string;
+    value: number;
+  }[];
+  mappedRigsRepairHours: {
+    id: string;
+    label: string;
+    value: number;
+  }[];
+  handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
+  selectedRepairPeriodClassification: string | null;
 }
 
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
@@ -79,6 +95,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const [selectedPeriodClassification, setSelectedPeriodClassification] = useState<
     string | null
   >(null);
+  const [selectedRepairPeriodClassification, setSelectedRepairPeriodClassification] =
+    useState<string | null>(null);
   const [isPeriodDetailsGraphExpanded, setIsPeriodDetailsGraphExpanded] = useState(false);
   const [selectedPeriodDetailsGraphView, setSelectedPeriodDetailsGraphView] = useState<
     "HOURS" | "PERCENTAGE"
@@ -107,6 +125,10 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const handleSelectedDetailPieChartViewChange = (classification: string) => {
     setSelectedDetailPieChartView(classification);
     setSelectedPeriodClassification(classification);
+  };
+
+  const handleSelectedRepairPeriodClassificationChange = (classification: string) => {
+    setSelectedRepairPeriodClassification(classification);
   };
 
   const handleCloseDetailsGraph = () => {
@@ -274,10 +296,15 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const parseHour = (hourString: string) =>
     parse(hourString.split("T")[1].slice(0, 5), "HH:mm", new Date());
 
-  const { unbilledPeriodsDetailsChartData } = useMemo(() => {
-    const chartData = unbilledPeriods
-      .filter((period) => period.type === selectedPieChartView)
-      .reduce((acc: PeriodsDetailsPieChartData, current) => {
+  const filteredUnbilledPeriodsByType = useMemo(() => {
+    return unbilledPeriods.filter((period) =>
+      selectedPieChartView ? period.type === selectedPieChartView : true
+    );
+  }, [selectedPieChartView, unbilledPeriods]);
+
+  const unbilledPeriodsDetailsChartData = useMemo(() => {
+    const chartData = filteredUnbilledPeriodsByType.reduce(
+      (acc: PeriodsDetailsPieChartData, current) => {
         const classification = translateClassification(current.classification)!;
         const foundItem = acc.find((accItem) => accItem.id === classification)!;
 
@@ -305,7 +332,9 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         }
 
         return acc;
-      }, []);
+      },
+      []
+    );
 
     let totalHours = 0;
 
@@ -319,10 +348,153 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
           : Number(((item.value / totalHours) * 100).toFixed(2)),
     }));
 
-    return {
-      unbilledPeriodsDetailsChartData: mappedChartData,
-    };
-  }, [unbilledPeriods, selectedPieChartView]);
+    return mappedChartData;
+  }, [
+    filteredUnbilledPeriodsByType,
+    selectedPieChartView,
+    selectedPeriodDetailsGraphView,
+  ]);
+
+  const mappedRigsUnbilledHours = useMemo(() => {
+    let filteredPeriods = filteredUnbilledPeriodsByType;
+
+    if (selectedDetailPieChartView) {
+      filteredPeriods = filteredPeriods.filter(
+        (period) =>
+          translateClassification(period.classification) === selectedDetailPieChartView
+      );
+    }
+
+    return filteredPeriods.reduce(
+      (acc: { id: string; label: string; value: number }[], current) => {
+        const rigName = current.efficiency?.rig.name!;
+        const rigId = current.efficiency?.rigId!;
+
+        const foundItem = acc.find((accItem) => accItem.id === rigId)!;
+
+        const parsedStartHour = parseHour(current.startHour);
+        const parsedEndHour = parseHour(current.endHour);
+        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+        if (!foundItem) {
+          acc.push({
+            id: rigId,
+            label: rigName,
+            value: Number(diffInHours.toFixed(2)),
+          });
+        } else {
+          acc = acc.map((accItem) =>
+            accItem.id === rigId
+              ? {
+                  ...accItem,
+                  value: Number((accItem.value + diffInHours).toFixed(2)),
+                }
+              : accItem
+          );
+        }
+
+        return acc;
+      },
+      []
+    );
+  }, [filteredUnbilledPeriodsByType, selectedDetailPieChartView]);
+
+  const mappedRigsRepairHours = useMemo(() => {
+    let filteredPeriods = filteredUnbilledPeriodsByType;
+
+    if (selectedRepairPeriodClassification) {
+      filteredPeriods = filteredPeriods.filter(
+        (period) =>
+          period.repairClassification === selectedRepairPeriodClassification &&
+          translateClassification(period.classification) === selectedDetailPieChartView
+      );
+    }
+
+    return filteredPeriods.reduce(
+      (acc: { id: string; label: string; value: number }[], current) => {
+        const rigName = current.efficiency?.rig.name!;
+        const rigId = current.efficiency?.rigId!;
+
+        const foundItem = acc.find((accItem) => accItem.id === rigId)!;
+
+        const parsedStartHour = parseHour(current.startHour);
+        const parsedEndHour = parseHour(current.endHour);
+        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+        if (!foundItem) {
+          acc.push({
+            id: rigId,
+            label: rigName,
+            value: Number(diffInHours.toFixed(2)),
+          });
+        } else {
+          acc = acc.map((accItem) =>
+            accItem.id === rigId
+              ? {
+                  ...accItem,
+                  value: Number((accItem.value + diffInHours).toFixed(2)),
+                }
+              : accItem
+          );
+        }
+
+        return acc;
+      },
+      []
+    );
+  }, [selectedRepairPeriodClassification]);
+
+  const repairDetailsChartData = useMemo(() => {
+    let totalHours = 0;
+
+    const filteredPeriodsByRepairClassification = filteredUnbilledPeriodsByType.filter(
+      (period) =>
+        translateClassification(period.classification) === selectedDetailPieChartView
+    );
+
+    const repairDetailsChartData = filteredPeriodsByRepairClassification
+      .reduce((acc: RepairDetailsPieChartData, current) => {
+        const classification = translateRepairClassification(
+          current.repairClassification as RepairClassification
+        );
+        const foundItem = acc.find((accItem) => accItem.id === classification)!;
+
+        const parsedStartHour = parseHour(current.startHour);
+        const parsedEndHour = parseHour(current.endHour);
+        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+
+        totalHours += Number(diffInHours.toFixed(2));
+
+        if (!foundItem) {
+          acc.push({
+            id: classification,
+            label: classification,
+            classification: current.repairClassification!,
+            selectedPeriodClassification: selectedDetailPieChartView!,
+            value: Number(diffInHours.toFixed(2)),
+            color: pieChartColors[acc.length % pieChartColors.length],
+            percentage: Number(((0 / totalHours) * 100).toFixed(2)), // Use modulo para evitar estouro de índice
+          });
+        } else {
+          acc = acc.map((accItem) =>
+            accItem.id === classification
+              ? {
+                  ...accItem,
+                  value: Number((accItem.value + diffInHours).toFixed(2)),
+                }
+              : accItem
+          );
+        }
+
+        return acc;
+      }, [])
+      .map((data) => ({
+        ...data,
+        percentage: Number(((data.value / totalHours) * 100).toFixed(2)),
+      }));
+
+    return repairDetailsChartData;
+  }, [selectedDetailPieChartView]);
 
   const isChartDataEmpty = unbilledPeriodsChartData.every((data) => data.value === 0);
 
@@ -337,6 +509,10 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   return (
     <GlobalDashboardContext.Provider
       value={{
+        mappedRigsRepairHours,
+        handleSelectedRepairPeriodClassificationChange,
+        selectedRepairPeriodClassification,
+        repairDetailsChartData,
         handleChangePeriodDetailsGraphView,
         handleExpandPeriodDetailsGraph,
         isPeriodDetailsGraphExpanded,
@@ -365,6 +541,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         isFetchingRigsAverage,
         selectedPeriodClassification,
         isEmpty,
+        mappedRigsUnbilledHours,
       }}
     >
       {children}

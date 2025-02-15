@@ -1,9 +1,25 @@
 import { ResponsivePie } from "@nivo/pie";
-import { useRepairDetailsPieChart } from "./useRepairDetailsPieChart";
 import { useTheme } from "@/app/contexts/ThemeContext";
 
-export const RepairDetailsPieChart = () => {
-  const { chartData /* handleCloseDetailsGraph */ } = useRepairDetailsPieChart();
+interface RepairDetailsPieChartProps {
+  chartData: RepairDetailsPieChartData;
+  handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
+}
+
+export type RepairDetailsPieChartData = {
+  id: string;
+  label: string;
+  value: number;
+  color: string;
+  classification: string;
+  selectedPeriodClassification: string;
+  percentage: number;
+}[];
+
+export const RepairDetailsPieChart = ({
+  chartData,
+  handleSelectedRepairPeriodClassificationChange,
+}: RepairDetailsPieChartProps) => {
   const { primaryColor } = useTheme();
   return (
     <ResponsivePie
@@ -67,6 +83,10 @@ export const RepairDetailsPieChart = () => {
       arcLinkLabelsColor={{ from: "color" }}
       arcLabelsSkipAngle={1}
       arcLabelsTextColor="#fff"
+      onClick={(event) => {
+        //@ts-ignore
+        handleSelectedRepairPeriodClassificationChange(event.data.classification);
+      }}
       valueFormat={(value) => `${value} Hrs`}
       /*  legends={[
           {

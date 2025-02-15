@@ -27,7 +27,6 @@ export class PeriodActionPlanItemsService {
   async createMany(
     createPeriodActionPlanItemDto: CreatePeriodActionPlanItemDto[],
   ) {
-    console.log('createMany', createPeriodActionPlanItemDto);
     return await this.periodActionPlanItemsRepo.createMany({
       data: createPeriodActionPlanItemDto,
     });

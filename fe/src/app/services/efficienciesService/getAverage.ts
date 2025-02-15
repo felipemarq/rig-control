@@ -8,7 +8,6 @@ export type EfficienciesAverageFilters = {
 };
 
 export const getAverage = async (filters: EfficienciesAverageFilters) => {
-  console.log("filters", filters);
   const { data } = await httpClient.get<AverageResponse>(
     `/efficiencies/average/${filters.rigId}`,
     {

@@ -17,7 +17,7 @@ import { MailService } from './mail.service';
         },
       },
       defaults: {
-        from: '"Info-Conterp" <modules@nestjs.com>',
+        from: '"Rig Manager" <modules@nestjs.com>',
       },
       template: {
         dir: __dirname + '/templates',

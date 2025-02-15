@@ -85,8 +85,6 @@ export const useManHoursController = () => {
     }
   };
 
-  console.log("isFetchingManHours", isFetchingManHours);
-
   const dataGridData: TransformedManHoursData[] = transformManHoursData(manHours);
 
   return {

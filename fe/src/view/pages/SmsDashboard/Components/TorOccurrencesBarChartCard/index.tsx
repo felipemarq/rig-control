@@ -24,8 +24,6 @@ export const TorOccurrencesBarChartCard = () => {
   const { isFetchingOccurrencesTaxes, occurrencesTaxes } = useSmsDashboardContext();
   const { primaryColor } = useTheme();
 
-  console.log(occurrencesTaxes);
-
   const chartConfig = {
     tax: {
       label: "Mês",

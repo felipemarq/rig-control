@@ -19,9 +19,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { differenceInDays, isPast, isToday } from "date-fns";
-import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 import {
   Accordion,
   AccordionContent,
@@ -37,6 +34,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import { OccurenceActionBadgeStatus } from "@/view/components/OccurrenceActionBagdeStatus";
 
 interface OccurrenceItemProps {
   occurrence: Occurrence;
@@ -50,38 +48,6 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
   } = useOccurrencesContext();
   const hasFile = occurrence.files.length > 0;
 
-  const getStatusBadge = (occurrenceAction: OccurrenceAction) => {
-    if (!occurrenceAction) {
-      return <Badge>Sem plano de ação</Badge>;
-    }
-
-    if (occurrenceAction.isFinished) {
-      return <Badge>Finalizado</Badge>;
-    }
-
-    const dueDate = occurrenceAction.dueDate;
-
-    const today = new Date(); // Data de hoje
-    const daysDifference = differenceInDays(new Date(dueDate), today);
-
-    if (isPast(new Date(dueDate))) {
-      // Caso a dueDate tenha passado
-      return <Badge className="bg-red-500">Vencido</Badge>;
-    }
-
-    if (isToday(new Date(dueDate))) {
-      // Caso seja o mesmo dia
-      return <Badge className="bg-yellow-500">Vence hoje</Badge>;
-    }
-
-    if (daysDifference <= 3) {
-      // Caso esteja próximo da data (você pode ajustar o limite)
-      return <Badge className="bg-orange-500">Próximo</Badge>;
-    }
-
-    // Caso esteja "em dia" (a data está longe o suficiente)
-    return <Badge className="bg-green-500">Em dia</Badge>;
-  };
   return (
     <Card key={occurrence.id} className="bg-gray-100">
       <CardContent className="p-4 flex flex-col  justify-between">
@@ -229,7 +195,9 @@ export const OccurrenceItem = ({ occurrence }: OccurrenceItemProps) => {
                       <TableCell>
                         {new Date(action.dueDate).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>{getStatusBadge(action)}</TableCell>
+                      <TableCell>
+                        <OccurenceActionBadgeStatus occurrenceAction={action} />
+                      </TableCell>
                       <TableCell className="text-right">
                         <Button
                           variant="ghost"

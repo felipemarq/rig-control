@@ -5,14 +5,19 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { useRepairDetailsPieChartCard } from "./useRepairDetailsPieChartCard";
-import { RepairDetailsPieChart } from "./components/RepairDetailsPieChart";
 import { cn } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
+import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
+import { RepairDetailsPieChart } from "./components/RepairDetailsPieChart";
 
 export const RepairDetailsPieChartCard = () => {
-  const { unbilledPeriods, selectedPieChartView, selectedPeriodClassification } =
-    useRepairDetailsPieChartCard();
+  const {
+    unbilledPeriods,
+    selectedPieChartView,
+    selectedPeriodClassification,
+    repairDetailsChartData,
+    handleSelectedRepairPeriodClassificationChange,
+  } = useGlobalDashboard();
 
   return (
     <Card
@@ -33,7 +38,12 @@ export const RepairDetailsPieChartCard = () => {
       <CardContent className="px-2 h-full">
         {selectedPeriodClassification && unbilledPeriods.length > 0 && (
           <div className="max-w-full h-full">
-            <RepairDetailsPieChart />
+            <RepairDetailsPieChart
+              chartData={repairDetailsChartData}
+              handleSelectedRepairPeriodClassificationChange={
+                handleSelectedRepairPeriodClassificationChange
+              }
+            />
           </div>
         )}
       </CardContent>

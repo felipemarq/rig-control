@@ -1,4 +1,3 @@
-import { endOfYear, format, startOfYear } from "date-fns";
 import { createContext, useState } from "react";
 import { OccurrenceFilters } from "../services/occurrencesService/getAll";
 import { BasesResponse } from "../services/basesService/getAll";
@@ -26,15 +25,6 @@ export const OccurrenceFiltersProvider = ({
   children: React.ReactNode;
 }) => {
   const { bases, isFetchingBases } = useBases();
-  const currentDate = new Date();
-  const currentDateForManipulation = new Date();
-  const firstDayOfYear = startOfYear(currentDateForManipulation.setFullYear(2024));
-  const lastDayOfYear = endOfYear(currentDate);
-  const formattedFirstDay = format(firstDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-  const formattedLastDay = format(lastDayOfYear, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-
-  const [selectedStartDate] = useState<string>(formattedFirstDay);
-  const [selectedEndDate] = useState<string>(formattedLastDay);
 
   const [filters, setFilters] = useState<OccurrenceFilters>({
     nature: undefined,
@@ -43,8 +33,7 @@ export const OccurrenceFiltersProvider = ({
     type: undefined,
     uf: undefined,
     baseId: undefined,
-    startDate: selectedStartDate,
-    endDate: selectedEndDate,
+    year: new Date().getFullYear().toString(),
   });
 
   const { refetchOccurrences } = useOccurrences(filters);
@@ -72,8 +61,7 @@ export const OccurrenceFiltersProvider = ({
       type: undefined,
       uf: undefined,
       baseId: undefined,
-      startDate: selectedStartDate,
-      endDate: selectedEndDate,
+      year: new Date().getFullYear().toString(),
     });
   };
 
