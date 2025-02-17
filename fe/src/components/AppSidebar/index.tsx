@@ -1,42 +1,28 @@
-import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import { NavUser } from "@/components/nav-user";
 import { TeamSwitcher } from "@/components/team-switcher";
+import { NavMain } from "./NavMain";
+import { NavProjects } from "./NavProjects";
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarItem,
-  SidebarLabel,
+  SidebarRail,
 } from "@/components/ui/sidebar";
 import { useAppsidebar } from "./useAppsidebar"; /* 
 import { ModeToggle } from "@/view/components/ModeToggle"; */
 
-export const AppSidebar = () => {
+export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { user, signout, data } = useAppsidebar();
 
   return (
-    <Sidebar>
+    <Sidebar collapsible="icon" {...props}>
       <SidebarHeader>
-        <TeamSwitcher teams={data.teams} />
+        <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarItem>
-          <SidebarLabel>Platform</SidebarLabel>
-          <NavMain items={data.navMain} searchResults={data.searchResults} />
-        </SidebarItem>
-        <SidebarItem>
-          {/*   <SidebarLabel>Projects</SidebarLabel> */}
-          {/*   <NavProjects projects={data.projects} /> */}
-        </SidebarItem>
-        <SidebarItem className="mt-auto">
-          <SidebarLabel>Ajuda</SidebarLabel>
-          <NavSecondary items={data.navSecondary} />
-        </SidebarItem>
-        {/* <SidebarItem>
-          <StorageCard />
-        </SidebarItem> */}
+        <NavMain items={data.navMain} />
+        <NavProjects projects={data.projects} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser
@@ -48,8 +34,11 @@ export const AppSidebar = () => {
             avatar: "",
           }}
         />
-        {/*        <ModeToggle /> */}
       </SidebarFooter>
+      <SidebarRail />
     </Sidebar>
   );
-};
+}
+
+/*
+ */
