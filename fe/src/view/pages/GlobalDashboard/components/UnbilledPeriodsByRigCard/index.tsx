@@ -29,6 +29,7 @@ interface UnbilledPeriodsByRigCardProps {
     label: string;
     value: number;
   }[];
+  className?: string;
 }
 
 export const UnbilledPeriodsByRigCard = ({
@@ -36,6 +37,7 @@ export const UnbilledPeriodsByRigCard = ({
   selectedDetailView,
   selectedRepairClassification,
   rigsData,
+  className,
 }: UnbilledPeriodsByRigCardProps) => {
   const { handleChangeRig } = useFiltersContext();
 
@@ -43,19 +45,19 @@ export const UnbilledPeriodsByRigCard = ({
 
   return (
     <>
-      <Card
-        className={cn(
-          "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4",
-          rigsData.length > 5 && "row-span-3"
-        )}
-      >
+      <Card className={cn("", className)}>
         <CardHeader className="px-7">
           <CardTitle>Periodo não faturado por sonda</CardTitle>
           <CardDescription className="flex gap-2 items-center">
-            <span>Selecionado:</span>
-            {selectedView === "GLOSS" && <Badge>Todos as Glosas</Badge>}
+            {selectedView === "GLOSS" && <Badge>Glosas</Badge>}
 
-            {selectedView === "REPAIR" && <Badge>Todos os Reparos</Badge>}
+            {selectedView === "REPAIR" && <Badge>Reparos</Badge>}
+
+            {selectedView === "COMMERCIALLY_STOPPED" && <Badge>Paradas Comerciais</Badge>}
+
+            {selectedView === "SCHEDULED_STOP" && <Badge>Paradas Programadas</Badge>}
+
+            {!selectedDetailView && <Badge>Todos</Badge>}
 
             {selectedDetailView && <Badge>{selectedDetailView}</Badge>}
 

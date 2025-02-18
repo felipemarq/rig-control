@@ -13,12 +13,12 @@ import { getDiffInMinutes } from "../../../../app/utils/getDiffInMinutes";
 import { formatNumberWithFixedDecimals } from "../../../../app/utils/formatNumberWithFixedDecimals";
 import { useTheme } from "@/app/contexts/ThemeContext";
 import { translateType } from "@/app/utils/translateType";
-import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCard/components/UnbilledPeriodsPieChart";
-import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCard/components/PeriodsDetailsPieChart";
 import { translateClassification } from "@/app/utils/translateClassification";
 import { RepairClassification } from "@/app/entities/RepairClassification";
 import { translateRepairClassification } from "@/app/utils/translateRepairClassification";
-import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChart";
+import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCard/components/UnbilledPeriodsPieChartCn";
+import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChartCn";
+import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCard/components/PeriodsDetailsPieChartCn";
 
 /* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
 import { useGetByPeriodType } from "@/app/hooks/periods/useGetByPeriodType";
@@ -76,6 +76,7 @@ interface GlobalDashboardContextValue {
   }[];
   handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
   selectedRepairPeriodClassification: string | null;
+  hasNoUnbilledPeriods: boolean;
 }
 
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
@@ -204,6 +205,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
   const isEmpty: boolean = filteredRigsAverage.length === 0;
 
+  const hasNoUnbilledPeriods: boolean = unbilledPeriods.length === 0;
+
   const [totalDaysSelected, setTotalDaysSelected] = useState(
     differenceInDays(filters.endDate, filters.startDate) + 1
   );
@@ -258,7 +261,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
           id: translatedType!,
           label: current.type,
           value: Number(diffInHours.toFixed(2)),
-          color: color,
+          fill: color,
         });
       } else {
         acc = acc.map((accItem) =>
@@ -318,7 +321,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
             id: classification,
             label: classification,
             value: Number(diffInHours.toFixed(2)),
-            color: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
+            fill: pieChartColors[acc.length % pieChartColors.length], // Use modulo para evitar estouro de índice
           });
         } else {
           acc = acc.map((accItem) =>
@@ -472,7 +475,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
             classification: current.repairClassification!,
             selectedPeriodClassification: selectedDetailPieChartView!,
             value: Number(diffInHours.toFixed(2)),
-            color: pieChartColors[acc.length % pieChartColors.length],
+            fill: pieChartColors[acc.length % pieChartColors.length],
             percentage: Number(((0 / totalHours) * 100).toFixed(2)), // Use modulo para evitar estouro de índice
           });
         } else {
@@ -523,6 +526,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         selectedDashboardView,
         statBox,
         filteredRigsAverage,
+        hasNoUnbilledPeriods,
         unbilledPeriodsChartData,
         isChartDataEmpty,
         unbilledPeriods,

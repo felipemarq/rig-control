@@ -2,12 +2,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
 import { NotFound } from "@/view/components/NotFound";
 import { Spinner } from "@/view/components/Spinner";
-import { PeriodsDetailsPieChart } from "./components/PeriodsDetailsPieChart";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { Maximize, X } from "lucide-react";
+import { PeriodsDetailsPieChartCn } from "./components/PeriodsDetailsPieChartCn";
 
-export const PeriodsDetailsPieChartCard = () => {
+interface PeriodsDetailsPieChartCardProps {
+  className?: string;
+}
+
+export const PeriodsDetailsPieChartCard = ({
+  className,
+}: PeriodsDetailsPieChartCardProps) => {
   const {
     isFetchingRigsAverage,
     rigsAverage,
@@ -19,13 +25,13 @@ export const PeriodsDetailsPieChartCard = () => {
     selectedPeriodDetailsGraphView,
     handleExpandPeriodDetailsGraph,
   } = useGlobalDashboard();
-  ("");
 
   return (
     <Card
       className={cn(
-        "col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ",
-        isPeriodDetailsGraphExpanded && "lg:col-span-12 row-span-4"
+        "flex flex-col col-span-6",
+        className,
+        isPeriodDetailsGraphExpanded && "col-span-6"
       )}
     >
       <CardHeader className="pl-7 ">
@@ -56,13 +62,14 @@ export const PeriodsDetailsPieChartCard = () => {
         )}
         {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
           <div className="w-full h-full">
-            <PeriodsDetailsPieChart
+            <PeriodsDetailsPieChartCn
               isExpanded={isPeriodDetailsGraphExpanded}
               selectedView={selectedPeriodDetailsGraphView}
               chartData={unbilledPeriodsDetailsChartData}
               handleSelectedDetailPieChartViewChange={
                 handleSelectedDetailPieChartViewChange
               }
+              isPeriodDetailsGraphExpanded={isPeriodDetailsGraphExpanded}
             />
           </div>
         )}

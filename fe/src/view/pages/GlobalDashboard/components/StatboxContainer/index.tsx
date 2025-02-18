@@ -21,11 +21,8 @@ export const StatboxContainer = () => {
     selectedDashboardView,
   } = useStatboxContainer();
   return (
-    <div className="grid gap-4  md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-      <Card
-        x-chunk="dashboard-01-chunk-0"
-        className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-      >
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">Eficiência Operacional</CardTitle>
           <TimerIcon className="h-8 w-8 text-muted-foreground" />
@@ -50,10 +47,7 @@ export const StatboxContainer = () => {
           </>
         )}
       </Card>
-      <Card
-        x-chunk="dashboard-01-chunk-0"
-        className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-      >
+      <Card x-chunk="dashboard-01-chunk-0">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Indisp. Diária
@@ -87,10 +81,7 @@ export const StatboxContainer = () => {
           </>
         )}
       </Card>
-      <Card
-        x-chunk="dashboard-01-chunk-2"
-        className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-      >
+      <Card x-chunk="dashboard-01-chunk-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">Reparo</CardTitle>
           <Wrench className="h-8 w-8 text-muted-foreground text-redAccent-500" />
@@ -120,10 +111,7 @@ export const StatboxContainer = () => {
           </CardContent>
         )}
       </Card>
-      <Card
-        x-chunk="dashboard-01-chunk-2"
-        className="shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]"
-      >
+      <Card x-chunk="dashboard-01-chunk-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">Glosa</CardTitle>
           <FileClock className="h-8 w-8 text-muted-foreground text-redAccent-500" />
