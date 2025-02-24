@@ -19,6 +19,8 @@ import { translateRepairClassification } from "@/app/utils/translateRepairClassi
 import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCard/components/UnbilledPeriodsPieChartCn";
 import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChartCn";
 import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCard/components/PeriodsDetailsPieChartCn";
+import { getAllRigsReport } from "@/app/services/excelService/excelPeriodsReport";
+import { saveAs } from "file-saver";
 
 /* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
 import { useGetByPeriodType } from "@/app/hooks/periods/useGetByPeriodType";
@@ -77,6 +79,8 @@ interface GlobalDashboardContextValue {
   handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
   selectedRepairPeriodClassification: string | null;
   hasNoUnbilledPeriods: boolean;
+  handleExcelDownload: () => Promise<void>;
+  isFetchingReport: boolean;
 }
 
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
@@ -106,6 +110,27 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const [selectedDetailPieChartView, setSelectedDetailPieChartView] = useState<
     null | string
   >(null);
+  const [isFetchingReport, setIsFetchingReport] = useState(false);
+
+  const handleExcelDownload = async () => {
+    try {
+      setIsFetchingReport(true);
+      const data = await getAllRigsReport({
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+      });
+
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, "relatorio.xlsx");
+      console.log("salvo");
+    } catch (error) {
+      console.error("Erro ao baixar o relatório", error);
+    } finally {
+      setIsFetchingReport(false);
+    }
+  };
 
   const handleChangePeriodDetailsGraphView = () => {
     setSelectedPeriodDetailsGraphView((prev) =>
@@ -512,10 +537,12 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   return (
     <GlobalDashboardContext.Provider
       value={{
+        handleExcelDownload,
         mappedRigsRepairHours,
         handleSelectedRepairPeriodClassificationChange,
         selectedRepairPeriodClassification,
         repairDetailsChartData,
+        isFetchingReport,
         handleChangePeriodDetailsGraphView,
         handleExpandPeriodDetailsGraph,
         isPeriodDetailsGraphExpanded,

@@ -1,4 +1,3 @@
-import { Button } from "@/components/ui/button";
 import { BagdeStatus } from "./BagdeStatus";
 
 interface HeaderProps {
@@ -14,7 +13,6 @@ export const NewHader = ({
   displayRig,
   children,
   displayPeriodRange = true,
-  className,
 }: HeaderProps) => {
   return (
     <div className=" lg:p-4  backdrop-blur-sm ">

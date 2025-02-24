@@ -28,10 +28,8 @@ export type PeriodsDetailsPieChartData = {
 }[];
 
 export const PeriodsDetailsPieChartCn = ({
-  isExpanded,
   selectedView,
   chartData,
-  isPeriodDetailsGraphExpanded,
   handleSelectedDetailPieChartViewChange,
 }: PeriodsDetailsPieChartProps) => {
   const chartConfig: ChartConfig = {};

@@ -5,19 +5,19 @@ import {
   SheetHeader,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {Button} from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 
-import {cn} from "@/lib/utils";
-import {FilterIcon} from "lucide-react";
-import {useFiltersContext} from "@/app/hooks/useFiltersContext";
-import {DatePickerInput} from "./DatePickerInput";
+import { cn } from "@/lib/utils";
+import { FilterIcon } from "lucide-react";
+import { useFiltersContext } from "@/app/hooks/useFiltersContext";
+import { DatePickerInput } from "./DatePickerInput";
 
 interface FilterSheetProps {
   onApplyFilters(): void;
   isLoading: boolean;
 }
 
-export const FilterSheet = ({onApplyFilters, isLoading}: FilterSheetProps) => {
+export const FilterSheet = ({ onApplyFilters, isLoading }: FilterSheetProps) => {
   const {
     selectedStartDate,
     handleStartDateChange,
@@ -29,7 +29,7 @@ export const FilterSheet = ({onApplyFilters, isLoading}: FilterSheetProps) => {
       <SheetTrigger>
         {" "}
         <Button className="gap-2" variant="default">
-          <FilterIcon /> <span className="hidden lg:inline">Filtros</span>
+          <FilterIcon className="h-4" /> <span className="hidden lg:inline">Filtros</span>
         </Button>
       </SheetTrigger>
       <SheetContent className="bg-card">

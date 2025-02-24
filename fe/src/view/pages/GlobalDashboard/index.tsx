@@ -12,6 +12,8 @@ import { UnbilledPeriodsPieChartCard } from "./components/UnbilledPeriodsPieChar
 import { PeriodsDetailsPieChartCard } from "./components/PeriodsDetailsPieChartCard";
 import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard";
 import { RepairDetailsPieChartCard } from "./components/RepairDetailsPieChartCard";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
 export default function GlobalDashboard() {
   return (
@@ -29,15 +31,27 @@ export default function GlobalDashboard() {
           mappedRigsRepairHours,
           selectedRepairPeriodClassification,
           mappedRigsUnbilledHours,
+          handleExcelDownload,
+
+          isFetchingReport,
         }) => (
           <div className="min-h-screen bg-gray-50/50">
             {/* Header */}
             <NewHader title="Dashboard Geral" displayRig={false}>
-              <div className="flex flex-row-reverse gap-2  items-center">
+              <div className="flex flex-row-reverse gap-2 justify-center items-center">
                 <FilterSheet
                   onApplyFilters={handleApplyFilters}
                   isLoading={isFetchingRigsAverage}
                 />
+                <Button
+                  className="gap-2 "
+                  variant="default"
+                  onClick={handleExcelDownload}
+                  isLoading={isFetchingReport}
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="hidden lg:inline">Excel</span>
+                </Button>
                 <Tabs defaultValue="all">
                   <TabsList>
                     <TabsTrigger

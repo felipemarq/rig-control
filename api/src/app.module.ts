@@ -28,6 +28,7 @@ import { NotificationsModule } from './modules/notifications/notifications.modul
 import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
 import { PeriodActionPlansModule } from './modules/period-action-plans/period-action-plans.module';
 import { PeriodActionPlanItemsModule } from './modules/period-action-plan-items/period-action-plan-items.module';
+import { ExcelModule } from './modules/excel/excel.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { PeriodActionPlanItemsModule } from './modules/period-action-plan-items/
     FeedbacksModule,
     PeriodActionPlansModule,
     PeriodActionPlanItemsModule,
+    ExcelModule,
   ],
   controllers: [],
   providers: [

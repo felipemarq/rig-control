@@ -1571,6 +1571,8 @@ export class EfficienciesService {
     // Concatenação da Introdução, Resumo e Dados
     const dadosCompletos = [...introducao, headers, ...rows];
 
+    console.log('dadosCompletos', dadosCompletos);
+
     // Criação da Planilha
     const ws = XLSX.utils.aoa_to_sheet(dadosCompletos);
     const wb = XLSX.utils.book_new();

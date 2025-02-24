@@ -277,9 +277,10 @@ export const PeriodsFormContainer = () => {
                         onChange={(value) => handlePeriodClassification(id, value)}
                         placeholder="Classificação"
                         value={classification}
-                        options={getPeriodClassification(type)
-                          .filter(({ value }) => value !== "SCHEDULED_STOP")
-                          .filter(({ value }) => value !== "PROCESS")}
+                        options={getPeriodClassification(type).filter(
+                          ({ value }) =>
+                            !["SCHEDULED_STOP", "PROCESS", "OTHERS"].includes(value)
+                        )}
                       />
                     </div>
                   )}
