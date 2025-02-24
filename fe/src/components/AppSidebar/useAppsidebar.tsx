@@ -91,6 +91,13 @@ export const useAppsidebar = () => {
             description: "Configure your playground",
             hasNews: true,
           },
+          /*  {
+            title: "Dashboard Test",
+            url: "/dashboard-test",
+            icon: Settings2,
+            description: "Configure your playground",
+            hasNews: true,
+          }, */
         ],
       },
       {

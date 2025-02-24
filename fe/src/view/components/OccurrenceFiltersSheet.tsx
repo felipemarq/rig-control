@@ -9,8 +9,6 @@ import {
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Button } from "@/view/components/Button";
 import { Select } from "@/view/components/Select";
-
-import { DatePickerInput } from "@/view/components/DatePickerInput";
 import { OccurenceNature, OccurrenceType } from "@/app/entities/Occurrence";
 import { occurrenceTypeSelectOptions } from "../pages/Occurrences/utils/occurrenceTypeSelectOptions";
 import { natureSelectOptions } from "../pages/Occurrences/utils/natureSelectOptions";
@@ -46,30 +44,21 @@ export const OccurrenceFiltersSheet = () => {
                 />
 
                 <>
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Início"
-                      error={""}
-                      value={new Date(filters.startDate)}
-                      onChange={(value) =>
-                        handleChangeFilters("startDate")(value.toISOString())
-                      }
-                    />
-                  </div>
-
-                  <div>
-                    <DatePickerInput
-                      placeholder="Data de Início"
-                      error={""}
-                      value={new Date(filters.endDate)}
-                      onChange={(value) =>
-                        handleChangeFilters("endDate")(value.toISOString())
-                      }
-                    />
-                  </div>
+                  <Select
+                    className="w-44"
+                    //error={filters.year}
+                    placeholder="Selecione o ano"
+                    value={filters.year}
+                    onChange={(value) => handleChangeFilters("year")(value)}
+                    options={[
+                      { value: "2025", label: "2025" },
+                      { value: "2024", label: "2024" },
+                    ]}
+                  />
                 </>
               </div>
               <ToggleGroup
+                value={filters.type ?? ""}
                 onValueChange={(value) =>
                   handleChangeFilters("type")(value as OccurrenceType)
                 }
@@ -92,6 +81,7 @@ export const OccurrenceFiltersSheet = () => {
               </ToggleGroup>
 
               <ToggleGroup
+                value={filters.nature ?? ""}
                 onValueChange={(value) =>
                   handleChangeFilters("nature")(value as OccurenceNature)
                 }

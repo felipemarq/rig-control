@@ -24,6 +24,7 @@ import { OccurrenceCategoryValidationPipe } from 'src/shared/pipes/OccurrenceCat
 import { OccurrenceSeverityValidationPipe } from 'src/shared/pipes/OccurrenceSeverityValidationPipe';
 import { OccurrenceTypeValidationPipe } from 'src/shared/pipes/OccurrenceTypeValidationPipe';
 import { OccurenceNatureValidationPipe } from 'src/shared/pipes/OccurenceNatureValidationPipe';
+import { y } from 'pdfkit';
 
 @Controller('occurrences')
 export class OccurrencesController {
@@ -42,8 +43,14 @@ export class OccurrencesController {
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('baseId') baseId: string,
+    @Query('year') year: string,
   ) {
-    return this.occurrencesService.getAllTaxes({ startDate, endDate, baseId });
+    return this.occurrencesService.getAllTaxes({
+      startDate,
+      endDate,
+      baseId,
+      year,
+    });
   }
 
   @Get('/taxes/:baseId')
@@ -55,6 +62,7 @@ export class OccurrencesController {
   findAll(
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('year') year: string,
     @Query('category', OccurrenceCategoryValidationPipe)
     category: OccurrenceCategory,
     @Query('severity', OccurrenceSeverityValidationPipe)
@@ -71,8 +79,7 @@ export class OccurrencesController {
       type,
       uf,
       baseId,
-      startDate,
-      endDate,
+      year,
     );
   }
 

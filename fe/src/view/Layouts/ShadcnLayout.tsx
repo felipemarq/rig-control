@@ -1,7 +1,7 @@
 import { Outlet } from "react-router-dom";
 import { cn } from "@/lib/utils";
 import { currentVersion } from "@/app/config/CurrentVersion";
-import { SidebarLayout, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Suspense } from "react";
 import SuspenseFallback from "../components/SuspenseFallback";
@@ -28,13 +28,12 @@ export const ShadcnLayout = () => {
   const { isWrongVersion, pendingEfficienciesConfirmation } = useAuth();
 
   return (
-    <SidebarLayout>
+    <SidebarProvider>
       <div className=" w-full h-full flex ">
         {/* <Navbar /> */}
 
         <AppSidebar />
-
-        <SidebarTrigger />
+        <SidebarTrigger className="-ml-1 sm:sr-only" />
 
         {/*  <Sidebar /> */}
 
@@ -42,7 +41,11 @@ export const ShadcnLayout = () => {
         <ErrorBoundary fallback={<ErrorBoundaryFallback />}>
           {" "}
           <Suspense fallback={<SuspenseFallback />}>
-            {!isWrongVersion && <Outlet />}
+            {!isWrongVersion && (
+              <SidebarInset>
+                <Outlet />
+              </SidebarInset>
+            )}
             {isWrongVersion && <WrongVersionAlertModal />}
             {pendingEfficienciesConfirmation.length > 0 && (
               <UrgentWarningSummaryDialog
@@ -53,6 +56,6 @@ export const ShadcnLayout = () => {
           </Suspense>
         </ErrorBoundary>
       </div>
-    </SidebarLayout>
+    </SidebarProvider>
   );
 };

@@ -147,10 +147,6 @@ export const AverageBarChart = () => {
         <div className="bg-secondaryAccent-500 p-1 w-3 h-3"></div>{" "}
         <span> Sondas com dias pendentes durante o periodo selecionado</span>
       </small>
-
-      <small className=" hidden lg:flex  absolute bottom-6 right-10 italic text-gray-700">
-        * Clique no gráfico para ver detalhes
-      </small>
     </div>
   );
 };

@@ -152,7 +152,6 @@ export const PeriodsDataGrid = ({
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
-        console.log("params", params);
         return (
           <div className="w-full flex justify-center items-center py-5">
             <span

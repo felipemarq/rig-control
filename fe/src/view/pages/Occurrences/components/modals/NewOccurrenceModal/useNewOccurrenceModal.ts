@@ -112,13 +112,6 @@ export const useNewOccurrenceModal = () => {
 
   const selectedNature = watch("nature");
 
-  /*  console.log("selectedSeverity", selectedSeverity);
-  console.log("errors", errors);
-  occurrenceSeveritySelectOptions;
-  console.log(
-    "occurrenceSeveritySelectOptions",
-    occurrenceSeveritySelectOptions
-  ); */
   const { primaryColor } = useTheme();
   useEffect(() => {
     if (selectedNature === OccurenceNature.INCIDENT) {
@@ -147,32 +140,7 @@ export const useNewOccurrenceModal = () => {
       mutationFn: filesService.uploadOccurrenceFile,
     });
 
-  //console.log("errors", errors);
-
   const handleSubmit = hookFormhandleSubmit(async (data) => {
-    console.log("Data", {
-      date: data.date?.toISOString(),
-      baseId: data.baseId,
-      state: data.state as UF,
-      clientId: data.clientId,
-      isAbsent: data.isAbsent === "true" ? true : false,
-      nature: data.nature,
-      type: data.type,
-      severity: Object.values(OccurrenceSeverity).includes(
-        data.severity as OccurrenceSeverity
-      )
-        ? (data.severity as OccurrenceSeverity)
-        : (data.severity as OccurrenceSeverity),
-      description: data.description,
-      createdAt: getCurrentISOString(),
-      hour: formatTimeStringToIsoString(selectedHour),
-      category: Object.values(OccurrenceCategory).includes(
-        data.category as OccurrenceCategory
-      )
-        ? (data.category as OccurrenceCategory)
-        : undefined,
-    });
-
     try {
       const occurrence = await mutateNewOccurrenceAsync({
         date: data.date?.toISOString()!,

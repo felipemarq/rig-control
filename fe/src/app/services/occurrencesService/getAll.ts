@@ -20,8 +20,7 @@ export type OccurrenceFilters = {
   type?: OccurrenceType;
   uf?: UF;
   baseId?: string;
-  startDate: string;
-  endDate: string;
+  year: string;
 };
 
 export type OccurrencesResponse = Array<Occurrence>;

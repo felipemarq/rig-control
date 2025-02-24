@@ -17,16 +17,16 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-export const DaysNotRegisteredCard = () => {
+interface DaysNotRegisteredCardProps {
+  className?: string;
+}
+
+export const DaysNotRegisteredCard = ({ className }: DaysNotRegisteredCardProps) => {
   const { mappedRigsAverage } = useDaysNotRegisteredCard();
 
   return (
     <>
-      <Card
-        className={cn(
-          "col-span-12   row-span-3  shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4"
-        )}
-      >
+      <Card className={cn("", className)}>
         <CardHeader className="px-7">
           <CardTitle>Registros</CardTitle>
           <CardDescription>

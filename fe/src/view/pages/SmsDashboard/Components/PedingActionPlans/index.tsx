@@ -10,6 +10,7 @@ import {
 import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboardContext";
 import { useMemo } from "react";
 import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
+import { OccurenceActionBadgeStatus } from "@/view/components/OccurrenceActionBagdeStatus";
 
 export const PedingActionPlans = () => {
   const { occurrences } = useSmsDashboardContext();
@@ -39,34 +40,23 @@ export const PedingActionPlans = () => {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>Descrição</TableHead>
-              <TableHead>Prazo</TableHead>
+              <TableHead className="w-[400px]">Título</TableHead>
+              <TableHead>Responsável</TableHead>
+              <TableHead>Vencimento</TableHead>
               <TableHead>Status</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {pendingActions.length > 0 ? (
-              <>
-                {" "}
-                {pendingActions.map((acao) => (
-                  <TableRow key={acao.id}>
-                    <TableCell>{acao.description}</TableCell>
-                    <TableCell>{acao.dueDate}</TableCell>
-                    <TableCell>{acao.responsible}</TableCell>
-                  </TableRow>
-                ))}
-              </>
-            ) : (
-              <>
-                <TableRow>
-                  <TableCell colSpan={3}>
-                    <div className="flex justify-center">
-                      <p className="text-muted-foreground">Não há ações pendentes</p>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              </>
-            )}
+            {pendingActions.map((action) => (
+              <TableRow key={action.id}>
+                <TableCell className="font-medium">{action.title}</TableCell>
+                <TableCell>{action.responsible}</TableCell>
+                <TableCell>{new Date(action.dueDate).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  <OccurenceActionBadgeStatus occurrenceAction={action} />
+                </TableCell>
+              </TableRow>
+            ))}
           </TableBody>
         </Table>
       </CardContent>

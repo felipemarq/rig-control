@@ -1,9 +1,9 @@
-import {useGlobalDashboard} from "../../GlobalDashboardContext/useDashboard";
+import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
 
 export const useStatboxContainer = () => {
   const {
-    statBox: {averageHours, averageHoursPercentage, averageUnavailableHours},
-    chartData,
+    statBox: { averageHours, averageHoursPercentage, averageUnavailableHours },
+    unbilledPeriodsChartData,
     isFetchingRigsAverage,
     selectedDashboardView,
   } = useGlobalDashboard();
@@ -11,7 +11,7 @@ export const useStatboxContainer = () => {
   let glossHours = 0;
   let repairHours = 0;
 
-  chartData.forEach((data) => {
+  unbilledPeriodsChartData.forEach((data) => {
     if (data.id === "GLOSS") {
       glossHours += data.value;
     }

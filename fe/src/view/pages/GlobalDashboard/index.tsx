@@ -1,19 +1,21 @@
-// Importações de componentes e contextos necessário
+import { NewHader } from "@/view/components/NewHeader";
+import { FilterSheet } from "@/view/components/FilterSheet";
 import {
   GlobalDashboardContext,
   GlobalDashboardProvider,
 } from "./GlobalDashboardContext";
-import { StatboxContainer } from "./components/StatboxContainer";
-import { DaysNotRegisteredCard } from "./components/DaysNotRegisteredCard";
-import { AverageBarChartCard } from "./components/AverageBarChartCard";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { StatboxContainer } from "./components/StatboxContainer";
+import { AverageBarChartCard } from "./components/AverageBarChartCard";
+import { DaysNotRegisteredCard } from "./components/DaysNotRegisteredCard";
 import { UnbilledPeriodsPieChartCard } from "./components/UnbilledPeriodsPieChartCard";
 import { PeriodsDetailsPieChartCard } from "./components/PeriodsDetailsPieChartCard";
-import { FilterSheet } from "@/view/components/FilterSheet";
-import { Header } from "@/view/components/Header";
 import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard";
+import { RepairDetailsPieChartCard } from "./components/RepairDetailsPieChartCard";
+import { Button } from "@/components/ui/button";
+import { Download } from "lucide-react";
 
-const GlobalDashboard = () => {
+export default function GlobalDashboard() {
   return (
     <GlobalDashboardProvider>
       <GlobalDashboardContext.Consumer>
@@ -21,17 +23,35 @@ const GlobalDashboard = () => {
           isDetailsGraphVisible,
           handleApplyFilters,
           isFetchingRigsAverage,
-          isChartDataEmpty,
           handleChangeDashboardView,
           selectedDashboardView,
+          selectedPeriodClassification,
+          selectedPieChartView,
+          selectedDetailPieChartView,
+          mappedRigsRepairHours,
+          selectedRepairPeriodClassification,
+          mappedRigsUnbilledHours,
+          handleExcelDownload,
+
+          isFetchingReport,
         }) => (
-          <div className="overflow-y-auto w-full">
-            <Header title="Dashboard Geral" displayRig={false}>
-              <div className="flex flex-row-reverse gap-2  items-center">
+          <div className="min-h-screen bg-gray-50/50">
+            {/* Header */}
+            <NewHader title="Dashboard Geral" displayRig={false}>
+              <div className="flex flex-row-reverse gap-2 justify-center items-center">
                 <FilterSheet
                   onApplyFilters={handleApplyFilters}
                   isLoading={isFetchingRigsAverage}
                 />
+                <Button
+                  className="gap-2 "
+                  variant="default"
+                  onClick={handleExcelDownload}
+                  isLoading={isFetchingReport}
+                >
+                  <Download className="w-4 h-4" />
+                  <span className="hidden lg:inline">Excel</span>
+                </Button>
                 <Tabs defaultValue="all">
                   <TabsList>
                     <TabsTrigger
@@ -61,29 +81,54 @@ const GlobalDashboard = () => {
                   </TabsList>
                 </Tabs>
               </div>
-            </Header>
+            </NewHader>
 
-            <div className="flex w-full flex-col">
-              <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
+            <div className="lg:p-6">
+              <div className="max-w-7xl mx-auto space-y-6 ">
+                {/* KPI Cards */}
                 <StatboxContainer />
-                <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
-                  <AverageBarChartCard />
-                  <DaysNotRegisteredCard />
-                  {!isChartDataEmpty && selectedDashboardView === "ALL" && (
+
+                {/* Charts Section */}
+                <div className="grid gap-6 lg:grid-cols-6">
+                  <AverageBarChartCard className="p-4 lg:col-span-4" />
+
+                  <DaysNotRegisteredCard className="lg:col-span-2" />
+
+                  {selectedDashboardView === "ALL" && (
                     <>
-                      <UnbilledPeriodsPieChartCard />
-                      {isDetailsGraphVisible && <PeriodsDetailsPieChartCard />}
+                      <UnbilledPeriodsPieChartCard className="lg:col-span-2" />
+                      {isDetailsGraphVisible && (
+                        <PeriodsDetailsPieChartCard className="lg:col-span-2" />
+                      )}
                     </>
                   )}
-                  <UnbilledPeriodsByRigCard />
+                  <UnbilledPeriodsByRigCard
+                    className="lg:col-span-2"
+                    rigsData={mappedRigsUnbilledHours}
+                    selectedView={selectedPieChartView}
+                    selectedDetailView={selectedDetailPieChartView ?? undefined}
+                  />
+
+                  {selectedPeriodClassification && selectedPieChartView === "REPAIR" && (
+                    <RepairDetailsPieChartCard />
+                  )}
+
+                  {selectedRepairPeriodClassification && (
+                    <UnbilledPeriodsByRigCard
+                      className="lg:col-span-2"
+                      rigsData={mappedRigsRepairHours}
+                      selectedDetailView={selectedDetailPieChartView ?? undefined}
+                      selectedRepairClassification={
+                        selectedRepairPeriodClassification ?? undefined
+                      }
+                    />
+                  )}
                 </div>
-              </main>
+              </div>
             </div>
           </div>
         )}
       </GlobalDashboardContext.Consumer>
     </GlobalDashboardProvider>
   );
-};
-
-export default GlobalDashboard;
+}

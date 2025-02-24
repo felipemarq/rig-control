@@ -2,32 +2,53 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGlobalDashboard } from "../../GlobalDashboardContext/useDashboard";
 import { NotFound } from "@/view/components/NotFound";
 import { Spinner } from "@/view/components/Spinner";
-import { UnbilledPeriodsPieChart } from "./UnbilledPeriodsPieChart";
+import { UnbilledPeriodsPieChartCn } from "./components/UnbilledPeriodsPieChartCn";
+import { cn } from "@/lib/utils";
 
-export const UnbilledPeriodsPieChartCard = () => {
-  const { isFetchingRigsAverage, rigsAverage, isFetchingUnbilledPeriods } =
-    useGlobalDashboard();
+interface UnbilledPeriodsPieChartCardProps {
+  className?: string;
+}
+
+export const UnbilledPeriodsPieChartCard = ({
+  className,
+}: UnbilledPeriodsPieChartCardProps) => {
+  const {
+    isFetchingRigsAverage,
+    isFetchingUnbilledPeriods,
+    handleSelectedPieChartViewChange,
+    unbilledPeriodsChartData,
+    hasNoUnbilledPeriods,
+  } = useGlobalDashboard();
+
   return (
-    <Card className="col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
-      <CardHeader className="pl-7 ">
-        <div className="flex gap-2 items-center justify-between cursor-pointer">
-          <CardTitle>Tempo não faturado </CardTitle>
-        </div>
+    <Card className={cn("flex flex-col col-span-6", className)}>
+      <CardHeader className="items-center pb-0">
+        <CardTitle>Tempo não faturado</CardTitle>
       </CardHeader>
-
-      <CardContent className="px-2 h-full">
-        {isFetchingRigsAverage && <Spinner />}
-        {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
-          <div className="flex justify-center items-center">
-            <NotFound>
-              <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
-              <strong>período</strong> selecionado!
-            </NotFound>
-          </div>
+      <CardContent className="flex-1 pb-0">
+        {!isFetchingRigsAverage && !isFetchingUnbilledPeriods && (
+          <>
+            {" "}
+            {!hasNoUnbilledPeriods && (
+              <UnbilledPeriodsPieChartCn
+                chartData={unbilledPeriodsChartData}
+                handleSelectedPieChartViewChange={handleSelectedPieChartViewChange}
+              />
+            )}
+            {hasNoUnbilledPeriods && (
+              <div className="flex justify-center items-center mx-auto aspect-square max-h-[350px]">
+                <NotFound>
+                  <strong>Sem</strong> tempo não faturado no <strong>período</strong>{" "}
+                  selecionado!
+                </NotFound>
+              </div>
+            )}
+          </>
         )}
-        {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
-          <div className="w-full h-full">
-            <UnbilledPeriodsPieChart />
+
+        {(isFetchingRigsAverage || isFetchingUnbilledPeriods) && (
+          <div className="mx-auto aspect-square max-h-[350px] flex justify-center items-center">
+            <Spinner />
           </div>
         )}
       </CardContent>

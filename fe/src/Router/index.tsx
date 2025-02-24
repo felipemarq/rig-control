@@ -145,7 +145,7 @@ export const Router = () => {
             </Route>
 
             <Route element={<ShadcnLayout />}>
-              <Route path="/dashboard-test" element={<Dashboard />} />
+              {/*  <Route path="/dashboard-test" element={<GlobalDashboard2 />} /> */}
             </Route>
           </Route>
         </Routes>

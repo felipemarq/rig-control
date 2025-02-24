@@ -12,7 +12,7 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 // you'll often use just a few of them.
 
 export const CalendarChart = () => {
-  const { calendarRange, data, navigate } = useCalendarChart();
+  const { calendarRange, data } = useCalendarChart();
   const { primaryColor } = useTheme();
   return (
     <ResponsiveCalendar
@@ -127,7 +127,7 @@ export const CalendarChart = () => {
         );
       }}
       // @ts-ignore
-      onClick={(e) => navigate(`/details/${e.data.id}`)}
+      onClick={(e) => window.open(`/details/${e.data.id}`, "_blank")}
       legends={[
         {
           anchor: "bottom-right",

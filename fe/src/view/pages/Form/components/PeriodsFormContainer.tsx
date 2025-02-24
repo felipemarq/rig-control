@@ -277,9 +277,10 @@ export const PeriodsFormContainer = () => {
                         onChange={(value) => handlePeriodClassification(id, value)}
                         placeholder="Classificação"
                         value={classification}
-                        options={getPeriodClassification(type)
-                          .filter(({ value }) => value !== "SCHEDULED_STOP")
-                          .filter(({ value }) => value !== "PROCESS")}
+                        options={getPeriodClassification(type).filter(
+                          ({ value }) =>
+                            !["SCHEDULED_STOP", "PROCESS", "OTHERS"].includes(value)
+                        )}
                       />
                     </div>
                   )}
@@ -346,12 +347,14 @@ export const PeriodsFormContainer = () => {
                     </Button>
                   )}
 
-                  <Button
-                    className="bg-primary w-1/3 lg:w-1/4 text-sm"
-                    onClick={() => addPeriod()}
-                  >
-                    Adicionar período
-                  </Button>
+                  {index === periods.length - 1 && (
+                    <Button
+                      className="bg-primary w-1/3 lg:w-1/4 text-sm"
+                      onClick={() => addPeriod()}
+                    >
+                      Adicionar período
+                    </Button>
+                  )}
                 </div>
               </div>
             </div>

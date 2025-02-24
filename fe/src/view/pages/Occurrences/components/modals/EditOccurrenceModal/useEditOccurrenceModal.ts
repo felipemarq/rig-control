@@ -144,16 +144,6 @@ export const useEditOccurrenceModal = () => {
 
   const selectedNature = watch("nature");
 
-  /*  console.log("selectedSeverity", selectedSeverity);
-  console.log("errors", errors);
-  occurrenceSeveritySelectOptions;
-  console.log(
-    "occurrenceSeveritySelectOptions",
-    occurrenceSeveritySelectOptions
-  ); */
-
-  console.log("errors", errors);
-
   useEffect(() => {
     if (selectedNature === OccurenceNature.INCIDENT) {
       setValue("category", ""); // Limpa o valor de category
@@ -205,31 +195,6 @@ export const useEditOccurrenceModal = () => {
   };
 
   const handleSubmit = hookFormhandleSubmit(async (data) => {
-    console.log("Data", {
-      id: occurrenceBeingSeen?.id!,
-      date: data.date.toISOString(),
-      baseId: data.baseId,
-      clientId: data.clientId,
-      state: data.state as UF,
-      isAbsent: data.isAbsent === "true" ? true : false,
-      nature: data.nature,
-      type: data.type,
-      severity: Object.values(OccurrenceSeverity).includes(
-        data.severity as OccurrenceSeverity
-      )
-        ? (data.severity as OccurrenceSeverity)
-        : undefined,
-      description: data.description,
-      createdAt: occurrenceBeingSeen?.createdAt!,
-
-      hour: formatTimeStringToIsoString(selectedHour),
-      category: Object.values(OccurrenceCategory).includes(
-        data.category as OccurrenceCategory
-      )
-        ? (data.category as OccurrenceCategory)
-        : undefined,
-    });
-
     try {
       await mutateAsync({
         id: occurrenceBeingSeen?.id!,

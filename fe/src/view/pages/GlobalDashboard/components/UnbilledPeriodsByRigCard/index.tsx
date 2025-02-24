@@ -1,4 +1,3 @@
-import { useUnbilledPeriodsByRigCard } from "./useUnbilledPeriodsByRigCard";
 import { cn } from "../../../../../app/utils/cn";
 import {
   Card,
@@ -17,33 +16,54 @@ import {
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { ExternalLink } from "lucide-react";
+import { useFiltersContext } from "@/app/hooks/useFiltersContext";
+import { useNavigate } from "react-router-dom";
+import { PeriodType } from "@/app/entities/PeriodType";
 
-export const UnbilledPeriodsByRigCard = () => {
-  const {
-    mappedRigsUnbilledHours,
-    selectedPieChartView,
-    selectedDetailPieChartView,
-    handleChangeRig,
-    navigate,
-  } = useUnbilledPeriodsByRigCard();
+interface UnbilledPeriodsByRigCardProps {
+  selectedView?: PeriodType;
+  selectedDetailView?: string;
+  selectedRepairClassification?: string;
+  rigsData: {
+    id: string;
+    label: string;
+    value: number;
+  }[];
+  className?: string;
+}
+
+export const UnbilledPeriodsByRigCard = ({
+  selectedView,
+  selectedDetailView,
+  selectedRepairClassification,
+  rigsData,
+  className,
+}: UnbilledPeriodsByRigCardProps) => {
+  const { handleChangeRig } = useFiltersContext();
+
+  const navigate = useNavigate();
 
   return (
     <>
-      <Card
-        className={cn(
-          "col-span-12 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] lg:col-span-4",
-          mappedRigsUnbilledHours.length > 5 && "row-span-3"
-        )}
-      >
+      <Card className={cn("", className)}>
         <CardHeader className="px-7">
           <CardTitle>Periodo não faturado por sonda</CardTitle>
           <CardDescription className="flex gap-2 items-center">
-            <span>Selecionado:</span>
-            {selectedPieChartView === "GLOSS" && <Badge>Todos as Glosas</Badge>}
+            {selectedView === "GLOSS" && <Badge>Glosas</Badge>}
 
-            {selectedPieChartView === "REPAIR" && <Badge>Todos os Reparos</Badge>}
+            {selectedView === "REPAIR" && <Badge>Reparos</Badge>}
 
-            {selectedDetailPieChartView && <Badge>{selectedDetailPieChartView}</Badge>}
+            {selectedView === "COMMERCIALLY_STOPPED" && <Badge>Paradas Comerciais</Badge>}
+
+            {selectedView === "SCHEDULED_STOP" && <Badge>Paradas Programadas</Badge>}
+
+            {!selectedDetailView && <Badge>Todos</Badge>}
+
+            {selectedDetailView && <Badge>{selectedDetailView}</Badge>}
+
+            {selectedRepairClassification && (
+              <Badge>{selectedRepairClassification}</Badge>
+            )}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -60,7 +80,7 @@ export const UnbilledPeriodsByRigCard = () => {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {mappedRigsUnbilledHours
+              {rigsData
                 .sort((a, b) => b.value - a.value)
                 .map(({ id, label, value }) => (
                   <TableRow key={id}>

@@ -61,15 +61,6 @@ export class WellsService {
       (item) => !existingWells.includes(item),
     );
 
-    /*  const test = distinctsWells.map((well) => ({
-      contractId: 'c6b04e59-1a97-42c7-9370-3f0d48d222de',
-      name: well,
-    })); */
-
-    // console.log(test);
-    /*  await this.wellsRepo.createMany({
-      data: test,
-    }); */
     return 'ok por enquanto';
   }
 }

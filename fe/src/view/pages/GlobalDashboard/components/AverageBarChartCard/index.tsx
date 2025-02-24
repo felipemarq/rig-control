@@ -6,10 +6,15 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { AverageBarChart } from "./components/AverageBarChart";
+import { cn } from "@/lib/utils";
 
-export const AverageBarChartCard = () => {
+interface AverageBarChartCardProps {
+  className?: string;
+}
+
+export const AverageBarChartCard = ({ className }: AverageBarChartCardProps) => {
   return (
-    <Card className="col-span-12 row-span-3 lg:col-span-8 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px] ">
+    <Card className={cn("", className)}>
       <CardHeader className="px-7">
         <CardTitle>Média </CardTitle>
         <CardDescription>
