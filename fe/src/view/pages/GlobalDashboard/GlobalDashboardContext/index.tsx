@@ -206,10 +206,16 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   );
 
   const unbilledPeriods = useMemo(() => {
-    return notFilteredUnbilledPeriods.filter(
-      (period) => period.classification !== "SCHEDULED_STOP"
-    );
-  }, [notFilteredUnbilledPeriods]);
+    return notFilteredUnbilledPeriods
+      .filter((period) => period.classification !== "SCHEDULED_STOP")
+      .filter((period) => {
+        if (selectedDashboardView === "ALL") {
+          return true;
+        }
+
+        return period.efficiency?.rig.state === selectedDashboardView;
+      });
+  }, [notFilteredUnbilledPeriods, selectedDashboardView]);
 
   const averageHours = formatNumberWithFixedDecimals(
     rigsAverageTotalHours / filteredRigsAverage.length,
