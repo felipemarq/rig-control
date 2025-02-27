@@ -874,7 +874,6 @@ enum ChecklistItemCategory {
 
 model ChecklistItem {
   id          String                @id @default(uuid()) @db.Uuid
-  number      Int
   description String
   weight      Float
   category    ChecklistItemCategory

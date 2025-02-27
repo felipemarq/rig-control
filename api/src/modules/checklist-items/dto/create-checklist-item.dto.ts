@@ -2,10 +2,6 @@ import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
 import { ChecklistItemCategory } from '../entities/ChecklistItemCategory';
 
 export class CreateChecklistItemDto {
-  @IsNumber()
-  @IsNotEmpty()
-  number: number;
-
   @IsNotEmpty()
   @IsString()
   description: string;
