@@ -30,6 +30,20 @@ export class FileController {
     await this.fileService.uploadOccurenceFile(file, userId, occurrenceId);
   }
 
+  @Post('/evaluation/:evaluationId')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadEvaluationFile(
+    @ActiveUserId() userId: string,
+    @Param('evaluationId', ParseUUIDPipe) evaluationId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Arquivo inválido!');
+    }
+
+    await this.fileService.uploadEvaluationFile(file, userId, evaluationId);
+  }
+
   @Post('/occurrence-action/:occurrenceActionId')
   @UseInterceptors(FileInterceptor('file'))
   async uploadOccurrenceActionFile(

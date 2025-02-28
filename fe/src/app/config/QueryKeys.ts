@@ -28,4 +28,6 @@ export enum QueryKeys {
   RIGS_AVERAGE = "rigs-average",
   WELLS_COUNT = "wells-count",
   USER_LOGS = "user-logs",
+  CHECKLIST_ITEMS = "checklist-items",
+  CHECKLISTS = "checklists",
 }

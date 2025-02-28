@@ -139,6 +139,44 @@ export class FileService {
     );
   }
 
+  async uploadEvaluationFile(
+    file: Express.Multer.File,
+    userId: string,
+    evaluationId: string,
+  ) {
+    const occurrence = (await this.occurrencesRepo.findUnique({
+      where: { id: occurrenceId },
+      select: { id: true, files: true },
+    })) as unknown as OccurrenceWithFiles;
+
+    if (!occurrence) {
+      throw new NotFoundException('BDO não encontrado!');
+    }
+
+    if (occurrence.files.length > 0) {
+      await this.deleteOccurenceFile(occurrenceId);
+      await this.filesRepo.deleteMany({ where: { occurrenceId } });
+    }
+
+    const awsKey = `${occurrenceId}-${file.originalname}`;
+
+    await this.s3Client.send(
+      new PutObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+        Body: file.buffer,
+      }),
+    );
+
+    await this.filesRepo.create({
+      data: {
+        path: `${this.awsBucketPath}${awsKey}`,
+        userId,
+        occurrenceId: occurrence.id,
+      },
+    });
+  }
+
   async deleteOccurenceActionFile(occurrenceActionId: string) {
     const file = await this.filesRepo.findFirst({
       where: { occurrenceActionId: occurrenceActionId },
