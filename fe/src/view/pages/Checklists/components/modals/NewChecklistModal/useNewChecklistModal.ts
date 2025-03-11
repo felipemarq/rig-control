@@ -1,18 +1,16 @@
 import { useFieldArray, useForm } from "react-hook-form";
-import { periodActionPlanServices } from "@/app/services/periodActionPlanServices";
+import { useEffect, useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { customColorToast } from "@/app/utils/customColorToast";
-import { useNavigate } from "react-router-dom";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useTheme } from "@/app/contexts/ThemeContext";
 import { AxiosError } from "axios";
-import { ChangeEvent, DragEvent, useEffect, useState } from "react";
-import { filesService } from "@/app/services/filesService";
 import { useChecklistsContext } from "../../ChecklistsContext/useChecklistsContext";
-import { description } from "@/view/pages/BillingDashboard";
 import { useChecklistItems } from "@/app/hooks/checklists/useChecklistItems";
+import { checklistsService } from "@/app/services/checklistsService";
+import { filesService } from "@/app/services/filesService";
 
 const actionPlanSchema = z.object({
   rigId: z.string().min(1, "A sonda é obrigatória."),
@@ -25,11 +23,12 @@ const actionPlanSchema = z.object({
     .array(
       z.object({
         checklistItemId: z.string().min(1, "A item de avaliação é obrigatório"),
-        rating: z.number().min(1, "A pontuação é obrigatório"),
+        rating: z.number().min(0, "A pontuação é obrigatório"),
         description: z.string().min(1, "A descrição é obrigatório"),
         category: z.string().min(1, "A categoria é obrigatória"),
         weight: z.number().min(1, "O peso é obrigatório"),
         comment: z.string().optional(),
+        file: z.instanceof(File).optional(),
       })
     )
     .min(1, "Adicione pelo menos um item ao plano de ação"),
@@ -37,80 +36,28 @@ const actionPlanSchema = z.object({
 
 type ActionPlanFormValues = z.infer<typeof actionPlanSchema>;
 
-export const useNewPeriodActionPlanModal = () => {
-  const { isNewChecklistModalOpen, openNewChecklistModal, closeNewChecklistModal, rigs } =
-    useChecklistsContext();
+export const useNewChecklistModal = () => {
+  const {
+    isNewChecklistModalOpen,
+    closeNewChecklistModal,
+    rigs,
+    handleRefechChecklists,
+  } = useChecklistsContext();
+
+  const [isUploadingFiles, setIsUploadingFiles] = useState(false);
 
   const { checklistItems } = useChecklistItems();
 
-  const {
-    isPending: isLoadingNewPeriodActionPlan,
-    mutateAsync: mutateNewPeriodActionPlanAsync,
-  } = useMutation({
-    mutationFn: periodActionPlanServices.create,
-  });
-
-  const { isPending: isLoadingUploadFile, mutateAsync: mutateUploadFileAsync } =
+  const { isPending: isLoadingChecklist, mutateAsync: mutateChecklistAsync } =
     useMutation({
-      mutationFn: filesService.uploadPeriodActionPlanFile,
+      mutationFn: checklistsService.create,
     });
 
   const { primaryColor } = useTheme();
-
-  const [isDragging, setIsDragging] = useState<boolean>(false);
-  const [file, setFile] = useState<File | null>(null);
-  const [isUploadingFile, setIsUploadingFile] = useState<boolean>(false);
-  const [filesArray, setFilesArray] = useState<File[]>([]);
-  const [isPendingUploadingFile, setIsPendingUploadingFile] = useState<boolean>(false);
-
-  const handleAddFile = (file: File) => {
-    setFilesArray((prev) => [...prev, file]);
-    closeUploadFilesModal();
-  };
-
-  const handleFileSelected = (event: ChangeEvent<HTMLInputElement>) => {
-    const { files } = event.currentTarget;
-
-    if (!files) {
-      return;
-    }
-
-    const selectedFile = files[0];
-
-    setFile(selectedFile);
-  };
-
-  const handleDrop = (event: DragEvent<HTMLLabelElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-
-    const { files } = event.dataTransfer;
-
-    if (!files || files.length === 0) {
-      return;
-    }
-
-    const selectedFile = files[0];
-    setFile(selectedFile);
-  };
-
-  const handleDragOver = (event: DragEvent<HTMLLabelElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (event: DragEvent<HTMLLabelElement>) => {
-    event.preventDefault();
-    event.stopPropagation();
-    setIsDragging(false);
-  };
-
   const {
     control,
     handleSubmit: hookFormhandleSubmit,
     formState: { errors },
-    watch,
     reset,
   } = useForm<ActionPlanFormValues>({
     defaultValues: {
@@ -145,95 +92,74 @@ export const useNewPeriodActionPlanModal = () => {
     }
   }, [checklistItems, reset]);
 
-  const navigate = useNavigate();
-
-  const evaluations = watch("evaluations");
-
-  console.log("evaluations", evaluations);
-  console.log("checklistItems", checklistItems);
-
-  const { fields, append, remove } = useFieldArray({
+  const { fields } = useFieldArray({
     control,
     name: "evaluations",
   });
 
-  const openUploadFilesModal = () => {
-    setIsUploadingFile(true);
-  };
-
-  const closeUploadFilesModal = () => {
-    setIsUploadingFile(false);
-  };
-
-  /*   const handleSubmit = hookFormhandleSubmit(async (data) => {
+  const handleSubmit = hookFormhandleSubmit(async (data) => {
     try {
-      const periodActionPlan = await mutateNewPeriodActionPlanAsync({
-        periodId: periodId!,
-        title: data.title,
-        rigId: efficiency?.rigId!,
-        finishedAt: data.finishedAt,
-        isFinished: data.isFinished,
-        periodActionPlanItems: data.periodActionPlanItems.map((periodActionPlanItem) => ({
-          ...periodActionPlanItem,
-          dueDate: periodActionPlanItem.dueDate.toISOString(),
-          finishedAt: periodActionPlanItem.finishedAt?.toISOString(),
-        })),
-      });
+      setIsUploadingFiles(true);
+      let evaluationsWithFiles = [];
 
-      setIsPendingUploadingFile(true);
-
-      if (filesArray.length > 0) {
-        for (const file of filesArray) {
-          const formData = new FormData();
-          formData.append("file", file);
-          try {
-            await mutateUploadFileAsync({
-              periodActionPlanId: periodActionPlan.id!,
-              formData: formData,
-            });
-          } catch (error) {
-            console.error(`Erro ao enviar o arquivo ${file.name}:`, error);
-          }
+      for (const evaluation of data.evaluations) {
+        let fileId = null;
+        if (evaluation.file) {
+          const uploadedFile = await filesService.uploadFile({ file: evaluation.file });
+          fileId = uploadedFile.id;
         }
+
+        evaluationsWithFiles.push({
+          checklistItemId: evaluation.checklistItemId,
+          rating: evaluation.rating,
+          comment: evaluation.comment ?? "",
+          fileId,
+        });
       }
 
-      setIsPendingUploadingFile(false);
+      setIsUploadingFiles(false);
+
+      await mutateChecklistAsync({
+        rigId: data.rigId,
+        date: data.date?.toISOString()!,
+        well: data.well,
+        title: data.title,
+        supervisor: data.supervisor,
+        team: data.team,
+        evaluations: evaluationsWithFiles,
+      });
 
       customColorToast("Registro feito com Sucesso!", primaryColor, "success");
-      handleRefechPeriodsActionPlans();
-      navigate("/period-action-plan");
-      closeNewPeriodActionPlanModal();
+      handleRefechChecklists();
+      //navigate("/checklist");
+      closeNewChecklistModal();
+      reset({
+        title: "",
+        evaluations: checklistItems.map((item) => ({
+          checklistItemId: item.id,
+          rating: 0,
+          category: item.category,
+          comment: "",
+          description: item.description,
+          weight: item.weight,
+        })),
+      });
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);
       //navigate("/dashboard");
     }
-  }); */
+  });
 
   return {
     isNewChecklistModalOpen,
     closeNewChecklistModal,
-    fields,
-    append,
-    remove,
     control,
     errors,
-    watch,
-    isPending:
-      isLoadingNewPeriodActionPlan || isPendingUploadingFile || isLoadingUploadFile,
-    handleDragLeave,
-    handleDragOver,
-    handleDrop,
-    handleFileSelected,
-    isDragging,
-    file,
-    isUploadingFile,
-    openUploadFilesModal,
-    closeUploadFilesModal,
-    handleAddFile,
-    filesArray,
-    rigs,
+    fields,
+    isPending: isLoadingChecklist || isUploadingFiles,
     primaryColor,
-    evaluations,
+    rigs,
+    handleSubmit,
   };
 };

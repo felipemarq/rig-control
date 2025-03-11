@@ -50,97 +50,98 @@ export const PeriodsDataGridCard = () => {
             </span>{" "}
           </CardDescription>
         </div>
-        {efficiency && (
-          <>
-            <div className="flex justify-end  gap-5 lg:w-1/2 ">
-              {!efficiency.isConfirmed && canUserEdit && (
-                <Button
-                  size="sm"
-                  className="flex justify-center items-center gap-2"
-                  disabled={isLoadingUpdateEfficiency}
-                  onClick={() =>
-                    handleUpdateEfficiency({ attribute: "isConfirmed", value: true })
-                  }
-                >
-                  <Check className="h-4 w-4" />
-                  <span>Confirmar Registro</span>
-                </Button>
-              )}
 
+        <div className="flex justify-end  gap-5 lg:w-1/2 ">
+          {efficiency && !efficiency.isConfirmed && canUserEdit && (
+            <Button
+              size="sm"
+              className="flex justify-center items-center gap-2"
+              disabled={isLoadingUpdateEfficiency}
+              onClick={() =>
+                handleUpdateEfficiency({ attribute: "isConfirmed", value: true })
+              }
+            >
+              <Check className="h-4 w-4" />
+              <span>Confirmar Registro</span>
+            </Button>
+          )}
+
+          {efficiency && (
+            <div>
               <MoreDetailsDialog efficiency={efficiency} />
-
-              {canUserEdit && (
-                <TooltipProvider delayDuration={0}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button size="sm" className="gap-1" onClick={handleExcelDownload}>
-                        <FileDown className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Baixar arquivo em Excel</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-
-              {efficiency.isEditable && (
-                <TooltipProvider delayDuration={0}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        asChild
-                        size="sm"
-                        className="flex justify-center items-center gap-1"
-                      >
-                        <Link to={`/form/${efficiencyId}`}>
-                          <Pencil className="h-4 w-4" />
-                        </Link>
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Editar Registro</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-
-              {!efficiency.isEditable && canUserEdit && (
-                <TooltipProvider delayDuration={0}>
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="sm"
-                        className="flex justify-center items-center gap-2"
-                        disabled={isLoadingUpdateEfficiency}
-                        onClick={() =>
-                          handleUpdateEfficiency({ attribute: "isEditable", value: true })
-                        }
-                      >
-                        <Pencil className="h-4 w-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Tornar Registro Editável</p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              )}
-
-              {canUserEdit && (
-                <Button
-                  size="sm"
-                  className="gap-1"
-                  onClick={openDeleteModal}
-                  variant="destructive"
-                >
-                  <span className="hidden sm:inline"> Deletar Registro</span>
-                  <Trash className="h-4 w-4" />
-                </Button>
-              )}
             </div>
-          </>
-        )}
+          )}
+
+          {canUserEdit && (
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button size="sm" className="gap-1" onClick={handleExcelDownload}>
+                      <FileDown className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Baixar arquivo em Excel</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
+          {efficiency && efficiency.isEditable && (
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button size="sm" className="flex justify-center items-center gap-1">
+                    <Link to={`/form/${efficiencyId}`}>
+                      <Pencil className="h-4 w-4" />
+                    </Link>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Editar Registro</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
+          {efficiency && !efficiency.isEditable && canUserEdit && (
+            <TooltipProvider delayDuration={0}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div>
+                    <Button
+                      size="sm"
+                      className="flex justify-center items-center gap-2"
+                      disabled={isLoadingUpdateEfficiency}
+                      onClick={() =>
+                        handleUpdateEfficiency({ attribute: "isEditable", value: true })
+                      }
+                    >
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Tornar Registro Editável</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
+          )}
+
+          {canUserEdit && (
+            <Button
+              size="sm"
+              className="gap-1"
+              onClick={openDeleteModal}
+              variant="destructive"
+            >
+              <span className="hidden sm:inline"> Deletar Registro</span>
+              <Trash className="h-4 w-4" />
+            </Button>
+          )}
+        </div>
       </CardHeader>
       <CardContent className="p-0 h-4/5 ">
         {isFetchingEfficiency && (

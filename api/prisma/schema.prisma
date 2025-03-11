@@ -835,12 +835,14 @@ model File {
   occurrenceActionId String?           @map("occurrence_action_id") @db.Uuid
   periodActionPlanId String?           @map("period_action_plan_id") @db.Uuid
   evaluationId       String?           @map("evaluation_id") @db.Uuid
+  checklistId        String?           @map("checklist_id") @db.Uuid
   createdAt          DateTime          @default(now()) @map("created_at")
   user               User              @relation(fields: [userId], references: [id], onDelete: Cascade)
   occurrence         Occurrence?       @relation(fields: [occurrenceId], references: [id], onDelete: Cascade)
   occurrenceAction   OccurrenceAction? @relation(fields: [occurrenceActionId], references: [id], onDelete: Cascade)
   periodActionPlan   PeriodActionPlan? @relation(fields: [periodActionPlanId], references: [id], onDelete: Cascade)
   evaluation         Evaluation?       @relation(fields: [evaluationId], references: [id], onDelete: Cascade)
+  checklist          Checklist?        @relation(fields: [checklistId], references: [id], onDelete: Cascade)
 
   @@map("files")
 }
@@ -865,11 +867,17 @@ model Checklist {
   well Well @relation(fields: [wellId], references: [id])
 
   evaluations Evaluation[]
+  files       File[]
 }
 
 enum ChecklistItemCategory {
   SMS // Segurança, Meio Ambiente e Saúde
-  // Manutenção
+  SGI // Sistema de Gestão Integrado
+  OP // Operações
+  INT // Integridade
+  MANT // Manutenção
+  INT_MANT // Integridade e Manutenção
+  LOG // Logística
 }
 
 model ChecklistItem {

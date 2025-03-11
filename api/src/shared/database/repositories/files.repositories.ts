@@ -10,6 +10,10 @@ export class FilesRepository {
     return await this.prismaService.file.create(createDto);
   }
 
+  async update(updateDto: Prisma.FileUpdateArgs) {
+    return await this.prismaService.file.update(updateDto);
+  }
+
   async findFirst(findFirstDto: Prisma.FileFindFirstArgs) {
     return await this.prismaService.file.findFirst(findFirstDto);
   }

@@ -1,20 +1,18 @@
 import { Modal } from "@/view/components/Modal";
-import { useNewChecklistModal } from "./useNewChecklistModal";
+import { useEditChecklistModal } from "./useEditChecklistModal";
 import { Controller } from "react-hook-form";
 import { Input } from "@/view/components/Input";
-import { Input as ShadcnInput } from "@/components/ui/input";
 import { DatePickerInput } from "@/view/components/DatePickerInput";
 import { Button } from "@/view/components/Button";
-
 import TextArea from "antd/es/input/TextArea";
 import { Select } from "@/view/components/Select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Upload } from "lucide-react";
+import { Input as ShadcnInput } from "@/components/ui/input";
 
-export const NewChecklistModal = () => {
+export const EditChecklistModal = () => {
   const {
-    isNewChecklistModalOpen,
-    closeNewChecklistModal,
+    isEditChecklistModalOpen,
+    closeEditChecklistModal,
     control,
     errors,
     fields,
@@ -22,13 +20,17 @@ export const NewChecklistModal = () => {
     primaryColor,
     rigs,
     handleSubmit,
-  } = useNewChecklistModal();
+    handleDeleteEvaluationFile,
+    isLoadingDeleteEvaluationFile,
+    handleUploadEvaluationFile,
+    isUploadingEvaluationFile,
+  } = useEditChecklistModal();
 
   return (
     <Modal
-      title="Criar Checklist"
-      open={isNewChecklistModalOpen}
-      onClose={closeNewChecklistModal}
+      title="Editar Checklist"
+      open={isEditChecklistModalOpen}
+      onClose={closeEditChecklistModal}
       overflow
       maxWidth="1000px"
     >
@@ -248,23 +250,64 @@ export const NewChecklistModal = () => {
                       />
                     </div>
 
-                    <Controller
-                      control={control}
-                      name={`evaluations.${index}.file`}
-                      render={({ field: { onChange, value, ...field } }) => (
-                        <div className="text-black mt-4  flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
-                          <ShadcnInput
-                            type="file"
-                            className="border-gray-200 file:bg-primary file:text-white hover:file:bg-primary/90"
-                            onChange={(e) => {
-                              const file = e.target.files?.[0];
-                              if (file) onChange(file);
-                            }}
-                            {...field}
-                          />
-                        </div>
-                      )}
-                    />
+                    {!item.filePath && (
+                      <Controller
+                        control={control}
+                        name={`evaluations.${index}.file`}
+                        render={({ field: { onChange, value, ...field } }) => (
+                          <div className="text-black mt-4 flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
+                            <ShadcnInput
+                              type="file"
+                              className="border-gray-200 file:bg-primary file:text-white hover:file:bg-primary/90"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) onChange(file);
+                              }}
+                              {...field}
+                            />
+                            {value && (
+                              <Button
+                                type="button"
+                                onClick={() =>
+                                  handleUploadEvaluationFile(
+                                    index,
+                                    item.evaluationId,
+                                    value
+                                  )
+                                }
+                                isLoading={isUploadingEvaluationFile}
+                                disabled={isUploadingEvaluationFile}
+                              >
+                                Enviar
+                              </Button>
+                            )}
+                          </div>
+                        )}
+                      />
+                    )}
+
+                    {item.filePath && (
+                      <div className=" text-black mt-4  flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
+                        <span>Arquivo anexado: </span>
+                        <a
+                          href={item.filePath}
+                          target="_blank"
+                          className="underline text-blue-600 hover:text-blue-800 visited:text-purple-600"
+                        >
+                          {item.filePath.split("/")[3].slice(37)}
+                        </a>
+                        <Button
+                          type="button"
+                          onClick={() =>
+                            handleDeleteEvaluationFile(index, item.evaluationId)
+                          }
+                          isLoading={isLoadingDeleteEvaluationFile}
+                          disabled={isLoadingDeleteEvaluationFile}
+                        >
+                          Deletar arquivo
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -277,7 +320,7 @@ export const NewChecklistModal = () => {
             disabled={isPending}
             isLoading={isPending}
           >
-            Criar Checklist
+            Editar Checklist
           </Button>
         </form>
       </div>

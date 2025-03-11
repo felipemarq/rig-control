@@ -38,4 +38,19 @@ export class ChecklistsController {
   remove(@Param('checklistId') checklistId: string) {
     return this.checklistsService.remove(checklistId);
   }
+
+  @Patch(':checklistId')
+  update(
+    @ActiveUserId() userId: string,
+    @Param('checklistId') checklistId: string,
+    @Body() updateChecklistDto: UpdateChecklistDto,
+  ) {
+    return this.checklistsService.update(
+      checklistId,
+      updateChecklistDto,
+      userId,
+    );
+  }
+
+  //Criar um endpoint de update
 }
