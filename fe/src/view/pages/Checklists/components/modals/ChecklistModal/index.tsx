@@ -1,15 +1,8 @@
 import { Modal } from "@/view/components/Modal";
 
-import { useState } from "react";
 import { format } from "date-fns";
-import { ArrowLeft, FileImage } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { FileImage } from "lucide-react";
+
 import {
   Table,
   TableBody,
@@ -18,11 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/view/components/Button";
-import { Button as ShadcnButton } from "@/components/ui/button";
 
 import { useChecklistsContext } from "../../ChecklistsContext/useChecklistsContext";
 
@@ -89,14 +79,18 @@ export const ChecklistModal = () => {
                 <TableRow key={item.id} className="h-24">
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>
-                    <Badge variant="default">{item.checklistItem.category}</Badge>
+                    <Badge variant="default">
+                      {item.checklistItem.category}
+                    </Badge>
                   </TableCell>
                   <TableCell className="min-w-20">
                     {item.checklistItem.description}
                   </TableCell>
                   <TableCell>{item.checklistItem.weight}</TableCell>
                   <TableCell>{item.score}</TableCell>
-                  <TableCell className="min-w-20">{item.comment || "-"}</TableCell>
+                  <TableCell className="min-w-20">
+                    {item.comment || "-"}
+                  </TableCell>
                   <TableCell>
                     {item.files && item.files?.length! > 0 ? (
                       <a

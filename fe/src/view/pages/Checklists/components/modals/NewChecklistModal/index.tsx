@@ -9,7 +9,6 @@ import { Button } from "@/view/components/Button";
 import TextArea from "antd/es/input/TextArea";
 import { Select } from "@/view/components/Select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Upload } from "lucide-react";
 
 export const NewChecklistModal = () => {
   const {
@@ -100,7 +99,9 @@ export const NewChecklistModal = () => {
                   />
                 )}
               />
-              {errors.date && <p className="text-red-500">{errors.date?.message}</p>}
+              {errors.date && (
+                <p className="text-red-500">{errors.date?.message}</p>
+              )}
             </div>
 
             <div>
@@ -175,7 +176,9 @@ export const NewChecklistModal = () => {
                           <span className="rounded bg-primary/10 px-2 py-1 text-sm font-medium text-primary">
                             {item.category}
                           </span>
-                          <span className="text-sm text-gray-500">Item {index + 1}</span>
+                          <span className="text-sm text-gray-500">
+                            Item {index + 1}
+                          </span>
                         </div>
                         <div className="mt-2 block text-base font-medium text-gray-900">
                           {item.description}
@@ -213,8 +216,11 @@ export const NewChecklistModal = () => {
                                 className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-lg font-medium text-gray-700 transition-colors hover:bg-gray-100 "
                                 style={{
                                   backgroundColor:
-                                    item.value === value ? primaryColor : undefined,
-                                  color: item.value === value ? "white" : undefined,
+                                    item.value === value
+                                      ? primaryColor
+                                      : undefined,
+                                  color:
+                                    item.value === value ? "white" : undefined,
                                 }}
                               >
                                 {item.label}

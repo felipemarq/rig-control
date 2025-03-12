@@ -1,14 +1,11 @@
 import { Button } from "@/components/ui/button";
-import { ChecklistsContext, ChecklistsProvider } from "./components/ChecklistsContext";
-import { NewChecklistModal } from "./components/modals/NewChecklistModal";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { ChevronDown, Edit, Eye, PlusCircle, Search, Trash2 } from "lucide-react";
+  ChecklistsContext,
+  ChecklistsProvider,
+} from "./components/ChecklistsContext";
+import { NewChecklistModal } from "./components/modals/NewChecklistModal";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PlusCircle, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ChecklistsContainer } from "./components/ChecklistsContainer/index.tsx";
 import { EditChecklistModal } from "./components/modals/EditChecklistModal/index.tsx";
@@ -29,7 +26,9 @@ const Checklists = () => {
               <div className="relative">
                 <div className="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary mix-blend-multiply" />
                 <CardHeader className="relative z-10 text-white">
-                  <CardTitle className="text-2xl font-bold">Checklists</CardTitle>
+                  <CardTitle className="text-2xl font-bold">
+                    Checklists
+                  </CardTitle>
                 </CardHeader>
               </div>
               <CardContent className="p-6">

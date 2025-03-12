@@ -9,7 +9,6 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { is } from "date-fns/locale";
 import React, { createContext, useCallback, useState } from "react";
 
 // Definição do tipo do contexto
@@ -44,20 +43,28 @@ interface ChecklistsContextValue {
 // Criação do contexto
 export const ChecklistsContext = createContext({} as ChecklistsContextValue);
 
-export const ChecklistsProvider = ({ children }: { children: React.ReactNode }) => {
+export const ChecklistsProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
   const { user } = useAuth();
   const queryClient = useQueryClient();
   const { primaryColor } = useTheme();
-  const { checklists, isFetchingChecklists, refetchChecklists } = useChecklists();
-  const userRigs = user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
+  const { checklists, isFetchingChecklists, refetchChecklists } =
+    useChecklists();
+  const userRigs =
+    user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
   const [isNewChecklistModalOpen, setIsNewChecklistModalOpen] = useState(false);
-  const [isEditChecklistModalOpen, setIsEditChecklistModalOpen] = useState(false);
-  const [checklistBeingSeen, setChecklistBeingSeen] = useState<Checklist | null>(null);
+  const [isEditChecklistModalOpen, setIsEditChecklistModalOpen] =
+    useState(false);
+  const [checklistBeingSeen, setChecklistBeingSeen] =
+    useState<Checklist | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [checklistIdBeingDeleted, setChecklistIdBeingDeleted] = useState<string | null>(
-    null
-  );
+  const [checklistIdBeingDeleted, setChecklistIdBeingDeleted] = useState<
+    string | null
+  >(null);
   const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false);
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -68,10 +75,12 @@ export const ChecklistsProvider = ({ children }: { children: React.ReactNode }) 
     )
   );
 
-  const { isPending: isLoadingRemoveChecklist, mutateAsync: mutateRemoveChecklistAsync } =
-    useMutation({
-      mutationFn: checklistsService.remove,
-    });
+  const {
+    isPending: isLoadingRemoveChecklist,
+    mutateAsync: mutateRemoveChecklistAsync,
+  } = useMutation({
+    mutationFn: checklistsService.remove,
+  });
 
   const handleDeleteChecklist = async () => {
     try {
@@ -79,7 +88,11 @@ export const ChecklistsProvider = ({ children }: { children: React.ReactNode }) 
         await mutateRemoveChecklistAsync(checklistIdBeingDeleted);
       }
       handleCloseDeleteModal();
-      customColorToast("Registro deletado com Sucesso!", primaryColor, "success");
+      customColorToast(
+        "Registro deletado com Sucesso!",
+        primaryColor,
+        "success"
+      );
       queryClient.invalidateQueries({ queryKey: [QueryKeys.CHECKLISTS] });
       refetchChecklists();
     } catch (error: any | typeof AxiosError) {

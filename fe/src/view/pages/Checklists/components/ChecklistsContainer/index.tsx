@@ -15,7 +15,7 @@ import {
 import { format } from "date-fns";
 import { useChecklistsContext } from "../ChecklistsContext/useChecklistsContext";
 import { Button } from "@/components/ui/button";
-import { ChevronDown, Edit, Eye, Trash, Trash2 } from "lucide-react";
+import { ChevronDown, Edit, Eye, Trash } from "lucide-react";
 import { DeleteModal } from "@/view/components/DeleteModal";
 import { NotFound } from "@/view/components/NotFound";
 
