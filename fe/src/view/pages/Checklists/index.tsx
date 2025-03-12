@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { ChevronDown, Edit, Eye, PlusCircle, Search, Trash2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import { ChecklistsContainer } from "./components/ChecklistsContainer.tsx";
+import { ChecklistsContainer } from "./components/ChecklistsContainer/index.tsx";
 import { EditChecklistModal } from "./components/modals/EditChecklistModal/index.tsx";
 import { ChecklistModal } from "./components/modals/ChecklistModal/index.tsx";
 

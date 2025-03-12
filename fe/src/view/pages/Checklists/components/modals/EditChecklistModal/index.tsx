@@ -8,6 +8,7 @@ import TextArea from "antd/es/input/TextArea";
 import { Select } from "@/view/components/Select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Input as ShadcnInput } from "@/components/ui/input";
+import { Trash2 } from "lucide-react";
 
 export const EditChecklistModal = () => {
   const {
@@ -102,7 +103,9 @@ export const EditChecklistModal = () => {
                   />
                 )}
               />
-              {errors.date && <p className="text-red-500">{errors.date?.message}</p>}
+              {errors.date && (
+                <p className="text-red-500">{errors.date?.message}</p>
+              )}
             </div>
 
             <div>
@@ -177,7 +180,9 @@ export const EditChecklistModal = () => {
                           <span className="rounded bg-primary/10 px-2 py-1 text-sm font-medium text-primary">
                             {item.category}
                           </span>
-                          <span className="text-sm text-gray-500">Item {index + 1}</span>
+                          <span className="text-sm text-gray-500">
+                            Item {index + 1}
+                          </span>
                         </div>
                         <div className="mt-2 block text-base font-medium text-gray-900">
                           {item.description}
@@ -215,8 +220,11 @@ export const EditChecklistModal = () => {
                                 className="flex h-12 w-12 cursor-pointer items-center justify-center rounded-lg border border-gray-300 text-lg font-medium text-gray-700 transition-colors hover:bg-gray-100 "
                                 style={{
                                   backgroundColor:
-                                    item.value === value ? primaryColor : undefined,
-                                  color: item.value === value ? "white" : undefined,
+                                    item.value === value
+                                      ? primaryColor
+                                      : undefined,
+                                  color:
+                                    item.value === value ? "white" : undefined,
                                 }}
                               >
                                 {item.label}
@@ -288,7 +296,9 @@ export const EditChecklistModal = () => {
 
                     {item.filePath && (
                       <div className=" text-black mt-4  flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
-                        <span>Arquivo anexado: </span>
+                        <span className="tracking-tighter">
+                          Arquivo anexado:{" "}
+                        </span>
                         <a
                           href={item.filePath}
                           target="_blank"
@@ -297,14 +307,16 @@ export const EditChecklistModal = () => {
                           {item.filePath.split("/")[3].slice(37)}
                         </a>
                         <Button
+                          variant="danger"
                           type="button"
+                          className="h-12 w-12 p-2"
                           onClick={() =>
                             handleDeleteEvaluationFile(index, item.evaluationId)
                           }
                           isLoading={isLoadingDeleteEvaluationFile}
                           disabled={isLoadingDeleteEvaluationFile}
                         >
-                          Deletar arquivo
+                          <Trash2 />
                         </Button>
                       </div>
                     )}
