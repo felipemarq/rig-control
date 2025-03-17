@@ -1,0 +1,179 @@
+import { QueryKeys } from "@/app/config/QueryKeys";
+import { useTheme } from "@/app/contexts/ThemeContext";
+import { Checklist } from "@/app/entities/Checklist";
+import { useChecklists } from "@/app/hooks/checklists/useChecklists";
+import { useAuth } from "@/app/hooks/useAuth";
+import { checklistsService } from "@/app/services/checklistsService";
+import { ChecklistsResponse } from "@/app/services/checklistsService/getAll";
+import { customColorToast } from "@/app/utils/customColorToast";
+import { treatAxiosError } from "@/app/utils/treatAxiosError";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import React, { createContext, useCallback, useState } from "react";
+
+// Definição do tipo do contexto
+interface ChecklistsContextValue {
+  isNewChecklistModalOpen: boolean;
+  openNewChecklistModal: () => void;
+  closeNewChecklistModal: () => void;
+  rigs: {
+    id: string;
+    name: string;
+  }[];
+  handleRefechChecklists: () => void;
+  filteredChecklists: ChecklistsResponse;
+  handleChangeSearchTerm: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  searchTerm: string;
+  checklistBeingSeen: Checklist | null;
+  isEditChecklistModalOpen: boolean;
+  openEditChecklistModal(checklist: Checklist): void;
+  closeEditChecklistModal(): void;
+  isFetchingChecklists: boolean;
+  handleCloseDeleteModal: () => void;
+  handleOpenDeleteModal: (checklistId: string) => void;
+  isDeleteModalOpen: boolean;
+  isLoadingRemoveChecklist: boolean;
+  handleDeleteChecklist: () => void;
+  checklistIdBeingDeleted: string | null;
+  isChecklistModalOpen: boolean;
+  openChecklistModal(checklist: Checklist): void;
+  closeChecklistModal(): void;
+}
+
+// Criação do contexto
+export const ChecklistsContext = createContext({} as ChecklistsContextValue);
+
+export const ChecklistsProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  //const { isFetchingOccurrences, occurrences } = useOccurrences();
+  const { user } = useAuth();
+  const queryClient = useQueryClient();
+  const { primaryColor } = useTheme();
+  const { checklists, isFetchingChecklists, refetchChecklists } =
+    useChecklists();
+  const userRigs =
+    user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
+  const [isNewChecklistModalOpen, setIsNewChecklistModalOpen] = useState(false);
+  const [isEditChecklistModalOpen, setIsEditChecklistModalOpen] =
+    useState(false);
+  const [checklistBeingSeen, setChecklistBeingSeen] =
+    useState<Checklist | null>(null);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [checklistIdBeingDeleted, setChecklistIdBeingDeleted] = useState<
+    string | null
+  >(null);
+  const [isChecklistModalOpen, setIsChecklistModalOpen] = useState(false);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const filteredChecklists = checklists.filter((checklist) =>
+    Object.values(checklist).some((value) =>
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  );
+
+  const {
+    isPending: isLoadingRemoveChecklist,
+    mutateAsync: mutateRemoveChecklistAsync,
+  } = useMutation({
+    mutationFn: checklistsService.remove,
+  });
+
+  const handleDeleteChecklist = async () => {
+    try {
+      if (checklistIdBeingDeleted) {
+        await mutateRemoveChecklistAsync(checklistIdBeingDeleted);
+      }
+      handleCloseDeleteModal();
+      customColorToast(
+        "Registro deletado com Sucesso!",
+        primaryColor,
+        "success"
+      );
+      queryClient.invalidateQueries({ queryKey: [QueryKeys.CHECKLISTS] });
+      refetchChecklists();
+    } catch (error: any | typeof AxiosError) {
+      treatAxiosError(error);
+      console.log(error);
+      //navigate("/dashboard");
+    }
+  };
+
+  const handleChangeSearchTerm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
+  const handleCloseDeleteModal = () => {
+    setIsDeleteModalOpen(false);
+    setChecklistIdBeingDeleted(null);
+  };
+
+  const handleOpenDeleteModal = (checklistId: string) => {
+    setIsDeleteModalOpen(true);
+    setChecklistIdBeingDeleted(checklistId);
+  };
+
+  const openNewChecklistModal = () => {
+    setIsNewChecklistModalOpen(true);
+  };
+
+  const handleRefechChecklists = () => {
+    refetchChecklists();
+  };
+
+  const closeNewChecklistModal = () => {
+    setIsNewChecklistModalOpen(false);
+  };
+
+  const closeEditChecklistModal = useCallback(() => {
+    setIsEditChecklistModalOpen(false);
+  }, []);
+
+  const openEditChecklistModal = useCallback((checklist: Checklist) => {
+    setIsEditChecklistModalOpen(true);
+    setChecklistBeingSeen(checklist);
+  }, []);
+
+  const closeChecklistModal = useCallback(() => {
+    setIsChecklistModalOpen(false);
+  }, []);
+
+  const openChecklistModal = useCallback((checklist: Checklist) => {
+    setIsChecklistModalOpen(true);
+    setChecklistBeingSeen(checklist);
+  }, []);
+
+  return (
+    <ChecklistsContext.Provider
+      value={{
+        closeNewChecklistModal,
+        openNewChecklistModal,
+        isNewChecklistModalOpen,
+        rigs: userRigs,
+        handleRefechChecklists,
+        filteredChecklists,
+        handleChangeSearchTerm,
+        searchTerm,
+        openEditChecklistModal,
+        closeEditChecklistModal,
+        checklistBeingSeen,
+        isEditChecklistModalOpen,
+        isFetchingChecklists,
+        handleCloseDeleteModal,
+        handleOpenDeleteModal,
+        isDeleteModalOpen,
+        handleDeleteChecklist,
+        isLoadingRemoveChecklist,
+        checklistIdBeingDeleted,
+        isChecklistModalOpen,
+        closeChecklistModal,
+        openChecklistModal,
+      }}
+    >
+      {children}
+    </ChecklistsContext.Provider>
+  );
+};

@@ -38,8 +38,8 @@ export const UnbilledPeriodsPieChartCard = ({
             {hasNoUnbilledPeriods && (
               <div className="flex justify-center items-center mx-auto aspect-square max-h-[350px]">
                 <NotFound>
-                  <strong>Sem</strong> tempo não faturado no <strong>período</strong>{" "}
-                  selecionado!
+                  <strong>Sem</strong> tempo não faturado com os <strong>filtros</strong>{" "}
+                  selecionados!
                 </NotFound>
               </div>
             )}

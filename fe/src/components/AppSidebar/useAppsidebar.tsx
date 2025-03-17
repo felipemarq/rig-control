@@ -152,6 +152,21 @@ export const useAppsidebar = () => {
           },
         ],
       },
+      {
+        title: "Auditoria",
+        url: "#",
+        icon: Workflow,
+        isActive: true,
+
+        items: [
+          {
+            title: "Checklist",
+            url: "/checklist",
+            icon: History,
+            description: "View your recent prompts",
+          },
+        ],
+      },
     ],
     navSecondary: [
       {

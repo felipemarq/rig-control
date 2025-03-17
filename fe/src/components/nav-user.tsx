@@ -12,6 +12,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Link } from "react-router-dom";
 
+import { cn } from "@/lib/utils";
+import { useSidebar } from "./ui/sidebar";
+
 export function NavUser({
   user,
   signout,
@@ -24,6 +27,7 @@ export function NavUser({
   };
   signout(): void;
 }) {
+  const { state } = useSidebar();
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="w-full rounded-md outline-none ring-ring hover:bg-accent focus-visible:ring-2 data-[state=open]:bg-accent">
@@ -39,7 +43,12 @@ export function NavUser({
               {user?.name.slice(0, 2).toLocaleUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div className="grid flex-1 leading-none">
+          <div
+            className={cn(
+              "grid flex-1 leading-none transition-all",
+              state === "collapsed" && "hidden"
+            )}
+          >
             <div className="font-medium">{user.name}</div>
             <div className="overflow-hidden text-xs text-white">
               <div className="line-clamp-1">{user.email}</div>
@@ -48,12 +57,7 @@ export function NavUser({
           <ChevronsUpDown className="ml-auto mr-0.5 h-4 w-4 text-white/50" />
         </div>
       </DropdownMenuTrigger>
-      <DropdownMenuContent
-        className="w-56"
-        align="end"
-        side="right"
-        sideOffset={4}
-      >
+      <DropdownMenuContent className="w-56" align="end" side="right" sideOffset={4}>
         <DropdownMenuLabel className="p-0 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm transition-all">
             <Avatar className="h-7 w-7 rounded-md">

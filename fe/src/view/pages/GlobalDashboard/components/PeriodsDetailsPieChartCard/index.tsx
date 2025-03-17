@@ -16,7 +16,6 @@ export const PeriodsDetailsPieChartCard = ({
 }: PeriodsDetailsPieChartCardProps) => {
   const {
     isFetchingRigsAverage,
-    rigsAverage,
     isFetchingUnbilledPeriods,
     unbilledPeriodsDetailsChartData,
     handleSelectedDetailPieChartViewChange,
@@ -24,6 +23,7 @@ export const PeriodsDetailsPieChartCard = ({
     handleChangePeriodDetailsGraphView,
     selectedPeriodDetailsGraphView,
     handleExpandPeriodDetailsGraph,
+    hasNoUnbilledPeriods,
   } = useGlobalDashboard();
 
   return (
@@ -52,15 +52,16 @@ export const PeriodsDetailsPieChartCard = ({
 
       <CardContent className="px-2 h-full">
         {isFetchingRigsAverage && <Spinner />}
-        {rigsAverage.length === 0 && !isFetchingUnbilledPeriods && (
-          <div className="flex justify-center items-center">
+
+        {hasNoUnbilledPeriods && !isFetchingUnbilledPeriods && (
+          <div className="flex justify-center items-center mx-auto aspect-square max-h-[350px]">
             <NotFound>
-              <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
-              <strong>período</strong> selecionado!
+              <strong>Sem</strong> tempo não faturado com os <strong>filtros</strong>{" "}
+              selecionados!
             </NotFound>
           </div>
         )}
-        {!isFetchingUnbilledPeriods && rigsAverage.length > 0 && (
+        {!isFetchingUnbilledPeriods && !hasNoUnbilledPeriods && (
           <div className="w-full h-full">
             <PeriodsDetailsPieChartCn
               isExpanded={isPeriodDetailsGraphExpanded}

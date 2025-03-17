@@ -24,7 +24,6 @@ export default function GlobalDashboard() {
           handleApplyFilters,
           isFetchingRigsAverage,
           handleChangeDashboardView,
-          selectedDashboardView,
           selectedPeriodClassification,
           selectedPieChartView,
           selectedDetailPieChartView,
@@ -94,14 +93,14 @@ export default function GlobalDashboard() {
 
                   <DaysNotRegisteredCard className="lg:col-span-2" />
 
-                  {selectedDashboardView === "ALL" && (
+                  {
                     <>
                       <UnbilledPeriodsPieChartCard className="lg:col-span-2" />
                       {isDetailsGraphVisible && (
                         <PeriodsDetailsPieChartCard className="lg:col-span-2" />
                       )}
                     </>
-                  )}
+                  }
                   <UnbilledPeriodsByRigCard
                     className="lg:col-span-2"
                     rigsData={mappedRigsUnbilledHours}

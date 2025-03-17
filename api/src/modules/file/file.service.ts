@@ -9,11 +9,11 @@ import {
   PutObjectCommand,
   S3Client,
 } from '@aws-sdk/client-s3';
-import { randomUUID } from 'crypto';
 import { OccurrenceRepository } from 'src/shared/database/repositories/occurrences.repositories';
 import { FilesRepository } from 'src/shared/database/repositories/files.repositories';
 import { OccurrenceActionsRepository } from 'src/shared/database/repositories/occurrence-actions.repositories';
 import { PeriodActionPlansRepository } from 'src/shared/database/repositories/periodActionPlans.repositories';
+import { EvaluationRepository } from 'src/shared/database/repositories/evaluation.repositories';
 
 interface OccurrenceWithFiles {
   id: string;
@@ -41,6 +41,7 @@ export class FileService {
     private readonly occurrencesActionsRepo: OccurrenceActionsRepository,
     private readonly filesRepo: FilesRepository,
     private readonly periodActionPlansRepo: PeriodActionPlansRepository,
+    private readonly evaluationsRepo: EvaluationRepository,
   ) {}
 
   async uploadOccurenceFile(
@@ -79,6 +80,73 @@ export class FileService {
         occurrenceId: occurrence.id,
       },
     });
+  }
+
+  async deleteEvaluationFile(evaluationId: string) {
+    const file = await this.filesRepo.findFirst({
+      where: { evaluationId: evaluationId },
+    });
+
+    if (!file) {
+      throw new NotFoundException('Arquivo não encontrado!');
+    }
+
+    const awsKey = file.path.split('/')[3];
+
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+      }),
+    );
+
+    await this.filesRepo.delete({
+      where: { id: file.id },
+    });
+  }
+
+  async uploadFile(file: Express.Multer.File, userId: string) {
+    const randomUUID = crypto.randomUUID();
+    // Gera a chave do arquivo no S3
+    const awsKey = `${randomUUID}-${file.originalname}`;
+
+    // Faz o upload para o S3
+    await this.s3Client.send(
+      new PutObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+        Body: file.buffer,
+        ContentType: file.mimetype,
+      }),
+    );
+
+    // Salva a referência no banco e retorna o arquivo salvo
+    return await this.filesRepo.create({
+      data: {
+        path: `${this.awsBucketPath}${awsKey}`,
+        userId,
+      },
+    });
+  }
+
+  async deleteFile(fileId: string) {
+    const file = await this.filesRepo.findFirst({
+      where: { id: fileId },
+    });
+
+    if (!file) {
+      return;
+      // throw new NotFoundException('Arquivo não encontrado!');
+    }
+
+    const awsKey = file.path.split('/')[3];
+
+    await this.s3Client.send(
+      new DeleteObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+      }),
+    );
   }
 
   async uploadOccurenceActionFile(
@@ -137,6 +205,42 @@ export class FileService {
         Key: awsKey,
       }),
     );
+  }
+
+  async uploadEvaluationFile(
+    file: Express.Multer.File,
+    userId: string,
+    evaluationId: string,
+  ) {
+    const evaluation = await this.evaluationsRepo.findUnique({
+      where: { id: evaluationId },
+    });
+
+    if (!evaluation) {
+      throw new NotFoundException('Avaliação não encontrada!');
+    }
+
+    const awsKey = `${evaluationId}-${file.originalname}`;
+
+    await this.s3Client.send(
+      new PutObjectCommand({
+        Bucket: 'conterp-file-uploader',
+        Key: awsKey,
+        Body: file.buffer,
+      }),
+    );
+
+    const createdFile = await this.filesRepo.create({
+      data: {
+        path: `${this.awsBucketPath}${awsKey}`,
+        userId,
+        evaluationId: evaluation.id,
+      },
+    });
+
+    console.log('createdFile', createdFile);
+
+    return createdFile;
   }
 
   async deleteOccurenceActionFile(occurrenceActionId: string) {

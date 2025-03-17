@@ -29,6 +29,8 @@ import { FeedbacksModule } from './modules/feedbacks/feedbacks.module';
 import { PeriodActionPlansModule } from './modules/period-action-plans/period-action-plans.module';
 import { PeriodActionPlanItemsModule } from './modules/period-action-plan-items/period-action-plan-items.module';
 import { ExcelModule } from './modules/excel/excel.module';
+import { ChecklistsModule } from './modules/checklists/checklists.module';
+import { ChecklistItemsModule } from './modules/checklist-items/checklist-items.module';
 
 @Module({
   imports: [
@@ -60,6 +62,8 @@ import { ExcelModule } from './modules/excel/excel.module';
     PeriodActionPlansModule,
     PeriodActionPlanItemsModule,
     ExcelModule,
+    ChecklistsModule,
+    ChecklistItemsModule,
   ],
   controllers: [],
   providers: [

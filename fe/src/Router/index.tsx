@@ -45,6 +45,7 @@ const BillingConfiguration = lazy(
 const SmsDashboard = lazy(() => import("@/view/pages/SmsDashboard/index"));
 const UserLogs = lazy(() => import("@/view/pages/UserLogs/index"));
 const PeriodActionPlan = lazy(() => import("@/view/pages/PeriodActionPlan/index"));
+const Checklists = lazy(() => import("@/view/pages/Checklists/index"));
 
 function RouterErrorBoundary() {
   return (
@@ -141,6 +142,8 @@ export const Router = () => {
                   path="/period-action-plan/:periodId"
                   element={<PeriodActionPlan />}
                 />
+
+                <Route path="/checklist" element={<Checklists />} />
               </Route>
             </Route>
 
