@@ -12,4 +12,5 @@ phases:
 
   build:
     commands:
+      - ls
       - cd fe && npm run build
