@@ -3,6 +3,10 @@ import { ChecklistItemCategory } from '../entities/ChecklistItemCategory';
 
 export class CreateChecklistItemDto {
   @IsNotEmpty()
+  @IsNumber()
+  number: number;
+
+  @IsNotEmpty()
   @IsString()
   description: string;
 
