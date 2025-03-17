@@ -15,4 +15,5 @@ phases:
 
   post_build:
     commands:
-      - ls
+      - aws s3 sync --delete ./dist s3://${DEPLOY_BUCKET} --recursive
+      - aws cloudfront create-invalidation --distribution-id ${CLOUDFRONT_DISTRIBUTION_ID} --paths "/*"
