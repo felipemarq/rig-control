@@ -7,10 +7,8 @@ phases:
 
   pre_build:
     commands:
-      - ls
       - cd fe && npm ci
 
   build:
     commands:
-      - ls
-      - cd fe && npm run build
+      - npm run build
