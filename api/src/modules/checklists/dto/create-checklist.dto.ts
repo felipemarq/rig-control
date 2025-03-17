@@ -12,10 +12,9 @@ import { CreateEvaluationDto } from './create-evaluation.dto';
 import { Type } from 'class-transformer';
 
 export class CreateChecklistDto {
-  @IsUUID()
   @IsNotEmpty()
   @IsString()
-  wellId: string;
+  well: string;
 
   @IsUUID()
   @IsNotEmpty()

@@ -6,7 +6,11 @@ import {
   IsString,
 } from 'class-validator';
 
-export class CreateEvaluationDto {
+export class UpdateEvaluationDto {
+  @IsUUID()
+  @IsNotEmpty()
+  id: string;
+
   @IsUUID()
   @IsNotEmpty()
   checklistItemId: string;

@@ -25,4 +25,8 @@ export class ChecklistRepository {
   async delete(deleteDto: Prisma.ChecklistDeleteArgs) {
     return await this.prismaService.checklist.delete(deleteDto);
   }
+
+  async update(updateDto: Prisma.ChecklistUpdateArgs) {
+    return await this.prismaService.checklist.update(updateDto);
+  }
 }

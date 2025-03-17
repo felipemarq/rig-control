@@ -16,6 +16,20 @@ import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
+  @Post()
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadFile(
+    @ActiveUserId() userId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    console.log(file);
+    if (!file) {
+      throw new BadRequestException('Arquivo inválido!');
+    }
+
+    return await this.fileService.uploadFile(file, userId);
+  }
+
   @Post('/occurrence/:occurrenceId')
   @UseInterceptors(FileInterceptor('file'))
   async upload(
@@ -28,6 +42,31 @@ export class FileController {
     }
 
     await this.fileService.uploadOccurenceFile(file, userId, occurrenceId);
+  }
+
+  @Post('/evaluation/:evaluationId')
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadEvaluationFile(
+    @ActiveUserId() userId: string,
+    @Param('evaluationId', ParseUUIDPipe) evaluationId: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      throw new BadRequestException('Arquivo inválido!');
+    }
+
+    return await this.fileService.uploadEvaluationFile(
+      file,
+      userId,
+      evaluationId,
+    );
+  }
+
+  @Delete('/evaluation/:evaluationId')
+  async deleteEvaluationFile(
+    @Param('evaluationId', ParseUUIDPipe) evaluationId: string,
+  ) {
+    await this.fileService.deleteEvaluationFile(evaluationId);
   }
 
   @Post('/occurrence-action/:occurrenceActionId')
