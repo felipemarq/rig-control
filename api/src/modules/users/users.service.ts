@@ -23,6 +23,7 @@ export class UsersService {
         name: true,
         email: true,
         accessLevel: true,
+        isActive: true,
         userLog: {
           select: {
             loginTime: true,
@@ -63,6 +64,7 @@ export class UsersService {
           },
         },
         enterprise: true,
+        permissions: true,
       },
     });
 
@@ -98,6 +100,8 @@ export class UsersService {
       select: {
         id: true,
         name: true,
+        isActive: true,
+        permissions: true,
         userLog: {
           select: {
             loginTime: true,
@@ -134,6 +138,7 @@ export class UsersService {
         email: true,
       },
       orderBy: { name: 'asc' },
+
       where: whereClause,
     });
 

@@ -17,12 +17,23 @@ interface UserCardProps {
   id: string;
   email: string;
   loginTime: string;
+  isActive: boolean;
 }
 
-export default function UserCard({ email, id, name, loginTime }: UserCardProps) {
+export default function UserCard({
+  email,
+  id,
+  name,
+  loginTime,
+  isActive,
+}: UserCardProps) {
   const navigate = useNavigate();
   return (
-    <motion.div key={id} whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.98 }}>
+    <motion.div
+      key={id}
+      whileHover={{ scale: 1.03 }}
+      whileTap={{ scale: 0.98 }}
+    >
       <Card className="overflow-hidden">
         <div className="relative">
           <div className="absolute inset-0 bg-gradient-to-r from-green-500 to-primary mix-blend-multiply" />
@@ -40,8 +51,11 @@ export default function UserCard({ email, id, name, loginTime }: UserCardProps) 
                     .join("")}
                 </AvatarFallback>
               </Avatar>
-              <Badge variant={"secondary"} className="mt-2">
-                {"Ativo"}
+              <Badge
+                variant={isActive ? "secondary" : "destructive"}
+                className="mt-2"
+              >
+                {isActive ? "Ativo" : "Inativo"}
               </Badge>
             </div>
           </CardHeader>

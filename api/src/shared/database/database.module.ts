@@ -29,6 +29,7 @@ import { PeriodActionPlanItemsRepository } from './repositories/periodActionPlan
 import { ChecklistRepository } from './repositories/checklist.repositories';
 import { ChecklistItemRepository } from './repositories/checklistItem.repositories';
 import { EvaluationRepository } from './repositories/evaluation.repositories';
+import { PermissionRepository } from './repositories/permission.repositories';
 
 @Global()
 @Module({
@@ -63,6 +64,7 @@ import { EvaluationRepository } from './repositories/evaluation.repositories';
     ChecklistRepository,
     ChecklistItemRepository,
     EvaluationRepository,
+    PermissionRepository,
   ],
   exports: [
     PrismaService,
@@ -94,6 +96,7 @@ import { EvaluationRepository } from './repositories/evaluation.repositories';
     ChecklistRepository,
     ChecklistItemRepository,
     EvaluationRepository,
+    PermissionRepository,
   ],
 })
 export class DatabaseModule {}

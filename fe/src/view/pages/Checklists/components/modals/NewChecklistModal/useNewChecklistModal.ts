@@ -22,6 +22,7 @@ const actionPlanSchema = z.object({
   evaluations: z
     .array(
       z.object({
+        number: z.number().min(1, "A ordem é obrigatória"),
         checklistItemId: z.string().min(1, "A item de avaliação é obrigatório"),
         rating: z.number().min(0, "A pontuação é obrigatório"),
         description: z.string().min(1, "A descrição é obrigatório"),
@@ -29,7 +30,7 @@ const actionPlanSchema = z.object({
         weight: z.number().min(1, "O peso é obrigatório"),
         comment: z.string().optional(),
         file: z.instanceof(File).optional(),
-      })
+      }),
     )
     .min(1, "Adicione pelo menos um item ao plano de ação"),
 });
@@ -64,6 +65,7 @@ export const useNewChecklistModal = () => {
       title: "",
       evaluations: [
         {
+          number: 1,
           checklistItemId: "",
           rating: 0,
           category: "",
@@ -76,11 +78,14 @@ export const useNewChecklistModal = () => {
     resolver: zodResolver(actionPlanSchema),
   });
 
+  console.log("checklistItems", checklistItems);
+
   useEffect(() => {
     if (checklistItems.length > 0) {
       reset({
         title: "",
         evaluations: checklistItems.map((item) => ({
+          number: item.number,
           checklistItemId: item.id,
           rating: 0,
           category: item.category,
@@ -105,7 +110,9 @@ export const useNewChecklistModal = () => {
       for (const evaluation of data.evaluations) {
         let fileId = null;
         if (evaluation.file) {
-          const uploadedFile = await filesService.uploadFile({ file: evaluation.file });
+          const uploadedFile = await filesService.uploadFile({
+            file: evaluation.file,
+          });
           fileId = uploadedFile.id;
         }
 

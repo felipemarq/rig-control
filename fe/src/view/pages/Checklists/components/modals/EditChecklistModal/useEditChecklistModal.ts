@@ -21,6 +21,7 @@ const checklistSchema = z.object({
   evaluations: z
     .array(
       z.object({
+        number: z.number().min(1, "A ordem é obrigatória"),
         evaluationId: z.string().min(1, "A item de avaliação é obrigatório"),
         id: z.string().min(1, "A item de avaliação é obrigatório"),
         checklistItemId: z.string().min(1, "A item de avaliação é obrigatório"),
@@ -31,7 +32,7 @@ const checklistSchema = z.object({
         comment: z.string().optional(),
         filePath: z.string().optional(),
         file: z.instanceof(File).optional(),
-      })
+      }),
     )
     .min(1, "Adicione pelo menos um item ao plano de ação"),
 });
@@ -49,10 +50,12 @@ export const useEditChecklistModal = () => {
 
   //const { checklistItems } = useChecklistItems();
 
-  const { isPending: isLoadingUpdateChecklist, mutateAsync: mutateUpdateChecklistAsync } =
-    useMutation({
-      mutationFn: checklistsService.update,
-    });
+  const {
+    isPending: isLoadingUpdateChecklist,
+    mutateAsync: mutateUpdateChecklistAsync,
+  } = useMutation({
+    mutationFn: checklistsService.update,
+  });
 
   const {
     isPending: isLoadingDeleteEvaluationFile,
@@ -85,6 +88,7 @@ export const useEditChecklistModal = () => {
       evaluations: checklistBeingSeen?.evaluations.map((evaluation) => ({
         id: evaluation.id,
         evaluationId: evaluation.id,
+        number: evaluation.checklistItem.number,
         category: evaluation.checklistItem.category,
         description: evaluation.checklistItem.description,
         weight: evaluation.checklistItem.weight,
@@ -129,7 +133,7 @@ export const useEditChecklistModal = () => {
 
   const handleDeleteEvaluationFile = async (
     evaluationIndex: number,
-    evaluationId: string
+    evaluationId: string,
   ) => {
     try {
       await mutateDeleteEvaluationFileAsync(evaluationId);
@@ -147,7 +151,7 @@ export const useEditChecklistModal = () => {
   const handleUploadEvaluationFile = async (
     index: number,
     evaluationId: string,
-    file: File
+    file: File,
   ) => {
     try {
       const response = await mutateUploadEvaluationFile({ file, evaluationId });

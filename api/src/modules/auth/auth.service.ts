@@ -37,6 +37,10 @@ export class AuthService {
       throw new UnauthorizedException('Usuário não encontrado!');
     }
 
+    if (!user.isActive) {
+      throw new UnauthorizedException('Usuário inativo!');
+    }
+
     const isPasswordValid = await compare(password, user.password);
 
     if (!isPasswordValid) {

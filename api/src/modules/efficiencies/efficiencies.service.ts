@@ -35,6 +35,8 @@ import { DeleteBodyDto } from './dto/delete-body.dto';
 import { Interval } from './entities/Interval';
 import { getDiffInMinutes } from 'src/shared/utils/getDiffInMinutes';
 import { start } from 'repl';
+import { PermissionRepository } from 'src/shared/database/repositories/permission.repositories';
+import { Module } from 'src/shared/entities/Module';
 
 @Injectable()
 export class EfficienciesService {
@@ -49,6 +51,7 @@ export class EfficienciesService {
     private readonly temporaryEfficiencyRepo: TemporaryEfficienciesRepository,
     private readonly userLogService: UserLogService,
     private readonly mailService: MailService,
+    private readonly permissionsRepo: PermissionRepository,
   ) {}
 
   private readonly selectEfficiencyObject = {
@@ -179,6 +182,21 @@ export class EfficienciesService {
       createdAt,
       isMobilizationOutSelected,
     } = createEfficiencyDto;
+
+    const canUserCreateEfficiency = await this.permissionsRepo.findUnique({
+      where: {
+        userId_module: {
+          userId: userId,
+          module: Module.OPERATION,
+        },
+      },
+    });
+
+    if (!canUserCreateEfficiency.canCreate) {
+      throw new UnauthorizedException(
+        'Você não tem permissão para criar um BDO!',
+      );
+    }
 
     /**
      * Checks if the provided rig ID belongs to the specified user.

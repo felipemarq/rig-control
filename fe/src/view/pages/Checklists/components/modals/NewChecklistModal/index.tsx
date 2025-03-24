@@ -1,4 +1,3 @@
-import { Modal } from "@/view/components/Modal";
 import { useNewChecklistModal } from "./useNewChecklistModal";
 import { Controller } from "react-hook-form";
 import { Input } from "@/view/components/Input";
@@ -9,6 +8,13 @@ import { Button } from "@/view/components/Button";
 import TextArea from "antd/es/input/TextArea";
 import { Select } from "@/view/components/Select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export const NewChecklistModal = () => {
   const {
@@ -24,29 +30,19 @@ export const NewChecklistModal = () => {
   } = useNewChecklistModal();
 
   return (
-    <Modal
-      title="Criar Checklist"
+    <Dialog
       open={isNewChecklistModalOpen}
-      onClose={closeNewChecklistModal}
-      overflow
-      maxWidth="1000px"
+      onOpenChange={closeNewChecklistModal}
     >
-      <div className="">
-        <div className="relative">
-          <div className="absolute inset-0 bg-gradient-to-r from-primary to-green-500 mix-blend-multiply" />
-          {/*  <div className="relative z-10 p-6 text-white">
-              <CardTitle className="text-2xl font-bold mb-2">
-                Criar Plano de Ação
-              </CardTitle>
-              <p className="text-sm opacity-90">{`Equipamento: ${translateClassification(
-                "RIG_CAR"
-              )}  ( ${translateRepairClassification(
-                "ENGINE" as RepairClassification
-              )})`}</p>
-              <p className="text-sm opacity-90">Sonda: spt 100</p>
-            </div> */}
-        </div>
-
+      <DialogContent
+        className={"lg:max-w-screen-lg overflow-y-scroll max-h-screen"}
+      >
+        <DialogHeader>
+          <DialogTitle>Criar Checklist de Inspeção</DialogTitle>
+          <DialogDescription>
+            Defina os itens a serem avaliados e registre suas observações.
+          </DialogDescription>
+        </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             <div>
@@ -177,7 +173,7 @@ export const NewChecklistModal = () => {
                             {item.category}
                           </span>
                           <span className="text-sm text-gray-500">
-                            Item {index + 1}
+                            Item {item.number}
                           </span>
                         </div>
                         <div className="mt-2 block text-base font-medium text-gray-900">
@@ -286,7 +282,7 @@ export const NewChecklistModal = () => {
             Criar Checklist
           </Button>
         </form>
-      </div>
-    </Modal>
+      </DialogContent>
+    </Dialog>
   );
 };

@@ -14,6 +14,7 @@ import { currentVersion } from "../config/CurrentVersion";
 import { clarity } from "react-microsoft-clarity";
 import { useGetEfficiencyPedingConfirmation } from "../hooks/efficiencies/useGetEfficiencyPedingConfirmation";
 import { EfficienciesResponse } from "../services/efficienciesService/getAll";
+import { Module } from "../entities/Module";
 
 interface AuthContextValue {
   signedIn: boolean;
@@ -27,13 +28,24 @@ interface AuthContextValue {
   signout(): void;
   isWrongVersion: boolean;
   pendingEfficienciesConfirmation: EfficienciesResponse;
+  userOperationPermissions:
+    | {
+        id: string;
+        module: Module;
+        canView: boolean;
+        canEdit: boolean;
+        canCreate: boolean;
+      }
+    | undefined;
 }
 
 export const AuthContext = createContext({} as AuthContextValue);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [signedIn, setSignedIn] = useState<boolean>(() => {
-    const storedAccessToken = localStorage.getItem(localStorageKeys.ACCESS_TOKEN);
+    const storedAccessToken = localStorage.getItem(
+      localStorageKeys.ACCESS_TOKEN,
+    );
 
     return !!storedAccessToken;
   });
@@ -63,20 +75,29 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const isUserAdm = data?.accessLevel === AccessLevel.ADM ? true : false;
 
-  const isUserSupervisor = data?.accessLevel === AccessLevel.SUPERVISOR ? true : false;
+  const isUserSupervisor =
+    data?.accessLevel === AccessLevel.SUPERVISOR ? true : false;
 
-  const isUserSms =
-    data?.email === "rommelcaldas@conterp.com.br" ||
-    data?.email === "bianca@conterp.com.br";
+  const userSMSPermissions = data?.permissions?.find(
+    (permission) => permission.module === Module.SMS,
+  );
+
+  const userOperationPermissions = data?.permissions?.find(
+    (permission) => permission.module === Module.OPERATION,
+  );
+
+  const isUserSms = !!userSMSPermissions?.canView;
 
   const isUserViewer = data?.accessLevel === AccessLevel.VIEWER;
 
   const userAccessLevel = data?.accessLevel!;
 
-  const { pendingEfficienciesConfirmation, refetchpendingEfficienciesConfirmation } =
-    useGetEfficiencyPedingConfirmation(
-      isUserSupervisor || data?.email === "felipemarques@conterp.com.br"
-    );
+  const {
+    pendingEfficienciesConfirmation,
+    refetchpendingEfficienciesConfirmation,
+  } = useGetEfficiencyPedingConfirmation(
+    isUserSupervisor || data?.email === "felipemarques@conterp.com.br",
+  );
 
   useEffect(() => {
     refetchpendingEfficienciesConfirmation();
@@ -91,7 +112,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
       // Identify the user
       if (clarity.hasStarted()) {
-        clarity.identify(data?.id ?? "", { name: data?.name, email: data?.email });
+        clarity.identify(data?.id ?? "", {
+          name: data?.name,
+          email: data?.email,
+        });
       }
     }
   }, []);
@@ -113,9 +137,11 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   isWrongVersion = systemVersion?.version !== currentVersion.version;
 
+  console.log("user", data);
   return (
     <AuthContext.Provider
       value={{
+        userOperationPermissions,
         signedIn: isSuccess && signedIn,
         signin,
         signout,
@@ -130,7 +156,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       }}
     >
       {isFetching && (
-        <PageLoader isLoading={isFetching} logoPath={data?.enterprise?.logoImagePath} />
+        <PageLoader
+          isLoading={isFetching}
+          logoPath={data?.enterprise?.logoImagePath}
+        />
       )}
 
       {!isFetching && children}

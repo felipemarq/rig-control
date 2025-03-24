@@ -1,5 +1,6 @@
 import { AccessLevel } from "./AccessLevel";
 import { Contract } from "./Contract";
+import { Module } from "./Module";
 import { Notification } from "./Notification";
 
 export interface User {
@@ -27,6 +28,19 @@ export interface User {
       };
     };
   }[];
-  enterprise?: { id: string; logoImagePath: string; mainColor: string; name: string };
+  enterprise?: {
+    id: string;
+    logoImagePath: string;
+    mainColor: string;
+    name: string;
+  };
   userNotifications: Notification[];
+  permissions: {
+    id: string;
+    module: Module;
+    canView: boolean;
+    canEdit: boolean;
+    canCreate: boolean;
+  }[];
+  isActive: boolean;
 }

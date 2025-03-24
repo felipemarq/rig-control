@@ -142,6 +142,11 @@ export class ChecklistsService {
             checklistItem: true,
             files: true,
           },
+          orderBy: {
+            checklistItem: {
+              number: 'asc',
+            },
+          },
         },
       },
     });
@@ -247,6 +252,8 @@ export class ChecklistsService {
         // evaluations: { createMany: { data: mappedEvaluations } },
       },
     });
+
+    console.log('mappedEvaluations', mappedEvaluations);
 
     for (const evaluation of mappedEvaluations) {
       await this.evaluationsRepo.update({
