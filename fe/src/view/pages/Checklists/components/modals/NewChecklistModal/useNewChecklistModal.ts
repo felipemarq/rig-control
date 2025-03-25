@@ -78,8 +78,6 @@ export const useNewChecklistModal = () => {
     resolver: zodResolver(actionPlanSchema),
   });
 
-  console.log("checklistItems", checklistItems);
-
   useEffect(() => {
     if (checklistItems.length > 0) {
       reset({

@@ -14,17 +14,25 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboardContext";
 import { OccurrenceType } from "@/app/entities/Occurrence";
 import { occurrenceTypeTranslation } from "@/app/utils/occurrenceTypeTranslation";
 import { useNavigate } from "react-router-dom";
+import { useChecklistsContext } from "../ChecklistsContext/useChecklistsContext";
+import { Evaluation } from "@/app/entities/Evaluation";
+import { ChecklistItemCategory } from "@/app/entities/ChecklistItem";
 
 type ChartData = { id: OccurrenceType; type: string; qtd: number }[];
 
 export const BarChartByType = () => {
   const { primaryColor } = useTheme();
   const navigate = useNavigate();
-  const { occurrences, handleChangeFilters } = useSmsDashboardContext();
+  const { checklists } = useChecklistsContext();
+
+  console.log(checklists);
+
+  const allEvaluations: Evaluation[] = checklists.flatMap(
+    (checklist) => checklist.evaluations,
+  );
 
   const chartConfig = {
     qtd: {
@@ -33,7 +41,9 @@ export const BarChartByType = () => {
     },
   } satisfies ChartConfig;
 
-  const data = occurrences.reduce<ChartData>((acc, curr) => {
+  console.log("allEvaluations", Object.values(ChecklistItemCategory));
+
+  /*   const data = occurrences.reduce<ChartData>((acc, curr) => {
     const translatedType =
       occurrenceTypeTranslation.find((item) => item.value === curr.type)
         ?.label ?? "-";
@@ -51,7 +61,7 @@ export const BarChartByType = () => {
       });
       return acc;
     }
-  }, []);
+  }, []); */
 
   return (
     <Card>
@@ -62,7 +72,7 @@ export const BarChartByType = () => {
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <ChartContainer config={chartConfig}>
+        {/* <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
             data={data}
@@ -83,17 +93,7 @@ export const BarChartByType = () => {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar
-              dataKey="qtd"
-              fill="var(--color-qtd)"
-              radius={8}
-              onClick={(event) => {
-                handleChangeFilters("type")(event.id);
-                navigate(`/occurrences`, {
-                  state: { shouldApplyFilters: true },
-                });
-              }}
-            >
+            <Bar dataKey="qtd" fill="var(--color-qtd)" radius={8}>
               <LabelList
                 position="top"
                 offset={12}
@@ -102,7 +102,7 @@ export const BarChartByType = () => {
               />
             </Bar>
           </BarChart>
-        </ChartContainer>
+        </ChartContainer> */}
       </CardContent>
     </Card>
   );

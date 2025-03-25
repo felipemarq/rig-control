@@ -22,6 +22,7 @@ interface ChecklistsContextValue {
   }[];
   handleRefechChecklists: () => void;
   filteredChecklists: ChecklistsResponse;
+  checklists: ChecklistsResponse;
   handleChangeSearchTerm: (e: React.ChangeEvent<HTMLInputElement>) => void;
   searchTerm: string;
   checklistBeingSeen: Checklist | null;
@@ -38,6 +39,12 @@ interface ChecklistsContextValue {
   isChecklistModalOpen: boolean;
   openChecklistModal(checklist: Checklist): void;
   closeChecklistModal(): void;
+  statBoxContainerValues: {
+    totalScore: number;
+    totalInspections: number;
+    totalEvaluations: number;
+    totalCriticalEvaluations: number;
+  };
 }
 
 // Criação do contexto
@@ -71,8 +78,25 @@ export const ChecklistsProvider = ({
 
   const filteredChecklists = checklists.filter((checklist) =>
     Object.values(checklist).some((value) =>
-      value.toString().toLowerCase().includes(searchTerm.toLowerCase())
-    )
+      value.toString().toLowerCase().includes(searchTerm.toLowerCase()),
+    ),
+  );
+
+  const statBoxContainerValues = checklists.reduce(
+    (acc, checklist) => {
+      acc.totalScore += checklist.score;
+      acc.totalEvaluations += checklist.evaluations.length;
+      acc.totalCriticalEvaluations += checklist.evaluations.filter(
+        (evaluation) => evaluation.rating <= 0.5,
+      ).length;
+      return acc;
+    },
+    {
+      totalScore: 0,
+      totalInspections: checklists.length,
+      totalEvaluations: 0,
+      totalCriticalEvaluations: 0,
+    },
   );
 
   const {
@@ -91,7 +115,7 @@ export const ChecklistsProvider = ({
       customColorToast(
         "Registro deletado com Sucesso!",
         primaryColor,
-        "success"
+        "success",
       );
       queryClient.invalidateQueries({ queryKey: [QueryKeys.CHECKLISTS] });
       refetchChecklists();
@@ -171,6 +195,8 @@ export const ChecklistsProvider = ({
         isChecklistModalOpen,
         closeChecklistModal,
         openChecklistModal,
+        statBoxContainerValues,
+        checklists,
       }}
     >
       {children}

@@ -1,4 +1,3 @@
-import { NewHader } from "@/view/components/NewHeader";
 import { FilterSheet } from "@/view/components/FilterSheet";
 import {
   GlobalDashboardContext,
@@ -14,6 +13,7 @@ import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard"
 import { RepairDetailsPieChartCard } from "./components/RepairDetailsPieChartCard";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
+import { Header } from "@/view/components/Header";
 
 export default function GlobalDashboard() {
   return (
@@ -36,7 +36,7 @@ export default function GlobalDashboard() {
         }) => (
           <div className="min-h-screen bg-gray-50/50">
             {/* Header */}
-            <NewHader title="Dashboard Geral" displayRig={false}>
+            <Header title="Dashboard Geral" displayRig={false}>
               <div className="flex flex-row-reverse gap-2 justify-center items-center">
                 <FilterSheet
                   onApplyFilters={handleApplyFilters}
@@ -80,7 +80,7 @@ export default function GlobalDashboard() {
                   </TabsList>
                 </Tabs>
               </div>
-            </NewHader>
+            </Header>
 
             <div className="lg:p-6">
               <div className="max-w-7xl mx-auto space-y-6 ">
@@ -108,15 +108,18 @@ export default function GlobalDashboard() {
                     selectedDetailView={selectedDetailPieChartView ?? undefined}
                   />
 
-                  {selectedPeriodClassification && selectedPieChartView === "REPAIR" && (
-                    <RepairDetailsPieChartCard />
-                  )}
+                  {selectedPeriodClassification &&
+                    selectedPieChartView === "REPAIR" && (
+                      <RepairDetailsPieChartCard />
+                    )}
 
                   {selectedRepairPeriodClassification && (
                     <UnbilledPeriodsByRigCard
                       className="lg:col-span-2"
                       rigsData={mappedRigsRepairHours}
-                      selectedDetailView={selectedDetailPieChartView ?? undefined}
+                      selectedDetailView={
+                        selectedDetailPieChartView ?? undefined
+                      }
                       selectedRepairClassification={
                         selectedRepairPeriodClassification ?? undefined
                       }

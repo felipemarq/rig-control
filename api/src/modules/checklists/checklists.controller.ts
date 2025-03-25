@@ -29,6 +29,11 @@ export class ChecklistsController {
     return this.checklistsService.findAll();
   }
 
+  @Get('average-scores-by-category')
+  async getAverageScoresByCategory() {
+    return this.checklistsService.getEvaluationAverageByCategory();
+  }
+
   @Get(':checklistId')
   findOne(@Param('checklistId') checklistId: string) {
     return this.checklistsService.findOne(checklistId);

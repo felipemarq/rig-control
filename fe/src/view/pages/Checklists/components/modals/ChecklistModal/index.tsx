@@ -15,7 +15,6 @@ import { Separator } from "@/components/ui/separator";
 import {
   Dialog,
   DialogContent,
-  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
@@ -25,6 +24,8 @@ import { useChecklistsContext } from "../../ChecklistsContext/useChecklistsConte
 export const ChecklistModal = () => {
   const { isChecklistModalOpen, closeChecklistModal, checklistBeingSeen } =
     useChecklistsContext();
+
+  console.log("checklistBeingSeen", checklistBeingSeen);
 
   return (
     <Dialog open={isChecklistModalOpen} onOpenChange={closeChecklistModal}>
@@ -61,7 +62,7 @@ export const ChecklistModal = () => {
               </div>
               <div>
                 <h3 className="font-semibold">Pontuação Total</h3>
-                <p>{checklistBeingSeen?.score}</p>
+                <p>{checklistBeingSeen?.score.toFixed(2)}</p>
               </div>
             </div>
 
@@ -92,8 +93,22 @@ export const ChecklistModal = () => {
                     <TableCell className="min-w-20">
                       {item.checklistItem.description}
                     </TableCell>
-                    <TableCell>{item.checklistItem.weight}</TableCell>
-                    <TableCell>{item.score}</TableCell>
+                    <TableCell>
+                      <Badge>{item.checklistItem.weight}</Badge>
+                    </TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={
+                          item.rating > 0.5
+                            ? "default"
+                            : item.rating === 0.5
+                              ? "alert"
+                              : "destructive"
+                        }
+                      >
+                        {item.score}
+                      </Badge>
+                    </TableCell>
                     <TableCell className="min-w-20">
                       {item.comment || "-"}
                     </TableCell>

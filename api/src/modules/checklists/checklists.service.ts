@@ -8,6 +8,7 @@ import { FilesRepository } from 'src/shared/database/repositories/files.reposito
 import { EvaluationRepository } from 'src/shared/database/repositories/evaluation.repositories';
 import { FileService } from 'src/modules/file/file.service';
 import { Prisma } from '@prisma/client';
+import { ChecklistItemCategory } from '../checklist-items/entities/ChecklistItemCategory';
 
 type ChecklistWithFiles = Prisma.ChecklistGetPayload<{
   include: { files: true };
@@ -128,6 +129,39 @@ export class ChecklistsService {
     );
 
     return checklist;
+  }
+
+  async getEvaluationAverageByCategory() {
+    const categories = Object.values(ChecklistItemCategory);
+    const avgEvaluations = await this.evaluationsRepo.groupBy({
+      by: ['checklistItemId'],
+      _avg: { rating: true, score: true },
+    });
+
+    const checklistItems = await this.checklistItemsRepo.findMany({
+      where: { id: { in: avgEvaluations.map((r) => r.checklistItemId) } },
+      select: { id: true, category: true },
+    });
+
+    const categoryScores = categories.map((category) => {
+      const itemsInCategory = checklistItems.filter(
+        (item) => item.category === category,
+      );
+      const evaluations = avgEvaluations.filter((res) =>
+        itemsInCategory.some((item) => item.id === res.checklistItemId),
+      );
+
+      const avgScore =
+        evaluations.reduce((sum, ev) => sum + (ev._avg.score || 0), 0) /
+        (evaluations.length || 1);
+      const avgRating =
+        evaluations.reduce((sum, ev) => sum + (ev._avg.rating || 0), 0) /
+        (evaluations.length || 1);
+
+      return { category, avgScore, avgRating };
+    });
+
+    return categoryScores;
   }
 
   async findAll() {

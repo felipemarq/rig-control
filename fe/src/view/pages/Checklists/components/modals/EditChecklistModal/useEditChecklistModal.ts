@@ -120,6 +120,7 @@ export const useEditChecklistModal = () => {
           comment: evaluation.comment ?? "",
           rating: evaluation.rating,
           filePath: evaluation.files?.[0]?.path,
+          number: evaluation.checklistItem.number,
         })),
       });
     }
@@ -147,6 +148,8 @@ export const useEditChecklistModal = () => {
       console.error("Erro ao deletar arquivo:", error);
     }
   };
+
+  console.log("errors", errors);
 
   const handleUploadEvaluationFile = async (
     index: number,
