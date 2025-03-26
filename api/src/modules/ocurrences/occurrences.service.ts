@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateOcurrenceDto } from './dto/create-ocurrence.dto';
 import { UpdateOcurrenceDto } from './dto/update-ocurrence.dto';
@@ -17,6 +18,8 @@ import { UF } from './entities/UF';
 import { OccurenceNature } from './entities/OccurenceNature';
 import { Prisma } from '@prisma/client';
 import { MailService } from '../mail/mail.service';
+import { UsersService } from '../users/users.service';
+import { PermissionsService } from '../permissions/permissions.service';
 
 interface OccurrenceCountByMonth {
   date: Date;
@@ -54,10 +57,23 @@ export class OccurrencesService {
     private readonly manHoursRepo: ManHourRepository,
     private readonly filesService: FileService,
     private readonly mailService: MailService,
+    private readonly usersService: UsersService,
+    private readonly permissionsService: PermissionsService,
   ) {}
 
   async create(userId: string, createOcurrenceDto: CreateOcurrenceDto) {
     const { baseId } = createOcurrenceDto;
+
+    const userPermissions =
+      await this.permissionsService.getUserPermissionsByModule(userId, 'SMS');
+
+    const canCreate = userPermissions.find((p) => p.canCreate);
+
+    if (!canCreate) {
+      throw new UnauthorizedException(
+        'Você não tem permissão para criar uma ocorrência',
+      );
+    }
 
     const baseExists = (await this.basesRepo.findUnique({
       where: { id: baseId },

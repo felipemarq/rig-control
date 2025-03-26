@@ -31,6 +31,7 @@ import { PeriodActionPlanItemsModule } from './modules/period-action-plan-items/
 import { ExcelModule } from './modules/excel/excel.module';
 import { ChecklistsModule } from './modules/checklists/checklists.module';
 import { ChecklistItemsModule } from './modules/checklist-items/checklist-items.module';
+import { PermissionsModule } from './modules/permissions/permissions.module';
 
 @Module({
   imports: [
@@ -64,6 +65,7 @@ import { ChecklistItemsModule } from './modules/checklist-items/checklist-items.
     ExcelModule,
     ChecklistsModule,
     ChecklistItemsModule,
+    PermissionsModule,
   ],
   controllers: [],
   providers: [

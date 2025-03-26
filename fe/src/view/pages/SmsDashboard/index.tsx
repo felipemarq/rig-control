@@ -1,5 +1,8 @@
-import { SmsDashboardContext, SmsDashboardProvider } from "./SmsDashboardContext";
-import { Header } from "@/view/components/Header";
+import {
+  SmsDashboardContext,
+  SmsDashboardProvider,
+} from "./SmsDashboardContext";
+
 import { StatboxContainer } from "./Components/StatboxContainer";
 import { BarChartByType } from "./Components/BarChartByType";
 import { PieChartByNature } from "./Components/PieChartByNature";
@@ -8,6 +11,7 @@ import { Spinner } from "@/view/components/Spinner";
 import { PedingActionPlans } from "./Components/PedingActionPlans";
 import { TorOccurrencesBarChartCard } from "./Components/TorOccurrencesBarChartCard";
 import { TarOccurrencesBarChartCard } from "./Components/TarOccurrencesBarChartCard";
+import { Header } from "@/view/components/Header";
 
 export default function SmsDashboard() {
   return (

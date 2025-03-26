@@ -14,7 +14,9 @@ export class ChecklistItemsService {
   }
 
   async findAll() {
-    return await this.checklistItemsRepo.findMany({});
+    return await this.checklistItemsRepo.findMany({
+      orderBy: { number: 'asc' },
+    });
   }
 
   findOne(id: number) {

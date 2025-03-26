@@ -35,7 +35,11 @@ interface FormContextValue {
     };
   }; // Não tenho certeza do tipo exato, então usei `any` por enquanto
   handleDateChange(date: Date): void;
-  handleStartHourChange(time: Dayjs | null, timeString: string, id: string): void;
+  handleStartHourChange(
+    time: Dayjs | null,
+    timeString: string,
+    id: string,
+  ): void;
   handleDeletePeriod(id: string): void;
   handleEndHourChange(time: Dayjs | null, timeString: string, id: string): void;
   addPeriod(): void;
@@ -53,7 +57,7 @@ interface FormContextValue {
   handleSave(): void;
   updatePeriodState(
     id: string,
-    state: boolean
+    state: boolean,
   ): {
     periodId: string;
     isCollapsed: boolean;
@@ -117,7 +121,10 @@ interface FormContextValue {
   isDateValid: boolean;
   getPeriodState(periodId: string): boolean;
   handleBobRentHours(time: Dayjs | null, timeString: string): void;
-  handleChristmasTreeDisassemblyHours(time: Dayjs | null, timeString: string): void;
+  handleChristmasTreeDisassemblyHours(
+    time: Dayjs | null,
+    timeString: string,
+  ): void;
   selectedContract:
     | {
         rig: {
@@ -155,7 +162,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   //Custom Hooks
   const navigate = useNavigate();
   const { user, isUserAdm } = useAuth();
-  const { setError, removeError, getErrorMessageByFildName, errors } = useErrors();
+  const { setError, removeError, getErrorMessageByFildName, errors } =
+    useErrors();
   const { handleToggleNavItem } = useSidebarContext();
   const [date, setDate] = useState<Date>();
   const [selectedRig, setSelectedRig] = useState<string>(() => {
@@ -188,6 +196,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     },
   ]);
 
+  console.log("periods", periods);
   useEffect(() => {
     setError({ fieldName: "date", message: "Data Inválida!" });
     setError({ fieldName: `${periods[0].id} well`, message: "Obrigatório" });
@@ -212,7 +221,9 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const getPeriodState = (periodId: string) => {
-    const periodState = periodsState.find((period) => period.periodId === periodId);
+    const periodState = periodsState.find(
+      (period) => period.periodId === periodId,
+    );
     return periodState?.isCollapsed ?? false;
   };
 
@@ -221,10 +232,12 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     mutationFn: efficienciesService.create,
   });
 
-  const { isPending: isLoadingTemporary, mutateAsync: mutateAsyncTemporaryEfficiency } =
-    useMutation({
-      mutationFn: temporaryEfficienciesServices.create,
-    });
+  const {
+    isPending: isLoadingTemporary,
+    mutateAsync: mutateAsyncTemporaryEfficiency,
+  } = useMutation({
+    mutationFn: temporaryEfficienciesServices.create,
+  });
 
   const queryClient = useQueryClient();
 
@@ -370,7 +383,11 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   /*  <[{id:string, startHour:string,endHour:string,type: 'WORKING' | 'REPAIR' | '', classification: string}]> */
-  const handleStartHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
+  const handleStartHourChange = (
+    _time: Dayjs | null,
+    timeString: string,
+    id: string,
+  ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? { ...period, startHour: timeString } : period;
     });
@@ -378,7 +395,11 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     setPeriods(newPeriods);
   };
 
-  const handleEndHourChange = (_time: Dayjs | null, timeString: string, id: string) => {
+  const handleEndHourChange = (
+    _time: Dayjs | null,
+    timeString: string,
+    id: string,
+  ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id ? { ...period, endHour: timeString } : period;
     });
@@ -402,7 +423,8 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
       currentPeriodIndex > 0 ? periods[currentPeriodIndex - 1] : null;
 
     // Verifica se o poço do período anterior é diferente do poço atual
-    const isWellDifferentFromPrevious = previousPeriod && previousPeriod.well !== well;
+    const isWellDifferentFromPrevious =
+      previousPeriod && previousPeriod.well !== well;
 
     // Atualiza os períodos
     const newPeriods = periods.map((period) => {
@@ -476,7 +498,10 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     setPeriods(newPeriods);
   };
 
-  const handleRepairClassification = (id: string, repairClassification: string) => {
+  const handleRepairClassification = (
+    id: string,
+    repairClassification: string,
+  ) => {
     const newPeriods = periods.map((period) => {
       return period.id === id
         ? { ...period, repairClassification: repairClassification }
@@ -645,20 +670,24 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [isMixTankSelected, setIsMixTankSelected] = useState(false);
   const [isMixTankMonthSelected, setIsMixTankMonthSelected] = useState(false);
-  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] = useState(false);
+  const [isMixTankOperatorsSelected, setIsMixTankOperatorsSelected] =
+    useState(false);
   const [isTankMixMobilizationSelected, setIsTankMixMobilizationSelected] =
     useState(false);
   const [isTankMixDemobilizationSelected, setIsTankMixDemobilizationSelected] =
     useState(false);
   const [isFuelGeneratorSelected, setIsFuelGeneratorSelected] = useState(false);
   const [isMobilizationSelected, setIsMobilizationSelected] = useState(false);
-  const [isMobilizationOutSelected, setIsMobilizationOutSelected] = useState(false);
-  const [isDemobilizationSelected, setIsDemobilizationSelected] = useState(false);
+  const [isMobilizationOutSelected, setIsMobilizationOutSelected] =
+    useState(false);
+  const [isDemobilizationSelected, setIsDemobilizationSelected] =
+    useState(false);
   const [isTankMixDTMSelected, setIsTankMixDTMSelected] = useState(false);
   const [isTruckTankSelected, setIsTruckTankSelected] = useState(false);
   const [isTruckCartSelected, setIsTruckCartSelected] = useState(false);
   const [isMunckSelected, setIsMunckSelected] = useState(false);
-  const [isTransportationSelected, setIsTransportationSelected] = useState(false);
+  const [isTransportationSelected, setIsTransportationSelected] =
+    useState(false);
   const [truckKm, setTruckKm] = useState(0);
   const [isExtraTrailerSelected, setIsExtraTrailerSelected] = useState(false);
   const [isPowerSwivelSelected, setIsPowerSwivelSelected] = useState(false);
@@ -706,9 +735,12 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     setIsTankMixDTMSelected((prevState) => !prevState);
   }, []);
 
-  const handleBobRentHours = useCallback((_time: Dayjs | null, timeString: string) => {
-    setBobRentHours(timeString);
-  }, []);
+  const handleBobRentHours = useCallback(
+    (_time: Dayjs | null, timeString: string) => {
+      setBobRentHours(timeString);
+    },
+    [],
+  );
 
   const handleTankMixMobilizationCheckbox = useCallback(() => {
     setIsTankMixMobilizationSelected((prevState) => !prevState);
@@ -718,7 +750,7 @@ export const FormProvider = ({ children }: { children: React.ReactNode }) => {
     (_time: Dayjs | null, timeString: string) => {
       setChristmasTreeDisassemblyHours(timeString);
     },
-    []
+    [],
   );
 
   //===========================================

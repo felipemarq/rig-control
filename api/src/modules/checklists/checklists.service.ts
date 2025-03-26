@@ -8,6 +8,7 @@ import { FilesRepository } from 'src/shared/database/repositories/files.reposito
 import { EvaluationRepository } from 'src/shared/database/repositories/evaluation.repositories';
 import { FileService } from 'src/modules/file/file.service';
 import { Prisma } from '@prisma/client';
+import { ChecklistItemCategory } from '../checklist-items/entities/ChecklistItemCategory';
 
 type ChecklistWithFiles = Prisma.ChecklistGetPayload<{
   include: { files: true };
@@ -130,8 +131,18 @@ export class ChecklistsService {
     return checklist;
   }
 
-  async findAll() {
-    return await this.checklistsRepo.findMany({
+  async getEvaluationAverageByCategory() {
+    return 'categoryScores';
+  }
+
+  async findAll(filters: { startDate: string; endDate: string }) {
+    const checklists = await this.checklistsRepo.findMany({
+      where: {
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
       include: {
         rig: true,
         well: true,
@@ -142,9 +153,16 @@ export class ChecklistsService {
             checklistItem: true,
             files: true,
           },
+          orderBy: {
+            checklistItem: {
+              number: 'asc',
+            },
+          },
         },
       },
     });
+
+    return checklists;
   }
 
   async findOne(checklistId: string) {
@@ -247,6 +265,8 @@ export class ChecklistsService {
         // evaluations: { createMany: { data: mappedEvaluations } },
       },
     });
+
+    console.log('mappedEvaluations', mappedEvaluations);
 
     for (const evaluation of mappedEvaluations) {
       await this.evaluationsRepo.update({

@@ -35,7 +35,8 @@ export const BarChartByType = () => {
 
   const data = occurrences.reduce<ChartData>((acc, curr) => {
     const translatedType =
-      occurrenceTypeTranslation.find((item) => item.value === curr.type)?.label ?? "-";
+      occurrenceTypeTranslation.find((item) => item.value === curr.type)
+        ?.label ?? "-";
     const foundItem = acc.find((item) => item.id === curr.type);
 
     if (!foundItem) {
@@ -78,14 +79,19 @@ export const BarChartByType = () => {
 
               //tickFormatter={(value) => value.slice(0, 3)}
             />
-            <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent hideLabel />}
+            />
             <Bar
               dataKey="qtd"
               fill="var(--color-qtd)"
               radius={8}
               onClick={(event) => {
                 handleChangeFilters("type")(event.id);
-                navigate(`/occurrences`, { state: { shouldApplyFilters: true } });
+                navigate(`/occurrences`, {
+                  state: { shouldApplyFilters: true },
+                });
               }}
             >
               <LabelList

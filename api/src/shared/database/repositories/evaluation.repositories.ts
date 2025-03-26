@@ -25,4 +25,14 @@ export class EvaluationRepository {
   async update(updateDto: Prisma.EvaluationUpdateArgs) {
     return await this.prismaService.evaluation.update(updateDto);
   }
+
+  async groupBy(groupByDto: Prisma.EvaluationGroupByArgs): Promise<
+    {
+      _avg: { rating: number; score: number };
+      checklistItemId: string;
+    }[]
+  > {
+    //@ts-ignore
+    return await this.prismaService.evaluation.groupBy(groupByDto);
+  }
 }

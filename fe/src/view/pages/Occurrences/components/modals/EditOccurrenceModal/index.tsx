@@ -106,7 +106,9 @@ export const EditOccurrenceModal = () => {
                   placeholder="Hora do ocorrido"
                   className="bg-white border px-3 border-gray-500 rounded-lg  text-black w-full h-[52px] hover:border-primary"
                   defaultValue={dayjs(selectedHour, "HH:mm")}
-                  onChange={(_time, timeString) => handleHourChange(timeString as string)}
+                  onChange={(_time, timeString) =>
+                    handleHourChange(timeString as string)
+                  }
                   format={"HH:mm"}
                 />
               </div>
@@ -155,7 +157,7 @@ export const EditOccurrenceModal = () => {
                   render={({ field: { onChange, value } }) => (
                     <Select
                       error={errors.baseId?.message}
-                      placeholder="Contrato"
+                      placeholder="Base"
                       value={value}
                       isLoading={isFetchingBases}
                       onChange={onChange}
@@ -319,7 +321,7 @@ export const EditOccurrenceModal = () => {
                 onDragLeave={handleDragLeave}
                 className={cn(
                   "border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200",
-                  isDragging && "bg-gray-200"
+                  isDragging && "bg-gray-200",
                 )}
               >
                 {file && (
@@ -335,7 +337,9 @@ export const EditOccurrenceModal = () => {
 
                     <span className="text-black">
                       {!isDragging && !hasFile && "Anexar arquivo"}
-                      {!isDragging && hasFile && <span>{fileName?.substring(84)}</span>}
+                      {!isDragging && hasFile && (
+                        <span>{fileName?.substring(84)}</span>
+                      )}
 
                       {isDragging && " Solte o arquivo para fazer o upload"}
                     </span>

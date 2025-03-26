@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ChecklistsService } from './checklists.service';
 import { CreateChecklistDto } from './dto/create-checklist.dto';
@@ -25,8 +26,16 @@ export class ChecklistsController {
   }
 
   @Get()
-  findAll() {
-    return this.checklistsService.findAll();
+  findAll(
+    @Query('startDate') startDate: string,
+    @Query('endDate') endDate: string,
+  ) {
+    return this.checklistsService.findAll({ startDate, endDate });
+  }
+
+  @Get('average-scores-by-category')
+  async getAverageScoresByCategory() {
+    return this.checklistsService.getEvaluationAverageByCategory();
   }
 
   @Get(':checklistId')

@@ -137,7 +137,7 @@ export const NewOccurrenceModal = () => {
                   render={({ field: { onChange, value } }) => (
                     <Select
                       error={errors.baseId?.message}
-                      placeholder="Contrato"
+                      placeholder="Base"
                       value={value}
                       isLoading={isFetchingBases}
                       onChange={onChange}
@@ -306,7 +306,7 @@ export const NewOccurrenceModal = () => {
                 onDragLeave={handleDragLeave}
                 className={cn(
                   "border relative flex rounded-md  cursor-pointer bg-white  w-full  h-full border-dashed border-gray-700  text-sm flex-col gap-2 items-center justify-center text-muted-foreground hover:bg-gray-200",
-                  isDragging && "bg-gray-200"
+                  isDragging && "bg-gray-200",
                 )}
               >
                 {file && (

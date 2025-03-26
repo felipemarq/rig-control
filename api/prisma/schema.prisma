@@ -107,6 +107,7 @@ model User {
   password     String
   enterpriseId String?     @map("enterprise_id") @db.Uuid
   accessLevel  AccessLevel @map("access_level")
+  isActive     Boolean     @default(true)
 
   rigs                UserRig[]
   contracts           UserContract[]
@@ -123,8 +124,28 @@ model User {
   feedbacks         Feedback[]
   periodActionPlans PeriodActionPlan[]
   checklists        Checklist[]
+  permissions       Permission[]
 
   @@map("users")
+}
+
+enum Module {
+  OPERATION
+  BILLING
+  ADMIN
+  SMS
+}
+
+model Permission {
+  id        String  @id @default(uuid())
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String  @db.Uuid
+  module    Module
+  canView   Boolean @default(false)
+  canEdit   Boolean @default(false)
+  canCreate Boolean @default(false)
+
+  @@unique([userId, module]) // Garante que não existam permissões duplicadas
 }
 
 model Notification {

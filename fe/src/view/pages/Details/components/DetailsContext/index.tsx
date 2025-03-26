@@ -43,7 +43,11 @@ interface DetailsContextValues {
 }
 export const DetailsContext = createContext({} as DetailsContextValues);
 
-export const DetailsContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const DetailsContextProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const { efficiencyId } = useParams<{ efficiencyId: string }>();
   const { primaryColor } = useTheme();
   const { state: originalState } = useLocation();
@@ -62,14 +66,13 @@ export const DetailsContextProvider = ({ children }: { children: React.ReactNode
 
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  const { isUserAdm, user } = useAuth();
+  const { isUserAdm, userOperationPermissions } = useAuth();
 
-  //Temporário
   const canUserEdit =
     isUserAdm ||
-    user?.email === "alissonmenezes@conterp.com.br" ||
-    user?.email === "adelsonferreira@conterp.com.br" ||
-    user?.email === "chandler@conterp.com.br";
+    !!(
+      userOperationPermissions?.canCreate && userOperationPermissions?.canEdit
+    );
 
   const [isDetailModalOpen, setIsDetailModalOpen] = useState<boolean>(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);

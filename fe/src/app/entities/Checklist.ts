@@ -1,4 +1,4 @@
-import { ChecklistItem } from "./ChecklistItem";
+import { Evaluation } from "./Evaluation";
 import { Rig } from "./Rig";
 
 export type Checklist = {
@@ -26,14 +26,5 @@ export type Checklist = {
     name: string;
     email: string;
   };
-  evaluations: {
-    id: string;
-    score: number;
-    rating: number;
-    checklistId: string;
-    checklistItemId: string;
-    comment?: string;
-    files?: [] | { path: string }[];
-    checklistItem: ChecklistItem;
-  }[];
+  evaluations: Evaluation[];
 };
