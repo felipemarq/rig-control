@@ -11,6 +11,11 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import React, { createContext, useCallback, useState } from "react";
 
+type AvgResult = {
+  category: string;
+  average: number;
+};
+
 // Definição do tipo do contexto
 interface ChecklistsContextValue {
   isNewChecklistModalOpen: boolean;
@@ -44,6 +49,16 @@ interface ChecklistsContextValue {
     totalInspections: number;
     totalEvaluations: number;
     totalCriticalEvaluations: number;
+  };
+  averages: {
+    avgByCategories: {
+      category: string;
+      average: number;
+    }[];
+    avgByRig: {
+      rigName: string;
+      average: number;
+    }[];
   };
 }
 
@@ -105,6 +120,48 @@ export const ChecklistsProvider = ({
   } = useMutation({
     mutationFn: checklistsService.remove,
   });
+
+  const averages = calculateAverages(checklists);
+
+  function calculateAverages(data: ChecklistsResponse) {
+    const categorySums: Record<string, { total: number; count: number }> = {};
+    const rigSums: Record<string, { total: number; count: number }> = {};
+
+    data.forEach(({ rig: { name: rigName }, evaluations }) => {
+      if (!rigSums[rigName]) {
+        rigSums[rigName] = { total: 0, count: 0 };
+      }
+
+      evaluations.forEach(({ checklistItem: { category }, rating }) => {
+        if (!categorySums[category]) {
+          categorySums[category] = { total: 0, count: 0 };
+        }
+
+        categorySums[category].total += rating;
+        categorySums[category].count++;
+        rigSums[rigName].total += rating;
+        rigSums[rigName].count++;
+      });
+    });
+
+    const avgByCategories: {
+      category: string;
+      average: number;
+    }[] = Object.entries(categorySums).map(([category, { total, count }]) => ({
+      category,
+      average: (total / count) * 100,
+    }));
+
+    const avgByRig: {
+      rigName: string;
+      average: number;
+    }[] = Object.entries(rigSums).map(([rigName, { total, count }]) => ({
+      rigName,
+      average: (total / count) * 100,
+    }));
+
+    return { avgByCategories, avgByRig };
+  }
 
   const handleDeleteChecklist = async () => {
     try {
@@ -197,6 +254,7 @@ export const ChecklistsProvider = ({
         openChecklistModal,
         statBoxContainerValues,
         checklists,
+        averages,
       }}
     >
       {children}

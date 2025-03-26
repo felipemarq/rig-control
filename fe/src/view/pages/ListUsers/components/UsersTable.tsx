@@ -1,5 +1,5 @@
 "use client";
-import { UserCog } from "lucide-react";
+import { Activity, UserCog } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import {
@@ -26,6 +26,8 @@ export function UsersTable({ users }: UsersTableProps) {
     selectedUser,
     isEditUserDialogOpen,
     handleCloseEditUserDialog,
+
+    navigate,
   } = useListUsers();
 
   return (
@@ -40,7 +42,8 @@ export function UsersTable({ users }: UsersTableProps) {
             <TableHead>Permissões</TableHead>
             <TableHead>Último Acesso</TableHead>
 
-            <TableHead className="text-right">Ações</TableHead>
+            <TableHead>Ações</TableHead>
+            <TableHead>Sondas</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -91,6 +94,17 @@ export function UsersTable({ users }: UsersTableProps) {
                   >
                     <UserCog className="h-4 w-4 mr-2" />
                     Permissions
+                  </Button>
+                </TableCell>
+                <TableCell>
+                  {" "}
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => navigate(`/users/update-rigs/${user.id}`)}
+                  >
+                    <Activity className="mr-2 h-4 w-4" />
+                    Ver Sondas
                   </Button>
                 </TableCell>
               </TableRow>

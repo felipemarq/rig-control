@@ -14,34 +14,26 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import { OccurrenceType } from "@/app/entities/Occurrence";
-import { occurrenceTypeTranslation } from "@/app/utils/occurrenceTypeTranslation";
-import { useNavigate } from "react-router-dom";
 import { useChecklistsContext } from "../ChecklistsContext/useChecklistsContext";
-import { Evaluation } from "@/app/entities/Evaluation";
-import { ChecklistItemCategory } from "@/app/entities/ChecklistItem";
 
-type ChartData = { id: OccurrenceType; type: string; qtd: number }[];
-
-export const BarChartByType = () => {
+export const BarChartByCategory = () => {
   const { primaryColor } = useTheme();
-  const navigate = useNavigate();
-  const { checklists } = useChecklistsContext();
+  const {
+    averages: { avgByCategories },
+  } = useChecklistsContext();
 
-  console.log(checklists);
+  console.log(avgByCategories);
 
-  const allEvaluations: Evaluation[] = checklists.flatMap(
+  /*   const allEvaluations: Evaluation[] = checklists.flatMap(
     (checklist) => checklist.evaluations,
-  );
+  ); */
 
   const chartConfig = {
-    qtd: {
-      label: "Quantidade",
+    average: {
+      label: "Média",
       color: primaryColor,
     },
   } satisfies ChartConfig;
-
-  console.log("allEvaluations", Object.values(ChecklistItemCategory));
 
   /*   const data = occurrences.reduce<ChartData>((acc, curr) => {
     const translatedType =
@@ -66,23 +58,23 @@ export const BarChartByType = () => {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Ocorrências por Tipo</CardTitle>
+        <CardTitle>Média de Desempenho</CardTitle>
         <CardDescription>
-          Quantidade de ocorrencias por tipo no período selecionado
+          Média de desempenho por área de atuação
         </CardDescription>
       </CardHeader>
       <CardContent>
-        {/* <ChartContainer config={chartConfig}>
+        <ChartContainer config={chartConfig}>
           <BarChart
             accessibilityLayer
-            data={data}
+            data={avgByCategories}
             margin={{
               top: 20,
             }}
           >
             <CartesianGrid vertical={false} />
             <XAxis
-              dataKey="type"
+              dataKey="category"
               tickLine={false}
               tickMargin={10}
               axisLine={false}
@@ -93,16 +85,19 @@ export const BarChartByType = () => {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar dataKey="qtd" fill="var(--color-qtd)" radius={8}>
+            <Bar dataKey="average" fill="var(--color-average)" radius={8}>
               <LabelList
                 position="top"
-                offset={12}
+                offset={6}
                 className="fill-foreground"
                 fontSize={12}
+                formatter={(value: number) => {
+                  return `${value.toFixed(2)} %`;
+                }}
               />
             </Bar>
           </BarChart>
-        </ChartContainer> */}
+        </ChartContainer>
       </CardContent>
     </Card>
   );

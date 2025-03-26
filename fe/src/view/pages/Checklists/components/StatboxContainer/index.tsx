@@ -37,7 +37,7 @@ export const StatboxContainer = () => {
         <CardContent>
           <div className="text-2xl font-bold">{totalInspections}</div>
           <p className="text-xs text-muted-foreground">
-            Quantidade de avaliações cadastradas no periodo selecionado
+            Quantidade de inspeções criadas no periodo selecionado
           </p>
         </CardContent>
       </Card>
@@ -50,6 +50,9 @@ export const StatboxContainer = () => {
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{totalEvaluations}</div>
+          <p className="text-xs text-muted-foreground">
+            Quantidade de avaliações criadas no periodo selecionado
+          </p>
         </CardContent>
       </Card>
       <Card>

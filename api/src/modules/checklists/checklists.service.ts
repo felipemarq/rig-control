@@ -132,40 +132,11 @@ export class ChecklistsService {
   }
 
   async getEvaluationAverageByCategory() {
-    const categories = Object.values(ChecklistItemCategory);
-    const avgEvaluations = await this.evaluationsRepo.groupBy({
-      by: ['checklistItemId'],
-      _avg: { rating: true, score: true },
-    });
-
-    const checklistItems = await this.checklistItemsRepo.findMany({
-      where: { id: { in: avgEvaluations.map((r) => r.checklistItemId) } },
-      select: { id: true, category: true },
-    });
-
-    const categoryScores = categories.map((category) => {
-      const itemsInCategory = checklistItems.filter(
-        (item) => item.category === category,
-      );
-      const evaluations = avgEvaluations.filter((res) =>
-        itemsInCategory.some((item) => item.id === res.checklistItemId),
-      );
-
-      const avgScore =
-        evaluations.reduce((sum, ev) => sum + (ev._avg.score || 0), 0) /
-        (evaluations.length || 1);
-      const avgRating =
-        evaluations.reduce((sum, ev) => sum + (ev._avg.rating || 0), 0) /
-        (evaluations.length || 1);
-
-      return { category, avgScore, avgRating };
-    });
-
-    return categoryScores;
+    return 'categoryScores';
   }
 
   async findAll() {
-    return await this.checklistsRepo.findMany({
+    const checklists = await this.checklistsRepo.findMany({
       include: {
         rig: true,
         well: true,
@@ -184,6 +155,8 @@ export class ChecklistsService {
         },
       },
     });
+
+    return checklists;
   }
 
   async findOne(checklistId: string) {

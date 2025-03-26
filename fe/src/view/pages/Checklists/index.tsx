@@ -1,19 +1,12 @@
-import { Button } from "@/components/ui/button";
 import {
   ChecklistsContext,
   ChecklistsProvider,
 } from "./components/ChecklistsContext";
-
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { PlusCircle, Search } from "lucide-react";
-import { Input } from "@/components/ui/input";
 import { ChecklistsContainer } from "./components/ChecklistsContainer/index.tsx";
-import { NewChecklistModal } from "./components/modals/NewChecklistModal/index.tsx";
-import { EditChecklistModal } from "./components/modals/EditChecklistModal/index.tsx";
-import { ChecklistModal } from "./components/modals/ChecklistModal/index.tsx";
 import { Header } from "@/view/components/Header.tsx";
 import { StatboxContainer } from "./components/StatboxContainer/index.tsx";
-import { BarChartByType } from "./components/BarChartByType/index.tsx";
+import { BarChartByCategory } from "./components/BarChartByCategory/index.tsx";
+import { BarChartByRig } from "./components/BarChartByRig/index.tsx";
 
 const Checklists = () => {
   return (
@@ -35,7 +28,8 @@ const Checklists = () => {
               <StatboxContainer />
 
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 ">
-                <BarChartByType />
+                <BarChartByCategory />
+                <BarChartByRig />
                 <ChecklistsContainer />
               </div>
             </div>
