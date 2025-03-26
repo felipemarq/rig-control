@@ -28,6 +28,7 @@ import { QueryKeys } from "@/app/config/QueryKeys";
 import { useListUsers } from "../context/useListUsers";
 import { AxiosError } from "axios";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
+import { translateModule } from "@/app/utils/translateModule";
 
 // Schema de validação com Zod
 const permissionSchema = z.object({
@@ -154,7 +155,7 @@ export function UserPermissionsDialog({
             <TabsList className="grid grid-cols-4">
               {allModules.map((module) => (
                 <TabsTrigger key={module} value={module}>
-                  {module}
+                  {translateModule.find((m) => m.value === module)?.label!}
                 </TabsTrigger>
               ))}
             </TabsList>
