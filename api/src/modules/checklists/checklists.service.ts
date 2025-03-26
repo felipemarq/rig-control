@@ -135,8 +135,14 @@ export class ChecklistsService {
     return 'categoryScores';
   }
 
-  async findAll() {
+  async findAll(filters: { startDate: string; endDate: string }) {
     const checklists = await this.checklistsRepo.findMany({
+      where: {
+        date: {
+          gte: new Date(filters.startDate),
+          lte: new Date(filters.endDate),
+        },
+      },
       include: {
         rig: true,
         well: true,

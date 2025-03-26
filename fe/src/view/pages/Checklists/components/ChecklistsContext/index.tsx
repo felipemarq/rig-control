@@ -3,6 +3,7 @@ import { useTheme } from "@/app/contexts/ThemeContext";
 import { Checklist } from "@/app/entities/Checklist";
 import { useChecklists } from "@/app/hooks/checklists/useChecklists";
 import { useAuth } from "@/app/hooks/useAuth";
+import { useFiltersContext } from "@/app/hooks/useFiltersContext";
 import { checklistsService } from "@/app/services/checklistsService";
 import { ChecklistsResponse } from "@/app/services/checklistsService/getAll";
 import { customColorToast } from "@/app/utils/customColorToast";
@@ -10,11 +11,6 @@ import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
 import React, { createContext, useCallback, useState } from "react";
-
-type AvgResult = {
-  category: string;
-  average: number;
-};
 
 // Definição do tipo do contexto
 interface ChecklistsContextValue {
@@ -60,6 +56,7 @@ interface ChecklistsContextValue {
       average: number;
     }[];
   };
+  handleApplyFilters: () => void;
 }
 
 // Criação do contexto
@@ -73,9 +70,14 @@ export const ChecklistsProvider = ({
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
   const { user } = useAuth();
   const queryClient = useQueryClient();
+  const { selectedStartDate, selectedEndDate } = useFiltersContext();
   const { primaryColor } = useTheme();
-  const { checklists, isFetchingChecklists, refetchChecklists } =
-    useChecklists();
+  const { checklists, isFetchingChecklists, refetchChecklists } = useChecklists(
+    {
+      endDate: selectedEndDate,
+      startDate: selectedStartDate,
+    },
+  );
   const userRigs =
     user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
   const [isNewChecklistModalOpen, setIsNewChecklistModalOpen] = useState(false);
@@ -162,6 +164,10 @@ export const ChecklistsProvider = ({
 
     return { avgByCategories, avgByRig };
   }
+
+  const handleApplyFilters = () => {
+    refetchChecklists();
+  };
 
   const handleDeleteChecklist = async () => {
     try {
@@ -254,6 +260,7 @@ export const ChecklistsProvider = ({
         openChecklistModal,
         statBoxContainerValues,
         checklists,
+        handleApplyFilters,
         averages,
       }}
     >

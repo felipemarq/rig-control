@@ -7,12 +7,13 @@ import { Header } from "@/view/components/Header.tsx";
 import { StatboxContainer } from "./components/StatboxContainer/index.tsx";
 import { BarChartByCategory } from "./components/BarChartByCategory/index.tsx";
 import { BarChartByRig } from "./components/BarChartByRig/index.tsx";
+import { FilterSheet } from "@/view/components/FilterSheet.tsx";
 
 const Checklists = () => {
   return (
     <ChecklistsProvider>
       <ChecklistsContext.Consumer>
-        {({}) => (
+        {({ handleApplyFilters, isFetchingChecklists }) => (
           <div className="container mx-auto p-4">
             <Header
               displayRig
@@ -20,7 +21,10 @@ const Checklists = () => {
               title="Inspeções de campo do SGI"
             >
               <div className="flex gap-2 items-center">
-                {/*   <OccurrenceFiltersSheet /> */}
+                <FilterSheet
+                  onApplyFilters={handleApplyFilters}
+                  isLoading={isFetchingChecklists}
+                />
               </div>
             </Header>
 
