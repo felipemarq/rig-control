@@ -1,4 +1,3 @@
-import { ChecklistItem } from "./ChecklistItem";
 import { Evaluation } from "./Evaluation";
 import { Rig } from "./Rig";
 
