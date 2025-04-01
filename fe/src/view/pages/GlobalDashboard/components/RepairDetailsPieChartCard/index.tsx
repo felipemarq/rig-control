@@ -23,13 +23,15 @@ export const RepairDetailsPieChartCard = () => {
     <Card
       className={cn(
         "col-span-12 lg:col-span-4 row-span-2 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]",
-        !selectedPieChartView && "hidden"
+        !selectedPieChartView && "hidden",
       )}
     >
       <CardHeader className="pl-7 ">
         <div className="flex gap-2 items-center justify-between cursor-pointer">
           <CardTitle>Detalhes do Reparo: </CardTitle>
-          {selectedPeriodClassification && <Badge>{selectedPeriodClassification}</Badge>}
+          {selectedPeriodClassification && (
+            <Badge>{selectedPeriodClassification}</Badge>
+          )}
         </div>
       </CardHeader>
 

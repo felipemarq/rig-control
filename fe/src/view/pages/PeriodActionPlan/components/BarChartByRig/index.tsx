@@ -14,17 +14,17 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboardContext";
 import { OccurrenceType } from "@/app/entities/Occurrence";
-import { occurrenceTypeTranslation } from "@/app/utils/occurrenceTypeTranslation";
-import { useNavigate } from "react-router-dom";
+import { usePeriodActionPlansContext } from "../PeriodActionPlansContext/usePeriodActionPlansContext";
 
 type ChartData = { id: OccurrenceType; type: string; qtd: number }[];
 
-export const BarChartByType = () => {
+export const BarChartByRig = () => {
   const { primaryColor } = useTheme();
-  const navigate = useNavigate();
-  const { occurrences, handleChangeFilters } = useSmsDashboardContext();
+
+  const {
+    dashboardIndicators: { actionPlansPerRig },
+  } = usePeriodActionPlansContext();
 
   const chartConfig = {
     qtd: {
@@ -33,35 +33,20 @@ export const BarChartByType = () => {
     },
   } satisfies ChartConfig;
 
-  const data = occurrences.reduce<ChartData>((acc, curr) => {
-    const translatedType =
-      occurrenceTypeTranslation.find((item) => item.value === curr.type)
-        ?.label ?? "-";
-    const foundItem = acc.find((item) => item.id === curr.type);
-
-    if (!foundItem) {
-      acc.push({ id: curr.type, type: translatedType, qtd: 1 });
-      return acc;
-    } else {
-      acc = acc.map((item) => {
-        if (item.id === curr.type) {
-          item.qtd++;
-        }
-        return item;
-      });
-      return acc;
-    }
-  }, []);
-
+  const data = Object.entries(actionPlansPerRig).map(([key, value]) => ({
+    id: key,
+    type: key,
+    qtd: value,
+  }));
   console.log("data", data);
 
   return (
     <Card>
       <CardHeader>
-        <CardTitle>Ocorrências por Tipo</CardTitle>
-        <CardDescription>
+        <CardTitle>Planos de ação por Sonda</CardTitle>
+        {/* <CardDescription>
           Quantidade de ocorrencias por tipo no período selecionado
-        </CardDescription>
+        </CardDescription> */}
       </CardHeader>
       <CardContent>
         <ChartContainer config={chartConfig}>
@@ -85,17 +70,7 @@ export const BarChartByType = () => {
               cursor={false}
               content={<ChartTooltipContent hideLabel />}
             />
-            <Bar
-              dataKey="qtd"
-              fill="var(--color-qtd)"
-              radius={8}
-              onClick={(event) => {
-                handleChangeFilters("type")(event.id);
-                navigate(`/occurrences`, {
-                  state: { shouldApplyFilters: true },
-                });
-              }}
-            >
+            <Bar dataKey="qtd" fill="var(--color-qtd)" radius={8}>
               <LabelList
                 position="top"
                 offset={12}

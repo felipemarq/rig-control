@@ -443,7 +443,7 @@ export class EfficienciesService {
           totalRepairHours += diffInMinutes / 60;
         }
 
-        if (type === 'REPAIR') {
+        /*     if (type === 'REPAIR') {
           await this.mailService.sendEmail(
             ['ricardo@conterp.com.br', 'felipemarques@conterp.com.br'], // Lista de destinatários
             `Notificação de Reparo de Equipamento ${rig.name}`, // Assunto do e-mail
@@ -623,7 +623,7 @@ export class EfficienciesService {
 `,
             );
           }
-        }
+        } */
 
         if (type === 'GLOSS') {
           totalGlossHours += diffInMinutes / 60;
