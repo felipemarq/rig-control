@@ -3,7 +3,6 @@ import { Bar, BarChart, CartesianGrid, LabelList, XAxis } from "recharts";
 import {
   Card,
   CardContent,
-  CardDescription,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
@@ -14,10 +13,8 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 import { useTheme } from "@/app/contexts/ThemeContext";
-import { OccurrenceType } from "@/app/entities/Occurrence";
 import { usePeriodActionPlansContext } from "../PeriodActionPlansContext/usePeriodActionPlansContext";
 
-type ChartData = { id: OccurrenceType; type: string; qtd: number }[];
 
 export const BarChartByRig = () => {
   const { primaryColor } = useTheme();
@@ -38,7 +35,6 @@ export const BarChartByRig = () => {
     type: key,
     qtd: value,
   }));
-  console.log("data", data);
 
   return (
     <Card>

@@ -23,7 +23,7 @@ export const StatboxContainer = () => {
             {(totalScore / totalInspections).toFixed(2)}%
           </div>
           <p className="text-xs text-muted-foreground">
-            Média Geral de todas a
+            Média Geral de todas avaliações
           </p>
         </CardContent>
       </Card>
