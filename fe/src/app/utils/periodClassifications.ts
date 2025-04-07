@@ -224,7 +224,7 @@ const REPAIR = [
     classification: "Gerador",
     repairClassification: [
       { value: "ENGINE", label: "Motor" },
-      { value: "Generator", label: "Gerador" },
+      { value: "GENERATOR", label: "Gerador" },
 
       { value: "OTHERS", label: "Outros" },
     ],
