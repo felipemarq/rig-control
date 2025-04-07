@@ -188,8 +188,6 @@ export const PeriodActionPlansProvider = ({
       };
     }, [periodActionPlans]);
 
-  console.log("dashboardIndicators", dashboardIndicators);
-
   return (
     <PeriodActionPlansContext.Provider
       value={{

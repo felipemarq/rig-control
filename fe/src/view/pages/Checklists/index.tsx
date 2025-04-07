@@ -8,12 +8,14 @@ import { StatboxContainer } from "./components/StatboxContainer/index.tsx";
 import { BarChartByCategory } from "./components/BarChartByCategory/index.tsx";
 import { BarChartByRig } from "./components/BarChartByRig/index.tsx";
 import { FilterSheet } from "@/view/components/FilterSheet.tsx";
+import { Spinner } from "@/view/components/Spinner.tsx";
+import { NotFound } from "@/view/components/NotFound.tsx";
 
 const Checklists = () => {
   return (
     <ChecklistsProvider>
       <ChecklistsContext.Consumer>
-        {({ handleApplyFilters, isFetchingChecklists }) => (
+        {({ handleApplyFilters, isFetchingChecklists, filteredChecklists }) => (
           <div className="container mx-auto p-4">
             <Header
               displayRig
@@ -28,15 +30,30 @@ const Checklists = () => {
               </div>
             </Header>
 
-            <div>
-              <StatboxContainer />
-
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 ">
-                <BarChartByCategory />
-                <BarChartByRig />
-                <ChecklistsContainer />
+            {isFetchingChecklists && (
+              <div className=" h-full w-full flex items-center justify-center">
+                <Spinner />
               </div>
-            </div>
+            )}
+
+            {filteredChecklists.length <= 0 && !isFetchingChecklists && (
+              <NotFound>
+                {" "}
+                <div>Sem registros no período selecionado</div>
+              </NotFound>
+            )}
+
+            {filteredChecklists.length > 0 && !isFetchingChecklists && (
+              <div>
+                <StatboxContainer />
+
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8 ">
+                  <BarChartByCategory />
+                  <BarChartByRig />
+                  <ChecklistsContainer />
+                </div>
+              </div>
+            )}
           </div>
         )}
       </ChecklistsContext.Consumer>
