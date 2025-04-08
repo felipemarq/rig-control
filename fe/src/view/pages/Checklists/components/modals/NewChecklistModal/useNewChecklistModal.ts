@@ -60,7 +60,6 @@ export const useNewChecklistModal = () => {
     handleSubmit: hookFormhandleSubmit,
     formState: { errors },
     reset,
-    watch,
   } = useForm<ActionPlanFormValues>({
     defaultValues: {
       title: "",
@@ -84,9 +83,6 @@ export const useNewChecklistModal = () => {
       reset(); // cleanup on unmount
     };
   }, [reset]);
-
-  const watchForm = watch();
-  console.log("watchForm", watchForm);
 
   useEffect(() => {
     if (checklistItems.length > 0) {
