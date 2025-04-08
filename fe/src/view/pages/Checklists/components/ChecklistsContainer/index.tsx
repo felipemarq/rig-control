@@ -168,7 +168,6 @@ export const ChecklistsContainer = () => {
         </CardContent>
       </Card>
 
-      <NewChecklistModal />
       {checklistBeingSeen && <EditChecklistModal />}
       {checklistBeingSeen && <ChecklistModal />}
     </div>

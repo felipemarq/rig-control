@@ -60,6 +60,7 @@ export const useNewChecklistModal = () => {
     handleSubmit: hookFormhandleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<ActionPlanFormValues>({
     defaultValues: {
       title: "",
@@ -77,6 +78,15 @@ export const useNewChecklistModal = () => {
     },
     resolver: zodResolver(actionPlanSchema),
   });
+
+  useEffect(() => {
+    return () => {
+      reset(); // cleanup on unmount
+    };
+  }, [reset]);
+
+  const watchForm = watch();
+  console.log("watchForm", watchForm);
 
   useEffect(() => {
     if (checklistItems.length > 0) {
@@ -149,6 +159,7 @@ export const useNewChecklistModal = () => {
           weight: item.weight,
         })),
       });
+      window.location.reload();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

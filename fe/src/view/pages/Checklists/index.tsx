@@ -10,12 +10,20 @@ import { BarChartByRig } from "./components/BarChartByRig/index.tsx";
 import { FilterSheet } from "@/view/components/FilterSheet.tsx";
 import { Spinner } from "@/view/components/Spinner.tsx";
 import { NotFound } from "@/view/components/NotFound.tsx";
+import { Button } from "@/components/ui/button.tsx";
+import { PlusCircle } from "lucide-react";
+import { NewChecklistModal } from "./components/modals/NewChecklistModal/index.tsx";
 
 const Checklists = () => {
   return (
     <ChecklistsProvider>
       <ChecklistsContext.Consumer>
-        {({ handleApplyFilters, isFetchingChecklists, filteredChecklists }) => (
+        {({
+          handleApplyFilters,
+          isFetchingChecklists,
+          filteredChecklists,
+          openNewChecklistModal,
+        }) => (
           <div className="container mx-auto p-4">
             <Header
               displayRig
@@ -40,6 +48,10 @@ const Checklists = () => {
               <NotFound>
                 {" "}
                 <div>Sem registros no período selecionado</div>
+                <Button className="h-10" onClick={openNewChecklistModal}>
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Novo checklist
+                </Button>
               </NotFound>
             )}
 
@@ -54,6 +66,7 @@ const Checklists = () => {
                 </div>
               </div>
             )}
+            <NewChecklistModal />
           </div>
         )}
       </ChecklistsContext.Consumer>
