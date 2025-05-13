@@ -443,101 +443,55 @@ export class EfficienciesService {
           totalRepairHours += diffInMinutes / 60;
         }
 
-        /*     if (type === 'REPAIR') {
-          await this.mailService.sendEmail(
-            ['ricardo@conterp.com.br', 'felipemarques@conterp.com.br'], // Lista de destinatários
-            `Notificação de Reparo de Equipamento ${rig.name}`, // Assunto do e-mail
-            `<!DOCTYPE html>
-              <html lang="en">
-              <head>
-                  <meta charset="UTF-8">
-                  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-                  <title>Reparo de Equipamento</title>
-                  <style>
-                      body {
-                          font-family: Arial, sans-serif;
-                          background-color: #f4f4f9;
-                          margin: 0;
-                          padding: 0;
-                      }
-                      .email-container {
-                          max-width: 600px;
-                          margin: auto;
-                          padding: 20px;
-                          border: 1px solid #ddd;
-                          border-radius: 8px;
-                      }
-                      .header {
-                          background-color: #1c7b7b;
-                          color: #ffffff;
-                          text-align: center;
-                          padding: 20px;
-                          font-size: 20px;
-                          font-weight: bold;
-                      }
-                      .content {
-                          padding: 20px;
-                          line-height: 1.6;
-                      }
-                      .content p {
-                          margin: 10px 0;
-                      }
-                      .footer {
-                          margin-top: 20px;
-                          text-align: center;
-                          font-size: 12px;
-                          color: #888;
-                      }
-                  </style>
-              </head>
-              <body>
-                  <div class="email-container">
-                      <div class="header">
-                          Notificação de Reparo de Equipamento
-                      </div>
-                      <div class="content">
-                          <p>Prezado Ricardo,</p>
-                          <p>Foi identificado um reparo em um dos equipamentos. Seguem os detalhes:</p>
-                          <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0;">
-                              <h3 style="margin-top: 0; color: #333;">Detalhes do Reparo</h3>
-                              <p style="margin: 0;"><strong>Sonda:</strong> ${
-                                rig.name
-                              }</p>
-                              <p style="margin: 0;"><strong>Dia:</strong> ${formatDate(
-                                new Date(date),
-                              )}</p>
-                              <p style="margin: 0;"><strong>Parte do Equipamento:</strong> ${translateClassification(
-                                classification,
-                              )}</p>
-                              <p style="margin: 0;"><strong>Parte Quebrada:</strong> ${translateRepairClassification(
-                                repairClassification,
-                              )}</p>
-                              <p style="margin: 0;"><strong>Tempo de Parada:</strong> ${(
-                                diffInMinutes / 60
-                              ).toFixed(2)} Hrs</p>
-                          </div>
-                          <p style="color: #555;">
-                              Esta é uma notificação padrão sobre os reparos em andamento.
-                          </p>
-                      </div>
-                      <div class="footer">
-                          <p>Este é um e-mail automático. Por favor, não responda.</p>
-                          <p>&copy; ${new Date().getFullYear()} Rig Manager. Todos os direitos reservados.</p>
-                      </div>
-                  </div>
-              </body>
-              </html>
-            `,
+        if (type === 'REPAIR') {
+          await this.mailService.sendRepairEmail(
+            [
+              'ricardo@conterp.com.br',
+              'luizrangel@conterp.com.br',
+              'alanfelipe@conterp.com.br',
+            ],
+            {
+              classification: classification,
+              date: date,
+              diffInMinutes: diffInMinutes,
+              repairClassification: repairClassification,
+              rig: rig,
+            },
           );
+
+          if (
+            rig.id === 'c9eabd8e-6fa6-4474-837f-4636cabc6fe1' ||
+            rig.id === 'e07b74a7-607f-4cde-a261-5c2e41d73827' ||
+            rig.id === '18884437-f1d1-40f2-946c-960909b8ce5e'
+          ) {
+            await this.mailService.sendRepairEmail(
+              ['alissonmenezes@conterp.com.br'],
+              {
+                classification: classification,
+                date: date,
+                diffInMinutes: diffInMinutes,
+                repairClassification: repairClassification,
+                rig: rig,
+              },
+            );
+          }
+
+          if (rig.id === '2c3b1081-549d-45ce-a23a-7f72cece0f43') {
+            await this.mailService.sendRepairEmail(
+              ['marcelagermano@conterp.com.br'],
+              {
+                classification: classification,
+                date: date,
+                diffInMinutes: diffInMinutes,
+                repairClassification: repairClassification,
+                rig: rig,
+              },
+            );
+          }
 
           if (diffInMinutes >= 180) {
             await this.mailService.sendEmail(
-              [
-                'alanfelipe@conterp.com.br',
-                'luizrangel@conterp.com.br',
-                'felipemarques@conterp.com.br',
-                'bianca@conterp.com.br',
-              ],
+              ['felipemarques@conterp.com.br', 'bianca@conterp.com.br'],
               `Reparo de equipamento requer plano de ação - ${rig.name}`,
               `<!DOCTYPE html>
                 <html lang="en">
@@ -623,7 +577,7 @@ export class EfficienciesService {
 `,
             );
           }
-        } */
+        }
 
         if (type === 'GLOSS') {
           totalGlossHours += diffInMinutes / 60;
