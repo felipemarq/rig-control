@@ -10,6 +10,7 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+
 import React, { createContext, useCallback, useState } from "react";
 
 // Definição do tipo do contexto
@@ -134,7 +135,7 @@ export const ChecklistsProvider = ({
         rigSums[rigName] = { total: 0, count: 0 };
       }
 
-      evaluations.forEach(({ checklistItem: { category }, rating, score }) => {
+      evaluations.forEach(({ checklistItem: { category }, rating }) => {
         if (!categorySums[category]) {
           categorySums[category] = { total: 0, count: 0 };
         }

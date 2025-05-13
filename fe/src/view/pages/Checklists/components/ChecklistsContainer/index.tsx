@@ -26,7 +26,6 @@ import {
 import { DeleteModal } from "@/view/components/DeleteModal";
 import { NotFound } from "@/view/components/NotFound";
 import { Badge } from "@/components/ui/badge";
-import { NewChecklistModal } from "../modals/NewChecklistModal";
 import { EditChecklistModal } from "../modals/EditChecklistModal";
 import { ChecklistModal } from "../modals/ChecklistModal";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
