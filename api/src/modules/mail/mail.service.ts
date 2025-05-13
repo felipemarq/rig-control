@@ -5,6 +5,9 @@ import { occurrenceSeverityTranslation } from './utils/occurrenceSeverityTransla
 import { natureTranslation } from './utils/natureTranslation';
 import { occurrenceTypeTranslation } from './utils/occurrenceTypeTranslation';
 import { CreateOcurrenceDto } from '../ocurrences/dto/create-ocurrence.dto';
+import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
+import { RepairClassification } from '../efficiencies/entities/RepairClassification';
+import { repairHTMLEmailTemplateString } from './templates/repairHTMLEmailTemplateString';
 
 @Injectable()
 export class MailService {
@@ -316,5 +319,34 @@ export class MailService {
       subject: subject,
       html: html,
     });
+  }
+
+  async sendRepairEmail(
+    email: string[],
+    {
+      rig,
+      date,
+      classification,
+      diffInMinutes,
+      repairClassification,
+    }: {
+      rig: any;
+      date: string;
+      classification: PeriodClassification;
+      diffInMinutes: number;
+      repairClassification: RepairClassification;
+    },
+  ) {
+    await this.sendEmail(
+      email,
+      `Notificação de Reparo de Equipamento ${rig.name}`,
+      repairHTMLEmailTemplateString({
+        rig,
+        date,
+        classification,
+        diffInMinutes,
+        repairClassification,
+      }),
+    );
   }
 }

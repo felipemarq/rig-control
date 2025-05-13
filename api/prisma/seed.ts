@@ -62,7 +62,7 @@ const main = async () => {
 
   await prismaClient.billingConfiguration.create({
     data: {
-      rigId: 'a0d4c9c9-b222-4b87-83e4-7b1a6a9b0154', // Altere para o ID correto do Rig
+      rigId: rig.id, // Altere para o ID correto do Rig
       availableHourTax: 100.0,
       startDate: new Date('2000-01-01T00:00:00Z'), // Data de início antiga
       endDate: new Date('2050-01-01T00:00:00Z'), // Data de fim futura

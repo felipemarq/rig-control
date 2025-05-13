@@ -137,7 +137,6 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   isWrongVersion = systemVersion?.version !== currentVersion.version;
 
-  console.log("user", data);
   return (
     <AuthContext.Provider
       value={{

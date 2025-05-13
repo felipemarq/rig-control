@@ -10,6 +10,7 @@ import { customColorToast } from "@/app/utils/customColorToast";
 import { treatAxiosError } from "@/app/utils/treatAxiosError";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AxiosError } from "axios";
+
 import React, { createContext, useCallback, useState } from "react";
 
 // Definição do tipo do contexto
@@ -129,7 +130,7 @@ export const ChecklistsProvider = ({
     const categorySums: Record<string, { total: number; count: number }> = {};
     const rigSums: Record<string, { total: number; count: number }> = {};
 
-    data.forEach(({ rig: { name: rigName }, evaluations }) => {
+    data.forEach(({ rig: { name: rigName }, evaluations, totalPoints }) => {
       if (!rigSums[rigName]) {
         rigSums[rigName] = { total: 0, count: 0 };
       }
@@ -141,9 +142,10 @@ export const ChecklistsProvider = ({
 
         categorySums[category].total += rating;
         categorySums[category].count++;
-        rigSums[rigName].total += rating;
-        rigSums[rigName].count++;
       });
+
+      rigSums[rigName].total += totalPoints;
+      rigSums[rigName].count++;
     });
 
     const avgByCategories: {
@@ -159,7 +161,7 @@ export const ChecklistsProvider = ({
       average: number;
     }[] = Object.entries(rigSums).map(([rigName, { total, count }]) => ({
       rigName,
-      average: (total / count) * 100,
+      average: total / count,
     }));
 
     return { avgByCategories, avgByRig };

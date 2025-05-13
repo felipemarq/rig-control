@@ -79,6 +79,12 @@ export const useNewChecklistModal = () => {
   });
 
   useEffect(() => {
+    return () => {
+      reset(); // cleanup on unmount
+    };
+  }, [reset]);
+
+  useEffect(() => {
     if (checklistItems.length > 0) {
       reset({
         title: "",
@@ -149,6 +155,7 @@ export const useNewChecklistModal = () => {
           weight: item.weight,
         })),
       });
+      window.location.reload();
     } catch (error: any | typeof AxiosError) {
       treatAxiosError(error);
       console.log(error);

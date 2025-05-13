@@ -31,7 +31,7 @@ export const PeriodsDetailsPieChartCard = ({
       className={cn(
         "flex flex-col col-span-6",
         className,
-        isPeriodDetailsGraphExpanded && "col-span-6"
+        isPeriodDetailsGraphExpanded && "col-span-6",
       )}
     >
       <CardHeader className="pl-7 ">
@@ -40,7 +40,10 @@ export const PeriodsDetailsPieChartCard = ({
             Detalhes do periodo não faturado selecionado{" "}
           </CardTitle>
           <div className="flex gap-2 items-center">
-            <Button size="sm" onClick={() => handleChangePeriodDetailsGraphView()}>
+            <Button
+              size="sm"
+              onClick={() => handleChangePeriodDetailsGraphView()}
+            >
               {selectedPeriodDetailsGraphView === "HOURS" ? "%" : "Horas"}
             </Button>
             <Button size="sm" onClick={() => handleExpandPeriodDetailsGraph()}>
@@ -56,8 +59,8 @@ export const PeriodsDetailsPieChartCard = ({
         {hasNoUnbilledPeriods && !isFetchingUnbilledPeriods && (
           <div className="flex justify-center items-center mx-auto aspect-square max-h-[350px]">
             <NotFound>
-              <strong>Sem</strong> tempo não faturado com os <strong>filtros</strong>{" "}
-              selecionados!
+              <strong>Sem</strong> tempo não faturado com os{" "}
+              <strong>filtros</strong> selecionados!
             </NotFound>
           </div>
         )}

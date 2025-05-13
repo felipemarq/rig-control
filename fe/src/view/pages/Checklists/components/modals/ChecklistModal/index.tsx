@@ -25,8 +25,6 @@ export const ChecklistModal = () => {
   const { isChecklistModalOpen, closeChecklistModal, checklistBeingSeen } =
     useChecklistsContext();
 
-  console.log("checklistBeingSeen", checklistBeingSeen);
-
   return (
     <Dialog open={isChecklistModalOpen} onOpenChange={closeChecklistModal}>
       <DialogContent

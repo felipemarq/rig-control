@@ -11,13 +11,15 @@ export const uploadEvaluationFile = async ({
 }: EvaluationUploadFileParams) => {
   const formData = new FormData();
   formData.append("file", file);
-  const { data } = await httpClient.post(`file/evaluation/${evaluationId}`, formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
+  const { data } = await httpClient.post(
+    `file/evaluation/${evaluationId}`,
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     },
-  });
-
-  console.log("data", data);
+  );
 
   return data;
 };

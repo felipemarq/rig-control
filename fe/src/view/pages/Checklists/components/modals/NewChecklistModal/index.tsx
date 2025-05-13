@@ -254,16 +254,33 @@ export const NewChecklistModal = () => {
                       control={control}
                       name={`evaluations.${index}.file`}
                       render={({ field: { onChange, value, ...field } }) => (
-                        <div className="text-black mt-4  flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
+                        <div className="text-black mt-4 flex items-center gap-2 bg-white border border-gray-200 p-2 rounded-lg">
                           <ShadcnInput
                             type="file"
                             className="border-gray-200 file:bg-primary file:text-white hover:file:bg-primary/90"
                             onChange={(e) => {
                               const file = e.target.files?.[0];
-                              if (file) onChange(file);
+                              if (!file) return;
+
+                              const maxSizeMB = 10;
+                              const maxSizeBytes = maxSizeMB * 1024 * 1024;
+
+                              if (file.size > maxSizeBytes) {
+                                alert(
+                                  `Arquivo excede o limite de ${maxSizeMB}MB.`,
+                                );
+                                return;
+                              }
+
+                              onChange(file);
                             }}
                             {...field}
                           />
+                          {value && (
+                            <span className="text-sm text-gray-600">
+                              {value.name}
+                            </span>
+                          )}
                         </div>
                       )}
                     />

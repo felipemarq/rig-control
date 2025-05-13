@@ -53,6 +53,8 @@ export const BarChartByType = () => {
     }
   }, []);
 
+  console.log("data", data);
+
   return (
     <Card>
       <CardHeader>

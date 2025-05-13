@@ -76,7 +76,9 @@ interface GlobalDashboardContextValue {
     label: string;
     value: number;
   }[];
-  handleSelectedRepairPeriodClassificationChange: (classification: string) => void;
+  handleSelectedRepairPeriodClassificationChange: (
+    classification: string,
+  ) => void;
   selectedRepairPeriodClassification: string | null;
   hasNoUnbilledPeriods: boolean;
   handleExcelDownload: () => Promise<void>;
@@ -86,9 +88,15 @@ interface GlobalDashboardContextValue {
 type DashboardView = "ALL" | "BA" | "SE" | "AL";
 
 // Criação do contexto
-export const GlobalDashboardContext = createContext({} as GlobalDashboardContextValue);
+export const GlobalDashboardContext = createContext(
+  {} as GlobalDashboardContextValue,
+);
 
-export const GlobalDashboardProvider = ({ children }: { children: React.ReactNode }) => {
+export const GlobalDashboardProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   // Utilização dos hooks para autenticação e contexto da barra lateral
   const { user, signout } = useAuth();
 
@@ -96,16 +104,19 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const { filters } = useFiltersContext();
   const { primaryColor } = useTheme();
   const [isDetailsGraphVisible, setIsDetailsGraphVisible] = useState(false);
-  const [selectedPieChartView, setSelectedPieChartView] = useState(PeriodType.REPAIR);
-  const [selectedPeriodClassification, setSelectedPeriodClassification] = useState<
-    string | null
-  >(null);
-  const [selectedRepairPeriodClassification, setSelectedRepairPeriodClassification] =
+  const [selectedPieChartView, setSelectedPieChartView] = useState(
+    PeriodType.REPAIR,
+  );
+  const [selectedPeriodClassification, setSelectedPeriodClassification] =
     useState<string | null>(null);
-  const [isPeriodDetailsGraphExpanded, setIsPeriodDetailsGraphExpanded] = useState(false);
-  const [selectedPeriodDetailsGraphView, setSelectedPeriodDetailsGraphView] = useState<
-    "HOURS" | "PERCENTAGE"
-  >("PERCENTAGE");
+  const [
+    selectedRepairPeriodClassification,
+    setSelectedRepairPeriodClassification,
+  ] = useState<string | null>(null);
+  const [isPeriodDetailsGraphExpanded, setIsPeriodDetailsGraphExpanded] =
+    useState(false);
+  const [selectedPeriodDetailsGraphView, setSelectedPeriodDetailsGraphView] =
+    useState<"HOURS" | "PERCENTAGE">("PERCENTAGE");
 
   const [selectedDetailPieChartView, setSelectedDetailPieChartView] = useState<
     null | string
@@ -124,7 +135,6 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       });
       saveAs(blob, "relatorio.xlsx");
-      console.log("salvo");
     } catch (error) {
       console.error("Erro ao baixar o relatório", error);
     } finally {
@@ -134,7 +144,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
   const handleChangePeriodDetailsGraphView = () => {
     setSelectedPeriodDetailsGraphView((prev) =>
-      prev === "HOURS" ? "PERCENTAGE" : "HOURS"
+      prev === "HOURS" ? "PERCENTAGE" : "HOURS",
     );
   };
 
@@ -153,7 +163,9 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     setSelectedPeriodClassification(classification);
   };
 
-  const handleSelectedRepairPeriodClassificationChange = (classification: string) => {
+  const handleSelectedRepairPeriodClassificationChange = (
+    classification: string,
+  ) => {
     setSelectedRepairPeriodClassification(classification);
   };
 
@@ -169,7 +181,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         startDate: filters.startDate,
         endDate: filters.endDate,
       },
-      true
+      true,
     );
 
   const [selectedDashboardView, setSelectedDashboardView] =
@@ -180,7 +192,9 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       return rigsAverage;
     }
 
-    return rigsAverage.filter(({ state }) => (state as string) === selectedDashboardView);
+    return rigsAverage.filter(
+      ({ state }) => (state as string) === selectedDashboardView,
+    );
   }, [selectedDashboardView, rigsAverage]);
 
   const handleChangeDashboardView = (view: DashboardView) => {
@@ -202,7 +216,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       startDate: filters.startDate,
       endDate: filters.endDate,
     },
-    true
+    true,
   );
 
   const unbilledPeriods = useMemo(() => {
@@ -219,7 +233,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
   const averageHours = formatNumberWithFixedDecimals(
     rigsAverageTotalHours / filteredRigsAverage.length,
-    2
+    2,
   );
 
   const isAverageHoursNaN = isNaN(averageHours);
@@ -230,7 +244,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     averageHoursPercentage:
       formatNumberWithFixedDecimals(
         ((rigsAverageTotalHours / filteredRigsAverage.length) * 100) / 24,
-        2
+        2,
       ) ?? 0,
   };
 
@@ -239,7 +253,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
   const hasNoUnbilledPeriods: boolean = unbilledPeriods.length === 0;
 
   const [totalDaysSelected, setTotalDaysSelected] = useState(
-    differenceInDays(filters.endDate, filters.startDate) + 1
+    differenceInDays(filters.endDate, filters.startDate) + 1,
   );
 
   const mappedRigsAverage = filteredRigsAverage
@@ -254,17 +268,17 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     .sort((a, b) => b.daysNotRegistered - a.daysNotRegistered);
 
   //Reduce para criar o chart de detalhes para todos os tipos de periodo
-  const unbilledPeriodsChartData: UnbilledPeriodsPieChartData = unbilledPeriods.reduce(
-    (acc: UnbilledPeriodsPieChartData, current) => {
+  const unbilledPeriodsChartData: UnbilledPeriodsPieChartData =
+    unbilledPeriods.reduce((acc: UnbilledPeriodsPieChartData, current) => {
       const parsedStartHour = parse(
         current.startHour.split("T")[1].slice(0, 5),
         "HH:mm",
-        new Date()
+        new Date(),
       );
       const parsedEndHour = parse(
         current.endHour.split("T")[1].slice(0, 5),
         "HH:mm",
-        new Date()
+        new Date(),
       );
 
       const translatedType = translateType(current.type);
@@ -301,14 +315,12 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
                 ...accItem,
                 value: Number((accItem.value + diffInHours).toFixed(2)),
               }
-            : accItem
+            : accItem,
         );
       }
 
       return acc;
-    },
-    []
-  );
+    }, []);
 
   //Dados para o grafico de detalhes por tipo de periodo selecionado
 
@@ -332,7 +344,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
   const filteredUnbilledPeriodsByType = useMemo(() => {
     return unbilledPeriods.filter((period) =>
-      selectedPieChartView ? period.type === selectedPieChartView : true
+      selectedPieChartView ? period.type === selectedPieChartView : true,
     );
   }, [selectedPieChartView, unbilledPeriods]);
 
@@ -345,7 +357,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
         const parsedStartHour = parseHour(current.startHour);
         const parsedEndHour = parseHour(current.endHour);
 
-        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+        const diffInHours =
+          differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
         if (!foundItem) {
           acc.push({
@@ -361,26 +374,28 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
                   ...accItem,
                   value: Number((accItem.value + diffInHours).toFixed(2)),
                 }
-              : accItem
+              : accItem,
           );
         }
 
         return acc;
       },
-      []
+      [],
     );
 
     let totalHours = 0;
 
     chartData.forEach((item) => (totalHours += item.value));
 
-    const mappedChartData: PeriodsDetailsPieChartData = chartData.map((item) => ({
-      ...item,
-      value:
-        selectedPeriodDetailsGraphView === "HOURS"
-          ? item.value
-          : Number(((item.value / totalHours) * 100).toFixed(2)),
-    }));
+    const mappedChartData: PeriodsDetailsPieChartData = chartData.map(
+      (item) => ({
+        ...item,
+        value:
+          selectedPeriodDetailsGraphView === "HOURS"
+            ? item.value
+            : Number(((item.value / totalHours) * 100).toFixed(2)),
+      }),
+    );
 
     return mappedChartData;
   }, [
@@ -395,7 +410,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     if (selectedDetailPieChartView) {
       filteredPeriods = filteredPeriods.filter(
         (period) =>
-          translateClassification(period.classification) === selectedDetailPieChartView
+          translateClassification(period.classification) ===
+          selectedDetailPieChartView,
       );
     }
 
@@ -408,7 +424,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
         const parsedStartHour = parseHour(current.startHour);
         const parsedEndHour = parseHour(current.endHour);
-        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+        const diffInHours =
+          differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
         if (!foundItem) {
           acc.push({
@@ -423,13 +440,13 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
                   ...accItem,
                   value: Number((accItem.value + diffInHours).toFixed(2)),
                 }
-              : accItem
+              : accItem,
           );
         }
 
         return acc;
       },
-      []
+      [],
     );
   }, [filteredUnbilledPeriodsByType, selectedDetailPieChartView]);
 
@@ -440,7 +457,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
       filteredPeriods = filteredPeriods.filter(
         (period) =>
           period.repairClassification === selectedRepairPeriodClassification &&
-          translateClassification(period.classification) === selectedDetailPieChartView
+          translateClassification(period.classification) ===
+            selectedDetailPieChartView,
       );
     }
 
@@ -453,7 +471,8 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
 
         const parsedStartHour = parseHour(current.startHour);
         const parsedEndHour = parseHour(current.endHour);
-        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+        const diffInHours =
+          differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
         if (!foundItem) {
           acc.push({
@@ -468,34 +487,37 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
                   ...accItem,
                   value: Number((accItem.value + diffInHours).toFixed(2)),
                 }
-              : accItem
+              : accItem,
           );
         }
 
         return acc;
       },
-      []
+      [],
     );
   }, [selectedRepairPeriodClassification]);
 
   const repairDetailsChartData = useMemo(() => {
     let totalHours = 0;
 
-    const filteredPeriodsByRepairClassification = filteredUnbilledPeriodsByType.filter(
-      (period) =>
-        translateClassification(period.classification) === selectedDetailPieChartView
-    );
+    const filteredPeriodsByRepairClassification =
+      filteredUnbilledPeriodsByType.filter(
+        (period) =>
+          translateClassification(period.classification) ===
+          selectedDetailPieChartView,
+      );
 
     const repairDetailsChartData = filteredPeriodsByRepairClassification
       .reduce((acc: RepairDetailsPieChartData, current) => {
         const classification = translateRepairClassification(
-          current.repairClassification as RepairClassification
+          current.repairClassification as RepairClassification,
         );
         const foundItem = acc.find((accItem) => accItem.id === classification)!;
 
         const parsedStartHour = parseHour(current.startHour);
         const parsedEndHour = parseHour(current.endHour);
-        const diffInHours = differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
+        const diffInHours =
+          differenceInMinutes(parsedEndHour, parsedStartHour) / 60;
 
         totalHours += Number(diffInHours.toFixed(2));
 
@@ -516,7 +538,7 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
                   ...accItem,
                   value: Number((accItem.value + diffInHours).toFixed(2)),
                 }
-              : accItem
+              : accItem,
           );
         }
 
@@ -530,11 +552,15 @@ export const GlobalDashboardProvider = ({ children }: { children: React.ReactNod
     return repairDetailsChartData;
   }, [selectedDetailPieChartView]);
 
-  const isChartDataEmpty = unbilledPeriodsChartData.every((data) => data.value === 0);
+  const isChartDataEmpty = unbilledPeriodsChartData.every(
+    (data) => data.value === 0,
+  );
 
   // Funções para manipulação das datas e filtros
   const handleApplyFilters = () => {
-    setTotalDaysSelected(differenceInDays(filters.endDate, filters.startDate) + 1);
+    setTotalDaysSelected(
+      differenceInDays(filters.endDate, filters.startDate) + 1,
+    );
     refetchRigsAverage();
     refetchUnbilledPeriods();
   };

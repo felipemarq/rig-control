@@ -1,4 +1,5 @@
 import { Pie, PieChart } from "recharts";
+
 import {
   ChartConfig,
   ChartContainer,
@@ -7,28 +8,22 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
+import { cn } from "@/lib/utils";
 
-interface RepairDetailsPieChartProps {
-  chartData: RepairDetailsPieChartData;
-  handleSelectedRepairPeriodClassificationChange: (
-    classification: string,
-  ) => void;
+export interface PeriodsDetailsPieChartProps {
+  chartData: PeriodsDetailsPieChartData;
 }
 
-export type RepairDetailsPieChartData = {
+export type PeriodsDetailsPieChartData = {
   id: string;
   label: string;
   value: number;
   fill: string;
-  classification: string;
-  selectedPeriodClassification: string;
-  percentage: number;
 }[];
 
-export const RepairDetailsPieChartCn = ({
+export const PeriodsDetailsPieChartCn = ({
   chartData,
-  handleSelectedRepairPeriodClassificationChange,
-}: RepairDetailsPieChartProps) => {
+}: PeriodsDetailsPieChartProps) => {
   const chartConfig: ChartConfig = {};
 
   chartData.forEach((repair) => {
@@ -45,7 +40,9 @@ export const RepairDetailsPieChartCn = ({
   return (
     <ChartContainer
       config={chartConfig}
-      className="mx-auto aspect-square max-h-[350px] [&_.recharts-pie-label-text]:fill-foreground"
+      className={cn(
+        "mx-auto aspect-square max-h-[350px] [&_.recharts-pie-label-text]:fill-foreground ",
+      )}
     >
       <PieChart>
         <ChartTooltip
@@ -74,9 +71,6 @@ export const RepairDetailsPieChartCn = ({
 
                     <div className="text-lg ml-auto flex items-baseline gap-0.5 font-mono font-bold tabular-nums text-foreground">
                       {value}
-                      <span className="font-normal text-muted-foreground">
-                        Hrs
-                      </span>
                     </div>
                   </div>
                 );
@@ -89,12 +83,6 @@ export const RepairDetailsPieChartCn = ({
           dataKey="value"
           nameKey="id"
           innerRadius={50}
-          onClick={(event) => {
-            console.log(event);
-            handleSelectedRepairPeriodClassificationChange(
-              event.payload.classification,
-            );
-          }}
           label={({ payload, ...props }) => {
             return (
               <text
@@ -106,7 +94,7 @@ export const RepairDetailsPieChartCn = ({
                 dominantBaseline={props.dominantBaseline}
                 fill="hsla(var(--foreground))"
               >
-                {payload.value} hrs
+                {payload.value}
               </text>
             );
           }}
