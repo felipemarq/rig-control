@@ -61,7 +61,7 @@ export const PeriodsFormContainer = () => {
             repairClassification,
             well,
           },
-          index
+          index,
         ) => (
           <React.Fragment key={id}>
             <div
@@ -75,12 +75,14 @@ export const PeriodsFormContainer = () => {
                 }`}
               >
                 <div>
-                  <h2 className="text-primary font-bold">Período {index + 1}</h2>
+                  <h2 className="text-primary font-bold">
+                    Período {index + 1}
+                  </h2>
                   <div
                     className={cn(
                       `flex flex-col transition-all duration-500 ${
                         getPeriodState(id) ? "" : "hidden"
-                      }`
+                      }`,
                     )}
                   >
                     <div>
@@ -97,7 +99,9 @@ export const PeriodsFormContainer = () => {
                     </div>
                     <div>
                       <span className="text-sm">Tipo:</span>{" "}
-                      <span className="text-sm">{translateType(type as PeriodType)}</span>
+                      <span className="text-sm">
+                        {translateType(type as PeriodType)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -108,7 +112,8 @@ export const PeriodsFormContainer = () => {
                         <div className="flex items-center justify-center gap-1 text-redAccent-500">
                           <AlertTriangle />
                           <span>
-                            Campos obrigatórios não preenchidos. Por favor, verifique.{" "}
+                            Campos obrigatórios não preenchidos. Por favor,
+                            verifique.{" "}
                           </span>{" "}
                         </div>
                       )}
@@ -180,15 +185,17 @@ export const PeriodsFormContainer = () => {
                             disabledHours: () => {
                               const disabledHours = Array.from(
                                 { length: 24 },
-                                (_, hour) => (hour < minHour ? hour : -1)
+                                (_, hour) => (hour < minHour ? hour : -1),
                               );
                               return disabledHours;
                             },
                             disabledMinutes: (selectedHour) => {
                               if (selectedHour === minHour) {
                                 // Desativar minutos antes do horário mínimo
-                                return Array.from({ length: 60 }, (_, minute) =>
-                                  minute < minMinute ? minute : -1
+                                return Array.from(
+                                  { length: 60 },
+                                  (_, minute) =>
+                                    minute < minMinute ? minute : -1,
                                 );
                               }
                               return [];
@@ -210,7 +217,8 @@ export const PeriodsFormContainer = () => {
                         }
                         format={format}
                         disabledTime={() => {
-                          const [hourString, minuteString] = startHour.split(":");
+                          const [hourString, minuteString] =
+                            startHour.split(":");
 
                           const minHour = Number(hourString); // Defina o valor mínimo da hora aqui
                           const minMinute = Number(minuteString); // Defina o valor mínimo dos minutos aqui
@@ -218,15 +226,17 @@ export const PeriodsFormContainer = () => {
                             disabledHours: () => {
                               const disabledHours = Array.from(
                                 { length: 24 },
-                                (_, hour) => (hour < minHour ? hour : -1)
+                                (_, hour) => (hour < minHour ? hour : -1),
                               );
                               return disabledHours;
                             },
                             disabledMinutes: (selectedHour) => {
                               if (selectedHour === minHour) {
                                 // Desativar minutos antes do horário mínimo
-                                return Array.from({ length: 60 }, (_, minute) =>
-                                  minute < minMinute ? minute : -1
+                                return Array.from(
+                                  { length: 60 },
+                                  (_, minute) =>
+                                    minute < minMinute ? minute : -1,
                                 );
                               }
                               return [];
@@ -241,7 +251,9 @@ export const PeriodsFormContainer = () => {
                 <div className="flex justify-between col-span-12  lg:col-span-6  items-end p-4 ">
                   <div className="w-full">
                     <Input
-                      onChange={(value) => handlePeriodWell(id, value.target.value)}
+                      onChange={(value) =>
+                        handlePeriodWell(id, value.target.value)
+                      }
                       error={getErrorMessageByFildName(`${id} well`)}
                       value={well}
                       name="well"
@@ -273,25 +285,33 @@ export const PeriodsFormContainer = () => {
                   {type && (
                     <div className="w-full">
                       <Select
-                        error={getErrorMessageByFildName(`${id} classification`)}
-                        onChange={(value) => handlePeriodClassification(id, value)}
+                        error={getErrorMessageByFildName(
+                          `${id} classification`,
+                        )}
+                        onChange={(value) =>
+                          handlePeriodClassification(id, value)
+                        }
                         placeholder="Classificação"
                         value={classification}
                         options={getPeriodClassification(type).filter(
                           ({ value }) =>
-                            !["SCHEDULED_STOP", "PROCESS", "OTHERS"].includes(value)
+                            !["SCHEDULED_STOP", "PROCESS", "OTHERS"].includes(
+                              value,
+                            ),
                         )}
                       />
                     </div>
                   )}
                 </div>
 
-                {type === "REPAIR" && (
+                {(type === "REPAIR" || type === "GLOSS") && (
                   <div className="flex justify-between p-4 col-span-12  ">
                     <div className="w-full">
                       <Select
                         error={!repairClassification ? "Obrigatório" : ""}
-                        onChange={(value) => handleRepairClassification(id, value)}
+                        onChange={(value) =>
+                          handleRepairClassification(id, value)
+                        }
                         placeholder="Tipo do Reparo"
                         value={repairClassification ?? ""}
                         options={getRepairClassification(classification)}
@@ -361,14 +381,16 @@ export const PeriodsFormContainer = () => {
 
             <hr />
           </React.Fragment>
-        )
+        ),
       )}
 
       <div className="lg:flex lg:justify-center pb-6 lg:my-6 ">
         <Button
           disabled={!isFormValid || isLoading}
           className="bg-primary w-2/3 "
-          onClick={() => (hasRemainingMinutes ? handleSave() : handleSubmit(periods))}
+          onClick={() =>
+            hasRemainingMinutes ? handleSave() : handleSubmit(periods)
+          }
         >
           {hasRemainingMinutes ? "Salvar dados" : "Enviar dados"}
         </Button>
