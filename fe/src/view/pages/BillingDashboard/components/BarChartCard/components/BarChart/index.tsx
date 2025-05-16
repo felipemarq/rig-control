@@ -13,7 +13,7 @@ import {
 import { useTheme } from "@/app/contexts/ThemeContext";
 
 export const BarChart = () => {
-  const { data } = useBarChart();
+  const { data, handleOpenRigDetail } = useBarChart();
   const { primaryColor } = useTheme();
 
   const chartConfig = {
@@ -28,7 +28,10 @@ export const BarChart = () => {
   } satisfies ChartConfig;
 
   return (
-    <ChartContainer config={chartConfig} className="aspect-auto h-[400px] w-full">
+    <ChartContainer
+      config={chartConfig}
+      className="aspect-auto h-[400px] w-full"
+    >
       <RechartBarChart accessibilityLayer data={data}>
         <XAxis
           dataKey="rig"
@@ -39,7 +42,18 @@ export const BarChart = () => {
         />
         <ChartTooltip content={<ChartTooltipContent hideLabel />} />
         <ChartLegend content={<ChartLegendContent />} />
-        <Bar dataKey="total" stackId="a" fill="var(--color-total)" radius={[0, 0, 4, 4]}>
+        <Bar
+          dataKey="total"
+          stackId="a"
+          fill="var(--color-total)"
+          radius={[0, 0, 4, 4]}
+          onClick={(event) => {
+            handleOpenRigDetail({
+              rigId: event.rigId,
+              rigName: event.rig,
+            });
+          }}
+        >
           <LabelList
             position="center"
             offset={12}
@@ -53,6 +67,12 @@ export const BarChart = () => {
           stackId="a"
           fill="var(--color-totalLost)"
           radius={[4, 4, 0, 0]}
+          onClick={(event) => {
+            handleOpenRigDetail({
+              rigId: event.rigId,
+              rigName: event.rig,
+            });
+          }}
         >
           <LabelList
             position="center"

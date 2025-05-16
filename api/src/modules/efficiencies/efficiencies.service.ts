@@ -1221,6 +1221,11 @@ export class EfficienciesService {
             ratio: true,
           },
         },
+        Billing: {
+          select: {
+            id: true,
+          },
+        },
       },
     });
 

@@ -1,4 +1,4 @@
-import {EfficienciesResponse} from "../services/efficienciesService/getAll";
+import { EfficienciesResponse } from "../services/efficienciesService/getAll";
 export interface totalsInterface {
   availablehouramount: number;
   bobrentamount: number;
@@ -27,6 +27,7 @@ export interface totalsInterface {
   munckamount: number;
   powerswivelamount: number;
   repairhouramount: number;
+  standbyhouramount: number;
   suckingtruckamount: number;
   transportationamount: number;
   truckcartrentamount: number;
@@ -39,7 +40,7 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
       let hasDtmLt20 = false;
       let hasDtmBt20and50 = false;
       let hasDtmGt50 = false;
-      efficiency.periods.forEach(({type, classification}) => {
+      efficiency.periods.forEach(({ type, classification }) => {
         if (type === "DTM") {
           if (classification === "LT20") {
             hasDtmLt20 = true;
@@ -55,7 +56,7 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
         }
       });
 
-      efficiency.fluidRatio.forEach(({ratio}) => {
+      efficiency.fluidRatio.forEach(({ ratio }) => {
         if (ratio === "LT20") {
           acc.fluidlt20amount++;
         }
@@ -69,7 +70,7 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
         }
       });
 
-      efficiency.equipmentRatio.forEach(({ratio}) => {
+      efficiency.equipmentRatio.forEach(({ ratio }) => {
         if (ratio === "LT20") {
           acc.equipmentlt20amount++;
         }
@@ -85,6 +86,7 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
 
       acc.availablehouramount += efficiency.availableHours;
       acc.bobrentamount += efficiency.bobRentHours;
+      acc.standbyhouramount += efficiency.standByHours;
       acc.christmastreedisassemblyamount +=
         efficiency.christmasTreeDisassemblyHours;
       acc.demobilizationamount += Number(efficiency.hasDemobilization);
@@ -97,12 +99,12 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
       acc.glosshouramount += 24 - efficiency.availableHours;
       acc.repairhouramount += Number(efficiency.repairHours);
       acc.mixtankdemobilizationamount += Number(
-        efficiency.hasMixTankDemobilization
+        efficiency.hasMixTankDemobilization,
       );
       acc.mixtankdtmamount += Number(efficiency.hasMixTankDtm);
       acc.mixtankhourrentamount += Number(efficiency.hasMixTankHourRent);
       acc.mixtankmobilizationamount += Number(
-        efficiency.hasMixTankMobilization
+        efficiency.hasMixTankMobilization,
       );
       acc.mixtankmonthrentamount += Number(efficiency.hasMixTankMonthRent);
       acc.mixtankoperatoramount += Number(efficiency.hasMixTankOperator);
@@ -150,7 +152,8 @@ export const getTotals = (efficiencies: EfficienciesResponse) => {
       truckcartrentamount: 0,
       truckkmamount: 0,
       trucktankamount: 0,
-    }
+      standbyhouramount: 0,
+    },
   );
   return totals;
 };

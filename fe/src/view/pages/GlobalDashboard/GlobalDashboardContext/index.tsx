@@ -322,6 +322,8 @@ export const GlobalDashboardProvider = ({
       return acc;
     }, []);
 
+ 
+
   //Dados para o grafico de detalhes por tipo de periodo selecionado
 
   const pieChartColors = [

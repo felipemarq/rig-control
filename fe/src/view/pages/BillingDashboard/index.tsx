@@ -5,9 +5,12 @@ import {
 import "swiper/css";
 import { FilterSheet } from "@/view/components/FilterSheet";
 import { StatboxContainer } from "./components/StatboxContainer";
+import { Header } from "@/view/components/Header.tsx";
 
 import { BagdeStatus } from "@/view/components/BagdeStatus";
 import { BarChartCard } from "./components/BarChartCard";
+import { Spinner } from "@/view/components/Spinner";
+import { RigDetailsCard } from "./components/RigDetailsCard";
 
 export const description = "A multiple bar chart";
 
@@ -15,25 +18,37 @@ const BillingDashboard = () => {
   return (
     <BillingDashboardProvider>
       <BillingDashboardContext.Consumer>
-        {({ handleApplyFilters, isFetchingBillings }) => (
-          <div>
-            <div className="flex justify-between p-4">
-              <BagdeStatus displayRig={false} />
-              <FilterSheet
-                onApplyFilters={handleApplyFilters}
-                isLoading={isFetchingBillings}
-              />
-            </div>
+        {({ handleApplyFilters, isFetchingBillings, selectedRig }) => (
+          <div className="container mx-auto p-4">
+            <Header
+              displayRig
+              displayPeriodRange={false}
+              title="Dashboard de Faturamento"
+            >
+              <div className="flex gap-2 items-center">
+                <FilterSheet
+                  onApplyFilters={handleApplyFilters}
+                  isLoading={isFetchingBillings}
+                />
+              </div>
+            </Header>
 
-            <div className="flex w-full flex-col">
-              <main className="flex flex-1 flex-col gap-4 px-4 py-2 md:gap-8 ">
-                <div className="grid gap-4 md:gap-8 grid-cols-12 auto-rows-[150px]">
-                  <StatboxContainer />
+            {isFetchingBillings && (
+              <div className="flex justify-center">
+                <Spinner />
+              </div>
+            )}
 
+            {!isFetchingBillings && (
+              <div>
+                <StatboxContainer />
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8 ">
                   <BarChartCard />
+                  {selectedRig && <RigDetailsCard />}
                 </div>
-              </main>
-            </div>
+              </div>
+            )}
           </div>
         )}
       </BillingDashboardContext.Consumer>

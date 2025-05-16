@@ -1,164 +1,103 @@
-import { createContext, useCallback, useEffect, useMemo, useState } from "react";
+import { createContext, useEffect, useMemo, useState } from "react";
 import React from "react";
 import { useBillings } from "../../../../app/hooks/billings/useBillings";
 import { BillingResponse } from "../../../../app/services/billingServices/getAll";
 import { formatCurrency } from "../../../../app/utils/formatCurrency";
-import { useConfigBillings } from "../../../../app/hooks/useConfigBillings";
-import { BillingConfigResponse } from "../../../../app/services/billingConfigServices/getAll";
 import { FilterType } from "../../../../app/entities/FilterType";
-import { filterOptions } from "../../../../app/utils/filterOptions";
-import { SelectOptions } from "../../../../app/entities/SelectOptions";
-import { useRigs } from "../../../../app/hooks/rigs/useRigs";
-import { Rig } from "../../../../app/entities/Rig";
-import { months } from "../../../../app/utils/months";
-import { years } from "../../../../app/utils/years";
 import { useFiltersContext } from "../../../../app/hooks/useFiltersContext";
 import { formatCurrencyStringToNegativeNumber } from "@/app/utils/formatCurrencyStringToNegativeNumber";
 import { useEfficienciesRigsAverage } from "@/app/hooks/efficiencies/useEfficienciesRigsAverage";
+import { useBillingByRigId } from "@/app/hooks/billings/useBillingByRigId";
+import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
+import { getTotals, totalsInterface } from "@/app/utils/getTotals";
+import { BillingByRigIdResponse } from "@/app/services/billingServices/getbyRigId";
+import { EfficienciesResponse } from "@/app/services/efficienciesService/getAll";
 
 interface BillingDashboardContextValue {
-  handleStartDateChange(date: Date): void;
-  handleEndDateChange(date: Date): void;
-  handleYearChange(year: string): void;
-  selectedEndDate: string;
-  selectedStartDate: string;
-  handleApplyFilters(): void;
   billings: Array<BillingResponse>;
-  isFetchingBillings: boolean;
-  isFetchingConfig: boolean;
-  isEmpty: boolean;
   totalAmount: number | string;
   totalGlossAmount: number | string;
   totalRepairAmount: number | string;
   totalUnbilledAmount: number | string;
-  totalCommerciallyStoppedAmount: number | string;
-  setSliderState({ isBeginning, isEnd }: { isBeginning: boolean; isEnd: boolean }): void;
-  sliderState: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  };
-  setConfigSliderState({
-    isBeginning,
-    isEnd,
-  }: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  }): void;
-  configSliderState: {
-    isBeginning: boolean;
-    isEnd: boolean;
-  };
-  rigs:
-    | Rig[]
-    | {
-        id: string;
-        name: string;
-      }[];
-  isEditRigModalOpen: boolean;
-  isEditConfigModalOpen: boolean;
-  handleCloseEditRigModal(): void;
-  handleOpenEditRigModal(data: BillingResponse): void;
-  handleCloseEditConfigModal(): void;
-  handleChangePeriod(period: string): void;
-  selectedPeriod: string;
-  handleOpenEditConfigModal(data: BillingConfigResponse): void;
-  rigBeingEdited: BillingResponse | null;
-  configBeingEdited: BillingConfigResponse | null;
-  configs: Array<BillingConfigResponse>;
-  selectedRig: string;
-  selectedFilterType: FilterType;
-  filterOptions: SelectOptions;
-  handleChangeRig(rigId: string): void;
-  months: SelectOptions;
-  years: SelectOptions;
-  selectedYear: string;
-  handleToggleFilterType(filterType: FilterType): void;
+  isFetchingBillings: boolean;
   averageEfficiency: number;
+  totalCommerciallyStoppedAmount: number | string;
+  handleApplyFilters(): void;
+  handleCloseRigDetail: () => void;
+  handleOpenRigDetail({
+    rigId,
+    rigName,
+  }: {
+    rigId: string;
+    rigName: string;
+  }): void;
+  totals: totalsInterface;
+  selectedRig: string | null;
+  billing: BillingByRigIdResponse[];
+  isFetchingBilling: boolean;
+  isFetchingEfficiencies: boolean;
+  efficiencies: EfficienciesResponse;
 }
 
-export const BillingDashboardContext = createContext({} as BillingDashboardContextValue);
+export const BillingDashboardContext = createContext(
+  {} as BillingDashboardContextValue,
+);
 
-export const BillingDashboardProvider = ({ children }: { children: React.ReactNode }) => {
-  const {
-    filters,
-    selectedEndDate,
-    selectedPeriod,
-    selectedRig,
-    selectedStartDate,
-    selectedYear,
-    handleChangePeriod,
-    handleChangeRig,
-    handleEndDateChange,
-    handleStartDateChange,
-    handleToggleFilterType,
-    handleYearChange,
-    selectedFilterType,
-  } = useFiltersContext();
-  // Obtenha a data atual
+export const BillingDashboardProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  const { filters, handleToggleFilterType, handleChangeRig } =
+    useFiltersContext();
 
-  const { rigs } = useRigs(true);
-
-  // Defina os estados iniciais
-
-  const [isEditRigModalOpen, setIsEditRigModalOpen] = useState(false);
-  const [rigBeingEdited, setRigBeingEdited] = useState<null | BillingResponse>(null);
+  const [selectedRig, setSelectedRig] = useState<string | null>(null);
 
   useEffect(() => {
     handleToggleFilterType(FilterType.CUSTOM);
   }, []);
 
-  const [isEditConfigModalOpen, setIsEditConfigModalOpen] = useState(false);
-  const [configBeingEdited, setConfigBeingEdited] =
-    useState<null | BillingConfigResponse>(null);
+  const handleOpenRigDetail = ({
+    rigId,
+    rigName,
+  }: {
+    rigId: string;
+    rigName: string;
+  }) => {
+    handleChangeRig(rigId);
+    setSelectedRig(rigName);
+  };
 
-  const [sliderState, setSliderState] = useState({
-    isBeginning: true,
-    isEnd: false,
-  });
+  const handleCloseRigDetail = () => {
+    setSelectedRig(null);
+    handleChangeRig("");
+  };
 
-  const [configSliderState, setConfigSliderState] = useState({
-    isBeginning: true,
-    isEnd: false,
-  });
+  const { billings, isFetchingBillings, refetchBillings } =
+    useBillings(filters);
+  const { billing, refetchBilling, isFetchingBilling } =
+    useBillingByRigId(filters);
 
-  //Edit Rig
-  const handleCloseEditRigModal = useCallback(() => {
-    setIsEditRigModalOpen(false);
-    setRigBeingEdited(null);
-  }, []);
+  const { efficiencies, refetchEffciencies, isFetchingEfficiencies } =
+    useEfficiencies(filters);
 
-  const handleOpenEditRigModal = useCallback((data: BillingResponse) => {
-    setRigBeingEdited(data);
+  const handleApplyFilters = () => {
+    refetchBilling();
+    refetchEffciencies();
+    refetchBillings();
+  };
 
-    setIsEditRigModalOpen(true);
-  }, []);
-
-  //=============================
-
-  //Edit Config
-
-  const handleCloseEditConfigModal = useCallback(() => {
-    setConfigBeingEdited(null);
-
-    setIsEditConfigModalOpen(false);
-  }, []);
-  const handleOpenEditConfigModal = useCallback((data: BillingConfigResponse) => {
-    setConfigBeingEdited(data);
-    setIsEditConfigModalOpen(true);
-  }, []);
-
-  const { billings, isFetchingBillings, refetchBillings } = useBillings(filters);
-
-  const { configs, isFetchingConfig } = useConfigBillings();
-
-  const isEmpty: boolean = billings.length === 0;
+  useEffect(() => {
+    refetchEffciencies();
+    refetchBilling();
+  }, [filters]);
 
   const { rigsAverage } = useEfficienciesRigsAverage(
     {
       startDate: filters.startDate,
       endDate: filters.endDate,
     },
-    true
+    true,
   );
 
   const averageEfficiency = useMemo(() => {
@@ -188,7 +127,12 @@ export const BillingDashboardProvider = ({ children }: { children: React.ReactNo
     let totalCommerciallyStoppedUnbilled = 0;
 
     billings.forEach(
-      ({ total, repairhouramount, glosshouramount, commerciallystoppedamount }) => {
+      ({
+        total,
+        repairhouramount,
+        glosshouramount,
+        commerciallystoppedamount,
+      }) => {
         totalBillings += total;
         totalGlossUnbilled += glosshouramount;
 
@@ -199,22 +143,24 @@ export const BillingDashboardProvider = ({ children }: { children: React.ReactNo
         if (repairhouramount) {
           totalRepairUnbilled += repairhouramount;
         }
-      }
+      },
     );
 
     const totalAmount = formatCurrency(totalBillings);
 
     const totalRepairAmount = formatCurrencyStringToNegativeNumber(
-      formatCurrency(totalRepairUnbilled)
+      formatCurrency(totalRepairUnbilled),
     );
     const totalGlossAmount = formatCurrencyStringToNegativeNumber(
-      formatCurrency(totalGlossUnbilled)
+      formatCurrency(totalGlossUnbilled),
     );
     const totalCommerciallyStoppedAmount = formatCurrencyStringToNegativeNumber(
-      formatCurrency(totalCommerciallyStoppedUnbilled)
+      formatCurrency(totalCommerciallyStoppedUnbilled),
     );
     const totalUnbilledAmount = formatCurrency(
-      totalRepairUnbilled + totalGlossUnbilled + totalCommerciallyStoppedUnbilled
+      totalRepairUnbilled +
+        totalGlossUnbilled +
+        totalCommerciallyStoppedUnbilled,
     );
 
     return {
@@ -226,53 +172,32 @@ export const BillingDashboardProvider = ({ children }: { children: React.ReactNo
     };
   }, [billings]);
 
-  const handleApplyFilters = () => {
-    refetchBillings();
-  };
+  const totals = getTotals(efficiencies);
+
+  //const isEmpty: boolean = billing.length === 0;
+
+  //const totalAmount: number = isEmpty ? 0 : billing[0].total;
 
   return (
     <BillingDashboardContext.Provider
       value={{
-        years,
-        totalUnbilledAmount,
-        selectedYear,
-        handleYearChange,
-        months,
-        handleChangeRig,
-        selectedRig,
-        handleToggleFilterType,
-        selectedFilterType,
-        handleChangePeriod,
-        selectedPeriod,
-        filterOptions,
-        selectedStartDate,
-        selectedEndDate,
-        handleStartDateChange,
-        handleEndDateChange,
-        handleApplyFilters,
-        isFetchingBillings,
         billings,
-        isEmpty,
+        billing,
         totalAmount,
         totalGlossAmount,
         totalRepairAmount,
-        totalCommerciallyStoppedAmount,
-        setSliderState,
-        sliderState,
-        isEditRigModalOpen,
-        handleCloseEditRigModal,
-        handleOpenEditRigModal,
-        rigBeingEdited,
-        isFetchingConfig,
-        configSliderState,
-        setConfigSliderState,
-        isEditConfigModalOpen,
-        handleCloseEditConfigModal,
-        handleOpenEditConfigModal,
-        configs,
-        configBeingEdited,
-        rigs,
+        totalUnbilledAmount,
+        isFetchingBillings,
         averageEfficiency,
+        totalCommerciallyStoppedAmount,
+        handleApplyFilters,
+        handleOpenRigDetail,
+        handleCloseRigDetail,
+        selectedRig,
+        totals,
+        isFetchingBilling,
+        isFetchingEfficiencies,
+        efficiencies,
       }}
     >
       {children}

@@ -19,8 +19,8 @@ export const StatboxContainer = () => {
   } = useStatboxContainer();
 
   return (
-    <>
-      <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium">
             Faturamento Total
@@ -43,7 +43,7 @@ export const StatboxContainer = () => {
           )}
         </CardContent>
       </Card>
-      <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Glosa
@@ -60,7 +60,7 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Reparo
@@ -77,7 +77,7 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-      <Card className="col-span-12 row-span-1 lg:col-span-3 shadow-[rgba(0,_0,_0,_0.24)_0px_3px_8px]">
+      <Card >
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
           <CardTitle className="text-sm font-medium text-redAccent-500">
             Parada Comercial
@@ -94,6 +94,6 @@ export const StatboxContainer = () => {
         </CardContent>
         <CardFooter></CardFooter>
       </Card>
-    </>
+    </div>
   );
 };

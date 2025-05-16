@@ -12,11 +12,11 @@ export const useStatboxContainer = () => {
   let repairHours = 0;
 
   unbilledPeriodsChartData.forEach((data) => {
-    if (data.id === "GLOSS") {
+    if (data.label === "GLOSS") {
       glossHours += data.value;
     }
 
-    if (data.id === "REPAIR") {
+    if (data.label === "REPAIR") {
       repairHours += data.value;
     }
   });
