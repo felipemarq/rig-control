@@ -29,14 +29,6 @@ export const RigDetailsCard = () => {
       test.push(efficiency.id);
     }
   });
-
-  const efficienciesWithoutBilling = efficiencies.filter(
-    (efficiency) => !efficiency.Billing[0].id,
-  );
-
-  console.log("efficienciesWithoutBilling", efficienciesWithoutBilling);
-  console.log("test", test);
-
   const totalUnbilledAmount =
     billingArray.length != 0
       ? billing.glosshouramount +
