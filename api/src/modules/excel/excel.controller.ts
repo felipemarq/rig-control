@@ -1,17 +1,10 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
   Query,
   Res,
 } from '@nestjs/common';
 import { ExcelService } from './excel.service';
-import { CreateExcelDto } from './dto/create-excel.dto';
-import { UpdateExcelDto } from './dto/update-excel.dto';
 import { ActiveUserId } from 'src/shared/decorators/ActiveUserId';
 import { Response } from 'express';
 
@@ -25,6 +18,7 @@ export class ExcelController {
     @ActiveUserId() userId: string,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
+    @Query('gloss') gloss: boolean,
   ) {
     return this.excelService.getAllRigsReport(
       {

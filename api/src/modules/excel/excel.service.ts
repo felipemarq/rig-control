@@ -112,63 +112,6 @@ export class ExcelService {
         });
         return acc;
       }
-      /*
-
-      if (period.type === 'DTM') {
-        let updatedAcc = acc.map((accItem) =>
-          accItem.rigId === period.efficiency.rigId
-            ? {
-                ...accItem,
-                totalDtms: accItem.totalDtms + 1,
-              }
-            : accItem,
-        );
-
-        if (period.classification === 'LT20') {
-            updatedAcc = acc.map((accItem) =>
-              accItem.rigId === period.efficiency.rigId
-                ? {
-                    ...accItem,
-                    dtmLt20TotalAmmount: accItem.dtmLt20TotalAmmount + 1,
-                    dtmLt20TotalHours:
-                      accItem.dtmLt20TotalHours + Number((diffInMinutes / 60).toFixed(2)),
-                  }
-                : accItem,
-            );
-            return updatedAcc;
-          }
-
-          if (period.classification === 'BT20AND50') {
-            updatedAcc = acc.map((accItem) =>
-              accItem.rigId === period.efficiency.rigId
-                ? {
-                    ...accItem,
-                    dtmBt20and50TotalAmmout: accItem.dtmBt20and50TotalAmmout + 1,
-                    dtmLt20TotalHours:
-                      accItem.dtmBt20And50TotalHours + Number((diffInMinutes / 60).toFixed(2)),
-                  }
-                : accItem,
-            );
-            return updatedAcc;
-          }
-
-          if (period.classification === 'GT50') {
-            updatedAcc = acc.map((accItem) =>
-              accItem.rigId === period.efficiency.rigId
-                ? {
-                    ...accItem,
-                    dtmGt50TotalAmount: accItem.dtmGt50TotalAmount + 1,
-                    dtmGt50TotalHours:
-                      accItem.dtmBt20And50TotalHours + Number((diffInMinutes / 60).toFixed(2)),
-                  }
-                : accItem,
-            );
-            return updatedAcc;
-          }
-        
-        return updatedAcc;
-      }
-        */
 
       if (period.type === 'COMMERCIALLY_STOPPED') {
         const updatedAcc = acc.map((accItem) =>
@@ -250,6 +193,8 @@ export class ExcelService {
       }
       return acc;
     }, []);
+
+    console.log('result', result);
 
     // Criação da Planilha
     const ws = XLSX.utils.json_to_sheet(result);
