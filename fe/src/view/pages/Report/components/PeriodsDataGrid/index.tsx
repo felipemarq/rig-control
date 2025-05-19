@@ -128,7 +128,7 @@ export const PeriodsDataGrid = ({
     {
       field: "description",
       headerName: "Descrição",
-      flex: 0.8,
+      flex: 0.7,
       headerAlign: "center",
       align: "center",
       renderCell(params: GridRenderCellParams) {
@@ -142,7 +142,7 @@ export const PeriodsDataGrid = ({
               wordBreak: "break-word",
               textAlign: "left", // opcional, melhora legibilidade
             }}
-            className="text-gray-800 font-medium tracking-tighter "
+            className="text-gray-800 font-medium tracking-tighter"
           >
             {params.value}
           </div>
@@ -190,7 +190,7 @@ export const PeriodsDataGrid = ({
         page: Number(filters.pageIndex) - 1,
         pageSize: Number(filters.pageSize),
       }}
-      rowHeight={110}
+      rowHeight={120}
       density="comfortable"
       onPaginationModelChange={(model) => onPaginationModelChange(model)}
       localeText={localeTextDataGridConfig}

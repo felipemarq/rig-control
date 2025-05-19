@@ -48,7 +48,7 @@ const Report = () => {
           isFetchingReport,
           handleExcelDownload,
         }) => (
-          <div className="w-full h-full overflow-y-scroll">
+          <div className="w-11/12 h-full m-auto ">
             <Header
               title="Relatórios"
               displayRig={false}
@@ -58,6 +58,7 @@ const Report = () => {
             <div className="p-4 md:p-6">
               <ReportFilterPanel
                 rigs={rigs}
+                isFetchingPeriods={isFetchingPeriods}
                 selectedYear={selectedYear}
                 filterOptions={filterOptions}
                 selectedFilterType={selectedFilterType}

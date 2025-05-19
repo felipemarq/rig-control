@@ -33,6 +33,7 @@ import {
 } from "@/components/ui/accordion";
 import { GetByPeriodTypeFilters } from "@/app/services/periodsService/getByPeriodType";
 import { SelectOptions } from "@/app/entities/SelectOptions";
+
 import { Rig } from "@/app/entities/Rig";
 import { FilterType } from "@/app/entities/FilterType";
 import { PeriodType } from "@/app/entities/PeriodType";
@@ -73,6 +74,7 @@ interface ReportFilterPanelProps {
   isFiltersValid: boolean;
   handleExcelDownload: () => Promise<void>;
   isFetchingReport: boolean;
+  isFetchingPeriods: boolean;
 }
 
 export function ReportFilterPanel({
@@ -105,6 +107,7 @@ export function ReportFilterPanel({
   isFetchingReport,
   handleExcelDownload,
   filters,
+  isFetchingPeriods,
 }: ReportFilterPanelProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -408,6 +411,7 @@ export function ReportFilterPanel({
                       handleApplyFilters();
                     }}
                     disabled={!isFiltersValid}
+                    isLoading={isFetchingPeriods}
                     className="w-full"
                   >
                     Aplicar Filtros
