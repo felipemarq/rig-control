@@ -236,9 +236,9 @@ export class ExcelService {
   async getPeriodsReport(
     filters: {
       rigId: string;
-      periodType: PeriodType;
-      periodClassification: PeriodClassification | null;
-      repairClassification: RepairClassification | null;
+      periodType: PeriodType[];
+      periodClassification: PeriodClassification[];
+      repairClassification: RepairClassification[];
       orderBy: OrderByType;
       startDate: string;
       endDate: string;

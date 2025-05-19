@@ -34,22 +34,38 @@ export class ExcelController {
   async getPeriodsReport(
     @Res() response: Response,
     @Query('rigId') rigId: string | null,
-    @Query('periodType') periodType: PeriodType | null,
+    @Query('periodType') periodType: PeriodType[] | PeriodType,
     @Query('periodClassification')
-    periodClassification: PeriodClassification | null,
+    periodClassification: PeriodClassification[] | PeriodClassification,
     @Query('repairClassification')
-    repairClassification: RepairClassification | null,
+    repairClassification: RepairClassification[] | RepairClassification,
     @Query('orderBy', OrderByValidationPipe) orderBy: OrderByType,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
     @Query('searchTerm') searchTerm: string,
   ) {
+    const normalizedPeriodType = Array.isArray(periodType)
+      ? periodType
+      : periodType
+        ? [periodType]
+        : [];
+    const normalizedPeriodClassification = Array.isArray(periodClassification)
+      ? periodClassification
+      : periodClassification
+        ? [periodClassification]
+        : [];
+    const normalizedRepairClassification = Array.isArray(repairClassification)
+      ? repairClassification
+      : repairClassification
+        ? [repairClassification]
+        : [];
+
     return await this.excelService.getPeriodsReport(
       {
         rigId,
-        periodType,
-        periodClassification,
-        repairClassification,
+        periodType: normalizedPeriodType,
+        periodClassification: normalizedPeriodClassification,
+        repairClassification: normalizedRepairClassification,
         orderBy,
         startDate,
         endDate,

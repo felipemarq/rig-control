@@ -1,36 +1,12 @@
-import { FilterType } from "../../../app/entities/FilterType";
-import { Button } from "../../components/Button";
-import { Button as ShadcnButton } from "@/components/ui/button";
-import { DatePickerInput } from "../../components/DatePickerInput";
 import { Header } from "../../components/Header";
-import { Select } from "../../components/Select";
+
 import { ReportContext, ReportProvider } from "./components/ReportContext";
-import { PeriodType } from "../../../app/entities/PeriodType";
+
 import { Spinner } from "../../components/Spinner";
 import { NotFound } from "../../components/NotFound";
 import { PeriodsDataGrid } from "./components/PeriodsDataGrid";
-import { PeriodClassification } from "../../../app/entities/PeriodClassification";
-import { RepairClassification } from "../../../app/entities/RepairClassification";
 
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import { Input } from "@/view/components/Input";
-import { AlertCircleIcon, Download } from "lucide-react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+import { ReportFilterPanel } from "./components/ReportFilterPanel";
 
 const Report = () => {
   return (
@@ -57,7 +33,6 @@ const Report = () => {
           selectedEndDate,
           selectedStartDate,
           periodTypeOptions,
-          selectedPeriodType,
           periodClassificationOptions,
           isFetchingPeriods,
           totalItems,
@@ -78,284 +53,75 @@ const Report = () => {
               title="Relatórios"
               displayRig={false}
               displayPeriodRange={false}
-            >
-              <div className="flex justify-end gap-2">
-                <Dialog>
-                  <DialogTrigger>
-                    <ShadcnButton
-                      className="gap-2 "
-                      variant="default"
-                      //onClick={}
-                      //isLoading={isFetchingReport}
-                    >
-                      <Download className="w-4 h-4" />
-                      <span className="hidden lg:inline">Excel</span>
-                    </ShadcnButton>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader className="flex flex-col gap-2">
-                      <DialogTitle>Baixar relatório em Excel?</DialogTitle>
-                      <DialogDescription>
-                        <div className="flex flex-col gap-12">
-                          <span>
-                            {" "}
-                            O relatório em formato Excel será gerado com todos
-                            os períodos conforme os filtros aplicados. Esse
-                            processo pode levar alguns instantes, dependendo da
-                            quantidade de dados.
-                          </span>
-                          <ShadcnButton
-                            className="gap-2 "
-                            variant="default"
-                            onClick={handleExcelDownload}
-                            isLoading={isFetchingReport}
-                          >
-                            <Download className="w-4 h-4" />
-                            <span className="hidden lg:inline">Download</span>
-                          </ShadcnButton>
-                        </div>
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
+            />
 
-                <Sheet>
-                  <SheetTrigger>
-                    <ShadcnButton>Filtros</ShadcnButton>
-                  </SheetTrigger>
-                  <SheetContent className="bg-card overflow-y-auto">
-                    <SheetHeader>
-                      <SheetTitle className="border-b-2 mb-8 border-gray-500">
-                        Filtros
-                      </SheetTitle>
-                      <SheetDescription className="">
-                        <div className="flex flex-col gap-12">
-                          <div className="text-sm text-muted-foreground bg-muted/30 p-3 rounded border border-muted">
-                            <AlertCircleIcon />{" "}
-                            <strong>Todos os filtros são opcionais.</strong> Se
-                            você não selecionar um campo específico (como
-                            período, tipo ou palavra-chave), a busca considerará{" "}
-                            <em>todos os valores possíveis</em> para esse item.
-                          </div>
-                          <div className="grid gap-4">
-                            <Select
-                              placeholder="Tipo de Filtro"
-                              value={selectedFilterType}
-                              onChange={(value) =>
-                                handleToggleFilterType(value as FilterType)
-                              }
-                              options={filterOptions}
-                            />
+            <div className="p-4 md:p-6">
+              <ReportFilterPanel
+                rigs={rigs}
+                selectedYear={selectedYear}
+                filterOptions={filterOptions}
+                selectedFilterType={selectedFilterType}
+                handleToggleFilterType={handleToggleFilterType}
+                handleChangePeriod={handleChangePeriod}
+                handleYearChange={handleYearChange}
+                handleApplyFilters={handleApplyFilters}
+                handleChangeRig={handleChangeRig}
+                selectedRig={selectedRig}
+                selectedPeriod={selectedPeriod}
+                months={months}
+                years={years}
+                handleEndDateChange={handleEndDateChange}
+                handleStartDateChange={handleStartDateChange}
+                selectedEndDate={selectedEndDate}
+                selectedStartDate={selectedStartDate}
+                periodTypeOptions={periodTypeOptions}
+                periodClassificationOptions={periodClassificationOptions}
+                repairClassificationOptions={repairClassificationOptions}
+                handlePeriodClassification={handlePeriodClassification}
+                handleRepairClassification={handleRepairClassification}
+                handleTogglePeriodType={handleTogglePeriodType}
+                handleClearFilters={handleClearFilters}
+                isFiltersValid={isFiltersValid}
+                handleChangeSearchTerm={handleChangeSearchTerm}
+                isFetchingReport={isFetchingReport}
+                handleExcelDownload={handleExcelDownload}
+                filters={filters}
+              />
 
-                            {selectedFilterType === FilterType.PERIOD && (
-                              <>
-                                <Select
-                                  error={""}
-                                  placeholder="Ano"
-                                  value={selectedYear}
-                                  onChange={(value) => handleYearChange(value)}
-                                  options={years}
-                                />
+              {isEmpty && (
+                <>
+                  {isFetchingPeriods && (
+                    <div className="w-full h-[400px] flex justify-center items-center">
+                      <Spinner />
+                    </div>
+                  )}
 
-                                <Select
-                                  error={""}
-                                  placeholder="Período"
-                                  value={selectedPeriod}
-                                  onChange={(value) =>
-                                    handleChangePeriod(value)
-                                  }
-                                  options={months}
-                                />
-                              </>
-                            )}
+                  {!isFetchingPeriods && (
+                    <div className="mt-8">
+                      <NotFound>
+                        <strong>Não</strong> existem dados para a{" "}
+                        <strong>sonda</strong> no <strong>período</strong>{" "}
+                        selecionado!
+                      </NotFound>
+                    </div>
+                  )}
+                </>
+              )}
 
-                            {selectedFilterType === FilterType.CUSTOM && (
-                              <>
-                                <div>
-                                  <DatePickerInput
-                                    placeholder="Data de Início"
-                                    error={""}
-                                    value={new Date(selectedStartDate)}
-                                    onChange={(value) =>
-                                      handleStartDateChange(value)
-                                    }
-                                  />
-                                </div>
-
-                                <div>
-                                  <DatePickerInput
-                                    placeholder="Data de Fim"
-                                    error={""}
-                                    value={new Date(selectedEndDate)}
-                                    onChange={(value) =>
-                                      handleEndDateChange(value)
-                                    }
-                                  />
-                                </div>
-                              </>
-                            )}
-
-                            <Select
-                              placeholder={
-                                !selectedRig ? "Todas as Sondas" : "Sonda"
-                              }
-                              value={selectedRig}
-                              onChange={(value) => handleChangeRig(value)}
-                              options={rigs.map(({ id, name }) => ({
-                                value: id ?? "",
-                                label: name ?? "",
-                              }))}
-                            />
-
-                            <Input
-                              name="test"
-                              variant="modal"
-                              placeholder="Palvra chave na descrição..."
-                              className="w-full"
-                              onChange={(event) =>
-                                handleChangeSearchTerm(event.target.value)
-                              }
-                            />
-
-                            <div className="grid gap-6">
-                              <ToggleGroup
-                                onValueChange={(value) =>
-                                  handleTogglePeriodType(value as PeriodType)
-                                }
-                                type="single"
-                                className="flex-col items-start gap-2"
-                              >
-                                <span>Tipo do Período:</span>
-                                <div className="flex flex-wrap gap-4">
-                                  {periodTypeOptions.map((periodType) => (
-                                    <ToggleGroupItem
-                                      className="bg-white"
-                                      value={periodType.value}
-                                      size="sm"
-                                      variant="outline"
-                                    >
-                                      <span>{periodType.label}</span>
-                                    </ToggleGroupItem>
-                                  ))}
-                                </div>
-                              </ToggleGroup>
-
-                              {periodClassificationOptions && (
-                                <ToggleGroup
-                                  type="single"
-                                  onValueChange={(value) =>
-                                    handlePeriodClassification(
-                                      value as PeriodClassification,
-                                    )
-                                  }
-                                  className="flex-col items-start gap-2"
-                                >
-                                  <span>Classificação do Período:</span>
-                                  <div className="flex flex-wrap gap-4">
-                                    {periodClassificationOptions.map(
-                                      (periodType) => (
-                                        <ToggleGroupItem
-                                          className="bg-white"
-                                          value={periodType.value}
-                                          size="sm"
-                                          variant="outline"
-                                        >
-                                          <span>{periodType.label}</span>
-                                        </ToggleGroupItem>
-                                      ),
-                                    )}
-                                  </div>
-                                </ToggleGroup>
-                              )}
-
-                              {selectedPeriodType === "REPAIR" &&
-                                repairClassificationOptions && (
-                                  <ToggleGroup
-                                    type="single"
-                                    onValueChange={(value) =>
-                                      handleRepairClassification(
-                                        value as RepairClassification,
-                                      )
-                                    }
-                                    className="flex-col items-start gap-2"
-                                  >
-                                    <span>Classificação do Período:</span>
-                                    <div className="flex flex-wrap gap-4">
-                                      {repairClassificationOptions.map(
-                                        (periodType) => (
-                                          <ToggleGroupItem
-                                            value={periodType.value}
-                                            size="sm"
-                                            variant="outline"
-                                            className="bg-white"
-                                          >
-                                            <span>{periodType.label}</span>
-                                          </ToggleGroupItem>
-                                        ),
-                                      )}
-                                    </div>
-                                  </ToggleGroup>
-                                )}
-                            </div>
-                          </div>
-
-                          <div className="w-full flex flex-col gap-2">
-                            <Button
-                              disabled={!isFiltersValid}
-                              className="h-[32px] w-full"
-                              onClick={handleClearFilters}
-                              variant="ghost"
-                            >
-                              Limpar Filtros
-                            </Button>
-
-                            <Button
-                              disabled={!isFiltersValid}
-                              className="h-[32px] w-full"
-                              onClick={handleApplyFilters}
-                            >
-                              Aplicar Filtros
-                            </Button>
-                          </div>
-                        </div>
-                      </SheetDescription>
-                    </SheetHeader>
-                  </SheetContent>
-                </Sheet>
-              </div>
-            </Header>
-
-            {isEmpty && (
-              <>
-                {isFetchingPeriods && (
-                  <div className="w-full h-full flex justify-center items-center">
-                    <Spinner />
+              {!isEmpty && (
+                <div className="w-full mt-4">
+                  <div className="w-full rounded-md bg-white shadow-sm border">
+                    <PeriodsDataGrid
+                      isLoading={isFetchingPeriods}
+                      periods={periods}
+                      totalItems={totalItems}
+                      filters={filters}
+                      onPaginationModelChange={onPaginationModelChange}
+                    />
                   </div>
-                )}
-
-                {!isFetchingPeriods && (
-                  <NotFound>
-                    <strong>Não</strong> existem dados para a{" "}
-                    <strong>sonda</strong> no <strong>período</strong>{" "}
-                    selecionado!
-                  </NotFound>
-                )}
-              </>
-            )}
-
-            {!isEmpty && (
-              <div className="w-full  flex justify-center items-center">
-                <div className="w-full p-4 m-4 rounded-md">
-                  <PeriodsDataGrid
-                    isLoading={isFetchingPeriods}
-                    periods={periods}
-                    totalItems={totalItems}
-                    filters={filters}
-                    onPaginationModelChange={onPaginationModelChange}
-                  />
                 </div>
-              </div>
-            )}
+              )}
+            </div>
           </div>
         )}
       </ReportContext.Consumer>

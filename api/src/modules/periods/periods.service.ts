@@ -54,10 +54,10 @@ export class PeriodsService {
     pageIndex,
     pageSize,
   }: {
-    rigId: string;
-    periodType: PeriodType;
-    periodClassification: PeriodClassification | null;
-    repairClassification: RepairClassification | null;
+    rigId?: string;
+    periodType?: PeriodType[];
+    periodClassification?: PeriodClassification[];
+    repairClassification?: RepairClassification[];
     orderBy: OrderByType;
     startDate: string;
     endDate: string;
@@ -65,6 +65,25 @@ export class PeriodsService {
     pageSize?: string;
     pageIndex?: string;
   }) {
+    const newWhereClause: Prisma.PeriodWhereInput = {
+      efficiency: {
+        date: {
+          gte: new Date(startDate),
+          lte: new Date(endDate),
+        },
+        ...(rigId && { rigId }),
+      },
+      ...(searchTerm && {
+        description: { contains: searchTerm, mode: 'insensitive' },
+      }),
+      ...(periodType?.length && { type: { in: periodType } }),
+      ...(periodClassification?.length && {
+        classification: { in: periodClassification },
+      }),
+      ...(repairClassification?.length && {
+        repairClassification: { in: repairClassification },
+      }),
+    };
     let whereClause = {};
 
     whereClause = {
@@ -105,15 +124,17 @@ export class PeriodsService {
       };
     }
     const totalItems = await this.periodsRepo.count({
-      where: whereClause,
+      where: newWhereClause,
     });
 
     const hasPagination = pageIndex && pageSize;
 
+    console.log('new Where', newWhereClause);
+
     //@ts-ignore
     const periods: PeriodWithEfficiencyAndRig[] =
       await this.periodsRepo.findMany({
-        where: whereClause,
+        where: newWhereClause,
         orderBy: { efficiency: { date: orderBy } },
         ...(hasPagination && {
           skip: (Number(pageIndex) - 1) * Number(pageSize),

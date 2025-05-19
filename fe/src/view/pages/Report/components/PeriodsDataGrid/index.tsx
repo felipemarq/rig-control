@@ -16,6 +16,7 @@ import { GetByPeriodTypeFilters } from "../../../../../app/services/periodsServi
 import { translateRepairClassification } from "../../../../../app/utils/translateRepairClassification";
 import { getDiffInMinutes } from "@/app/utils/getDiffInMinutes";
 import { parse } from "date-fns";
+import { PeriodType } from "@/app/entities/PeriodType";
 
 interface ListPeriodsDataGridProps {
   periods: Array<Period>;
@@ -147,7 +148,7 @@ export const PeriodsDataGrid = ({
     },
   ];
 
-  if (filters.periodType === "REPAIR") {
+  if (filters.periodType.includes("REPAIR" as PeriodType)) {
     columns.splice(3, 0, {
       field: "repairClassification",
       headerName: "Reparo",
