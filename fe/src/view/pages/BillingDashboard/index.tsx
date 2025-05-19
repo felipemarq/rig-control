@@ -6,8 +6,6 @@ import "swiper/css";
 import { FilterSheet } from "@/view/components/FilterSheet";
 import { StatboxContainer } from "./components/StatboxContainer";
 import { Header } from "@/view/components/Header.tsx";
-
-import { BagdeStatus } from "@/view/components/BagdeStatus";
 import { BarChartCard } from "./components/BarChartCard";
 import { Spinner } from "@/view/components/Spinner";
 import { RigDetailsCard } from "./components/RigDetailsCard";
