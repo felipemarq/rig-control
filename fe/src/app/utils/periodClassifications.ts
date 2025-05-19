@@ -360,7 +360,7 @@ export const periodClassifications: PeriodClassifications = {
   WORKING: WORKING,
   REPAIR: REPAIR,
   INTERVAL: INTERVAL,
-  GLOSS: GLOSS,
+  GLOSS: GLOSS.concat(REPAIR),
   SCHEDULED_STOP: SCHEDULED_STOP,
   STAND_BY: STAND_BY,
   DTM: INTERVAL,

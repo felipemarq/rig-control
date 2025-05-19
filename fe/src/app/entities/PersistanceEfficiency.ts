@@ -60,6 +60,7 @@ export type PersistanceEfficiency = {
   repairHours?: number;
   glossHours: number;
   Billing: {
+    id: string;
     availableHourAmount: number;
     mobilizationAmount: number;
     demobilizationAmount: number;
@@ -75,7 +76,7 @@ export type PersistanceEfficiency = {
     mixTankDtmAmount: number;
     mixTankMobilizationAmount: number;
     christmasTreeDisassemblyAmount: number;
-  };
+  }[];
 };
 
 export type ToPersistanceEfficiency = {

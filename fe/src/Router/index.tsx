@@ -21,9 +21,6 @@ const FormMenu = lazy(() => import("@/view/pages/FormMenu/index"));
 const List = lazy(() => import("@/view/pages/List/index"));
 const BillingDashboard = lazy(() => import("@/view/pages/BillingDashboard/index"));
 const InvoicingMenu = lazy(() => import("@/view/pages/InvoicingMenu/index"));
-const BillingRigDetailDashboard = lazy(
-  () => import("@/view/pages/BillingRigDetailDashboard/index")
-);
 const Details = lazy(() => import("@/view/pages/Details/index"));
 const CreateRig = lazy(() => import("@/view/pages/CreateRig/index"));
 const ListRigs = lazy(() => import("@/view/pages/ListRigs/index"));
@@ -105,11 +102,6 @@ export const Router = () => {
 
                 <Route path="/list" element={<List />} />
                 <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
-
-                <Route
-                  path="/invoicing-rig-dashboard"
-                  element={<BillingRigDetailDashboard />}
-                />
                 <Route path="/invoicing" element={<InvoicingMenu />} />
 
                 <Route path="/details/:efficiencyId" element={<Details />} />
@@ -122,7 +114,6 @@ export const Router = () => {
                 <Route path="/users/:id" element={<UpdateUser />} />
                 <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
                 <Route path="/users/user-logs" element={<UserLogs />} />
-
                 <Route path="/users/user-logs/:userId" element={<UserLogs />} />
                 <Route path="/reports" element={<Report />} />
                 <Route path="/occurrences" element={<Occurrences />} />

@@ -83,13 +83,6 @@ export const useAppsidebar = () => {
           module: Module.BILLING,
         },
         {
-          title: "Faturam.. por Sonda",
-          url: "/invoicing-rig-dashboard",
-          icon: Star,
-          description: "Browse your starred prompts",
-          module: Module.BILLING,
-        },
-        {
           title: "Valores para Faturam..",
           url: "/create-billing-configuration",
           icon: Settings2,
@@ -149,13 +142,13 @@ export const useAppsidebar = () => {
           description: "Configure your playground",
           module: Module.ADMIN,
         },
-        {
+        /* {
           title: "Contratos",
           url: "/contracts",
           icon: Settings2,
           description: "Configure your playground",
           module: Module.ADMIN,
-        },
+        }, */
         {
           title: "Usuários",
           url: "/users",

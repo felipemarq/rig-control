@@ -3,10 +3,11 @@ import { useBillingDashboard } from "../../../../BillingDashboardContext/useBill
 import { formatCurrency } from "@/app/utils/formatCurrency";
 
 export const useBarChart = () => {
-  const { billings } = useBillingDashboard();
+  const { billings, handleOpenRigDetail } = useBillingDashboard();
 
   const data = billings.map(
     ({
+      rigid,
       rigname,
       total,
       repairhouramount,
@@ -21,19 +22,21 @@ export const useBarChart = () => {
           glosshouramount +
           unbilledscheduledstopamount +
           commerciallystoppedamount,
-        2
+        2,
       );
       return {
+        rigId: rigid,
         rig: rigname,
         total: fixedTotal,
         totalLost: fixedTotalLost,
         totalLabel: formatCurrency(fixedTotal),
         totalLostLabel: formatCurrency(fixedTotalLost),
       };
-    }
+    },
   );
 
   return {
     data,
+    handleOpenRigDetail,
   };
 };

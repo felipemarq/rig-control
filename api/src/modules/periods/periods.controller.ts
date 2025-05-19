@@ -59,11 +59,11 @@ export class PeriodsController {
   @Get()
   async findByPeriodType(
     @Query('rigId') rigId: string | null,
-    @Query('periodType') periodType: PeriodType | null,
+    @Query('periodType') periodType: PeriodType[] | PeriodType,
     @Query('periodClassification')
-    periodClassification: PeriodClassification | null,
+    periodClassification: PeriodClassification[] | PeriodClassification,
     @Query('repairClassification')
-    repairClassification: RepairClassification | null,
+    repairClassification: RepairClassification[] | RepairClassification,
     @Query('orderBy', OrderByValidationPipe) orderBy: OrderByType,
     @Query('startDate') startDate: string,
     @Query('endDate') endDate: string,
@@ -71,18 +71,50 @@ export class PeriodsController {
     @Query('pageIndex') pageIndex: string,
     @Query('searchTerm') searchTerm: string,
   ) {
-    return await this.periodsService.findByPeriodType(
+    const normalizedPeriodType = Array.isArray(periodType)
+      ? periodType
+      : periodType
+        ? [periodType]
+        : [];
+    const normalizedPeriodClassification = Array.isArray(periodClassification)
+      ? periodClassification
+      : periodClassification
+        ? [periodClassification]
+        : [];
+    const normalizedRepairClassification = Array.isArray(repairClassification)
+      ? repairClassification
+      : repairClassification
+        ? [repairClassification]
+        : [];
+
+    console.log('periodType', periodType);
+    console.log('periodClassification', periodClassification);
+    console.log('repairClassification', repairClassification);
+
+    console.log('==============================');
+
+    console.log('normalizedPeriodType', normalizedPeriodType);
+    console.log(
+      'normalizedPeriodClassification',
+      normalizedPeriodClassification,
+    );
+    console.log(
+      'normalizedRepairClassification',
+      normalizedRepairClassification,
+    );
+
+    return await this.periodsService.findByPeriodType({
       rigId,
-      periodType,
-      periodClassification,
-      repairClassification,
+      periodType: normalizedPeriodType,
+      periodClassification: normalizedPeriodClassification,
+      repairClassification: normalizedRepairClassification,
       orderBy,
       startDate,
       endDate,
+      searchTerm,
       pageSize,
       pageIndex,
-      searchTerm,
-    );
+    });
   }
 
   @Get('/:periodId')

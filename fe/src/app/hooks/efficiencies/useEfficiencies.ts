@@ -6,7 +6,7 @@ import {QueryKeys} from "../../config/QueryKeys";
 
 export const useEfficiencies = (filters: EfficienciesFilters) => {
   const {data, isFetching, refetch} = useQuery({
-    enabled: false,
+    enabled: true,
     queryKey: [QueryKeys.EFFICIENCIES],
     queryFn: () => efficienciesService.getAll(filters),
   });
