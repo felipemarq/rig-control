@@ -71,7 +71,7 @@ export class PeriodsController {
     @Query('pageIndex') pageIndex: string,
     @Query('searchTerm') searchTerm: string,
   ) {
-    return await this.periodsService.findByPeriodType(
+    return await this.periodsService.findByPeriodType({
       rigId,
       periodType,
       periodClassification,
@@ -79,10 +79,10 @@ export class PeriodsController {
       orderBy,
       startDate,
       endDate,
+      searchTerm,
       pageSize,
       pageIndex,
-      searchTerm,
-    );
+    });
   }
 
   @Get('/:periodId')

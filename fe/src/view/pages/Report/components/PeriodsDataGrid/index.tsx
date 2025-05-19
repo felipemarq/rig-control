@@ -34,6 +34,22 @@ export const PeriodsDataGrid = ({
 }: ListPeriodsDataGridProps) => {
   const columns: GridColDef[] = [
     {
+      field: "name",
+      headerName: "Sonda",
+      width: 150,
+      headerAlign: "center",
+      align: "center",
+      renderCell(params: GridRenderCellParams) {
+        return (
+          <div className="w-full flex justify-center items-center">
+            <div className="text-gray-800 font-medium tracking-tighter ">
+              {params.row.efficiency.rig.name}
+            </div>
+          </div>
+        );
+      },
+    },
+    {
       field: "startHour",
       headerName: "Data",
       width: 150,
@@ -92,12 +108,12 @@ export const PeriodsDataGrid = ({
         const parsedStartHour = parse(
           params.row.startHour.split("T")[1].slice(0, 5),
           "HH:mm",
-          new Date()
+          new Date(),
         );
         const parsedEndHour = parse(
           params.row.endHour.split("T")[1].slice(0, 5),
           "HH:mm",
-          new Date()
+          new Date(),
         );
         return (
           <div className="w-full flex justify-center items-center">
@@ -116,7 +132,14 @@ export const PeriodsDataGrid = ({
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
-          <div className="text-gray-800 font-medium tracking-tighter ">
+          <div
+            style={{
+              maxHeight: "100px",
+              overflowY: "auto",
+              paddingRight: "4px",
+            }}
+            className="text-gray-800 font-medium tracking-tighter"
+          >
             {params.value}
           </div>
         );
@@ -190,9 +213,12 @@ export const PeriodsDataGrid = ({
           color: "hsl(var(--muted-foreground))",
           borderRadius: "var(--none, 0px)",
           borderBottom: "1px solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderLeft: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderRight: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
-          borderTop: "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderLeft:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderRight:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
+          borderTop:
+            "var(--none, 0px) solid var(--divider, rgba(0, 0, 0, 0.12))",
           //background: "var(--primary-selected, rgba(33, 150, 243, 0.08))",
           alignItems: "space-between !important",
         },

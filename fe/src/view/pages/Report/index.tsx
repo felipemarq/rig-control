@@ -1,5 +1,6 @@
 import { FilterType } from "../../../app/entities/FilterType";
 import { Button } from "../../components/Button";
+import { Button as ShadcnButton } from "@/components/ui/button";
 import { DatePickerInput } from "../../components/DatePickerInput";
 import { Header } from "../../components/Header";
 import { Select } from "../../components/Select";
@@ -21,6 +22,15 @@ import {
 } from "@/components/ui/sheet";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { Input } from "@/view/components/Input";
+import { AlertCircleIcon, Download } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const Report = () => {
   return (
@@ -60,13 +70,58 @@ const Report = () => {
           filters,
           isFiltersValid,
           handleChangeSearchTerm,
+          isFetchingReport,
+          handleExcelDownload,
         }) => (
           <div className="w-full h-full overflow-y-scroll">
-            <Header title="Relatórios" displayRig={false} displayPeriodRange={false}>
-              <div className="flex justify-end">
+            <Header
+              title="Relatórios"
+              displayRig={false}
+              displayPeriodRange={false}
+            >
+              <div className="flex justify-end gap-2">
+                <Dialog>
+                  <DialogTrigger>
+                    <ShadcnButton
+                      className="gap-2 "
+                      variant="default"
+                      //onClick={}
+                      //isLoading={isFetchingReport}
+                    >
+                      <Download className="w-4 h-4" />
+                      <span className="hidden lg:inline">Excel</span>
+                    </ShadcnButton>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader className="flex flex-col gap-2">
+                      <DialogTitle>Baixar relatório em Excel?</DialogTitle>
+                      <DialogDescription>
+                        <div className="flex flex-col gap-12">
+                          <span>
+                            {" "}
+                            O relatório em formato Excel será gerado com todos
+                            os períodos conforme os filtros aplicados. Esse
+                            processo pode levar alguns instantes, dependendo da
+                            quantidade de dados.
+                          </span>
+                          <ShadcnButton
+                            className="gap-2 "
+                            variant="default"
+                            onClick={handleExcelDownload}
+                            isLoading={isFetchingReport}
+                          >
+                            <Download className="w-4 h-4" />
+                            <span className="hidden lg:inline">Download</span>
+                          </ShadcnButton>
+                        </div>
+                      </DialogDescription>
+                    </DialogHeader>
+                  </DialogContent>
+                </Dialog>
+
                 <Sheet>
                   <SheetTrigger>
-                    <Button>Filtros</Button>
+                    <ShadcnButton>Filtros</ShadcnButton>
                   </SheetTrigger>
                   <SheetContent className="bg-card overflow-y-auto">
                     <SheetHeader>
@@ -75,6 +130,13 @@ const Report = () => {
                       </SheetTitle>
                       <SheetDescription className="">
                         <div className="flex flex-col gap-12">
+                          <div className="text-sm text-muted-foreground bg-muted/30 p-3 rounded border border-muted">
+                            <AlertCircleIcon />{" "}
+                            <strong>Todos os filtros são opcionais.</strong> Se
+                            você não selecionar um campo específico (como
+                            período, tipo ou palavra-chave), a busca considerará{" "}
+                            <em>todos os valores possíveis</em> para esse item.
+                          </div>
                           <div className="grid gap-4">
                             <Select
                               placeholder="Tipo de Filtro"
@@ -83,17 +145,6 @@ const Report = () => {
                                 handleToggleFilterType(value as FilterType)
                               }
                               options={filterOptions}
-                            />
-
-                            <Select
-                              error={selectedRig ? "" : "Selecione uma sonda!"}
-                              placeholder="Sonda"
-                              value={selectedRig}
-                              onChange={(value) => handleChangeRig(value)}
-                              options={rigs.map(({ id, name }) => ({
-                                value: id ?? "",
-                                label: name ?? "",
-                              }))}
                             />
 
                             {selectedFilterType === FilterType.PERIOD && (
@@ -110,7 +161,9 @@ const Report = () => {
                                   error={""}
                                   placeholder="Período"
                                   value={selectedPeriod}
-                                  onChange={(value) => handleChangePeriod(value)}
+                                  onChange={(value) =>
+                                    handleChangePeriod(value)
+                                  }
                                   options={months}
                                 />
                               </>
@@ -123,7 +176,9 @@ const Report = () => {
                                     placeholder="Data de Início"
                                     error={""}
                                     value={new Date(selectedStartDate)}
-                                    onChange={(value) => handleStartDateChange(value)}
+                                    onChange={(value) =>
+                                      handleStartDateChange(value)
+                                    }
                                   />
                                 </div>
 
@@ -132,11 +187,25 @@ const Report = () => {
                                     placeholder="Data de Fim"
                                     error={""}
                                     value={new Date(selectedEndDate)}
-                                    onChange={(value) => handleEndDateChange(value)}
+                                    onChange={(value) =>
+                                      handleEndDateChange(value)
+                                    }
                                   />
                                 </div>
                               </>
                             )}
+
+                            <Select
+                              placeholder={
+                                !selectedRig ? "Todas as Sondas" : "Sonda"
+                              }
+                              value={selectedRig}
+                              onChange={(value) => handleChangeRig(value)}
+                              options={rigs.map(({ id, name }) => ({
+                                value: id ?? "",
+                                label: name ?? "",
+                              }))}
+                            />
 
                             <Input
                               name="test"
@@ -147,10 +216,7 @@ const Report = () => {
                                 handleChangeSearchTerm(event.target.value)
                               }
                             />
-                            <span className="text-sm text-gray-600">
-                              Se nenhum filtro for selecionado, a busca retornará todos os
-                              resultados.
-                            </span>
+
                             <div className="grid gap-6">
                               <ToggleGroup
                                 onValueChange={(value) =>
@@ -179,23 +245,25 @@ const Report = () => {
                                   type="single"
                                   onValueChange={(value) =>
                                     handlePeriodClassification(
-                                      value as PeriodClassification
+                                      value as PeriodClassification,
                                     )
                                   }
                                   className="flex-col items-start gap-2"
                                 >
                                   <span>Classificação do Período:</span>
                                   <div className="flex flex-wrap gap-4">
-                                    {periodClassificationOptions.map((periodType) => (
-                                      <ToggleGroupItem
-                                        className="bg-white"
-                                        value={periodType.value}
-                                        size="sm"
-                                        variant="outline"
-                                      >
-                                        <span>{periodType.label}</span>
-                                      </ToggleGroupItem>
-                                    ))}
+                                    {periodClassificationOptions.map(
+                                      (periodType) => (
+                                        <ToggleGroupItem
+                                          className="bg-white"
+                                          value={periodType.value}
+                                          size="sm"
+                                          variant="outline"
+                                        >
+                                          <span>{periodType.label}</span>
+                                        </ToggleGroupItem>
+                                      ),
+                                    )}
                                   </div>
                                 </ToggleGroup>
                               )}
@@ -206,23 +274,25 @@ const Report = () => {
                                     type="single"
                                     onValueChange={(value) =>
                                       handleRepairClassification(
-                                        value as RepairClassification
+                                        value as RepairClassification,
                                       )
                                     }
                                     className="flex-col items-start gap-2"
                                   >
                                     <span>Classificação do Período:</span>
                                     <div className="flex flex-wrap gap-4">
-                                      {repairClassificationOptions.map((periodType) => (
-                                        <ToggleGroupItem
-                                          value={periodType.value}
-                                          size="sm"
-                                          variant="outline"
-                                          className="bg-white"
-                                        >
-                                          <span>{periodType.label}</span>
-                                        </ToggleGroupItem>
-                                      ))}
+                                      {repairClassificationOptions.map(
+                                        (periodType) => (
+                                          <ToggleGroupItem
+                                            value={periodType.value}
+                                            size="sm"
+                                            variant="outline"
+                                            className="bg-white"
+                                          >
+                                            <span>{periodType.label}</span>
+                                          </ToggleGroupItem>
+                                        ),
+                                      )}
                                     </div>
                                   </ToggleGroup>
                                 )}
@@ -265,8 +335,9 @@ const Report = () => {
 
                 {!isFetchingPeriods && (
                   <NotFound>
-                    <strong>Não</strong> existem dados para a <strong>sonda</strong> no{" "}
-                    <strong>período</strong> selecionado!
+                    <strong>Não</strong> existem dados para a{" "}
+                    <strong>sonda</strong> no <strong>período</strong>{" "}
+                    selecionado!
                   </NotFound>
                 )}
               </>
@@ -274,7 +345,7 @@ const Report = () => {
 
             {!isEmpty && (
               <div className="w-full  flex justify-center items-center">
-                <div className="w-full p-4 m-4   rounded-md">
+                <div className="w-full p-4 m-4 rounded-md">
                   <PeriodsDataGrid
                     isLoading={isFetchingPeriods}
                     periods={periods}

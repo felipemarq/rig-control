@@ -19,7 +19,7 @@ import { translateRepairClassification } from "@/app/utils/translateRepairClassi
 import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCard/components/UnbilledPeriodsPieChartCn";
 import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChartCn";
 import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCard/components/PeriodsDetailsPieChartCn";
-import { getAllRigsReport } from "@/app/services/excelService/excelPeriodsReport";
+import { getAllRigsReport } from "@/app/services/excelService/getAllRigsReport";
 import { saveAs } from "file-saver";
 
 /* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
@@ -321,8 +321,6 @@ export const GlobalDashboardProvider = ({
 
       return acc;
     }, []);
-
- 
 
   //Dados para o grafico de detalhes por tipo de periodo selecionado
 

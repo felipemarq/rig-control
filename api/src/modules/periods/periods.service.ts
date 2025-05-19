@@ -9,6 +9,17 @@ import { PeriodClassification } from '../efficiencies/entities/PeriodClassificat
 import { UsersRigRepository } from 'src/shared/database/repositories/usersRig.repositories';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 import { differenceInMinutes } from 'date-fns';
+import { Prisma } from '@prisma/client';
+
+type PeriodWithEfficiencyAndRig = Prisma.PeriodGetPayload<{
+  include: {
+    efficiency: {
+      include: {
+        rig: true;
+      };
+    };
+  };
+}>;
 
 @Injectable()
 export class PeriodsService {
@@ -31,18 +42,29 @@ export class PeriodsService {
     return period;
   }
 
-  async findByPeriodType(
-    rigId: string,
-    periodType: PeriodType,
-    periodClassification: PeriodClassification | null,
-    repairClassification: RepairClassification | null,
-    orderBy: OrderByType,
-    startDate: string,
-    endDate: string,
-    pageSize: string,
-    pageIndex: string,
-    searchTerm: string,
-  ) {
+  async findByPeriodType({
+    endDate,
+    orderBy,
+    periodClassification,
+    periodType,
+    repairClassification,
+    rigId,
+    searchTerm,
+    startDate,
+    pageIndex,
+    pageSize,
+  }: {
+    rigId: string;
+    periodType: PeriodType;
+    periodClassification: PeriodClassification | null;
+    repairClassification: RepairClassification | null;
+    orderBy: OrderByType;
+    startDate: string;
+    endDate: string;
+    searchTerm: string;
+    pageSize?: string;
+    pageIndex?: string;
+  }) {
     let whereClause = {};
 
     whereClause = {
@@ -82,21 +104,23 @@ export class PeriodsService {
         repairClassification: repairClassification,
       };
     }
-
-    console.log('totalItems', whereClause);
     const totalItems = await this.periodsRepo.count({
       where: whereClause,
     });
 
-    console.log('totalItems', totalItems);
+    const hasPagination = pageIndex && pageSize;
 
-    const periods = await this.periodsRepo.findMany({
-      where: whereClause,
-      orderBy: { efficiency: { date: orderBy } },
-      skip: (Number(pageIndex) - 1) * Number(pageSize),
-      take: Number(pageSize),
-      include: { efficiency: {} },
-    });
+    //@ts-ignore
+    const periods: PeriodWithEfficiencyAndRig[] =
+      await this.periodsRepo.findMany({
+        where: whereClause,
+        orderBy: { efficiency: { date: orderBy } },
+        ...(hasPagination && {
+          skip: (Number(pageIndex) - 1) * Number(pageSize),
+          take: Number(pageSize),
+        }),
+        include: { efficiency: { include: { rig: true } } },
+      });
 
     return { data: periods, totalItems };
   }

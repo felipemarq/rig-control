@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { differenceInMinutes } from 'date-fns';
+import { differenceInMinutes, parse } from 'date-fns';
 import { EfficienciesRepository } from 'src/shared/database/repositories/efficiencies.repositories';
 import { PeriodsRepository } from 'src/shared/database/repositories/period.repositories';
 import { RigsRepository } from 'src/shared/database/repositories/rigs.repositories';
@@ -9,6 +9,15 @@ import { Response } from 'express';
 import * as XLSX from 'xlsx';
 import { translateClassification } from 'src/shared/utils/translateClassifications';
 import { EfficienciesService } from '../efficiencies/efficiencies.service';
+import { PeriodsService } from '../periods/periods.service';
+import { PeriodType } from '../efficiencies/entities/PeriodType';
+import { PeriodClassification } from '../efficiencies/entities/PeriodClassification';
+import { RepairClassification } from '../efficiencies/entities/RepairClassification';
+import { OrderByType } from '../periods/entities/OrderByType';
+import { getDiffInMinutes } from 'src/shared/utils/getDiffInMinutes';
+import { formatIsoStringToHours } from 'src/shared/utils/formatIsoStringToHours';
+import { translateRepairClassification } from 'src/shared/utils/translateRepairClassification';
+import { translateType } from 'src/shared/utils/translateType';
 @Injectable()
 export class ExcelService {
   constructor(
@@ -17,6 +26,7 @@ export class ExcelService {
     private readonly rigsRepo: RigsRepository,
     private readonly periodsRepo: PeriodsRepository,
     private readonly efficiencyService: EfficienciesService,
+    private readonly periodsService: PeriodsService,
   ) {}
 
   async getAllRigsReport(
@@ -206,6 +216,75 @@ export class ExcelService {
       font: { bold: true },
       fill: { fgColor: { rgb: '#FFFF00' } },
     }; // Exemplo de destaque no cabeçalho
+
+    // Escreva o arquivo para o buffer
+    const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });
+
+    // Envie o arquivo para o cliente
+    response.setHeader(
+      'Content-Disposition',
+      'attachment; filename=relatorio.xlsx',
+    );
+    response.setHeader(
+      'Content-Type',
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    );
+
+    response.send(buffer);
+  }
+
+  async getPeriodsReport(
+    filters: {
+      rigId: string;
+      periodType: PeriodType;
+      periodClassification: PeriodClassification | null;
+      repairClassification: RepairClassification | null;
+      orderBy: OrderByType;
+      startDate: string;
+      endDate: string;
+      searchTerm: string;
+    },
+    response: Response,
+  ) {
+    const periods = await this.periodsService.findByPeriodType({
+      ...filters,
+    });
+
+    const data = periods.data.map((period) => {
+      const parsedStartHour = parse(
+        period.startHour.toISOString().split('T')[1].slice(0, 5),
+        'HH:mm',
+        new Date(),
+      );
+      const parsedEndHour = parse(
+        period.endHour.toISOString().split('T')[1].slice(0, 5),
+        'HH:mm',
+        new Date(),
+      );
+
+      return {
+        'Nome da Sonda': period.efficiency?.rig?.name || '',
+        Data: period.efficiency?.date
+          ? new Date(period.efficiency.date).toLocaleDateString('pt-BR')
+          : '',
+        Poço: period.efficiency?.well || '',
+        Início: formatIsoStringToHours(period.startHour.toISOString()),
+        Fim: formatIsoStringToHours(period.endHour.toISOString()),
+        Minutos: getDiffInMinutes(parsedEndHour, parsedStartHour),
+        Tipo: translateType(period.type as PeriodType),
+        Classificação: translateClassification(period.classification),
+        'Classificação de Reparo':
+          translateRepairClassification(
+            period.repairClassification as RepairClassification,
+          ) || '',
+        Descrição: period.description?.replace(/\n/g, ' ') || '',
+      };
+    });
+
+    // Criação da Planilha
+    const ws = XLSX.utils.json_to_sheet(data);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Relatório');
 
     // Escreva o arquivo para o buffer
     const buffer = XLSX.write(wb, { bookType: 'xlsx', type: 'buffer' });

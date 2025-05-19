@@ -19,6 +19,8 @@ import { PeriodClassification } from "../../../../../app/entities/PeriodClassifi
 import { RepairClassification } from "../../../../../app/entities/RepairClassification";
 import { periodClassifications } from "../../../../../app/utils/periodClassifications";
 import { GridPaginationModel } from "@mui/x-data-grid";
+import { saveAs } from "file-saver";
+import { excelService } from "@/app/services/excelService";
 
 interface ReportContextValues {
   rigs: Rig[] | { id: string; name: string }[];
@@ -59,6 +61,8 @@ interface ReportContextValues {
   filters: GetByPeriodTypeFilters;
   totalItems: number;
   isFiltersValid: boolean;
+  handleExcelDownload: () => Promise<void>;
+  isFetchingReport: boolean;
 }
 
 export const ReportContext = createContext({} as ReportContextValues);
@@ -69,28 +73,36 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
 
   const firstDayOfMonth = startOfMonth(currentDate);
   const lastDayOfMonth = endOfMonth(currentDate);
-  const formattedFirstDay = format(firstDayOfMonth, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
-  const formattedLastDay = format(lastDayOfMonth, "yyyy-MM-dd'T'HH:mm:ss.SSSxxx");
+  const formattedFirstDay = format(
+    firstDayOfMonth,
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+  );
+  const formattedLastDay = format(
+    lastDayOfMonth,
+    "yyyy-MM-dd'T'HH:mm:ss.SSSxxx",
+  );
   const { isUserAdm } = useAuth();
 
   // Mapeamento das rigs do usuário para exibir apenas as autorizadas
   const { rigs } = useRigs(isUserAdm);
 
-  const userRigs = user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
+  const userRigs =
+    user?.rigs.map(({ rig: { id, name } }) => ({ id, name })) || [];
 
   const emptyOptions = [{ value: "", label: "" }];
 
   //estado dos filtros
   const [selectedRig, setSelectedRig] = useState<string>("");
-  const [selectedStartDate, setSelectedStartDate] = useState<string>(formattedFirstDay);
-  const [selectedEndDate, setSelectedEndDate] = useState<string>(formattedLastDay);
+  const [selectedStartDate, setSelectedStartDate] =
+    useState<string>(formattedFirstDay);
+  const [selectedEndDate, setSelectedEndDate] =
+    useState<string>(formattedLastDay);
   const [selectedPeriod, setSelectedPeriod] = useState<string>("");
   const [selectedPeriodType, setSelectedPeriodType] = useState<PeriodType>(
-    PeriodType.WORKING
+    PeriodType.WORKING,
   );
-  const [selectedPeriodClassification, setSelectedPeriodClassification] = useState<
-    PeriodClassification | string
-  >(PeriodClassification.WORKING);
+  const [selectedPeriodClassification, setSelectedPeriodClassification] =
+    useState<PeriodClassification | string>(PeriodClassification.WORKING);
   const [periodClassificationOptions, setPeriodClassificationOptions] =
     useState<null | SelectOptions>([
       {
@@ -99,12 +111,14 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
       },
     ]);
 
+  const [isFetchingReport, setIsFetchingReport] = useState(false);
+
   const [repairClassificationOptions, setRepairClassificationOptions] =
     useState<null | SelectOptions>(null);
   const [selectedYear, setSeletectedYear] = useState<string>("2024");
 
   const [selectedFilterType, setSelectedFilterType] = useState<FilterType>(
-    FilterType.CUSTOM
+    FilterType.CUSTOM,
   );
   const [filters, setFilters] = useState<GetByPeriodTypeFilters>({
     rigId: "",
@@ -128,6 +142,31 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
     label: type,
     value: id,
   }));
+
+  const handleExcelDownload = async () => {
+    try {
+      setIsFetchingReport(true);
+      const data = await excelService.getPeriodsReport({
+        startDate: filters.startDate,
+        endDate: filters.endDate,
+        orderBy: filters.orderBy,
+        periodType: filters.periodType,
+        periodClassification: filters.periodClassification,
+        repairClassification: filters.repairClassification,
+        rigId: filters.rigId,
+        searchTerm: filters.searchTerm,
+      });
+
+      const blob = new Blob([data], {
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      });
+      saveAs(blob, "relatorio.xlsx");
+    } catch (error) {
+      console.error("Erro ao baixar o relatório", error);
+    } finally {
+      setIsFetchingReport(false);
+    }
+  };
 
   const getPeriodClassificationsByType = (type: PeriodType) => {
     return periodClassifications[type].map(({ id, classification }) => ({
@@ -171,7 +210,11 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleChangeSearchTerm = (searchTerm: string) => {
-    setFilters((prevState) => ({ ...prevState, searchTerm: searchTerm, pageIndex: "1" }));
+    setFilters((prevState) => ({
+      ...prevState,
+      searchTerm: searchTerm,
+      pageIndex: "1",
+    }));
   };
 
   const handleStartDateChange = (date: Date) => {
@@ -193,12 +236,12 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const handleTogglePeriodType = (type: PeriodType) => {
-    if (type === ("" as PeriodType)) {
+    /*  if (type === ("" as PeriodType)) {
       const periodClassificationOptions = getPeriodClassificationsByType(
-        PeriodType.WORKING
+        PeriodType.WORKING,
       );
       setPeriodClassificationOptions(
-        periodClassificationOptions ? periodClassificationOptions : null
+        periodClassificationOptions ? periodClassificationOptions : null,
       );
       setSelectedPeriodClassification("");
       setSelectedPeriodType(PeriodType.WORKING);
@@ -211,11 +254,11 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
       }));
 
       return;
-    }
+    } */
 
     const periodClassificationOptions = getPeriodClassificationsByType(type);
     setPeriodClassificationOptions(
-      periodClassificationOptions ? periodClassificationOptions : null
+      periodClassificationOptions ? periodClassificationOptions : null,
     );
 
     setSelectedPeriodClassification("");
@@ -260,11 +303,12 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
       filters.endDate &&
       filters.orderBy &&
       filters.pageIndex &&
-      filters.pageSize &&
-      filters.rigId
+      filters.pageSize,
   );
 
-  const handleRepairClassification = (repairClassification: RepairClassification) => {
+  const handleRepairClassification = (
+    repairClassification: RepairClassification,
+  ) => {
     setFilters((prevState) => ({
       ...prevState,
       repairClassification: repairClassification,
@@ -278,7 +322,7 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
 
     if (periodFound) {
       const monthPeriodSelected = periodFound.months.find(
-        (month) => month.month === period
+        (month) => month.month === period,
       );
 
       handleStartDateChange(monthPeriodSelected?.startDate!);
@@ -310,6 +354,8 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
       pageIndex: pageIndex.toString(),
     }));
   };
+
+  console.log("periods", periodsResponse.data);
 
   return (
     <ReportContext.Provider
@@ -351,6 +397,8 @@ export const ReportProvider = ({ children }: { children: React.ReactNode }) => {
         isEmpty,
         isFetchingPeriods,
         handleChangeSearchTerm,
+        handleExcelDownload,
+        isFetchingReport,
       }}
     >
       {children}
