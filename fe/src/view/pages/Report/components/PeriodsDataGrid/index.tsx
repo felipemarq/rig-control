@@ -5,7 +5,6 @@ import {
   GridRenderCellParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-
 import { NotFound } from "../../../../components/NotFound";
 import { translateType } from "../../../../../app/utils/translateType";
 import { translateClassification } from "../../../../../app/utils/translateClassification";

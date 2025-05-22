@@ -7,34 +7,24 @@ import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { StatboxContainer } from "./components/StatboxContainer";
 import { AverageBarChartCard } from "./components/AverageBarChartCard";
 import { DaysNotRegisteredCard } from "./components/DaysNotRegisteredCard";
-import { UnbilledPeriodsPieChartCard } from "./components/UnbilledPeriodsPieChartCard";
-import { PeriodsDetailsPieChartCard } from "./components/PeriodsDetailsPieChartCard";
-import { UnbilledPeriodsByRigCard } from "./components/UnbilledPeriodsByRigCard";
-import { RepairDetailsPieChartCard } from "./components/RepairDetailsPieChartCard";
 import { Button } from "@/components/ui/button";
 import { Download } from "lucide-react";
 import { Header } from "@/view/components/Header";
+import UnbilledTimeAnalysis from "./components/UnbilledTimeAnalysis";
 
 export default function GlobalDashboard() {
   return (
     <GlobalDashboardProvider>
       <GlobalDashboardContext.Consumer>
         {({
-          isDetailsGraphVisible,
           handleApplyFilters,
           isFetchingRigsAverage,
           handleChangeDashboardView,
-          selectedPeriodClassification,
-          selectedPieChartView,
-          selectedDetailPieChartView,
-          mappedRigsRepairHours,
-          selectedRepairPeriodClassification,
-          mappedRigsUnbilledHours,
           handleExcelDownload,
 
           isFetchingReport,
         }) => (
-          <div className="min-h-screen bg-gray-50/50">
+          <div className="container mx-auto p-4">
             {/* Header */}
             <Header title="Dashboard Geral" displayRig={false}>
               <div className="flex flex-row-reverse gap-2 justify-center items-center">
@@ -82,50 +72,17 @@ export default function GlobalDashboard() {
               </div>
             </Header>
 
-            <div className="lg:p-6">
-              <div className="max-w-7xl mx-auto space-y-6 ">
-                {/* KPI Cards */}
-                <StatboxContainer />
+            <div>
+              {/* KPI Cards */}
+              <StatboxContainer />
 
-                {/* Charts Section */}
-                <div className="grid gap-6 lg:grid-cols-6">
-                  <AverageBarChartCard className="p-4 lg:col-span-4" />
+              {/* Charts Section */}
+              <div className="grid gap-6 lg:grid-cols-6 grid-cols-1">
+                <AverageBarChartCard className="p-4 lg:col-span-4" />
 
-                  <DaysNotRegisteredCard className="lg:col-span-2" />
+                <DaysNotRegisteredCard className="lg:col-span-2" />
 
-                  {
-                    <>
-                      <UnbilledPeriodsPieChartCard className="lg:col-span-2" />
-                      {isDetailsGraphVisible && (
-                        <PeriodsDetailsPieChartCard className="lg:col-span-2" />
-                      )}
-                    </>
-                  }
-                  <UnbilledPeriodsByRigCard
-                    className="lg:col-span-2"
-                    rigsData={mappedRigsUnbilledHours}
-                    selectedView={selectedPieChartView}
-                    selectedDetailView={selectedDetailPieChartView ?? undefined}
-                  />
-
-                  {selectedPeriodClassification &&
-                    selectedPieChartView === "REPAIR" && (
-                      <RepairDetailsPieChartCard />
-                    )}
-
-                  {selectedRepairPeriodClassification && (
-                    <UnbilledPeriodsByRigCard
-                      className="lg:col-span-2"
-                      rigsData={mappedRigsRepairHours}
-                      selectedDetailView={
-                        selectedDetailPieChartView ?? undefined
-                      }
-                      selectedRepairClassification={
-                        selectedRepairPeriodClassification ?? undefined
-                      }
-                    />
-                  )}
-                </div>
+                <UnbilledTimeAnalysis />
               </div>
             </div>
           </div>

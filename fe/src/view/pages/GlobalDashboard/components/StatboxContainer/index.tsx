@@ -21,10 +21,12 @@ export const StatboxContainer = () => {
     selectedDashboardView,
   } = useStatboxContainer();
   return (
-    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <Card>
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium">Eficiência Operacional</CardTitle>
+          <CardTitle className="text-sm font-medium">
+            Eficiência Operacional
+          </CardTitle>
           <TimerIcon className="h-8 w-8 text-muted-foreground" />
         </CardHeader>
         {isFetchingRigsAverage && (
@@ -65,7 +67,7 @@ export const StatboxContainer = () => {
             {" "}
             <CardContent>
               <div className="text-2xl font-bold text-redAccent-500">{`${averageUnavailableHours.toFixed(
-                2
+                2,
               )} Horas`}</div>
               <p className="text-xs text-muted-foreground text-redAccent-500">
                 Média de indisponibilidade diária
@@ -83,7 +85,9 @@ export const StatboxContainer = () => {
       </Card>
       <Card x-chunk="dashboard-01-chunk-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-redAccent-500">Reparo</CardTitle>
+          <CardTitle className="text-sm font-medium text-redAccent-500">
+            Reparo
+          </CardTitle>
           <Wrench className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
 
@@ -113,7 +117,9 @@ export const StatboxContainer = () => {
       </Card>
       <Card x-chunk="dashboard-01-chunk-2">
         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-          <CardTitle className="text-sm font-medium text-redAccent-500">Glosa</CardTitle>
+          <CardTitle className="text-sm font-medium text-redAccent-500">
+            Glosa
+          </CardTitle>
           <FileClock className="h-8 w-8 text-muted-foreground text-redAccent-500" />
         </CardHeader>
 

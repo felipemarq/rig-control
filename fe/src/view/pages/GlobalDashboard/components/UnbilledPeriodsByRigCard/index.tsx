@@ -53,9 +53,13 @@ export const UnbilledPeriodsByRigCard = ({
 
             {selectedView === "REPAIR" && <Badge>Reparos</Badge>}
 
-            {selectedView === "COMMERCIALLY_STOPPED" && <Badge>Paradas Comerciais</Badge>}
+            {selectedView === "COMMERCIALLY_STOPPED" && (
+              <Badge>Paradas Comerciais</Badge>
+            )}
 
-            {selectedView === "SCHEDULED_STOP" && <Badge>Paradas Programadas</Badge>}
+            {selectedView === "SCHEDULED_STOP" && (
+              <Badge>Paradas Programadas</Badge>
+            )}
 
             {!selectedDetailView && <Badge>Todos</Badge>}
 
@@ -72,10 +76,14 @@ export const UnbilledPeriodsByRigCard = ({
               <TableRow>
                 <TableHead>Sonda</TableHead>
                 <TableHead>
-                  <div className="flex gap-4 justify-center items-center">Horas</div>
+                  <div className="flex gap-4 justify-center items-center">
+                    Horas
+                  </div>
                 </TableHead>
                 <TableHead>
-                  <div className="flex gap-4 justify-center items-center">Ver mais</div>
+                  <div className="flex gap-4 justify-center items-center">
+                    Ver mais
+                  </div>
                 </TableHead>
               </TableRow>
             </TableHeader>
@@ -98,7 +106,9 @@ export const UnbilledPeriodsByRigCard = ({
                       <div
                         onClick={() => {
                           handleChangeRig(id);
-                          navigate(`/dashboard`, { state: { shouldApplyFilters: true } });
+                          navigate(`/dashboard`, {
+                            state: { shouldApplyFilters: true },
+                          });
                         }}
                       >
                         <div className="flex gap-4 justify-center items-center">
