@@ -1,4 +1,5 @@
 import { Pie, PieChart } from "recharts";
+
 import {
   ChartConfig,
   ChartContainer,
@@ -8,27 +9,29 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-interface RepairDetailsPieChartProps {
-  chartData: RepairDetailsPieChartData;
-  handleSelectedRepairPeriodClassificationChange: (
-    classification: string,
-  ) => void;
+import { PeriodType } from "@/app/entities/PeriodType";
+import { cn } from "@/lib/utils";
+
+export interface PeriodsDetailsPieChartProps {
+  selectedView: "HOURS" | "PERCENTAGE";
+  chartData: PeriodsDetailsPieChartData;
+  handleSelectedDetailPieChartViewChange: (classification: string) => void;
+  handleChangeTab?: () => void;
 }
 
-export type RepairDetailsPieChartData = {
+export type PeriodsDetailsPieChartData = {
   id: string;
   label: string;
   value: number;
   fill: string;
-  classification: string;
-  selectedPeriodClassification: string;
-  percentage: number;
 }[];
 
-export const RepairDetailsPieChartCn = ({
+export const PeriodsDetailsPieChartCn = ({
+  selectedView,
   chartData,
-  handleSelectedRepairPeriodClassificationChange,
-}: RepairDetailsPieChartProps) => {
+  handleSelectedDetailPieChartViewChange,
+  handleChangeTab,
+}: PeriodsDetailsPieChartProps) => {
   const chartConfig: ChartConfig = {};
 
   chartData.forEach((repair) => {
@@ -45,7 +48,9 @@ export const RepairDetailsPieChartCn = ({
   return (
     <ChartContainer
       config={chartConfig}
-      className="mx-auto aspect-square max-h-[350px] [&_.recharts-pie-label-text]:fill-foreground"
+      className={cn(
+        "mx-auto aspect-square max-h-[350px] [&_.recharts-pie-label-text]:fill-foreground ",
+      )}
     >
       <PieChart>
         <ChartTooltip
@@ -75,7 +80,7 @@ export const RepairDetailsPieChartCn = ({
                     <div className="text-lg ml-auto flex items-baseline gap-0.5 font-mono font-bold tabular-nums text-foreground">
                       {value}
                       <span className="font-normal text-muted-foreground">
-                        Hrs
+                        {selectedView === "HOURS" ? "hrs" : "%"}
                       </span>
                     </div>
                   </div>
@@ -90,9 +95,9 @@ export const RepairDetailsPieChartCn = ({
           nameKey="id"
           innerRadius={50}
           onClick={(event) => {
-            console.log(event);
-            handleSelectedRepairPeriodClassificationChange(
-              event.payload.classification,
+            handleChangeTab?.();
+            handleSelectedDetailPieChartViewChange(
+              event.payload.label as PeriodType,
             );
           }}
           label={({ payload, ...props }) => {
@@ -106,7 +111,7 @@ export const RepairDetailsPieChartCn = ({
                 dominantBaseline={props.dominantBaseline}
                 fill="hsla(var(--foreground))"
               >
-                {payload.value} hrs
+                {payload.value} {selectedView === "HOURS" ? "hrs" : "%"}
               </text>
             );
           }}

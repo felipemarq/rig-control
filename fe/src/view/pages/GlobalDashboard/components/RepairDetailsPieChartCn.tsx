@@ -1,37 +1,32 @@
 import { Pie, PieChart } from "recharts";
-
 import {
   ChartConfig,
   ChartContainer,
-  ChartLegend,
-  ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
 
-import { PeriodType } from "@/app/entities/PeriodType";
-import { cn } from "@/lib/utils";
-
-export interface PeriodsDetailsPieChartProps {
-  isExpanded: boolean;
-  selectedView: "HOURS" | "PERCENTAGE";
-  chartData: PeriodsDetailsPieChartData;
-  handleSelectedDetailPieChartViewChange: (classification: string) => void;
-  isPeriodDetailsGraphExpanded: boolean;
+interface RepairDetailsPieChartProps {
+  chartData: RepairDetailsPieChartData;
+  handleSelectedRepairPeriodClassificationChange: (
+    classification: string,
+  ) => void;
 }
 
-export type PeriodsDetailsPieChartData = {
+export type RepairDetailsPieChartData = {
   id: string;
   label: string;
   value: number;
   fill: string;
+  classification: string;
+  selectedPeriodClassification: string;
+  percentage: number;
 }[];
 
-export const PeriodsDetailsPieChartCn = ({
-  selectedView,
+export const RepairDetailsPieChartCn = ({
   chartData,
-  handleSelectedDetailPieChartViewChange,
-}: PeriodsDetailsPieChartProps) => {
+  handleSelectedRepairPeriodClassificationChange,
+}: RepairDetailsPieChartProps) => {
   const chartConfig: ChartConfig = {};
 
   chartData.forEach((repair) => {
@@ -48,9 +43,7 @@ export const PeriodsDetailsPieChartCn = ({
   return (
     <ChartContainer
       config={chartConfig}
-      className={cn(
-        "mx-auto aspect-square max-h-[350px] [&_.recharts-pie-label-text]:fill-foreground "
-      )}
+      className="mx-auto aspect-square max-h-[350px] [&_.recharts-pie-label-text]:fill-foreground"
     >
       <PieChart>
         <ChartTooltip
@@ -66,19 +59,21 @@ export const PeriodsDetailsPieChartCn = ({
                         className="h-2 w-2 shrink-0 rounded-[2px]"
                         style={{
                           backgroundColor:
-                            chartConfig[name as keyof typeof chartConfig]?.color,
+                            chartConfig[name as keyof typeof chartConfig]
+                              ?.color,
                         }}
                       />
                       <span className="text-lg">
                         {" "}
-                        {chartConfig[name as keyof typeof chartConfig]?.label || name}
+                        {chartConfig[name as keyof typeof chartConfig]?.label ||
+                          name}
                       </span>
                     </div>
 
                     <div className="text-lg ml-auto flex items-baseline gap-0.5 font-mono font-bold tabular-nums text-foreground">
                       {value}
                       <span className="font-normal text-muted-foreground">
-                        {selectedView === "HOURS" ? "hrs" : "%"}
+                        Hrs
                       </span>
                     </div>
                   </div>
@@ -93,28 +88,11 @@ export const PeriodsDetailsPieChartCn = ({
           nameKey="id"
           innerRadius={50}
           onClick={(event) => {
-            handleSelectedDetailPieChartViewChange(event.payload.label as PeriodType);
-          }}
-          label={({ payload, ...props }) => {
-            return (
-              <text
-                cx={props.cx}
-                cy={props.cy}
-                x={props.x}
-                y={props.y}
-                textAnchor={props.textAnchor}
-                dominantBaseline={props.dominantBaseline}
-                fill="hsla(var(--foreground))"
-              >
-                {payload.value} {selectedView === "HOURS" ? "hrs" : "%"}
-              </text>
+            console.log(event);
+            handleSelectedRepairPeriodClassificationChange(
+              event.payload.classification,
             );
           }}
-        />
-
-        <ChartLegend
-          content={<ChartLegendContent nameKey="id" />}
-          className="-translate-y-2 flex-wrap gap-2 [&>]:basis-1/4 [&>]:justify-center"
         />
       </PieChart>
     </ChartContainer>

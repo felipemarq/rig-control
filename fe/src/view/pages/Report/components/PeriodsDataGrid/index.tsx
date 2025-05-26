@@ -5,7 +5,6 @@ import {
   GridRenderCellParams,
   GridToolbar,
 } from "@mui/x-data-grid";
-
 import { NotFound } from "../../../../components/NotFound";
 import { translateType } from "../../../../../app/utils/translateType";
 import { translateClassification } from "../../../../../app/utils/translateClassification";
@@ -160,10 +159,16 @@ export const PeriodsDataGrid = ({
       align: "center",
       renderCell(params: GridRenderCellParams) {
         return (
-          <div className="w-full flex justify-center items-center">
-            <div className="text-white  bg-primary py-1 px-4 rounded-sm">
-              {translateRepairClassification(params.value)}
-            </div>
+          <div
+            className="text-gray-800 font-medium tracking-tighter"
+            style={{
+              overflowX: "auto",
+              whiteSpace: "pre-wrap",
+              wordBreak: "break-word",
+              textAlign: "left", // opcional, melhora legibilidade
+            }}
+          >
+            {translateRepairClassification(params.value)}
           </div>
         );
       },

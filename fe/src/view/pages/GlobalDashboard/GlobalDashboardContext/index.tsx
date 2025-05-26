@@ -16,11 +16,12 @@ import { translateType } from "@/app/utils/translateType";
 import { translateClassification } from "@/app/utils/translateClassification";
 import { RepairClassification } from "@/app/entities/RepairClassification";
 import { translateRepairClassification } from "@/app/utils/translateRepairClassification";
-import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCard/components/UnbilledPeriodsPieChartCn";
-import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCard/components/RepairDetailsPieChartCn";
-import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCard/components/PeriodsDetailsPieChartCn";
+import { UnbilledPeriodsPieChartData } from "../components/UnbilledPeriodsPieChartCn";
+
+import { PeriodsDetailsPieChartData } from "../components/PeriodsDetailsPieChartCn";
 import { getAllRigsReport } from "@/app/services/excelService/getAllRigsReport";
 import { saveAs } from "file-saver";
+import { RepairDetailsPieChartData } from "../components/RepairDetailsPieChartCn";
 
 /* import { useEfficiencies } from "@/app/hooks/efficiencies/useEfficiencies";
 import { useGetByPeriodType } from "@/app/hooks/periods/useGetByPeriodType";
@@ -62,9 +63,7 @@ interface GlobalDashboardContextValue {
   selectedPeriodClassification: string | null;
   unbilledPeriodsDetailsChartData: PeriodsDetailsPieChartData;
   handleChangePeriodDetailsGraphView: () => void;
-  isPeriodDetailsGraphExpanded: boolean;
   selectedPeriodDetailsGraphView: "HOURS" | "PERCENTAGE";
-  handleExpandPeriodDetailsGraph: () => void;
   repairDetailsChartData: RepairDetailsPieChartData;
   mappedRigsUnbilledHours: {
     id: string;
@@ -77,7 +76,7 @@ interface GlobalDashboardContextValue {
     value: number;
   }[];
   handleSelectedRepairPeriodClassificationChange: (
-    classification: string,
+    classification: string | null,
   ) => void;
   selectedRepairPeriodClassification: string | null;
   hasNoUnbilledPeriods: boolean;
@@ -113,8 +112,6 @@ export const GlobalDashboardProvider = ({
     selectedRepairPeriodClassification,
     setSelectedRepairPeriodClassification,
   ] = useState<string | null>(null);
-  const [isPeriodDetailsGraphExpanded, setIsPeriodDetailsGraphExpanded] =
-    useState(false);
   const [selectedPeriodDetailsGraphView, setSelectedPeriodDetailsGraphView] =
     useState<"HOURS" | "PERCENTAGE">("PERCENTAGE");
 
@@ -148,10 +145,6 @@ export const GlobalDashboardProvider = ({
     );
   };
 
-  const handleExpandPeriodDetailsGraph = () => {
-    setIsPeriodDetailsGraphExpanded((prev) => !prev);
-  };
-
   const handleSelectedPieChartViewChange = (type: PeriodType) => {
     setIsDetailsGraphVisible(true);
     setSelectedPieChartView(type);
@@ -164,8 +157,12 @@ export const GlobalDashboardProvider = ({
   };
 
   const handleSelectedRepairPeriodClassificationChange = (
-    classification: string,
+    classification: string | null,
   ) => {
+    if (!classification) {
+      setSelectedRepairPeriodClassification(null);
+      return;
+    }
     setSelectedRepairPeriodClassification(classification);
   };
 
@@ -576,8 +573,6 @@ export const GlobalDashboardProvider = ({
         repairDetailsChartData,
         isFetchingReport,
         handleChangePeriodDetailsGraphView,
-        handleExpandPeriodDetailsGraph,
-        isPeriodDetailsGraphExpanded,
         selectedPeriodDetailsGraphView,
         handleSelectedDetailPieChartViewChange,
         selectedDetailPieChartView,
