@@ -111,7 +111,7 @@ export const RigDetailsCard = () => {
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">
-                    {totalAvailableHours}Hrs
+                    {totalAvailableHours.toFixed(2)}Hrs
                   </div>
                 </CardContent>
               </Card>
