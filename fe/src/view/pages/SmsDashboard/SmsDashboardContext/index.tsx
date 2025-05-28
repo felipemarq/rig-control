@@ -1,3 +1,4 @@
+import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 import { useOccurrences } from "@/app/hooks/occurrences/useOccurrences";
 import { useOccurrencesTaxes } from "@/app/hooks/occurrences/useOccurrencesTaxes";
 import { useBases } from "@/app/hooks/useBases";
@@ -8,7 +9,7 @@ import {
   OccurrencesResponse,
 } from "@/app/services/occurrencesService/getAll";
 import { OccurrencesTaxesResponse } from "@/app/services/occurrencesService/getTaxes";
-import React, { createContext, useEffect } from "react";
+import React, { createContext, useCallback, useEffect, useState } from "react";
 
 // Definição do tipo do contexto
 interface SmsDashboardContextValue {
@@ -16,7 +17,7 @@ interface SmsDashboardContextValue {
   //occurrences: OccurrencesResponse;
 
   handleChangeFilters<TFilter extends keyof OccurrenceFilters>(
-    filter: TFilter
+    filter: TFilter,
   ): (value: OccurrenceFilters[TFilter]) => void;
   occurrencesTaxes?: OccurrencesTaxesResponse;
   bases: BasesResponse;
@@ -30,12 +31,23 @@ interface SmsDashboardContextValue {
   isInitialLoading: boolean;
   isFetchingOccurrencesTaxes: boolean;
   handleRefetchOccurrences(): void;
+
+  closeEditOccurrenceActionModal: () => void;
+  isEditOccurrenceActionModalOpen: boolean;
+  occurrenceActionBeingSeen: null | OccurrenceAction;
+  openEditOccurrenceActionModal: (occurrenceAction: OccurrenceAction) => void;
 }
 
 // Criação do contexto
-export const SmsDashboardContext = createContext({} as SmsDashboardContextValue);
+export const SmsDashboardContext = createContext(
+  {} as SmsDashboardContextValue,
+);
 
-export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }) => {
+export const SmsDashboardProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   //const { isFetchingOccurrences, occurrences } = useOccurrences();
 
   const { bases, isFetchingBases } = useBases();
@@ -43,8 +55,29 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
   const { filters, handleChangeFilters, handleClearFilters } =
     useOccurrencesFiltersContext();
 
-  const { isFetchingOccurrences, occurrences, isInitialLoading, refetchOccurrences } =
-    useOccurrences(filters);
+  const {
+    isFetchingOccurrences,
+    occurrences,
+    isInitialLoading,
+    refetchOccurrences,
+  } = useOccurrences(filters);
+  const [occurrenceActionBeingSeen, setOccurrenceActionBeingSeen] =
+    useState<null | OccurrenceAction>(null);
+  const [isEditOccurrenceActionModalOpen, setIsEditOccurrenceActionModalOpen] =
+    useState(false);
+
+  const closeEditOccurrenceActionModal = useCallback(() => {
+    setOccurrenceActionBeingSeen(null);
+    setIsEditOccurrenceActionModalOpen(false);
+  }, []);
+
+  const openEditOccurrenceActionModal = useCallback(
+    (occurrenceAction: OccurrenceAction) => {
+      setIsEditOccurrenceActionModalOpen(true);
+      setOccurrenceActionBeingSeen(occurrenceAction);
+    },
+    [],
+  );
 
   const handleApplyFilters = () => {
     refetchOccurrences();
@@ -59,11 +92,14 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
     refetchOccurrences();
   };
 
-  const { occurrencesTaxes, isFetchingOccurrencesTaxes, refetchOccurrencesTaxes } =
-    useOccurrencesTaxes({
-      baseId: filters.baseId,
-      year: filters.year,
-    });
+  const {
+    occurrencesTaxes,
+    isFetchingOccurrencesTaxes,
+    refetchOccurrencesTaxes,
+  } = useOccurrencesTaxes({
+    baseId: filters.baseId,
+    year: filters.year,
+  });
 
   return (
     <SmsDashboardContext.Provider
@@ -82,6 +118,10 @@ export const SmsDashboardProvider = ({ children }: { children: React.ReactNode }
         handleApplyFilters,
         handleRefetchOccurrences,
         occurrencesTaxes,
+        closeEditOccurrenceActionModal,
+        isEditOccurrenceActionModalOpen,
+        occurrenceActionBeingSeen,
+        openEditOccurrenceActionModal,
       }}
     >
       {children}

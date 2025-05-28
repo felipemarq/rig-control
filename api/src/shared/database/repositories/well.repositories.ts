@@ -29,4 +29,8 @@ export class WellsRepository {
   async findAll(findAllDto: Prisma.WellFindManyArgs) {
     return await this.prismaService.well.findMany(findAllDto);
   }
+
+  async delete(deleteDto: Prisma.WellDeleteArgs) {
+    return await this.prismaService.well.delete(deleteDto);
+  }
 }

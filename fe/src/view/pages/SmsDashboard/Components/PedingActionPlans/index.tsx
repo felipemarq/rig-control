@@ -11,9 +11,12 @@ import { useSmsDashboardContext } from "../../SmsDashboardContext/useSmsDashboar
 import { useMemo } from "react";
 import { OccurrenceAction } from "@/app/entities/OccurrenceAction";
 import { OccurenceActionBadgeStatus } from "@/view/components/OccurrenceActionBagdeStatus";
+import { Button } from "@/components/ui/button";
+import { Pencil } from "lucide-react";
 
 export const PedingActionPlans = () => {
-  const { occurrences } = useSmsDashboardContext();
+  const { occurrences, openEditOccurrenceActionModal } =
+    useSmsDashboardContext();
 
   const { pendingActions } = useMemo(() => {
     let pendingActions: OccurrenceAction[] = [];
@@ -44,6 +47,7 @@ export const PedingActionPlans = () => {
               <TableHead>Responsável</TableHead>
               <TableHead>Vencimento</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead>Ações</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -51,9 +55,21 @@ export const PedingActionPlans = () => {
               <TableRow key={action.id}>
                 <TableCell className="font-medium">{action.title}</TableCell>
                 <TableCell>{action.responsible}</TableCell>
-                <TableCell>{new Date(action.dueDate).toLocaleDateString()}</TableCell>
+                <TableCell>
+                  {new Date(action.dueDate).toLocaleDateString()}
+                </TableCell>
                 <TableCell>
                   <OccurenceActionBadgeStatus occurrenceAction={action} />
+                </TableCell>
+                <TableCell>
+                  <Button
+                    onClick={() => openEditOccurrenceActionModal(action)}
+                    className="rounded-md"
+                    variant="outline"
+                  >
+                    <Pencil />
+                    Editar
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
