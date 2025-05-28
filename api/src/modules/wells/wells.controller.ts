@@ -27,6 +27,12 @@ export class WellsController {
     return this.wellsService.uploadSheet();
   }
 
+  @IsPublic()
+  @Get('/listPublic')
+  listPublic() {
+    return this.wellsService.findAll();
+  }
+
   @Get()
   findAll() {
     return this.wellsService.findAll();

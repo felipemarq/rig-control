@@ -11,15 +11,20 @@ import { lazy, Suspense } from "react";
 import { PageLoader } from "@/view/components/PageLoader";
 import { ErrorBoundary } from "@/view/components/ErrorBoundary";
 import { ErrorBoundaryFallback } from "@/view/components/ErrorBoundaryFallback";
+import WellsPage from "@/view/pages/Wells";
 
 const Dashboard = lazy(() => import("@/view/pages/Dashboard/index"));
-const GlobalDashboard = lazy(() => import("@/view/pages/GlobalDashboard/index"));
+const GlobalDashboard = lazy(
+  () => import("@/view/pages/GlobalDashboard/index"),
+);
 const Form = lazy(() => import("@/view/pages/Form/index"));
 const UpdateForm = lazy(() => import("@/view/pages/UpdateForm/index"));
 const PendingForm = lazy(() => import("@/view/pages/PendingForm/index"));
 const FormMenu = lazy(() => import("@/view/pages/FormMenu/index"));
 const List = lazy(() => import("@/view/pages/List/index"));
-const BillingDashboard = lazy(() => import("@/view/pages/BillingDashboard/index"));
+const BillingDashboard = lazy(
+  () => import("@/view/pages/BillingDashboard/index"),
+);
 const InvoicingMenu = lazy(() => import("@/view/pages/InvoicingMenu/index"));
 const Details = lazy(() => import("@/view/pages/Details/index"));
 const CreateRig = lazy(() => import("@/view/pages/CreateRig/index"));
@@ -34,14 +39,16 @@ const Report = lazy(() => import("@/view/pages/Report/index"));
 const Occurrences = lazy(() => import("@/view/pages/Occurrences/index"));
 const ManHours = lazy(() => import("@/view/pages/ManHours/index"));
 const CreateBillingConfiguration = lazy(
-  () => import("@/view/pages/CreateBillingConfiguration/index")
+  () => import("@/view/pages/CreateBillingConfiguration/index"),
 );
 const BillingConfiguration = lazy(
-  () => import("@/view/pages/BillingConfiguration/index")
+  () => import("@/view/pages/BillingConfiguration/index"),
 );
 const SmsDashboard = lazy(() => import("@/view/pages/SmsDashboard/index"));
 const UserLogs = lazy(() => import("@/view/pages/UserLogs/index"));
-const PeriodActionPlan = lazy(() => import("@/view/pages/PeriodActionPlan/index"));
+const PeriodActionPlan = lazy(
+  () => import("@/view/pages/PeriodActionPlan/index"),
+);
 const Checklists = lazy(() => import("@/view/pages/Checklists/index"));
 
 function RouterErrorBoundary() {
@@ -97,11 +104,17 @@ export const Router = () => {
 
                 <Route path="/form" element={<Form />} />
                 <Route path="/form/:efficiencyId" element={<UpdateForm />} />
-                <Route path="/pending-form/:efficiencyId" element={<PendingForm />} />
+                <Route
+                  path="/pending-form/:efficiencyId"
+                  element={<PendingForm />}
+                />
                 <Route path="/form/menu" element={<FormMenu />} />
 
                 <Route path="/list" element={<List />} />
-                <Route path="/invoicing-dashboard" element={<BillingDashboard />} />
+                <Route
+                  path="/invoicing-dashboard"
+                  element={<BillingDashboard />}
+                />
                 <Route path="/invoicing" element={<InvoicingMenu />} />
 
                 <Route path="/details/:efficiencyId" element={<Details />} />
@@ -112,7 +125,10 @@ export const Router = () => {
                 <Route path="/users" element={<ListUsers />} />
                 <Route path="/create-user" element={<CreateUser />} />
                 <Route path="/users/:id" element={<UpdateUser />} />
-                <Route path="/users/update-rigs/:id" element={<UpdateUserRigs />} />
+                <Route
+                  path="/users/update-rigs/:id"
+                  element={<UpdateUserRigs />}
+                />
                 <Route path="/users/user-logs" element={<UserLogs />} />
                 <Route path="/users/user-logs/:userId" element={<UserLogs />} />
                 <Route path="/reports" element={<Report />} />
@@ -128,13 +144,17 @@ export const Router = () => {
                   element={<BillingConfiguration />}
                 />
                 <Route path="/dashboard/sms" element={<SmsDashboard />} />
-                <Route path="/period-action-plan/" element={<PeriodActionPlan />} />
+                <Route
+                  path="/period-action-plan/"
+                  element={<PeriodActionPlan />}
+                />
                 <Route
                   path="/period-action-plan/:periodId"
                   element={<PeriodActionPlan />}
                 />
 
                 <Route path="/checklist" element={<Checklists />} />
+                <Route path="/wells" element={<WellsPage />} />
               </Route>
             </Route>
 

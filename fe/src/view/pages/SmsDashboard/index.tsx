@@ -12,12 +12,13 @@ import { PedingActionPlans } from "./Components/PedingActionPlans";
 import { TorOccurrencesBarChartCard } from "./Components/TorOccurrencesBarChartCard";
 import { TarOccurrencesBarChartCard } from "./Components/TarOccurrencesBarChartCard";
 import { Header } from "@/view/components/Header";
+import { EditOccurrenceActionModal } from "./Components/EditOccurrenceActionModal";
 
 export default function SmsDashboard() {
   return (
     <SmsDashboardProvider>
       <SmsDashboardContext.Consumer>
-        {({ isFetchingOccurrences }) => (
+        {({ isFetchingOccurrences, occurrenceActionBeingSeen }) => (
           <div className="container mx-auto p-4">
             <Header
               displayRig
@@ -52,7 +53,7 @@ export default function SmsDashboard() {
 
                   <PedingActionPlans />
                 </div>
-
+                {occurrenceActionBeingSeen && <EditOccurrenceActionModal />}
                 {/*  <AreaChartByMonth /> */}
               </div>
             )}

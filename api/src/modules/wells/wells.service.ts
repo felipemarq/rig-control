@@ -16,8 +16,28 @@ export class WellsService {
     return this.wellsRepo.create({ data: createWellDto });
   }
 
-  findAll() {
-    return `This action returns all wells`;
+  async findAll() {
+    const wells = await this.wellsRepo.findAll({
+      where: {
+        AND: [
+          {
+            periods: {
+              none: {},
+            },
+            contractId: null,
+            checklists: {
+              none: {},
+            },
+          },
+        ],
+      },
+      include: {
+        checklists: true,
+      },
+    });
+    console.log('Existem ' + wells.length + ' poços sem periodos');
+
+    return wells;
   }
 
   findOne(id: number) {
