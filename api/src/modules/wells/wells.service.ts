@@ -3,10 +3,14 @@ import * as xlsx from 'xlsx';
 import { CreateWellDto } from './dto/create-well.dto';
 import { UpdateWellDto } from './dto/update-well.dto';
 import { WellsRepository } from 'src/shared/database/repositories/well.repositories';
+import { PeriodsRepository } from 'src/shared/database/repositories/period.repositories';
 
 @Injectable()
 export class WellsService {
-  constructor(private readonly wellsRepo: WellsRepository) {}
+  constructor(
+    private readonly wellsRepo: WellsRepository,
+    private readonly periodsRepo: PeriodsRepository,
+  ) {}
 
   create(createWellDto: CreateWellDto) {
     return this.wellsRepo.create({ data: createWellDto });
@@ -17,7 +21,7 @@ export class WellsService {
   }
 
   async findAll() {
-    const wells = await this.wellsRepo.findAll({
+    const wrongWells = await this.wellsRepo.findAll({
       where: {
         AND: [
           {
@@ -25,6 +29,7 @@ export class WellsService {
               none: {},
             },
             contractId: null,
+
             checklists: {
               none: {},
             },
@@ -33,11 +38,55 @@ export class WellsService {
       },
       include: {
         checklists: true,
+        periods: true,
       },
     });
-    console.log('Existem ' + wells.length + ' poços sem periodos');
+
+    //  console.log('Poços errados: ', wrongWells);
+
+    const wells = await this.wellsRepo.findAll({
+      where: {
+        AND: [
+          {
+            contractId: null,
+            name: { contains: 'SMC-0043', mode: 'insensitive' },
+          },
+        ],
+      },
+      include: {
+        checklists: true,
+        // periods: true,
+      },
+    });
+
+    //  console.log('Existem ' + wells.length + ' poços com espaços no nome');
+    for (const well of wrongWells) {
+      console.log(`Removendo poço: ${well.name}`);
+      await this.wellsRepo.delete({
+        where: { id: well.id },
+      });
+    }
+
+    console.log('Existem ' + wrongWells.length + ' poços sem periodos');
+
+    /*  await this.updatePeriodsToCorrectWell(
+      'e6dd6bb4-9ff6-4a97-9b6d-71482c229ccd', // ID correto
+      ['d97cd06e-faf5-4bed-af46-21404f3704ea'],
+    ); */
 
     return wells;
+  }
+
+  async updatePeriodsToCorrectWell(
+    wellIdCorreto: string,
+    wellIdsErrados: string[],
+  ) {
+    for (const wrongId of wellIdsErrados) {
+      await this.periodsRepo.updateMany({
+        where: { wellId: wrongId },
+        data: { wellId: wellIdCorreto },
+      });
+    }
   }
 
   findOne(id: number) {

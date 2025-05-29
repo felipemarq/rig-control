@@ -36,11 +36,10 @@ export class ChecklistsService {
     });
 
     if (!wellFound) {
-      wellFound = await this.wellsRepo.create({
-        data: {
-          name: well,
-        },
-      });
+      throw new NotFoundException(
+        `Poço com nome '${well}'não existe na base de dados do sistema! ` +
+          `Verifique se o nome do poço está correto ou solicite o cadastro deste poço no sistema antes de continuar.`,
+      );
     }
 
     // Buscar todos os itens do checklist de uma vez
