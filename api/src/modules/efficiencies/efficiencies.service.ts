@@ -244,13 +244,18 @@ export class EfficienciesService {
      * If a well doesn't exist, it creates a new entry for it.
      * @param periods The array of periods containing well IDs.
      */
-    for (const { wellId } of periods) {
+    for (let i = 0; i < periods.length; i++) {
+      const { wellId } = periods[i];
+
       const wellExist = await this.wellsRepo.findFirst({
         where: { name: wellId },
       });
 
       if (!wellExist) {
-        await this.wellsRepo.create({ data: { name: wellId } });
+        throw new NotFoundException(
+          `Poço com nome '${wellId}' do período ${i++} não existe na base de dados do sistema! ` +
+            `Verifique se o nome do poço está correto ou solicite o cadastro deste poço no sistema antes de continuar.`,
+        );
       }
     }
 

@@ -1,3 +1,3 @@
 export const currentVersion = {
-  version: "4.1.0",
+  version: "4.2.0",
 };

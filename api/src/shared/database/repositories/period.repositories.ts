@@ -29,11 +29,11 @@ export class PeriodsRepository {
     return await this.prismaService.period.groupBy(groupByDto);
   }
 
-  async update(
-    updateBillingsConfigurationDto: Prisma.BillingConfigurationUpdateArgs,
-  ) {
-    return await this.prismaService.billingConfiguration.update(
-      updateBillingsConfigurationDto,
-    );
+  async update(updatePeriodDto: Prisma.PeriodUpdateArgs) {
+    return await this.prismaService.period.update(updatePeriodDto);
+  }
+
+  async updateMany(updateManyPeriodDto: Prisma.PeriodUpdateManyArgs) {
+    return await this.prismaService.period.updateMany(updateManyPeriodDto);
   }
 }
